@@ -13,6 +13,8 @@ struct OpenDoorEvent {
             case .farm: FarmDoorEvent.open(tile: doorTile)
             case .hospital: HospitalDoorEvent.open(tile: doorTile)
             case .carpenter: CarpenterDoorEvent.open(tile: doorTile)
+            case .restaurant: RestaurantDoorEvent.open(tile: doorTile)
+            case .potter: PotterAreaDoorEvent.open(tile: doorTile)
         }
     }
     static func teachToChopLumber(by choppingLumberTeachingDoorTypes: ChoppingLumberTeachingDoorTypes) {

@@ -206,6 +206,8 @@ enum MessageSpeakers {
     case farmer
     case doctor
     case carpenter
+    case chef
+    case potter
     
     var render: String {
         switch self {
@@ -222,6 +224,8 @@ enum MessageSpeakers {
             case .farmer: return "Farmer"
             case .doctor: return "Doctor"
             case .carpenter: return "Carpenter"
+            case .chef: return "Chef"
+            case .potter: return "Potter"
         }
     }
 }

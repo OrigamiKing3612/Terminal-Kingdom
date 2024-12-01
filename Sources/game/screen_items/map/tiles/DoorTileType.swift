@@ -11,6 +11,8 @@ enum DoorTileTypes: Codable, Equatable {
     case farm
     case hospital
     case carpenter
+    case restaurant
+    case potter
     
     var name: String {
         switch self {
@@ -38,6 +40,10 @@ enum DoorTileTypes: Codable, Equatable {
                 return "Hospital"
             case .carpenter:
                 return "Carpenter"
+            case .restaurant:
+                return "Restaurant"
+            case .potter:
+                return "Potter"
         }
     }
 }

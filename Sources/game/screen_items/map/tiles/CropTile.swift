@@ -13,6 +13,10 @@ struct CropTile: Codable, Equatable {
                 return "c"
             case .potato:
                 return "p"
+            case .wheat:
+                return "w"
+            case .lettuce:
+                return "l"
         }
     }
 }
