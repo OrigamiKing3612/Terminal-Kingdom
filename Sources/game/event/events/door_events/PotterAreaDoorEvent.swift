@@ -9,6 +9,6 @@ struct PotterAreaDoorEvent {
     }
     static func goInside(tile: DoorTile) {
         //TODO: Map changed to be a "map" of the building
-        MessageBox.message("You go inside the door.", speaker: .game)
+        MessageBox.message("Its locked.", speaker: .game)
     }
 }

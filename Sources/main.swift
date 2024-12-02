@@ -82,8 +82,11 @@ func mainGameLoop() {
                 MapBox.movePlayer(.right)
             case .space, .enter, .i:
                 MapBox.interactWithTile()
-            case .l where MapBox.mapType == .mine:
-                MapBox.mapType = .map
+            case .l where MapBox.mapType == .mining:
+                MapBox.mapType = .mine
+                MapBox.buildingMap.player.x = 2
+                MapBox.buildingMap.player.y = 2
+                MapBox.mapBox()
             default:
                 MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
         }

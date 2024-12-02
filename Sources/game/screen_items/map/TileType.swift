@@ -23,13 +23,21 @@ enum TileType: Equatable, Codable {
     case TOBEGENERATED
     case playerStart
     
+    //MARK: Building Stuff
+    case anvil
+    case furnace
+    case startMining
+    
     //MARK: Crops
     case fence
     case gate
     case crop(crop: CropTile)
     
+    //MARK: NPC
+    case npc(tile: NPCTile)
+    
     var render: String {
-        let name = switch self {
+        return switch self {
             case .plain: " "
             case .water: "W".styled(with: .brightBlue)
             case .path: "P"
@@ -47,8 +55,11 @@ enum TileType: Equatable, Codable {
             case .fence: "f".styled(with: .brown)
             case .gate: "g"
             case .crop(crop: let cropTile): CropTile.renderCrop(tile: cropTile)
+            case .anvil: "a"
+            case .furnace: "F"
+            case .startMining: "M"
+            case .npc(tile: let tile): NPCTile.renderNPC(tile: tile)
         }
-        return name
     }
     
 //    func specialAction(direction: Direction) -> () -> Void {

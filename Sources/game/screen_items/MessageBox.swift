@@ -63,11 +63,17 @@ struct MessageBox {
     }
     
     static func message(_ text: String, speaker: MessageSpeakers) {
+        message(text, speaker: speaker.render)
+    }
+    static func message(_ text: String, speaker: NPCTileType) {
+        message(text, speaker: speaker.render)
+    }
+    private static func message(_ text: String, speaker: String) {
         clear()
-        if speaker == .game {
+        if speaker == MessageSpeakers.game.render {
             messages.append(text)
         } else {
-            messages.append("\(speaker.render.styled(with: .bold)): \(text)")
+            messages.append("\(speaker.styled(with: .bold)): \(text)")
         }
         messageBox()
     }
@@ -76,11 +82,23 @@ struct MessageBox {
         messages.removeLast()
     }
     static func updateLastMessage(newMessage: String, speaker: MessageSpeakers) {
+        updateLastMessage(newMessage: newMessage, speaker: speaker.render)
+    }
+    static func updateLastMessage(newMessage: String, speaker: NPCTileType) {
+        updateLastMessage(newMessage: newMessage, speaker: speaker.render)
+    }
+    private static func updateLastMessage(newMessage: String, speaker: String) {
         messages.removeLast()
         message(newMessage, speaker: speaker)
         messageBox()
     }
     static func messageWithTyping(_ text: String, speaker: MessageSpeakers) -> String {
+        messageWithTyping(text, speaker: speaker.render)
+    }
+    static func messageWithTyping(_ text: String, speaker: NPCTileType) -> String {
+        messageWithTyping(text, speaker: speaker.render)
+    }
+    private static func messageWithTyping(_ text: String, speaker: String) -> String {
         MapBox.showMapBox = false
         let typingIcon =  ">".styled(with: .bold)
         message(text, speaker: speaker)
@@ -117,6 +135,12 @@ struct MessageBox {
         return input.trimmingCharacters(in: .whitespacesAndNewlines)
     }
     static func messageWithOptions(_ text: String, speaker: MessageSpeakers, options: [MessageOption]) -> MessageOption {
+        messageWithOptions(text, speaker: speaker.render, options: options)
+    }
+    static func messageWithOptions(_ text: String, speaker: NPCTileType, options: [MessageOption]) -> MessageOption {
+        messageWithOptions(text, speaker: speaker.render, options: options)
+    }
+    private static func messageWithOptions(_ text: String, speaker: String, options: [MessageOption]) -> MessageOption {
         guard !options.isEmpty else {
             return MessageOption(label: "Why did you this?", action: {})
         }
@@ -190,42 +214,4 @@ struct MessageBox {
 struct MessageOption {
     let label: String
     let action: () -> Void
-}
-
-enum MessageSpeakers {
-    case player //TODO: do I need this
-    case game
-    case king
-    case blacksmith
-    case miner
-    case salesman
-    case builder
-    case hunter
-    case inventor
-    case stable_master
-    case farmer
-    case doctor
-    case carpenter
-    case chef
-    case potter
-    
-    var render: String {
-        switch self {
-            case .player: return Game.player.name
-            case .game: return "This shouldn't be seen"
-            case .king: return "King"
-            case .blacksmith: return "Blacksmith"
-            case .miner: return "Miner"
-            case .salesman: return "Salesman"
-            case .builder: return "Builder"
-            case .hunter: return "Hunter"
-            case .inventor: return "Inventor"
-            case .stable_master: return "Stable Master"
-            case .farmer: return "Farmer"
-            case .doctor: return "Doctor"
-            case .carpenter: return "Carpenter"
-            case .chef: return "Chef"
-            case .potter: return "Potter"
-        }
-    }
 }

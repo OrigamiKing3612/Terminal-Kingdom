@@ -11,22 +11,10 @@ struct FarmDoorEvent {
         selectedOption.action()
     }
     static func goInside(tile: DoorTile) {
-        //TODO: Map changed to be a "map" of the building
-        MessageBox.message("You go inside the door. You walk up to the farmer. You say hello.", speaker: .game)
-        
-        let options: [MessageOption] = [
-            .init(label: "Yes", action: { goInside(tile: tile) }),
-            .init(label: "No", action: { })
-        ]
-        let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to be a farmer?", speaker: .farmer, options: options)
-        if selectedOption.label == "Yes" {
-            stage1()
-        } else {
-            return
+        if Game.startingVillageChecks.firstTimes.hasTalkedToFarmer {
+            //TODO: make the npc have ! (red bold)
         }
-    }
-    static func stage1() {
-        
+        MapBox.mapType = .farm
     }
     static func upgrade(tile: DoorTile) {
         //TODO: upgrade building

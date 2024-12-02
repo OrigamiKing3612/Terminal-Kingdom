@@ -1,29 +1,32 @@
 struct OpenDoorEvent {
     static func openDoor(doorTile: DoorTile) {
-        switch doorTile.type {
-            case .castle: CastleDoorEvent.open(tile: doorTile)
-            case .blacksmith: BlacksmithDoorEvent.open(tile: doorTile)
-            case .mine: MineDoorEvent.open(tile: doorTile)
-            case .shop: ShopDoorEvent.open(tile: doorTile)
-            case .builder: BuilderDoorEvent.open(tile: doorTile)
-            case .hunting_area: HuntingAreaDoorEvent.open(tile: doorTile)
-            case .inventor: InventorDoorEvent.open(tile: doorTile)
-            case .house: HouseDoorEvent.open(tile: doorTile)
-            case .stable: StableDoorEvent.open(tile: doorTile)
-            case .farm: FarmDoorEvent.open(tile: doorTile)
-            case .hospital: HospitalDoorEvent.open(tile: doorTile)
-            case .carpenter: CarpenterDoorEvent.open(tile: doorTile)
-            case .restaurant: RestaurantDoorEvent.open(tile: doorTile)
-            case .potter: PotterAreaDoorEvent.open(tile: doorTile)
+        if MapBox.mapType != .map && MapBox.mapType != .mining {
+            MapBox.mapType = .map
+        } else {
+            switch doorTile.type {
+                case .castle: CastleDoorEvent.open(tile: doorTile)
+                case .blacksmith: BlacksmithDoorEvent.open(tile: doorTile)
+                case .mine: MineDoorEvent.open(tile: doorTile)
+                case .shop: ShopDoorEvent.open(tile: doorTile)
+                case .builder: BuilderDoorEvent.open(tile: doorTile)
+                case .hunting_area: HuntingAreaDoorEvent.open(tile: doorTile)
+                case .inventor: InventorDoorEvent.open(tile: doorTile)
+                case .house: HouseDoorEvent.open(tile: doorTile)
+                case .stable: StableDoorEvent.open(tile: doorTile)
+                case .farm: FarmDoorEvent.open(tile: doorTile)
+                case .hospital: HospitalDoorEvent.open(tile: doorTile)
+                case .carpenter: CarpenterDoorEvent.open(tile: doorTile)
+                case .restaurant: RestaurantDoorEvent.open(tile: doorTile)
+                case .potter: PotterAreaDoorEvent.open(tile: doorTile)
+            }
         }
     }
     static func teachToChopLumber(by choppingLumberTeachingDoorTypes: ChoppingLumberTeachingDoorTypes) {
-        let speaker: MessageSpeakers = switch choppingLumberTeachingDoorTypes {
+        let speaker: NPCTileType = switch choppingLumberTeachingDoorTypes {
             case .builder: .builder
             case .carpenter: .carpenter
             case .miner: .miner
         }
-        //TODO: switch statement
         switch Game.startingVillageChecks.hasBeenTaughtToChopLumber {
             case .no:
                 MessageBox.message("Here is what you need to do, take this axe and walk up to a tree and press the '\("i".styled(with: .bold))' key, the \("spacebar".styled(with: .bold)), or the \("enter".styled(with: .bold)) key to chop it down. Please go get 10 lumber and bring it to me to show me you can do it.", speaker: speaker)

@@ -13,10 +13,9 @@ struct MineTile: Equatable, Codable {
         event != nil
     }
     
-    static func isSeen(tile: MineTile, tileX: Int, tileY: Int) -> Bool {
+    static func isSeen(tile: MineTile, tileX: Int, tileY: Int, grid: [[MineTile]]) -> Bool {
         guard tile.type != .plain else { return true }
         
-        let grid = MapBox.mineMap.grid
         let width = grid[0].count
         let height = grid.count
         

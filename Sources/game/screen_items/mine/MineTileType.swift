@@ -7,14 +7,15 @@ enum MineTileType: Equatable, Codable {
     case coal
     case iron
     
-    func render(tile: MineTile, tileX: Int, tileY: Int) -> String {
+    func render(grid: [[MineTile]], tileX: Int, tileY: Int) -> String {
+        let tile = grid[tileY][tileX]
         let name = switch self {
             case .plain: " "
             case .player: "*".styled(with: [.blue, .bold])
             case .playerStart: " "
-            case .stone: !MineTile.isSeen(tile: tile, tileX: tileX, tileY: tileY) ? "." : "S"
-            case .coal: !MineTile.isSeen(tile: tile, tileX: tileX, tileY: tileY) ? "." : "C".styled(with: .dim)
-            case .iron: !MineTile.isSeen(tile: tile, tileX: tileX, tileY: tileY) ? "." : "I".styled(with: .bold)
+            case .stone: !MineTile.isSeen(tile: tile, tileX: tileX, tileY: tileY, grid: grid) ? "." : "S"
+            case .coal: !MineTile.isSeen(tile: tile, tileX: tileX, tileY: tileY, grid: grid) ? "." : "C".styled(with: .dim)
+            case .iron: !MineTile.isSeen(tile: tile, tileX: tileX, tileY: tileY, grid: grid) ? "." : "I".styled(with: .bold)
         }
         return name
     }

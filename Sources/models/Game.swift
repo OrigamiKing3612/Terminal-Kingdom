@@ -4,7 +4,7 @@ struct Game: Codable {
     nonisolated(unsafe) private(set) static var isTypingInMessageBox: Bool = false
     nonisolated(unsafe) static var player = PlayerCharacter()
     nonisolated(unsafe) private(set) static var map = StaticMaps.MainMap
-    nonisolated(unsafe) static var startingVillageChecks: StartingVillageChecks = StartingVillageChecks()
+    nonisolated(unsafe) static var startingVillageChecks: StartingVillageChecks = .init()
     nonisolated(unsafe) static var stages: Stages = Stages()
     nonisolated(unsafe) static var messages: [String] = []
     
@@ -43,7 +43,7 @@ struct CodableGame: Codable {
     var stages: Stages
     var messages: [String]
 }
-
+//TODO: remove
 enum Location: Codable {
     case startVillage
 }

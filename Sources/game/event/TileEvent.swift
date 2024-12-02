@@ -1,6 +1,8 @@
 enum TileEvent: Codable {
     case openDoor(tile: DoorTile)
     case chopTree
+    case startMining
+    case talkToNPC(tile: NPCTile)
     //    case collectItem(item: String)
     //    case combat(enemy: String)
     
@@ -16,6 +18,14 @@ enum TileEvent: Codable {
                 } else {
                     MessageBox.message("Ouch!", speaker: .game)
                 }
+            case .startMining:
+                if Game.player.hasPickaxe() {
+                    StartMiningEvent.startMining()
+                } else {
+                    MessageBox.message("You need a pickaxe to start mining", speaker: .miner)
+                }
+            case .talkToNPC(tile: let tile):
+                tile.talk()
         }
     }
 }
