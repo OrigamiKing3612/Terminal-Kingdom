@@ -1,5 +1,5 @@
 struct StartingVillageChecks: Codable {
-    var hasBeenTaughtToChopLumber: StartingVillageChecksStages = .yes
+    var hasBeenTaughtToChopLumber: StartingVillageChecksStages = .no
     var hasUsedMessageWithOptions: Bool = false
     var firstTimes: FirstTimes = .init()
 }
