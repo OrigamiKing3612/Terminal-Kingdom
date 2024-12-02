@@ -2,7 +2,6 @@ struct BlacksmithNPC {
     static func talk() {
         if Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith == false {
             Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith = true
-            //TODO: remove ! (if needed)
         }
         if Game.stages.blacksmith.stageNumber == 0 {
             let options: [MessageOption] = [

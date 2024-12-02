@@ -12,9 +12,6 @@ struct CarpenterDoorEvent {
         selectedOption.action()
     }
     static func goInside(tile: DoorTile) {
-        if Game.startingVillageChecks.firstTimes.hasTalkedToCarpenter {
-            //TODO: make the npc have ! (red bold)
-        }
         MapBox.mapType = .carpenter
     }
     

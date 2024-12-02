@@ -11,9 +11,6 @@ struct MineDoorEvent {
         selectedOption.action()
     }
     static func goInside(tile: DoorTile) {
-        if Game.startingVillageChecks.firstTimes.hasTalkedToMiner {
-            //TODO: make the npc have ! (red bold)
-        }
         MapBox.mapType = .mine
     }
     

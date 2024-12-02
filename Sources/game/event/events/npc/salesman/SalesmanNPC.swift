@@ -2,7 +2,6 @@ struct SalesmanNPC {
     static func talk() {
         if Game.startingVillageChecks.firstTimes.hasTalkedToSalesman == false {
             Game.startingVillageChecks.firstTimes.hasTalkedToSalesman = true
-            //TODO: remove ! (if needed)
         }
         let tile = MapBox.tilePlayerIsOn
         if case .shopStandingArea(type: let type) = tile.type {

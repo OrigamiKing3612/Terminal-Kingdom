@@ -11,9 +11,6 @@ struct BuilderDoorEvent {
         selectedOption.action()
     }
     static func goInside(tile: DoorTile) {
-        if Game.startingVillageChecks.firstTimes.hasTalkedToBuilder {
-            //TODO: make the npc have ! (red bold)
-        }
         MapBox.mapType = .builder
     }
     

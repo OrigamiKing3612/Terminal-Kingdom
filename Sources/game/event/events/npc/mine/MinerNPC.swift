@@ -2,7 +2,6 @@ struct MinerNPC {
     static func talk() {
         if Game.startingVillageChecks.firstTimes.hasTalkedToMiner == false {
             Game.startingVillageChecks.firstTimes.hasTalkedToMiner = true
-            //TODO: remove ! (if needed)
         }
         if Game.stages.blacksmith.stage1Stages == .goToMine {
             MessageBox.message("Ah, here you are. This is the iron the \("Blacksmith".styled(with: .bold)) needs.", speaker: .miner)

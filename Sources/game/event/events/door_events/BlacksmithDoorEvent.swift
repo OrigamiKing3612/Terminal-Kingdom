@@ -11,9 +11,6 @@ struct BlacksmithDoorEvent {
         selectedOption.action()
     }
     static func goInside(tile: DoorTile) {
-        if Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith {
-          //TODO: make the npc have ! (red bold)
-        }
         MapBox.mapType = .blacksmith
     }
     

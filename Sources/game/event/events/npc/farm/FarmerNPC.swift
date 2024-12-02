@@ -2,7 +2,6 @@ struct FarmerNPC {
     static func talk() {
         if Game.startingVillageChecks.firstTimes.hasTalkedToFarmer == false {
             Game.startingVillageChecks.firstTimes.hasTalkedToFarmer = true
-            //TODO: remove ! (if needed)
         }
         let options: [MessageOption] = [
             .init(label: "Yes", action: {}),

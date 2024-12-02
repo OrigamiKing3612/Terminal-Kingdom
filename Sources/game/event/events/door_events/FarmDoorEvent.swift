@@ -11,9 +11,6 @@ struct FarmDoorEvent {
         selectedOption.action()
     }
     static func goInside(tile: DoorTile) {
-        if Game.startingVillageChecks.firstTimes.hasTalkedToFarmer {
-            //TODO: make the npc have ! (red bold)
-        }
         MapBox.mapType = .farm
     }
     static func upgrade(tile: DoorTile) {

@@ -2,7 +2,6 @@ struct CarpenterNPC {
     static func talk() {
         if Game.startingVillageChecks.firstTimes.hasTalkedToCarpenter == false {
             Game.startingVillageChecks.firstTimes.hasTalkedToCarpenter = true
-            //TODO: remove ! (if needed)
         }
         if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
             let options: [MessageOption] = [
