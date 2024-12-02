@@ -36,7 +36,14 @@ struct MapBox {
     }
     
     static var tilePlayerIsOn: Tile {
-        gameMap.grid[player.y][player.x]
+        switch mapType {
+            case .map:
+                gameMap.grid[player.y][player.x]
+            case .mining:
+                gameMap.grid[player.y][player.x]
+            default:
+                buildingMap.grid[buildingMap.player.y][buildingMap.player.x]
+        }
     }
     
     static let q1StartX = (Screen.columns / 2)

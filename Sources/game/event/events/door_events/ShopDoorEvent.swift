@@ -11,8 +11,10 @@ struct ShopDoorEvent {
         selectedOption.action()
     }
     static func goInside(tile: DoorTile) {
-        //TODO: Map changed to be a "map" of the building
-        MessageBox.message("You go inside the door.", speaker: .game)
+        if Game.startingVillageChecks.firstTimes.hasTalkedToSalesman {
+            //TODO: make the npc have ! (red bold)
+        }
+        MapBox.mapType = .shop
     }
     static func upgrade(tile: DoorTile) {
         //TODO: upgrade building

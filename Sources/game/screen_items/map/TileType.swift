@@ -35,6 +35,7 @@ enum TileType: Equatable, Codable {
     
     //MARK: NPC
     case npc(tile: NPCTile)
+    case shopStandingArea(type: ShopStandingAreaType)
     
     var render: String {
         return switch self {
@@ -59,6 +60,7 @@ enum TileType: Equatable, Codable {
             case .furnace: "F"
             case .startMining: "M"
             case .npc(tile: let tile): NPCTile.renderNPC(tile: tile)
+            case .shopStandingArea(type: _): "."
         }
     }
     
@@ -70,4 +72,8 @@ enum TileType: Equatable, Codable {
 //                return {}
 //        }
 //    }
+}
+
+enum ShopStandingAreaType: Codable{
+    case buy, sell, help
 }

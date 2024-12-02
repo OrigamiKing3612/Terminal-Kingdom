@@ -26,7 +26,7 @@ struct NPCTile: Codable, Equatable {
             case .king:
                 break
             case .salesman:
-                break
+                SalesmanNPC.talk()
             case .builder:
                 BuilderNPC.talk()
             case .builder_helper:
