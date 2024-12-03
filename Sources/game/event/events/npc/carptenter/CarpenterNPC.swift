@@ -24,7 +24,7 @@ struct CarpenterNPC {
             if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
                 MessageBox.message("Before I can teach you carpentry, you need to learn how to chop lumber.", speaker: .carpenter)
             }
-            OpenDoorEvent.teachToChopLumber(by: .carpenter)
+            RandomEventStuff.teachToChopLumber(by: .carpenter)
             if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .yes {
                 stage1()
             }

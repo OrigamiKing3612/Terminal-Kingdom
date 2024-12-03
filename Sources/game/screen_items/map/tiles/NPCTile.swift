@@ -13,7 +13,11 @@ struct NPCTile: Codable, Equatable {
                 return "!".styled(with: [.bold, .red])
             case .carpenter where !Game.startingVillageChecks.firstTimes.hasTalkedToCarpenter:
                 return "!".styled(with: [.bold, .red])
-            case .salesman where !Game.startingVillageChecks.firstTimes.hasTalkedToSalesman:
+            case .salesman(type: let type) where !Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy && Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp && type == .buy:
+                return "!".styled(with: [.bold, .green])
+            case .salesman(type: let type) where !Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell && Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp && type == .sell:
+                return "!".styled(with: [.bold, .blue])
+            case .salesman(type: let type) where !Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp && type == .help:
                 return "!".styled(with: [.bold, .red])
             case .king where !Game.startingVillageChecks.firstTimes.hasTalkedToKing:
                 return "!".styled(with: [.bold, .red])

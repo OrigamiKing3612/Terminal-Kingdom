@@ -37,11 +37,11 @@ struct MinerNPC {
             if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
                 MessageBox.message("Before I can teach you how to mine, you need to learn how to chop lumber.", speaker: .miner)
             }
-            OpenDoorEvent.teachToChopLumber(by: .miner)
+            RandomEventStuff.teachToChopLumber(by: .miner)
             if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .yes {
-//                TODO: if wantsToContinue() {
+                if RandomEventStuff.wantsToContinue(speaker: .miner) {
                     stage1()
-//                }
+                }
             }
         } else {
             MessageBox.message("Looks like you already know how to chop lumber. Lets start.", speaker: .miner)

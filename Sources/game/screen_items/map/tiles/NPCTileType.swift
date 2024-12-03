@@ -8,7 +8,7 @@ enum NPCTileType: Codable, Equatable {
     
     
     case king
-    case salesman
+    case salesman(type: SalesmanType)
     case builder
     case builder_helper
     case hunter
@@ -24,7 +24,7 @@ enum NPCTileType: Codable, Equatable {
             case .king: return "King"
             case .blacksmith: return "Blacksmith"
             case .miner: return "Miner"
-            case .salesman: return "Salesman"
+            case .salesman(type: _): return "Salesman"
             case .builder: return "Builder"
             case .hunter: return "Hunter"
             case .inventor: return "Inventor"
@@ -52,4 +52,8 @@ enum MessageSpeakers {
             case .game: return "This shouldn't be seen"
         }
     }
+}
+
+enum SalesmanType: Codable {
+    case buy, sell, help
 }

@@ -8,7 +8,9 @@ struct FirstTimes: Codable {
     var hasTalkedToKing: Bool = false
     var hasTalkedToBlacksmith: Bool = false
     var hasTalkedToMiner: Bool = false
-    var hasTalkedToSalesman: Bool = false
+    var hasTalkedToSalesmanBuy: Bool = false
+    var hasTalkedToSalesmanSell: Bool = false
+    var hasTalkedToSalesmanHelp: Bool = false
     var hasTalkedToBuilder: Bool = false
     var hasTalkedToHunter: Bool = false
     var hasTalkedToInventor: Bool = false
