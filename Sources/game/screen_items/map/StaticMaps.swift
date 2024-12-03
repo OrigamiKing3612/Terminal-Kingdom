@@ -2,36 +2,22 @@ import Foundation
 
 struct StaticMaps {
     static var MainMap: [[Tile]] {
-        if let fileURL = Bundle.module.url(forResource: "main", withExtension: "json") {
-            do {
-                let data = try Data(contentsOf: fileURL)
-                
-                let jsonData = try JSONDecoder().decode([[Tile]].self, from: data)
-                
-                return jsonData
-            } catch {
-                print("Error loading or decoding JSON: \(error)")
-                exit(1)
-            }
-        } else {
-            print("Could not find the main map json file.")
-            exit(1)
-        }
+        loadMap(fileName: "main")
     }
     static func buildingMap(for name: MapFileName) -> [[Tile]] {
-        if let fileURL = Bundle.module.url(forResource: name.rawValue, withExtension: "json") {
+        loadMap(fileName: name.rawValue)
+    }
+    private static func loadMap(fileName: String) -> [[Tile]] {
+        if let fileURL = Bundle.module.url(forResource: fileName, withExtension: "json") {
             do {
                 let data = try Data(contentsOf: fileURL)
-                
-                let jsonData = try JSONDecoder().decode([[Tile]].self, from: data)
-                
-                return jsonData
+                return try JSONDecoder().decode([[Tile]].self, from: data)
             } catch {
                 print("Error loading or decoding JSON: \(error)")
                 exit(1)
             }
         } else {
-            print("Could not find the \(name.rawValue) map json file.")
+            print("Could not find the \(fileName) map json file.")
             exit(1)
         }
     }
