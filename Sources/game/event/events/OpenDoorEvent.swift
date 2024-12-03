@@ -21,6 +21,7 @@ struct OpenDoorEvent {
             }
         }
     }
+    //TODO: move to own file
     static func teachToChopLumber(by choppingLumberTeachingDoorTypes: ChoppingLumberTeachingDoorTypes) {
         let speaker: NPCTileType = switch choppingLumberTeachingDoorTypes {
             case .builder: .builder

@@ -2,34 +2,36 @@ import Foundation
 
 struct StaticMaps {
     static var MainMap: [[Tile]] {
-        let fileManager = FileManager.default
-        let currentDirectoryURL = fileManager.currentDirectoryPath
-        
-        let filePath = "\(currentDirectoryURL)/maps/main/main.json"
-        
-        do {
-            let fileContents = try String(contentsOfFile: filePath, encoding: .utf8)
-            
-            let data = Data(fileContents.utf8)
-            return try JSONDecoder().decode([[Tile]].self, from: data)
-        } catch {
-            print("Could not find map file at \(filePath).")
+        if let fileURL = Bundle.module.url(forResource: "main", withExtension: "json") {
+            do {
+                let data = try Data(contentsOf: fileURL)
+                
+                let jsonData = try JSONDecoder().decode([[Tile]].self, from: data)
+                
+                return jsonData
+            } catch {
+                print("Error loading or decoding JSON: \(error)")
+                exit(1)
+            }
+        } else {
+            print("Could not find the main map json file.")
             exit(1)
         }
     }
     static func buildingMap(for name: MapFileName) -> [[Tile]] {
-        let fileManager = FileManager.default
-        let currentDirectoryURL = fileManager.currentDirectoryPath
-        
-        let filePath = "\(currentDirectoryURL)/maps/\(name)/\(name).json"
-        
-        do {
-            let fileContents = try String(contentsOfFile: filePath, encoding: .utf8)
-            
-            let data = Data(fileContents.utf8)
-            return try JSONDecoder().decode([[Tile]].self, from: data)
-        } catch {
-            print("Could not find map file at \(filePath).")
+        if let fileURL = Bundle.module.url(forResource: name.rawValue, withExtension: "json") {
+            do {
+                let data = try Data(contentsOf: fileURL)
+                
+                let jsonData = try JSONDecoder().decode([[Tile]].self, from: data)
+                
+                return jsonData
+            } catch {
+                print("Error loading or decoding JSON: \(error)")
+                exit(1)
+            }
+        } else {
+            print("Could not find the \(name.rawValue) map json file.")
             exit(1)
         }
     }

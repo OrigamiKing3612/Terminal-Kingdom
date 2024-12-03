@@ -22,6 +22,8 @@ if Game.hasInited == false {
     mainGameLoop()
 }
 
+//TODO: make this work on linux and macos
+
 func endProgram() {
 //    let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
 //    if let filePath {
