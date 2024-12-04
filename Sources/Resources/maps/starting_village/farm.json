@@ -1,1 +1,313 @@
-[[{"type":{"building":{}},"isWalkable":false},{"isWalkable":false,"type":{"building":{}}},{"type":{"building":{}},"isWalkable":false},{"isWalkable":false,"type":{"building":{}}},{"isWalkable":false,"type":{"building":{}}},{"type":{"building":{}},"isWalkable":false},{"isWalkable":false,"type":{"building":{}}}],[{"type":{"building":{}},"isWalkable":false},{"isWalkable":true,"type":{"plain":{}}},{"isWalkable":true,"type":{"plain":{}}},{"type":{"plain":{}},"isWalkable":true},{"isWalkable":true,"type":{"plain":{}}},{"type":{"plain":{}},"isWalkable":true},{"type":{"building":{}},"isWalkable":false}],[{"isWalkable":false,"type":{"building":{}}},{"type":{"plain":{}},"isWalkable":true},{"type":{"plain":{}},"isWalkable":true},{"type":{"plain":{}},"isWalkable":true},{"isWalkable":true,"type":{"playerStart":{}}},{"isWalkable":true,"type":{"plain":{}}},{"isWalkable":true,"type":{"door":{"tile":{"level":1,"isPartOfPlayerVillage":false,"type":{"farm":{}}}}},"event":{"openDoor":{"tile":{"isPartOfPlayerVillage":false,"type":{"farm":{}},"level":1}}}}],[{"isWalkable":false,"type":{"building":{}}},{"type":{"plain":{}},"isWalkable":true},{"type":{"plain":{}},"isWalkable":true},{"isWalkable":true,"type":{"plain":{}}},{"type":{"plain":{}},"isWalkable":true},{"isWalkable":true,"type":{"plain":{}}},{"type":{"building":{}},"isWalkable":false}],[{"isWalkable":false,"type":{"building":{}}},{"isWalkable":false,"type":{"building":{}}},{"type":{"building":{}},"isWalkable":false},{"isWalkable":false,"type":{"building":{}}},{"type":{"building":{}},"isWalkable":false},{"type":{"building":{}},"isWalkable":false},{"isWalkable":false,"type":{"building":{}}}]]
+[
+  [
+    {
+      "type" : {
+        "building" : {
+
+        }
+      },
+      "isWalkable" : false
+    },
+    {
+      "type" : {
+        "building" : {
+
+        }
+      },
+      "isWalkable" : false
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+
+        }
+      }
+    },
+    {
+      "type" : {
+        "building" : {
+
+        }
+      },
+      "isWalkable" : false
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+
+        }
+      }
+    },
+    {
+      "type" : {
+        "building" : {
+
+        }
+      },
+      "isWalkable" : false
+    },
+    {
+      "type" : {
+        "building" : {
+
+        }
+      },
+      "isWalkable" : false
+    }
+  ],
+  [
+    {
+      "type" : {
+        "building" : {
+
+        }
+      },
+      "isWalkable" : false
+    },
+    {
+      "isWalkable" : true,
+      "type" : {
+        "plain" : {
+
+        }
+      }
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "isWalkable" : true,
+      "type" : {
+        "plain" : {
+
+        }
+      }
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+
+        }
+      }
+    }
+  ],
+  [
+    {
+      "type" : {
+        "building" : {
+
+        }
+      },
+      "isWalkable" : false
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "isWalkable" : true,
+      "type" : {
+        "plain" : {
+
+        }
+      }
+    },
+    {
+      "type" : {
+        "playerStart" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "type" : {
+        "door" : {
+          "tile" : {
+            "type" : {
+              "farm" : {
+
+              }
+            },
+            "isPartOfPlayerVillage" : false,
+            "level" : 1
+          }
+        }
+      },
+      "event" : {
+        "openDoor" : {
+          "tile" : {
+            "isPartOfPlayerVillage" : false,
+            "type" : {
+              "farm" : {
+
+              }
+            },
+            "level" : 1
+          }
+        }
+      },
+      "isWalkable" : true
+    }
+  ],
+  [
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+
+        }
+      }
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "isWalkable" : true,
+      "type" : {
+        "plain" : {
+
+        }
+      }
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+
+        }
+      }
+    }
+  ],
+  [
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+
+        }
+      }
+    },
+    {
+      "type" : {
+        "building" : {
+
+        }
+      },
+      "isWalkable" : false
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+
+        }
+      }
+    },
+    {
+      "type" : {
+        "building" : {
+
+        }
+      },
+      "isWalkable" : false
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+
+        }
+      }
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+
+        }
+      }
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+
+        }
+      }
+    }
+  ]
+]

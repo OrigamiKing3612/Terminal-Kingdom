@@ -11,12 +11,29 @@ struct BuildingMap {
         
         self.width = grid[0].count + 1
         self.height = grid.count + 1
-        
-        if let (startX, startY) = Tile.findTilePosition(of: .playerStart, in: grid) {
-            player.x = startX
-            player.y = startY
+
+        if case .castle(side: let side) = mapType {
+            switch side {
+                case .top:
+                    player.x = 64
+                    player.y = 1
+                case .bottom:
+                    player.x = 65
+                    player.y = 53
+                case .right:
+                    player.x = 129
+                    player.y = 27
+                case .left:
+                    player.x = 1
+                    player.y = 27
+            }
         } else {
-            print("Error: Could not find playerStart tile in the building grid.")
+            if let (startX, startY) = Tile.findTilePosition(of: .playerStart, in: grid) {
+                player.x = startX
+                player.y = startY
+            } else {
+                print("Error: Could not find playerStart tile in the building grid.")
+            }
         }
     }
     

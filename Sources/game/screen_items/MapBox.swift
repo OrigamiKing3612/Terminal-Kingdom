@@ -144,9 +144,9 @@ struct MapBox {
     }
 }
 
-enum MapType {
+enum MapType: Equatable {
     case map, mining
-    case castle
+    case castle(side: CastleSide)
     case blacksmith
     case mine
     case shop

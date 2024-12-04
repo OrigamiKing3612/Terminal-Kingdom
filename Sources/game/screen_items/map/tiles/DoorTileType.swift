@@ -1,5 +1,5 @@
-enum DoorTileTypes: Codable, Equatable {
-    case castle
+enum DoorTileTypes: Codable, Equatable, Hashable {
+    case castle(side: CastleSide)
     case blacksmith
     case mine
     case shop
@@ -46,4 +46,8 @@ enum DoorTileTypes: Codable, Equatable {
                 return "Potter"
         }
     }
+}
+
+enum CastleSide: Codable, Equatable, Hashable {
+    case top, bottom, right, left
 }

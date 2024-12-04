@@ -11,8 +11,9 @@ struct CastleDoorEvent {
         selectedOption.action()
     }
     static func goInside(tile: DoorTile) {
-        //TODO: Map changed to be a "map" of the building
-        MessageBox.message("You go inside the door.", speaker: .game)
+        if case .castle(side: let side) = tile.type {
+            MapBox.mapType = .castle(side: side)
+        }
     }
     static func upgrade(tile: DoorTile) {
         //TODO: upgrade building

@@ -89,6 +89,19 @@ func mainGameLoop() {
                 MapBox.buildingMap.player.x = 2
                 MapBox.buildingMap.player.y = 2
                 MapBox.mapBox()
+            case .p:
+                switch MapBox.mapType {
+                    case .mine:
+                        let x = MapBox.player.x
+                        let y = MapBox.player.y
+                        MessageBox.message("x: \(x); y: \(y)", speaker: .player)
+                    case .mining:
+                        break
+                    default:
+                        let x = MapBox.buildingMap.player.x
+                        let y = MapBox.buildingMap.player.y
+                        MessageBox.message("x: \(x); y: \(y)", speaker: .player)
+                }
             default:
                 MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
         }
