@@ -12,11 +12,27 @@ enum KeyboardKeys: String {
     case space = " "
     case backspace
     case enter
+    case one = "1"
+    case two = "2"
+    case three = "3"
+    case four = "4"
+    case five = "5"
+    case six = "6"
+    case seven = "7"
+    case eight = "8"
+    case nine = "9"
+    case zero = "0"
     
     var isLetter: Bool {
         switch self {
             case .a,.b,.c,.d,.e,.f,.g,.h,.i,.j,.k,.l,.m,.n,.o,.p,.q,.r,.s,.t,.u,.v,.w,.x,.y,.z: return true
             case .A,.B,.C,.D,.E,.F,.G,.H,.I,.J,.K,.L,.M,.N,.O,.P,.Q,.R,.S,.T,.U,.V,.W,.X,.Y,.Z: return true
+            default: return false
+        }
+    }
+    var isNumber: Bool {
+        switch self {
+            case .one,.two,.three,.four,.five,.six,.seven,.eight,.nine,.zero: return true
             default: return false
         }
     }
@@ -64,6 +80,20 @@ struct TerminalInput {
             return .space
         } else if buffer[0] == 8 || buffer[0] == 127 {
             return .backspace
+        } else if buffer[0] >= 48 && buffer[0] <= 57 { // Numeric characters
+            switch buffer[0] {
+                case 48: return .zero
+                case 49: return .one
+                case 50: return .two
+                case 51: return .three
+                case 52: return .four
+                case 53: return .five
+                case 54: return .six
+                case 55: return .seven
+                case 56: return .eight
+                case 57: return .nine
+                default: return .unknown
+            }
         } else if buffer[0] >= 32 && buffer[0] <= 126 { // Printable characters
             let char = Character(UnicodeScalar(buffer[0]))
             

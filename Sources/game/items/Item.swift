@@ -1,4 +1,4 @@
-enum Item: Codable, Equatable {
+enum Item: Codable, Equatable, Hashable {
     //MARK: Weapons
     case sword, axe, pickaxe(durability: Int = 50), boomerang  // bow? net? dagger?
     
@@ -40,6 +40,25 @@ enum Item: Codable, Equatable {
             case .fence: return "Fence"
             case .gate: return "Gate"
             case .coin: return "Coin"
+        }
+    }
+    var price: Int? {
+        switch self {
+            case .sword: return 10
+            case .axe: return 10
+            case .pickaxe(_): return 10
+            case .boomerang: return 10
+            case .backpack(_): return 10
+            case .lumber: return 1
+            case .iron: return 5
+            case .coal: return 2
+            case .gold: return nil
+            case .stone: return 5
+            case .tree_seed: return 1
+            case .door(_): return nil
+            case .fence: return nil
+            case .gate: return nil
+            case .coin: return nil
         }
     }
 }

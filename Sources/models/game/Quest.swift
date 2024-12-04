@@ -1,5 +1,5 @@
 enum Quest: Codable, Equatable {
-    case chopLumber(count: Int, for: String? = nil)
+    case chopLumber(count: Int = 10, for: String? = nil)
     
     //MARK: Blacksmith
     case blacksmith1

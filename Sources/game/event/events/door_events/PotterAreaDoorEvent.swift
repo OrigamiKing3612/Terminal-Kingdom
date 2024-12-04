@@ -1,6 +1,6 @@
 struct PotterAreaDoorEvent {
     static func open(tile: DoorTile) {
-        var options: [MessageOption] = [
+        let options: [MessageOption] = [
             .init(label: "Go Inside", action: { goInside(tile: tile) }),
             .init(label: "Quit", action: {})
         ]

@@ -21,23 +21,6 @@ struct SalesmanNPC {
             }
         }
     }
-    private static func buyItem(item: Item, count: Int, price: Int) {
-        if Game.player.has(item: .coin, count: price) {
-            Game.player.collect(item: item, count: count)
-            Game.player.remove(item: .coin, count: price)
-        }
-    }
-    private static func addOptionsForSkill(options: inout [MessageOption], skillLevel: AllSkillLevels) {
-        switch (skillLevel, skillLevel.stat) {
-            case (.miningSkillLevel, .one):
-                options.append(.init(label: "Pickaxe (50); price 10 coins", action: { buyItem(item: .pickaxe(durability: 50), count: 1, price: 10) }))
-                options.append(.init(label: "Stone; price 2 coins", action: { buyItem(item: .stone, count: 1, price: 2) }))
-                //TODO: press on item, and see a buy 1, buy 2...
-                //TODO: Add more stuff here
-            default:
-                break
-        }
-    }
     private static func buy() {
         var leaveShop = false
         var options: [MessageOption] = [
@@ -51,18 +34,98 @@ struct SalesmanNPC {
             return
         }
         while !leaveShop {
-            let selectedOption = MessageBox.messageWithOptions("Would you like to buy?", speaker: .salesman(type: .buy), options: options)
-            selectedOption.action()
+            let selectedOption = MessageBox.messageWithOptions("Would you like to buy?", speaker: .salesman(type: .buy), options: options, hideInventoryBox: false)
+            if selectedOption.label != "Leave" {
+                let amount = MessageBox.messageWithTypingNumbers("How many?", speaker: .salesman(type: .buy))
+                for _ in 1...amount {
+                    selectedOption.action()
+                }
+            } else {
+                leaveShop = true
+            }
         }
     }
     private static func sell() {
-        //TODO: sell from shop
-        MessageBox.message("Sell", speaker: .salesman(type: .sell))
+        var leaveShop = false
+        var options: [MessageOption] = [
+            .init(label: "Leave", action: {leaveShop = true})
+        ]
+        for item in Array(Set(Game.player.items)) {
+            sellOption(options: &options, item: item)
+        }
+        while !leaveShop {
+            let selectedOption = MessageBox.messageWithOptions("Would you like to sell?", speaker: .salesman(type: .sell), options: options, hideInventoryBox: false)
+            if selectedOption.label != "Leave" {
+                let amount = MessageBox.messageWithTypingNumbers("How many?", speaker: .salesman(type: .sell))
+                for _ in 1...amount {
+                    selectedOption.action()
+                }
+                InventoryBox.printInventory()
+            } else {
+                leaveShop = true
+            }
+        }
     }
     private static func help() {
         MessageBox.message("Welcome to the shop \(Game.player.name)!", speaker: .salesman(type: .help))
         MessageBox.message("If you want to buy, talk to the guy with the \("!".styled(with: [.green, .blue])). Or if you want to sell talk to the guy with the \("!".styled(with: [.bold, .blue])).", speaker: .salesman(type: .help))
         Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy = false
         Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell = false
+    }
+}
+
+extension SalesmanNPC {
+    private static func buyItem(item: Item, count: Int, price: Int) {
+        if Game.player.has(item: .coin, count: price) {
+            Game.player.collect(item: item, count: count)
+            Game.player.remove(item: .coin, count: price * count)
+        } else {
+            MessageBox.message("You don't have enough coins!", speaker: .salesman(type: .buy))
+        }
+    }
+    private static func sellItem(item: Item, count: Int, price: Int) {
+        if Game.player.has(item: item, count: count) {
+            Game.player.remove(item: item, count: count)
+            Game.player.collect(item: .coin, count: price * count)
+        } else {
+            MessageBox.message("You don't have that much!", speaker: .salesman(type: .sell))
+        }
+    }
+    private static func addOptionsForSkill(options: inout [MessageOption], skillLevel: AllSkillLevels) {
+        if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .yes {
+            buyOption(options: &options, item: .lumber)
+        }
+        switch (skillLevel, skillLevel.stat) {
+            case (.miningSkillLevel, .one):
+                buyOption(options: &options, item: .pickaxe(durability: 50))
+                buyOption(options: &options, item: .stone)
+                //TODO: press on item, and see a buy 1, buy 2...
+                //TODO: Add more stuff here
+            default:
+                break
+        }
+    }
+    private static func buyOption(options: inout [MessageOption], item: Item) {
+        if let price = item.price {
+            let newItem = MessageOption(label: "\(item.inventoryName); price: \(price) coin\(price > 1 ? "s" : "")", action: { buyItem(item: item, count: 1, price: price) })
+            if !options.contains(where: { $0 != newItem}) {
+                options.append(newItem)
+            }
+        }
+    }
+    private static func sellOption(options: inout [MessageOption], item: Item) {
+        //TODO: prevent infinite money
+//        guard Game.player.quests.contains(.chopLumber()) && item == .axe else {
+//            return
+//        }
+//        guard Game.player.quests.contains(.mine1) && item == .pickaxe() else {
+//            return
+//        }
+        if let price = item.price {
+            let newItem = MessageOption(label: "\(item.inventoryName); price: \(price) coins", action: { sellItem(item: item, count: 1, price: price) })
+            if options.contains(where: { $0 != newItem}){
+                options.append(newItem)
+            }
+        }
     }
 }

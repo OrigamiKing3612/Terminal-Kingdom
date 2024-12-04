@@ -110,7 +110,7 @@ struct MessageBox {
                 if (input.count > 20) {
                     input.removeLast()
                 }
-                updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: speaker)
+                updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: .game)
             }
         }
         while true {
@@ -122,7 +122,7 @@ struct MessageBox {
             } else if key == .backspace {
                 if !input.isEmpty {
                     input.removeLast()
-                    updateLastMessage(newMessage: "   \(typingIcon)" + input + " ", speaker: speaker)
+                    updateLastMessage(newMessage: "   \(typingIcon)" + input + " ", speaker: .game)
                 }
             } else if key == .enter {
                 if !input.isEmpty {
@@ -134,18 +134,59 @@ struct MessageBox {
         MapBox.showMapBox = true
         return input.trimmingCharacters(in: .whitespacesAndNewlines)
     }
-    static func messageWithOptions(_ text: String, speaker: MessageSpeakers, options: [MessageOption]) -> MessageOption {
-        messageWithOptions(text, speaker: speaker.render, options: options)
+    static func messageWithTypingNumbers(_ text: String, speaker: MessageSpeakers) -> Int {
+        messageWithTypingNumbers(text, speaker: speaker.render)
     }
-    static func messageWithOptions(_ text: String, speaker: NPCTileType, options: [MessageOption]) -> MessageOption {
-        messageWithOptions(text, speaker: speaker.render, options: options)
+    static func messageWithTypingNumbers(_ text: String, speaker: NPCTileType) -> Int {
+        messageWithTypingNumbers(text, speaker: speaker.render)
     }
-    private static func messageWithOptions(_ text: String, speaker: String, options: [MessageOption]) -> MessageOption {
+    private static func messageWithTypingNumbers(_ text: String, speaker: String) -> Int {
+        MapBox.showMapBox = false
+        let typingIcon =  ">".styled(with: .bold)
+        message(text, speaker: speaker)
+        message("   \(typingIcon)", speaker: .game)
+        Game.setIsTypingInMessageBox(true)
+        var input = "" {
+            didSet {
+                //Max char
+                if (input.count > 20) {
+                    input.removeLast()
+                }
+                
+                updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: .game)
+            }
+        }
+        while true {
+            let key = TerminalInput.readKey()
+            if key.isNumber {
+                input += key.rawValue
+            } else if key == .backspace {
+                if !input.isEmpty {
+                    input.removeLast()
+                    updateLastMessage(newMessage: "   \(typingIcon)" + input + " ", speaker: .game)
+                }
+            } else if key == .enter {
+                if !input.isEmpty {
+                    break
+                }
+            }
+        }
+        Game.setIsTypingInMessageBox(false)
+        MapBox.showMapBox = true
+        return Int(input.trimmingCharacters(in: .whitespacesAndNewlines)) ?? 0
+    }
+    static func messageWithOptions(_ text: String, speaker: MessageSpeakers, options: [MessageOption], hideInventoryBox: Bool = true) -> MessageOption {
+        messageWithOptions(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox)
+    }
+    static func messageWithOptions(_ text: String, speaker: NPCTileType, options: [MessageOption], hideInventoryBox: Bool = true) -> MessageOption {
+        messageWithOptions(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox)
+    }
+    private static func messageWithOptions(_ text: String, speaker: String, options: [MessageOption], hideInventoryBox: Bool) -> MessageOption {
         guard !options.isEmpty else {
             return MessageOption(label: "Why did you this?", action: {})
         }
         
-        hideAllBoxes
+        hideAllBoxes(inventoryBox: hideInventoryBox)
         Game.setIsTypingInMessageBox(true)
 
         defer {
@@ -204,14 +245,24 @@ struct MessageBox {
         StatusBox.showStatusBox = true
     }
     
-    static var hideAllBoxes: Void {
-        MapBox.showMapBox = false
-        InventoryBox.showInventoryBox = false
-        StatusBox.showStatusBox = false
+    static func hideAllBoxes(mapBox: Bool = true, inventoryBox: Bool = true, statusBox: Bool = true) {
+        if mapBox {
+            MapBox.showMapBox = false
+        }
+        if inventoryBox {
+            InventoryBox.showInventoryBox = false
+        }
+        if statusBox {
+            StatusBox.showStatusBox = false
+        }
     }
 }
 
-struct MessageOption {
+struct MessageOption: Equatable {
     let label: String
     let action: () -> Void
+    
+    static func == (lhs: MessageOption, rhs: MessageOption) -> Bool {
+        lhs.label == rhs.label
+    }
 }

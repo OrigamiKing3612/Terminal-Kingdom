@@ -2,6 +2,8 @@ struct PlayerCharacter: Codable {
     private(set) var name: String = ""
     private(set) var items: [Item] = []
     private(set) var position: Player = Player(x: 5, y: 5)
+    private(set) var quests: [Quest] = []
+
     var stats: Stats = Stats()
     
     mutating func setName(_ name: String) {
@@ -81,5 +83,28 @@ struct PlayerCharacter: Codable {
     mutating func updatePlayerPositionToSave(x: Int, y: Int) {
         self.position.x = x
         self.position.y = y
+    }
+    mutating func quest(_ quest: Quest) {
+        if !quests.contains(quest) {
+            quests.append(quest)
+        }
+    }
+    
+    mutating func removeQuest(quest: Quest) {
+        quests.removeAll(where: { $0 == quest })
+    }
+    
+    mutating func removeQuest(index: Int) {
+        quests.remove(at: index)
+    }
+    
+    @discardableResult
+    mutating func removeLastQuest() -> Quest {
+        quests.removeLast()
+    }
+    
+    mutating func updateLastQuest(newQuest: Quest) {
+        quests.removeLast()
+        quests.append(newQuest)
     }
 }

@@ -21,7 +21,7 @@ enum NPCTileType: Codable, Equatable {
     
     var render: String {
         switch self {
-            case .king: return "King"
+            case .king: return "King Randolph"
             case .blacksmith: return "Blacksmith"
             case .miner: return "Miner"
             case .salesman(type: _): return "Salesman"

@@ -1,6 +1,7 @@
 struct StatusBox {
-    nonisolated(unsafe) private static var quests: [Quest] = []
-    
+    static var quests: [Quest] {
+        Game.player.quests
+    }
     static let q4StartX = (Screen.columns / 2)
     static let q4EndX = Screen.columns - 1
     static var q4Width: Int {
@@ -132,32 +133,29 @@ struct StatusBox {
     
     static func quest(_ quest: Quest) {
         clear()
-        if !quests.contains(quest) {
-            quests.append(quest)
-        }
+        Game.player.quest(quest)
         statusBox()
     }
     
     static func removeQuest(quest: Quest) {
         clear()
-        quests.removeAll(where: { $0 == quest })
+        Game.player.removeQuest(quest: quest)
         statusBox()
     }
     
     static func removeQuest(index: Int) {
         clear()
-        quests.remove(at: index)
+        Game.player.removeQuest(index: index)
         statusBox()
     }
     
     @discardableResult
     static func removeLastQuest() -> Quest {
-        quests.removeLast()
+        Game.player.removeLastQuest()
     }
     
     static func updateLastQuest(newQuest: Quest) {
-        quests.removeLast()
-        quests.append(newQuest)
+        Game.player.updateLastQuest(newQuest: newQuest)
         statusBox()
     }
 }

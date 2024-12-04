@@ -1,4 +1,4 @@
-struct DoorTile: Codable, Equatable {
+struct DoorTile: Codable, Equatable, Hashable {
     let type: DoorTileTypes
     let isPartOfPlayerVillage: Bool
     private(set) var level: Int
