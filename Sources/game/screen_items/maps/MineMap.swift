@@ -60,6 +60,11 @@ struct MineMap {
         return grid[y][x].isWalkable
     }
     
+    func isInBounds(x: Int, y: Int) -> Bool {
+        guard x >= 0, y >= 0, y < grid.count, x < grid[y].count else { return false }
+        return true
+    }
+    
     func render(playerX: Int, playerY: Int, viewportWidth: Int, viewportHeight: Int) {
         // Calculate viewport bounds relative to the player's position
         let halfViewportWidth = viewportWidth / 2
@@ -99,22 +104,22 @@ struct MineMap {
             case .right where isWalkable(x: player.x + 1, y: player.y):
                 player.x += 1
                 // mine
-            case .up where !isWalkable(x: player.x, y: player.y - 1) && Game.player.hasPickaxe():
+            case .up where !grid[player.y - 1][player.x].isWalkable && Game.player.hasPickaxe() && isInBounds(x: player.x, y: player.y):
                 MineMap.givePlayerTile(tile: grid[player.y - 1][player.x])
                 grid[player.y - 1][player.x] = .init(type: .plain, isWalkable: true)
                 Game.player.removeDurability(of: .pickaxe())
                 player.y -= 1
-            case .down where !isWalkable(x: player.x, y: player.y + 1) && Game.player.hasPickaxe():
+            case .down where !grid[player.y + 1][player.x].isWalkable && Game.player.hasPickaxe() && isInBounds(x: player.x, y: player.y):
                 MineMap.givePlayerTile(tile: grid[player.y + 1][player.x])
                 grid[player.y + 1][player.x] = .init(type: .plain, isWalkable: true)
                 Game.player.removeDurability(of: .pickaxe())
                 player.y += 1
-            case .left where !isWalkable(x: player.x - 1, y: player.y) && Game.player.hasPickaxe():
+            case .left where !grid[player.y][player.x - 1].isWalkable && Game.player.hasPickaxe() && isInBounds(x: player.x, y: player.y):
                 MineMap.givePlayerTile(tile: grid[player.y][player.x - 1])
                 grid[player.y][player.x - 1] = .init(type: .plain, isWalkable: true)
                 Game.player.removeDurability(of: .pickaxe())
                 player.x -= 1
-            case .right where !isWalkable(x: player.x + 1, y: player.y) && Game.player.hasPickaxe():
+            case .right where !grid[player.y][player.x + 1].isWalkable && Game.player.hasPickaxe() && isInBounds(x: player.x, y: player.y):
                 MineMap.givePlayerTile(tile: grid[player.y][player.x + 1])
                 grid[player.y][player.x + 1] = .init(type: .plain, isWalkable: true)
                 Game.player.removeDurability(of: .pickaxe())

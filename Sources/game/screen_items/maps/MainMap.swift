@@ -1,52 +1,22 @@
-struct BuildingMap {
+struct MainMap {
     var grid: [[Tile]]
     var width: Int
     var height: Int
     
+    var player: Player {
+        get { Game.player.position }
+        set { Game.player.updatePlayerPositionToSave(x: newValue.x, y: newValue.y) }
+    }
     private var hasUpdatedDims = false
-    var player: Player = Player(x: 1, y: 1)
     
-    init(_ mapType: MapType) {
-        self.grid = StaticMaps.buildingMap(for: StaticMaps.mapTypeToBuilding(mapType: mapType))
-        
+    init() {
+        self.grid = Game.map
         self.width = grid[0].count + 1
         self.height = grid.count + 1
-
-        // Coordinates for the castle
-        if case .castle(side: let side) = mapType {
-            switch side {
-                case .top:
-                    player.x = 64
-                    player.y = 1
-                case .bottom:
-                    player.x = 65
-                    player.y = 53
-                case .right:
-                    player.x = 129
-                    player.y = 27
-                case .left:
-                    player.x = 1
-                    player.y = 27
-            }
-        } else {
-            if let (startX, startY) = Tile.findTilePosition(of: .playerStart, in: grid) {
-                player.x = startX
-                player.y = startY
-            } else {
-                print("Error: Could not find playerStart tile in the building grid.")
-            }
-        }
     }
     
-    mutating func map() {
-        if !hasUpdatedDims {
-            self.updateDimensions(width: MapBox.q1Width, height: MapBox.q1Height)
-            hasUpdatedDims = true
-        }
-        
-        let viewportWidth = MapBox.q1Width + 1
-        let viewportHeight = MapBox.q1Height
-        self.render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
+    var tilePlayerIsOn: Tile {
+        return grid[player.y][player.x]
     }
     
     mutating func updateDimensions(width: Int, height: Int) {
@@ -101,6 +71,22 @@ struct BuildingMap {
         if oldX != player.x || oldY != player.y {
             map()
         }
+    }
+    mutating func map() {
+        if !hasUpdatedDims {
+            self.updateDimensions(width: MapBox.q1Width, height: MapBox.q1Height)
+            if let (startX, startY) = Tile.findTilePosition(of: .playerStart, in: grid) {
+                player.x = startX
+                player.y = startY
+            } else {
+                print("Error: Could not find playerStart tile in the grid.")
+            }
+            hasUpdatedDims = true
+        }
+        
+        let viewportWidth = MapBox.q1Width + 1
+        let viewportHeight = MapBox.q1Height
+        self.render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
     }
     func interactWithTile() {
         let tile = grid[player.y][player.x]

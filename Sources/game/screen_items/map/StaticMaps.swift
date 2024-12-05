@@ -37,7 +37,7 @@ struct StaticMaps {
             case .carpenter: return .carpenter
             case .restaurant: return .restaurant
             case .potter: return .potter
-            case .map:
+            case .mainMap:
                 print("Map should not be passed into buildingMap.")
                 return .blacksmith
             case .mining:

@@ -1,7 +1,7 @@
 struct OpenDoorEvent {
     static func openDoor(doorTile: DoorTile) {
-        if MapBox.mapType != .map && MapBox.mapType != .mining {
-            MapBox.mapType = .map
+        if MapBox.mapType != .mainMap && MapBox.mapType != .mining {
+            MapBox.mapType = .mainMap
         } else {
             switch doorTile.type {
                 case .castle: CastleDoorEvent.open(tile: doorTile)
