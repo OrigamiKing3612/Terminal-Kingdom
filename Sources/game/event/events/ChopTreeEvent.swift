@@ -6,7 +6,7 @@ struct ChopTreeEvent {
         let x = MapBox.player.x
         let y = MapBox.player.y
         if MapBox.mainMap.grid[y][x].type == .tree {
-            MapBox.mainMap.grid[y][x] = Tile(type: .plain)
+            MapBox.mainMap.grid[y][x] = MapTile(type: .plain)
             
             let lumberCount = Int.random(in: 1...3)
             Game.player.collect(item: .lumber, count: lumberCount)

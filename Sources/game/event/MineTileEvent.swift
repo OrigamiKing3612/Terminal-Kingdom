@@ -1,4 +1,4 @@
-enum MineTileEvent: Codable {
+enum MineTileEvent: TileEvent {
     case placeholder
     
     static func trigger(event: MineTileEvent) {

@@ -1,17 +1,17 @@
 import Foundation
 
 struct StaticMaps {
-    static var MainMap: [[Tile]] {
+    static var MainMap: [[MapTile]] {
         loadMap(fileName: "main")
     }
-    static func buildingMap(for name: MapFileName) -> [[Tile]] {
+    static func buildingMap(for name: MapFileName) -> [[MapTile]] {
         loadMap(fileName: name.rawValue)
     }
-    private static func loadMap(fileName: String) -> [[Tile]] {
+    private static func loadMap(fileName: String) -> [[MapTile]] {
         if let fileURL = Bundle.module.url(forResource: fileName, withExtension: "json") {
             do {
                 let data = try Data(contentsOf: fileURL)
-                return try JSONDecoder().decode([[Tile]].self, from: data)
+                return try JSONDecoder().decode([[MapTile]].self, from: data)
             } catch {
                 print("Error loading or decoding JSON: \(error)")
                 exit(1)

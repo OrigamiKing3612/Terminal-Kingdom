@@ -1,10 +1,14 @@
-struct BuildingMap {
-    var grid: [[Tile]]
+struct BuildingMap: MapBoxMap {
+    var grid: [[MapTile]]
     var width: Int
     var height: Int
     
     private var hasUpdatedDims = false
     var player: Player = Player(x: 1, y: 1)
+    
+    var tilePlayerIsOn: MapTile {
+        grid[player.y][player.x]
+    }
     
     init(_ mapType: MapType) {
         self.grid = StaticMaps.buildingMap(for: StaticMaps.mapTypeToBuilding(mapType: mapType))
@@ -29,7 +33,7 @@ struct BuildingMap {
                     player.y = 27
             }
         } else {
-            if let (startX, startY) = Tile.findTilePosition(of: .playerStart, in: grid) {
+            if let (startX, startY) = MapTile.findTilePosition(of: .playerStart, in: grid) {
                 player.x = startX
                 player.y = startY
             } else {
@@ -73,9 +77,9 @@ struct BuildingMap {
             var rowString = ""
             for mapX in startX..<endX {
                 if mapX == playerX && mapY == playerY {
-                    rowString += TileType.player.render
+                    rowString += MapTileType.player.render()
                 } else {
-                    rowString += grid[mapY][mapX].type.render
+                    rowString += grid[mapY][mapX].type.render()
                 }
             }
             Screen.print(x: MapBox.q1StartX + 1, y: MapBox.q1StartY + 1 + screenY, rowString)
@@ -106,7 +110,7 @@ struct BuildingMap {
         let tile = grid[player.y][player.x]
         if tile.isInteractable {
             if let event = tile.event {
-                TileEvent.trigger(event: event)
+                MapTileEvent.trigger(event: event)
             }
         } else {
             MessageBox.message("There is nothing to do here.", speaker: .game)

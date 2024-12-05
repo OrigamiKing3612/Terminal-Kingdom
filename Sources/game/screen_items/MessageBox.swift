@@ -3,14 +3,6 @@ struct MessageBox {
         get { Game.messages }
         set { Game.messages = newValue }
     }
-    
-    static let q2StartX = 0
-    static let q2EndX = Screen.columns / 2
-    static let q2Width = q2EndX - q2StartX
-    
-    static let q2StartY = 1
-    static let q2EndY = Screen.rows / 2
-    static let q2Height = q2EndY - q2StartY
 
     static func messageBox() {
         Screen.print(x: q2StartX, y: q2StartY, String(repeating: "=", count: q2Width))

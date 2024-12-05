@@ -1,18 +1,6 @@
 import Foundation
 
 struct InventoryBox {
-    static let q3StartX = 0
-    static let q3EndX = (Screen.columns / 2)
-    static var q3Width: Int {
-        abs((Screen.columns / 2) - 3)
-    }
-    
-    static let q3StartY = (Screen.rows / 2) + 1
-    static let q3EndY = Screen.rows - 1
-    static var q3Height: Int {
-        abs((Screen.rows / 2) - 2)
-    }
-    
     nonisolated(unsafe) static var showInventoryBox = true {
         didSet {
             if showInventoryBox {

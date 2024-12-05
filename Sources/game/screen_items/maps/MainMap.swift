@@ -1,5 +1,5 @@
-struct MainMap {
-    var grid: [[Tile]]
+struct MainMap: MapBoxMap {
+    var grid: [[MapTile]]
     var width: Int
     var height: Int
     
@@ -15,7 +15,7 @@ struct MainMap {
         self.height = grid.count + 1
     }
     
-    var tilePlayerIsOn: Tile {
+    var tilePlayerIsOn: MapTile {
         return grid[player.y][player.x]
     }
     
@@ -43,9 +43,9 @@ struct MainMap {
             var rowString = ""
             for mapX in startX..<endX {
                 if mapX == playerX && mapY == playerY {
-                    rowString += TileType.player.render
+                    rowString += MapTileType.player.render()
                 } else {
-                    rowString += grid[mapY][mapX].type.render
+                    rowString += grid[mapY][mapX].type.render()
                 }
             }
             Screen.print(x: MapBox.q1StartX + 1, y: MapBox.q1StartY + 1 + screenY, rowString)
@@ -75,7 +75,7 @@ struct MainMap {
     mutating func map() {
         if !hasUpdatedDims {
             self.updateDimensions(width: MapBox.q1Width, height: MapBox.q1Height)
-            if let (startX, startY) = Tile.findTilePosition(of: .playerStart, in: grid) {
+            if let (startX, startY) = MapTile.findTilePosition(of: .playerStart, in: grid) {
                 player.x = startX
                 player.y = startY
             } else {
@@ -92,7 +92,7 @@ struct MainMap {
         let tile = grid[player.y][player.x]
         if tile.isInteractable {
             if let event = tile.event {
-                TileEvent.trigger(event: event)
+                MapTileEvent.trigger(event: event)
             }
         } else {
             MessageBox.message("There is nothing to do here.", speaker: .game)

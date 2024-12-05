@@ -1,4 +1,4 @@
-enum TileType: Equatable, Codable {
+enum MapTileType: TileType {
     //MARK: Plains Biome
     case plain
     case water
@@ -37,7 +37,7 @@ enum TileType: Equatable, Codable {
     case npc(tile: NPCTile)
     case shopStandingArea(type: ShopStandingAreaType)
     
-    var render: String {
+    func render() -> String {
         return switch self {
             case .plain: " "
             case .water: "W".styled(with: .brightBlue)

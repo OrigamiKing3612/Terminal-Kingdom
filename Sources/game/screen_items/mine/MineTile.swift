@@ -1,4 +1,4 @@
-struct MineTile: Equatable, Codable {
+struct MineTile: Tile {
     let type: MineTileType
     var isWalkable: Bool
     var event: MineTileEvent?

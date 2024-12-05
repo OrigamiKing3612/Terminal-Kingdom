@@ -31,7 +31,7 @@ struct CodableGame: Codable {
     var hasInited: Bool
     var isTypingInMessageBox: Bool
     var player: PlayerCharacter
-    var map: [[Tile]]
+    var map: [[MapTile]]
     var startingVillageChecks: StartingVillageChecks
     var stages: Stages
     var messages: [String]

@@ -2,8 +2,8 @@ struct MapGen {
     static let mapWidth = 5000
     static let mapHeight = 5000
 
-    static func generateFullMap() -> [[Tile]] {
-        var map: [[Tile]] = Array(repeating: Array(repeating: Tile(type: .TOBEGENERATED), count: mapWidth), count: mapHeight)
+    static func generateFullMap() -> [[MapTile]] {
+        var map: [[MapTile]] = Array(repeating: Array(repeating: MapTile(type: .TOBEGENERATED), count: mapWidth), count: mapHeight)
 
         // Step 1: Place static region in the center
         let staticRegion = StaticMaps.MainMap // Load your static map
@@ -18,7 +18,7 @@ struct MapGen {
         // Step 2: Fill the remaining tiles procedurally
         for y in 0..<mapHeight {
             for x in 0..<mapWidth {
-                if map[y][x] == Tile(type: .TOBEGENERATED) { // Only fill empty tiles
+                if map[y][x] == MapTile(type: .TOBEGENERATED) { // Only fill empty tiles
                     if x < mapWidth / 2 && y < mapHeight / 2 {
                         // forest
                     } else if x > mapWidth / 2 && y < mapHeight / 2 {
@@ -29,7 +29,7 @@ struct MapGen {
                         // desert
                     }
                     
-                    map[y][x] = Tile(type: .sand) // Function to generate tile type
+                    map[y][x] = MapTile(type: .sand) // Function to generate tile type
                 }
             }
         }

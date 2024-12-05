@@ -1,10 +1,14 @@
-struct MineMap {
+struct MineMap: MapBoxMap {
     var grid: [[MineTile]]
     var width: Int
     var height: Int
     
     private var hasUpdatedDims = false
     var player: Player = Player(x: 1, y: 1)
+    
+    var tilePlayerIsOn: MineTile {
+        grid[player.y][player.x]
+    }
     
     init() {
         self.grid = Array(repeating: [], count: 2 * MapBox.q1Height).map { _ in

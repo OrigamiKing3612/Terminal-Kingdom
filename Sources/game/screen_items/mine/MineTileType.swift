@@ -1,4 +1,4 @@
-enum MineTileType: Equatable, Codable {
+enum MineTileType: TileType {    
     //MARK: Plains Biome
     case plain
     case player

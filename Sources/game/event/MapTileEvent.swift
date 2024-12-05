@@ -1,4 +1,4 @@
-enum TileEvent: Codable {
+enum MapTileEvent: TileEvent {
     case openDoor(tile: DoorTile)
     case chopTree
     case startMining
@@ -6,7 +6,7 @@ enum TileEvent: Codable {
     //    case collectItem(item: String)
     //    case combat(enemy: String)
     
-    static func trigger(event: TileEvent) {
+    static func trigger(event: MapTileEvent) {
         switch event {
             case .openDoor(tile: let doorTile):
                 if MapBox.tilePlayerIsOn.type == .door(tile: doorTile) {

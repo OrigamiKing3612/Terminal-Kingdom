@@ -2,17 +2,6 @@ struct StatusBox {
     static var quests: [Quest] {
         Game.player.quests
     }
-    static let q4StartX = (Screen.columns / 2)
-    static let q4EndX = Screen.columns - 1
-    static var q4Width: Int {
-        abs((Screen.columns / 2) - 3)
-    }
-    
-    static let q4StartY = (Screen.rows / 2)
-    static let q4EndY = Screen.rows - 1
-    static var q4Height: Int {
-        abs((Screen.rows / 2) - 2)
-    }
     
     nonisolated(unsafe) static var showStatusBox = true {
         didSet {

@@ -9,16 +9,8 @@ enum Placement {
 }
 
 struct Screen {
-    nonisolated(unsafe) private(set) static var columns: Int = 0 {
-        didSet {
-//            initialize()
-        }
-    }
-    nonisolated(unsafe) private(set) static var rows: Int = 0 {
-        didSet {
-//            initialize()
-        }
-    }
+    nonisolated(unsafe) private(set) static var columns: Int = 0
+    nonisolated(unsafe) private(set) static var rows: Int = 0
 
     static func initialize() {
         if let terminalSize = getTerminalSize() {
@@ -68,32 +60,74 @@ struct Screen {
     }
 
     static func print(x: Placement, y: Placement, _ text: String) {
-            var placementX = 0
-            switch x {
-                case .middle:
-                    placementX = (columns / 2) - (text.count / 2)
-                case .int(let x):
-                    placementX = max(1, min(x, columns))
-                case .end:
-                    placementX = columns - text.count
-                case .start:
-                    placementX = 0
+            var placementX = switch x {
+                case .middle: (columns / 2) - (text.count / 2)
+                case .int(let x): max(1, min(x, columns))
+                case .end: columns - text.count
+                case .start: 0
             }
 
-            var placementY = 0
-            switch y {
-                case .middle:
-                    placementY = rows / 2
-                case .int(let y):
-                    placementY = max(1, min(y, rows))
-                case .end:
-                    placementY = rows
-                case .start:
-                    placementY = 0
+            var placementY = switch y {
+                case .middle: rows / 2
+                case .int(let y): max(1, min(y, rows))
+                case .end: rows
+                case .start: 0
             }
 
             // Move the cursor and print text
             Cursor.move(to: placementX, placementY)
             Swift.print(text)
+    }
+}
+
+extension MapBox {
+    static let q1StartX = (Screen.columns / 2)
+    static let q1EndX = Screen.columns
+    static var q1Width: Int {
+        abs((Screen.columns / 2) - 3)
+    }
+    
+    static let q1StartY = 1
+    static let q1EndY = Screen.rows / 2
+    static var q1Height: Int {
+        abs((Screen.rows / 2) - 2)
+    }
+}
+
+extension MessageBox {
+    static let q2StartX = 0
+    static let q2EndX = Screen.columns / 2
+    static let q2Width = q2EndX - q2StartX
+    
+    static let q2StartY = 1
+    static let q2EndY = Screen.rows / 2
+    static let q2Height = q2EndY - q2StartY
+}
+
+extension InventoryBox {
+    static let q3StartX = 0
+    static let q3EndX = (Screen.columns / 2)
+    static var q3Width: Int {
+        abs((Screen.columns / 2) - 3)
+    }
+    
+    static let q3StartY = (Screen.rows / 2) + 1
+    static let q3EndY = Screen.rows - 1
+    static var q3Height: Int {
+        abs((Screen.rows / 2) - 2)
+    }
+}
+
+extension StatusBox {
+    static let q4StartX = (Screen.columns / 2)
+    static let q4EndX = Screen.columns - 1
+    static var q4Width: Int {
+        abs((Screen.columns / 2) - 3)
+    }
+    
+    static let q4StartY = (Screen.rows / 2)
+    static let q4EndY = Screen.rows - 1
+    static var q4Height: Int {
+        abs((Screen.rows / 2) - 2)
     }
 }

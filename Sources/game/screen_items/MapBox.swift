@@ -26,36 +26,10 @@ struct MapBox {
         }
     }
     static var player: Player {
-        switch mapType {
-            case .mainMap:
-                mainMap.player
-            case .mining:
-                mainMap.player
-            default:
-                buildingMap.player
-        }
+        return mapType.map.player
     }
-    static var tilePlayerIsOn: Tile {
-        switch mapType {
-            case .mainMap:
-                mainMap.tilePlayerIsOn
-            case .mining:
-                mainMap.tilePlayerIsOn
-            default:
-                buildingMap.grid[buildingMap.player.y][buildingMap.player.x]
-        }
-    }
-    
-    static let q1StartX = (Screen.columns / 2)
-    static let q1EndX = Screen.columns
-    static var q1Width: Int {
-        abs((Screen.columns / 2) - 3)
-    }
-    
-    static let q1StartY = 1
-    static let q1EndY = Screen.rows / 2
-    static var q1Height: Int {
-        abs((Screen.rows / 2) - 2)
+    static var tilePlayerIsOn: MapTile {
+        return mapType.map.tilePlayerIsOn as! MapTile
     }
     
     static func mapBox() {
@@ -95,19 +69,13 @@ struct MapBox {
         }
     }
     static func interactWithTile() {
-        switch mapType {
-            case .mainMap:
-                mainMap.interactWithTile()
-            case .mining:
-                miningMap.interactWithTile()
-            default:
-                buildingMap.interactWithTile()
-        }
+        return mapType.map.interactWithTile()
     }
 }
 
 enum MapType: Equatable {
-    case mainMap, mining
+    case mainMap
+    case mining
     case castle(side: CastleSide)
     case blacksmith
     case mine
@@ -122,6 +90,17 @@ enum MapType: Equatable {
     case carpenter
     case restaurant
     case potter
+    
+    var map: any MapBoxMap {
+        switch self {
+            case .mainMap:
+                MapBox.mainMap
+            case .mining:
+                MapBox.miningMap
+            default:
+                MapBox.buildingMap
+        }
+    }
 }
 
 enum Direction {
@@ -133,3 +112,19 @@ struct Player: Codable {
     var y: Int
 }
 
+protocol MapBoxMap {
+    associatedtype pTile: Tile
+    var grid: [[pTile]] { get set }
+    var width: Int { get set }
+    var height: Int { get set }
+    
+    var player: Player { get }
+    var tilePlayerIsOn: pTile { get }
+    func isWalkable(x: Int, y: Int) -> Bool
+    func render(playerX: Int, playerY: Int, viewportWidth: Int, viewportHeight: Int)
+    func interactWithTile()
+    
+    mutating func updateDimensions(width: Int, height: Int)
+    mutating func movePlayer(_ direction: Direction)
+    mutating func map()
+}
