@@ -78,6 +78,8 @@ struct NPCTile: Codable, Equatable {
                 break
             case .potter:
                 break
+            case .farmer_helper:
+                FarmerHelperNPC.talk()
         }
     }
 }

@@ -11,7 +11,9 @@ struct FarmDoorEvent {
         selectedOption.action()
     }
     static func goInside(tile: DoorTile) {
-        MapBox.mapType = .farm
+        if case .farm(type: let type) = tile.type {
+            MapBox.mapType = .farm(type: type)
+        }
     }
     static func upgrade(tile: DoorTile) {
         //TODO: upgrade building

@@ -31,7 +31,9 @@ enum MapTileType: TileType {
     //MARK: Crops
     case fence
     case gate
+    //TODO: rename crop -> tile
     case crop(crop: CropTile)
+    case pot(tile: PotTile)
     
     //MARK: NPC
     case npc(tile: NPCTile)
@@ -56,11 +58,44 @@ enum MapTileType: TileType {
             case .fence: "f".styled(with: .brown)
             case .gate: "g"
             case .crop(crop: let cropTile): CropTile.renderCrop(tile: cropTile)
+            case .pot(tile: let potTile): PotTile.renderCropInPot(tile: potTile)
             case .anvil: "a"
             case .furnace: "F"
             case .startMining: "M"
             case .npc(tile: let tile): NPCTile.renderNPC(tile: tile)
             case .shopStandingArea(type: _): "."
+        }
+    }
+    
+    var name: String {
+        switch self {
+            case .plain: return "plain"
+            case .water: return "water"
+            case .tree: return "tree"
+            case .sand: return "sand"
+            case .cactus: return "cactus"
+            case .snow: return "snow"
+            case .snow_tree: return "snow_tree"
+            case .ice: return "ice"
+            case .path: return "path"
+            case .building: return "building"
+            case .player: return "player"
+            case .door(let tile): return tile.type.name
+            case .TOBEGENERATED: return "TOBEGENERATED"
+            case .playerStart: return "playerStart"
+            case .anvil: return "anvil"
+            case .furnace: return "furnace"
+            case .startMining: return "startMining"
+            case .fence: return "fence"
+            case .gate: return "gate"
+            case .crop(let crop):
+                return crop.type.rawValue
+            case .pot(let tile):
+                return tile.cropTile?.type.rawValue ?? "nil"
+            case .npc(let tile):
+                return tile.type.render
+            case .shopStandingArea(let type):
+                return type.rawValue
         }
     }
     
@@ -74,6 +109,6 @@ enum MapTileType: TileType {
 //    }
 }
 
-enum ShopStandingAreaType: Codable{
+enum ShopStandingAreaType: String, Codable{
     case buy, sell, help
 }

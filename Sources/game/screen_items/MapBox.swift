@@ -71,6 +71,19 @@ struct MapBox {
     static func interactWithTile() {
         return mapType.map.interactWithTile()
     }
+    static func findTile(type: MapTileType, in grid: [[MapTile]]) -> (x: Int, y: Int)? {
+        for (y, row) in grid.enumerated() {
+            if let x = row.firstIndex(where: { tile in
+                if case .door(let doorTile) = tile.type, case .door(let checkTile) = type {
+                    return doorTile == checkTile
+                }
+                return tile.type == type
+            }) {
+                return (x, y)
+            }
+        }
+        return nil
+    }
 }
 
 enum MapType: Equatable {
@@ -85,8 +98,8 @@ enum MapType: Equatable {
     case inventor
     case house
     case stable
-    case farm
-    case hospital
+    case farm(type: FarmDoors)
+    case hospital(side: HospitalSide)
     case carpenter
     case restaurant
     case potter

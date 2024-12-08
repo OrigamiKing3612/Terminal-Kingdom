@@ -1,14 +1,6 @@
 [
   [
     {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-
-        }
-      }
-    },
-    {
       "type" : {
         "building" : {
 
@@ -33,6 +25,14 @@
       "isWalkable" : false
     },
     {
+      "type" : {
+        "building" : {
+
+        }
+      },
+      "isWalkable" : false
+    },
+    {
       "isWalkable" : false,
       "type" : {
         "building" : {
@@ -41,12 +41,12 @@
       }
     },
     {
+      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      },
-      "isWalkable" : false
+      }
     },
     {
       "isWalkable" : false,
@@ -59,12 +59,12 @@
   ],
   [
     {
+      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      },
-      "isWalkable" : false
+      }
     },
     {
       "type" : {
@@ -75,12 +75,20 @@
       "isWalkable" : true
     },
     {
+      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      },
-      "isWalkable" : true
+      }
+    },
+    {
+      "isWalkable" : true,
+      "type" : {
+        "plain" : {
+
+        }
+      }
     },
     {
       "type" : {
@@ -91,28 +99,20 @@
       "isWalkable" : true
     },
     {
+      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      },
-      "isWalkable" : true
+      }
     },
     {
-      "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
+      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      },
-      "isWalkable" : false
+      }
     }
   ],
   [
@@ -125,22 +125,6 @@
       }
     },
     {
-      "isWalkable" : true,
-      "type" : {
-        "plain" : {
-
-        }
-      }
-    },
-    {
-      "isWalkable" : true,
-      "type" : {
-        "plain" : {
-
-        }
-      }
-    },
-    {
       "type" : {
         "plain" : {
 
@@ -150,11 +134,27 @@
     },
     {
       "isWalkable" : true,
+      "type" : {
+        "plain" : {
+
+        }
+      }
+    },
+    {
+      "isWalkable" : true,
+      "type" : {
+        "plain" : {
+
+        }
+      }
+    },
+    {
       "type" : {
         "playerStart" : {
 
         }
-      }
+      },
+      "isWalkable" : true
     },
     {
       "isWalkable" : true,
@@ -165,30 +165,30 @@
       }
     },
     {
-      "type" : {
-        "door" : {
-          "tile" : {
-            "isPartOfPlayerVillage" : false,
-            "level" : 1,
-            "type" : {
-              "inventor" : {
-
-              }
-            }
-          }
-        }
-      },
-      "isWalkable" : true,
       "event" : {
         "openDoor" : {
           "tile" : {
-            "isPartOfPlayerVillage" : false,
-            "level" : 1,
             "type" : {
               "inventor" : {
 
               }
-            }
+            },
+            "level" : 1,
+            "isPartOfPlayerVillage" : false
+          }
+        }
+      },
+      "isWalkable" : true,
+      "type" : {
+        "door" : {
+          "tile" : {
+            "type" : {
+              "inventor" : {
+
+              }
+            },
+            "isPartOfPlayerVillage" : false,
+            "level" : 1
           }
         }
       }
@@ -204,12 +204,20 @@
       "isWalkable" : false
     },
     {
+      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      },
-      "isWalkable" : true
+      }
+    },
+    {
+      "isWalkable" : true,
+      "type" : {
+        "plain" : {
+
+        }
+      }
     },
     {
       "isWalkable" : true,
@@ -236,12 +244,22 @@
       "isWalkable" : true
     },
     {
-      "isWalkable" : true,
+      "isWalkable" : false,
       "type" : {
-        "plain" : {
+        "building" : {
 
         }
       }
+    }
+  ],
+  [
+    {
+      "type" : {
+        "building" : {
+
+        }
+      },
+      "isWalkable" : false
     },
     {
       "type" : {
@@ -250,64 +268,46 @@
         }
       },
       "isWalkable" : false
-    }
-  ],
-  [
-    {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-
-        }
-      }
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      }
+      },
+      "isWalkable" : false
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      }
+      },
+      "isWalkable" : false
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      }
+      },
+      "isWalkable" : false
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      }
+      },
+      "isWalkable" : false
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      }
-    },
-    {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-
-        }
-      }
+      },
+      "isWalkable" : false
     }
   ]
 ]

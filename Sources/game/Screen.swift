@@ -60,14 +60,14 @@ struct Screen {
     }
 
     static func print(x: Placement, y: Placement, _ text: String) {
-            var placementX = switch x {
+            let placementX = switch x {
                 case .middle: (columns / 2) - (text.count / 2)
                 case .int(let x): max(1, min(x, columns))
                 case .end: columns - text.count
                 case .start: 0
             }
 
-            var placementY = switch y {
+            let placementY = switch y {
                 case .middle: rows / 2
                 case .int(let y): max(1, min(y, rows))
                 case .end: rows

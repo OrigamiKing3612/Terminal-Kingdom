@@ -38,8 +38,9 @@ protocol Tile: Equatable, Codable {
 
 protocol TileType: Equatable, Codable {
 //    func render() -> String
+    var name: String { get }
 }
 
 protocol TileEvent: Equatable, Codable {
-    
+    var name: String { get }
 }

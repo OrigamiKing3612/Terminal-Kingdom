@@ -11,8 +11,9 @@ struct HospitalDoorEvent {
         selectedOption.action()
     }
     static func goInside(tile: DoorTile) {
-        //TODO: Map changed to be a "map" of the building
-        MessageBox.message("You go inside the door.", speaker: .game)
+        if case .hospital(side: let side) = tile.type {
+            MapBox.mapType = .hospital(side: side)
+        }
     }
     static func upgrade(tile: DoorTile) {
         //TODO: upgrade building

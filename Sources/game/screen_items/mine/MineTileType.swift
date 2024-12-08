@@ -1,4 +1,4 @@
-enum MineTileType: TileType {    
+enum MineTileType: TileType {
     //MARK: Plains Biome
     case plain
     case player
@@ -18,5 +18,15 @@ enum MineTileType: TileType {
             case .iron: !MineTile.isSeen(tile: tile, tileX: tileX, tileY: tileY, grid: grid) ? "." : "I".styled(with: .bold)
         }
         return name
+    }
+    var name: String {
+        switch self {
+            case .plain: return "plain"
+            case .player: return "player"
+            case .playerStart: return "playerStart"
+            case .stone: return "stone"
+            case .coal: return "coal"
+            case .iron: return "iron"
+        }
     }
 }

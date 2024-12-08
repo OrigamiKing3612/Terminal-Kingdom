@@ -32,13 +32,25 @@ struct BuildingMap: MapBoxMap {
                     player.x = 1
                     player.y = 27
             }
-        } else {
-            if let (startX, startY) = MapTile.findTilePosition(of: .playerStart, in: grid) {
-                player.x = startX
-                player.y = startY
-            } else {
-                print("Error: Could not find playerStart tile in the building grid.")
+        } else if case .farm(type: let type) = mapType {
+            switch type {
+                case .main:
+                    findPayerStart()
+                case .farm_area:
+                    player.x = 9
+                    player.y = 1
             }
+        } else {
+            findPayerStart()
+        }
+    }
+    
+    private mutating func findPayerStart() {
+        if let (startX, startY) = MapTile.findTilePosition(of: .playerStart, in: grid) {
+            player.x = startX
+            player.y = startY
+        } else {
+            print("Error: Could not find playerStart tile in the building grid.")
         }
     }
     

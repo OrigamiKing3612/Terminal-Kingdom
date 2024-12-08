@@ -88,6 +88,10 @@ struct MainMap: MapBoxMap {
         let viewportHeight = MapBox.q1Height
         self.render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
     }
+    mutating func setPlayerPosition(_ position: (x: Int, y: Int)) {
+        player.x = position.x
+        player.y = position.y
+    }
     func interactWithTile() {
         let tile = grid[player.y][player.x]
         if tile.isInteractable {

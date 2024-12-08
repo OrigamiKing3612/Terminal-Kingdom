@@ -91,17 +91,25 @@ func mainGameLoop() {
                 MapBox.mapBox()
             case .p:
                 switch MapBox.mapType {
-                    case .mine:
+                    case .mainMap:
                         let x = MapBox.player.x
                         let y = MapBox.player.y
-                        MessageBox.message("x: \(x); y: \(y)", speaker: .player)
+                        MessageBox.message("x: \(x); y: \(y)", speaker: .dev)
                     case .mining:
                         break
                     default:
                         let x = MapBox.buildingMap.player.x
                         let y = MapBox.buildingMap.player.y
-                        MessageBox.message("x: \(x); y: \(y)", speaker: .player)
+                        MessageBox.message("x: \(x); y: \(y)", speaker: .dev)
                 }
+            case .o:
+                let tile = MapBox.mapType.map.tilePlayerIsOn
+                if let event = tile.event {
+                    MessageBox.message("tileType: \(tile.type.name), tileEvent: \(event.name), isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType)", speaker: .dev)
+                } else {
+                    MessageBox.message("tileType: \(tile.type.name), tileEvent: nil, isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType)", speaker: .dev)
+                }
+
             default:
                 MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
         }
