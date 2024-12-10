@@ -22,6 +22,7 @@ enum MapTileType: TileType {
     //MARK: Dont Generate
     case TOBEGENERATED
     case playerStart
+    case biomeTOBEGENERATED(type: BiomeType)
     
     //MARK: Building Stuff
     case anvil
@@ -64,6 +65,36 @@ enum MapTileType: TileType {
             case .startMining: "M"
             case .npc(tile: let tile): NPCTile.renderNPC(tile: tile)
             case .shopStandingArea(type: _): "."
+            case .biomeTOBEGENERATED(type: _): "/"
+        }
+    }
+    
+    func renderWithoutStyle() -> String {
+        return switch self {
+            case .plain: " "
+            case .water: "W"
+            case .path: "P"
+            case .tree: "󰐅"
+            case .building: "#" //TODO: style dim if walkable
+            case .player: "*"
+            case .sand: "S"
+            case .door(let doorTile): DoorTile.renderDoorNoStyle(tile: doorTile)
+            case .TOBEGENERATED: "."
+            case .playerStart: " "
+            case .snow: "S"
+            case .snow_tree: "󰐅"
+            case .cactus: "C"
+            case .ice: "I"
+            case .fence: "f"
+            case .gate: "g"
+            case .crop(crop: let cropTile): CropTile.renderCrop(tile: cropTile)
+            case .pot(tile: let potTile): PotTile.renderCropInPot(tile: potTile)
+            case .anvil: "a"
+            case .furnace: "F"
+            case .startMining: "M"
+            case .npc(tile: let tile): NPCTile.renderNPC(tile: tile)
+            case .shopStandingArea(type: _): "."
+            case .biomeTOBEGENERATED(type: _): "/"
         }
     }
     
@@ -96,6 +127,8 @@ enum MapTileType: TileType {
                 return tile.type.render
             case .shopStandingArea(let type):
                 return type.rawValue
+            case .biomeTOBEGENERATED(type: let biome):
+                return biome.rawValue
         }
     }
     
@@ -111,4 +144,8 @@ enum MapTileType: TileType {
 
 enum ShopStandingAreaType: String, Codable{
     case buy, sell, help
+}
+
+enum BiomeType: String, Codable {
+    case plains, desert, snow, forest
 }

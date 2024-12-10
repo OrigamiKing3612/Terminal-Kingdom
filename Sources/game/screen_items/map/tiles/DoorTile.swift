@@ -15,4 +15,11 @@ struct DoorTile: Codable, Equatable, Hashable {
         }
         return "D".styled(with: .bold)
     }
+    
+    static func renderDoorNoStyle(tile: DoorTile) -> String {
+        if Game.stages.blacksmith.stage1Stages == .goToMine && tile.type == .mine {
+            return "!"
+        }
+        return "D"
+    }
 }
