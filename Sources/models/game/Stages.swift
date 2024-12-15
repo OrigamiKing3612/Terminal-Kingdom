@@ -5,17 +5,30 @@ struct Stages: Codable {
 }
 
 struct BlacksmithStages: Codable {
-    var stageNumber = 0
+    private(set) var stageNumber = 0
     var stage: DoorStages = .no
     var stage1Stages: BlacksmithStage1Stages = .notStarted
+    
+    mutating func next() {
+        stageNumber += 1
+    }
 }
 
 struct MineStages: Codable {
-    var stageNumber = 0
+    private(set) var stageNumber = 0
     var stage1Stages: MineStage1Stages = .notStarted
+    var stage2Stages: MineStage2Stages = .notStarted
+    
+    mutating func next() {
+        stageNumber += 1
+    }
 }
 
 struct FarmStages: Codable {
-    var stageNumber = 0
+    private(set) var stageNumber = 0
     var stage1Stages: FarmStage1Stages = .notStarted
+    
+    mutating func next() {
+        stageNumber += 1
+    }
 }

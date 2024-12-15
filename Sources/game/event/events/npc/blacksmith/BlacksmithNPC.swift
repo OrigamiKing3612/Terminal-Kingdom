@@ -1,27 +1,38 @@
 struct BlacksmithNPC {
     static func talk() {
-        if Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith == false {
-            Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith = true
-        }
-        if Game.stages.blacksmith.stageNumber == 0 {
-            let options: [MessageOption] = [
-                .init(label: "Yes", action: {}),
-                .init(label: "No", action: {})
-            ]
-            let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to be a blacksmith?", speaker: .blacksmith, options: options)
-            if selectedOption.label == "Yes" {
-                stage1()
-            } else {
-                return
+        if Game.stages.mine.stage1Stages == .collect {
+            MessageBox.message("Ah, here you are. Here is your pickaxe.", speaker: .blacksmith)
+            Game.player.collect(item: .pickaxe(durability: 50))
+            Game.stages.mine.stage1Stages = .bringBack
+        } else {
+            if Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith == false {
+                Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith = true
             }
-        } else if Game.stages.blacksmith.stageNumber == 1 {
-            stage1()
+            if Game.stages.blacksmith.stageNumber == 0 {
+                let options: [MessageOption] = [
+                    .init(label: "Yes", action: {}),
+                    .init(label: "No", action: {}),
+                ]
+                let selectedOption = MessageBox.messageWithOptions(
+                    "Hello \(Game.player.name)! Would you like to learn how to be a blacksmith?",
+                    speaker: .blacksmith, options: options)
+                if selectedOption.label == "Yes" {
+                    stage1()
+                } else {
+                    return
+                }
+            } else if Game.stages.blacksmith.stageNumber == 1 {
+                stage1()
+            }
         }
+    }
+    
+    static func getStage() {
+        //TODO: Get stage
     }
     
     static func stage1() {
         Game.stages.blacksmith.stage = .inProgress
-        Game.stages.blacksmith.stageNumber = 1
         switch Game.stages.blacksmith.stage1Stages {
             case .notStarted, .goToMine:
                 Game.stages.blacksmith.stage1Stages = .goToMine
@@ -30,7 +41,7 @@ struct BlacksmithNPC {
             case .bringItBack:
                 if Game.player.has(item: .iron, count: 1) {
                     MessageBox.message("Thank you!", speaker: .blacksmith)
-                    Game.stages.blacksmith.stageNumber = 2
+                    Game.stages.blacksmith.next()
                     Game.stages.blacksmith.stage = .done
                     Game.player.remove(item: .iron)
                     StatusBox.removeQuest(quest: .blacksmith1)
@@ -41,7 +52,6 @@ struct BlacksmithNPC {
                 Game.stages.blacksmith.stage1Stages = .done
             case .done:
                 break
-                
         }
     }
 }

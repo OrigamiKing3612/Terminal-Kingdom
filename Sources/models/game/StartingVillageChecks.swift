@@ -29,7 +29,7 @@ enum StartingVillageChecksStages: Codable, Equatable {
 
 enum ChoppingLumberTeachingDoorTypes: String, Codable, Equatable {
     case builder, miner, carpenter
-    
+
     var name: String {
         self.rawValue.capitalized
     }

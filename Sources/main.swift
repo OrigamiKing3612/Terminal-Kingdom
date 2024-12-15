@@ -14,7 +14,7 @@ if Game.hasInited == false {
     Game.initGame()
     Screen.initialize()
     if prePreGame() {
-        
+
     } else {
         MessageBox.message("Welcome to Adventure!", speaker: .game)
         preGame()
@@ -34,7 +34,7 @@ func endProgram() {
 //            let JSON = try JSONEncoder().encode(game)
 //            try JSON.write(to: filePath)
 //        } catch {
-//            
+//
 //        }
 //    }
     exit(0)
@@ -42,7 +42,7 @@ func endProgram() {
 
 func prePreGame() -> Bool {
     let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-    
+
     if let filePath {
         let file = filePath.appendingPathComponent("adventure.game.json")
         do {
@@ -67,9 +67,9 @@ func preGame() {
 func mainGameLoop() {
     while true {
         InventoryBox.printInventory()
-        
+
         guard !Game.isTypingInMessageBox else { continue }
-        
+
         let key = TerminalInput.readKey()
         switch key {
             case .q:

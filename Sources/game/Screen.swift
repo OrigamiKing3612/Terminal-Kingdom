@@ -25,7 +25,7 @@ struct Screen {
         InventoryBox.inventoryBox()
         StatusBox.statusBox()
     }
-    
+
     private struct TerminalSize {
         let rows: Int
         let columns: Int
@@ -86,7 +86,7 @@ extension MapBox {
     static var q1Width: Int {
         abs((Screen.columns / 2) - 3)
     }
-    
+
     static let q1StartY = 1
     static let q1EndY = Screen.rows / 2
     static var q1Height: Int {
@@ -98,7 +98,7 @@ extension MessageBox {
     static let q2StartX = 0
     static let q2EndX = Screen.columns / 2
     static let q2Width = q2EndX - q2StartX
-    
+
     static let q2StartY = 1
     static let q2EndY = Screen.rows / 2
     static let q2Height = q2EndY - q2StartY
@@ -110,7 +110,7 @@ extension InventoryBox {
     static var q3Width: Int {
         abs((Screen.columns / 2) - 3)
     }
-    
+
     static let q3StartY = (Screen.rows / 2) + 1
     static let q3EndY = Screen.rows - 1
     static var q3Height: Int {
@@ -124,7 +124,7 @@ extension StatusBox {
     static var q4Width: Int {
         abs((Screen.columns / 2) - 3)
     }
-    
+
     static let q4StartY = (Screen.rows / 2)
     static let q4EndY = Screen.rows - 1
     static var q4Height: Int {

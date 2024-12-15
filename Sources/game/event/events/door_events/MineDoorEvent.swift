@@ -20,6 +20,10 @@ struct MineDoorEvent {
 }
 
 enum MineStage1Stages: Codable {
+    case notStarted, collect, bringBack, done
+}
+
+enum MineStage2Stages: Codable {
     case notStarted, mine, done
 }
 

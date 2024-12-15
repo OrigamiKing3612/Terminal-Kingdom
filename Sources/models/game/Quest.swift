@@ -1,12 +1,13 @@
 enum Quest: Codable, Equatable {
     case chopLumber(count: Int = 10, for: String? = nil)
-    
+
     //MARK: Blacksmith
     case blacksmith1
-    
+
     //MARK: Mine
     case mine1
-    
+    case mine2
+
     var label: String {
         switch self {
             case .chopLumber(let count, let `for`):
@@ -18,7 +19,9 @@ enum Quest: Codable, Equatable {
             case .blacksmith1:
                 return "Go get iron from the Mine and bring it to the blacksmith"
             case .mine1:
-                return "Mine 20 stone for the miner"
+                return "Get a pickaxe from the blacksmith and bring it to the Miner"
+            case .mine2:
+                return "Mine 20 stone for the Miner"
         }
     }
 }
