@@ -1,28 +1,29 @@
 enum Item: Codable, Equatable, Hashable {
     //MARK: Weapons
     case sword, axe, pickaxe(durability: Int = 50), boomerang  // bow? net? dagger?
-    
+
     //MARK: Armor?
     case backpack(type: BackpackType) // TODO: DO BACKPACK
-    
+
     //MARK: Food
-    
+
     //MARK: Materials
     case lumber //plank?
     case iron
     case coal
     case gold
     case stone
+    case clay
     case tree_seed
-    
+
     //MARK: Buildings
     case door(tile: DoorTile)
     case fence
     case gate
-    
+
     //MARK: Other
     case coin
-    
+
     var inventoryName: String {
         switch self {
             case .sword: return "Sword"
@@ -40,6 +41,7 @@ enum Item: Codable, Equatable, Hashable {
             case .fence: return "Fence"
             case .gate: return "Gate"
             case .coin: return "Coin"
+            case .clay: return "Clay"
         }
     }
     var price: Int? {
@@ -59,13 +61,14 @@ enum Item: Codable, Equatable, Hashable {
             case .fence: return nil
             case .gate: return nil
             case .coin: return nil
+            case .clay: return 2
         }
     }
 }
 
 enum BackpackType: Codable, Equatable {
     case small, medium, large
-    
+
     var inventoryName: String {
         switch self {
             case .small: return "Small"

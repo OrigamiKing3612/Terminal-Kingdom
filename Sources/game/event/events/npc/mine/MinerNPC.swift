@@ -79,17 +79,17 @@ struct MinerNPC {
         switch Game.stages.mine.stage2Stages {
             case .notStarted:
                 //TODO: make the Mine ! (red bold) (this is already the first time so no check needed)
-                MessageBox.message("I need you to mine 20 stone. You can do this by mining. The mine entrance the 'M' above and below me. is Here is a pickaxe. Be careful, it can only be used 50 times. ", speaker: .miner)
+                MessageBox.message("I need you to mine 20 clay. You can do this by mining. The mine entrance the 'M' above and below me. is Here is a pickaxe. Be careful, it can only be used 50 times. ", speaker: .miner)
                 StatusBox.quest(.mine2)
                 //TODO: make a door in the mine to come back
                 MessageBox.message("Oh also, press '\("l".styled(with: .bold))' to leave the mine.", speaker: .miner)
                 Game.player.collect(item: .pickaxe())
                 Game.stages.mine.stage2Stages = .mine
             case .mine:
-                if Game.player.has(item: .stone, count: 20) {
-                    MessageBox.message("Yay thank you! You have collected enough stone.", speaker: .miner)
+                if Game.player.has(item: .clay, count: 20) {
+                    MessageBox.message("Yay thank you! You have collected enough clay.", speaker: .miner)
                     Game.player.stats.miningSkillLevel = .one
-                    Game.player.remove(item: .stone, count: 20)
+                    Game.player.remove(item: .clay, count: 20)
                     StatusBox.removeQuest(quest: .mine1)
                     Game.stages.mine.stage2Stages = .done
                 } else {
@@ -97,7 +97,7 @@ struct MinerNPC {
                         MessageBox.message("Uh oh, looks like you lost your pickaxe, here is a new one.", speaker: .miner)
                         Game.player.collect(item: .pickaxe())
                     }
-                    MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .stone) - 20)) stone.", speaker: .miner)
+                    MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .clay) - 20)) clay.", speaker: .miner)
                 }
                 fallthrough
             case .done:

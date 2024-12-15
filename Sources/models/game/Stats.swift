@@ -8,6 +8,8 @@ struct Stats: Codable {
     nonisolated(unsafe) var farmingSkillLevel: SkillLevels = .zero
     nonisolated(unsafe) var medicalSkillLevel: SkillLevels = .zero
     nonisolated(unsafe) var carpentrySkillLevel: SkillLevels = .zero
+    nonisolated(unsafe) var cookingSkillLevel: SkillLevels = .zero
+    nonisolated(unsafe) var mineLevel: MineLevel = .one
 }
 
 enum AllSkillLevels: CaseIterable {
@@ -20,7 +22,7 @@ enum AllSkillLevels: CaseIterable {
     case farmingSkillLevel
     case medicalSkillLevel
     case carpentrySkillLevel
-    
+
     var stat: SkillLevels {
         switch self {
             case .blacksmithSkillLevel:
@@ -79,4 +81,9 @@ enum SkillLevels: Int, Codable {
     case eight = 8
     case nine = 9
     case ten = 10
+}
+
+enum MineLevel: Int, Codable {
+    case one = 1
+    case two = 2
 }
