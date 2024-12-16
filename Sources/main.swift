@@ -1,5 +1,4 @@
 import Foundation
-import Darwin
 
 Screen.clear()
 Screen.Cursor.moveToTop()
