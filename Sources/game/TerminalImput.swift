@@ -50,8 +50,11 @@ struct TerminalInput {
         var raw = termios()
         tcgetattr(STDIN_FILENO, &originalTermios) // Get current terminal attributes
         raw = originalTermios
-
+        #if os(Linux)
+        raw.c_lflag &= ~(UInt32(ECHO | ICANON)) // Disable echo and canonical mode
+        #else
         raw.c_lflag &= ~(UInt(ECHO | ICANON)) // Disable echo and canonical mode
+        #endif
         tcsetattr(STDIN_FILENO, TCSANOW, &raw) // Apply raw mode
     }
 
