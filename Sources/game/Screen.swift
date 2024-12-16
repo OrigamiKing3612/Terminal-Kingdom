@@ -1,5 +1,9 @@
 import Foundation
+#if os(macOS)
 import Darwin
+#elseif os(Linux)
+import Glibc
+#endif
 
 enum Placement {
     case middle
