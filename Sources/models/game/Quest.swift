@@ -7,6 +7,7 @@ enum Quest: Codable, Equatable {
     //MARK: Mine
     case mine1
     case mine2
+    case mine3
 
     var label: String {
         switch self {
@@ -22,6 +23,8 @@ enum Quest: Codable, Equatable {
                 return "Get a pickaxe from the blacksmith and bring it to the Miner"
             case .mine2:
                 return "Mine 20 stone for the Miner"
+            case .mine3:
+                return "Mine 50 lumber for the Miner to upgrade the mine"
         }
     }
 }

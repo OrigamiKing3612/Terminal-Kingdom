@@ -35,6 +35,8 @@ struct MinerNPC {
                 stage1()
             case 2:
                 stage2()
+            case 3:
+                stage3()
             default:
                 break
         }
@@ -67,6 +69,7 @@ struct MinerNPC {
             case .bringBack:
                 MessageBox.message("Thank you for getting the pickaxe!", speaker: .miner)
                 Game.stages.mine.stage1Stages = .done
+                StatusBox.removeQuest(quest: .mine1)
                 fallthrough
             case .done:
                 Game.stages.mine.next()
@@ -99,6 +102,7 @@ struct MinerNPC {
                     }
                     MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .clay) - 20)) clay.", speaker: .miner)
                 }
+                StatusBox.removeQuest(quest: .mine2)
                 fallthrough
             case .done:
                 Game.stages.mine.next()
@@ -107,4 +111,41 @@ struct MinerNPC {
                 }
         }
     }
+    static func stage3() {
+        switch Game.stages.mine.stage3Stages {
+            case .notStarted:
+                MessageBox.message("We need 50 lumber to upgrade the mine to be able to mine more stuff. Can you please go get 50 lumber and bring it back to me?", speaker: .miner)
+                Game.player.collect(item: .axe)
+                StatusBox.quest(.mine3)
+                Game.stages.mine.stage3Stages = .collect
+            case .collect:
+                if Game.player.has(item: .lumber, count: 50) {
+                    MessageBox.message("Thank you for getting the lumber! Now we can upgrade the mine.", speaker: .miner)
+                    Game.player.remove(item: .lumber, count: 50)
+                    Game.player.remove(item: .axe)
+                    Game.stages.mine.stage3Stages = .done
+                } else {
+                    MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .lumber) - 50)) lumber.", speaker: .miner)
+                }
+                StatusBox.removeQuest(quest: .mine3)
+                fallthrough
+            case .done:
+                Game.stages.mine.next()
+                if RandomEventStuff.wantsToContinue(speaker: .miner) {
+                    getStage()
+                }
+        }
+    }
+}
+
+enum MineStage1Stages: Codable {
+    case notStarted, collect, bringBack, done
+}
+
+enum MineStage2Stages: Codable {
+    case notStarted, mine, done
+}
+
+enum MineStage3Stages: Codable {
+    case notStarted, collect, done
 }

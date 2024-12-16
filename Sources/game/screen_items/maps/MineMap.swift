@@ -152,6 +152,7 @@ struct MineMap: MapBoxMap {
             case .coal: itemToGive = .coal
             case .iron: itemToGive = .iron
             case .stone: itemToGive = .stone
+            case .clay: itemToGive = .clay
             default: break
         }
         if let itemToGive {

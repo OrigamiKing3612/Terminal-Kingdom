@@ -13,17 +13,9 @@ struct MineDoorEvent {
     static func goInside(tile: DoorTile) {
         MapBox.mapType = .mine
     }
-    
+
     static func upgrade(tile: DoorTile) {
         //TODO: upgrade building
     }
-}
-
-enum MineStage1Stages: Codable {
-    case notStarted, collect, bringBack, done
-}
-
-enum MineStage2Stages: Codable {
-    case notStarted, mine, done
 }
 
