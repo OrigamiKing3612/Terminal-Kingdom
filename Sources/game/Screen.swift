@@ -47,11 +47,19 @@ struct Screen {
 
     private static func getTerminalSize() -> TerminalSize? {
         var windowSize = winsize()
+        #if os(Linux)
+        if ioctl(STDOUT_FILENO, UInt(TIOCGWINSZ), &windowSize) == 0 {
+            let rows = Int(windowSize.ws_row)
+            let columns = Int(windowSize.ws_col)
+            return TerminalSize(rows: rows, columns: columns)
+        }
+        #else
         if ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) == 0 {
             let rows = Int(windowSize.ws_row)
             let columns = Int(windowSize.ws_col)
             return TerminalSize(rows: rows, columns: columns)
         }
+        #endif
         return nil
     }
 
