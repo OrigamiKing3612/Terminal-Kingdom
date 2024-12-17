@@ -2,11 +2,11 @@ struct BlacksmithNPC {
     static func talk() {
         if Game.stages.mine.stage1Stages == .collect {
             MessageBox.message("Ah, here you are. Here is your pickaxe.", speaker: .blacksmith)
-            Game.stages.mine.stage1PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(durability: 50), canBeSold: false))
+            Game.stages.mine.stage1PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false))
             Game.stages.mine.stage1Stages = .bringBack
         } else if Game.stages.mine.stage4Stages == .collectPickaxe {
             MessageBox.message("Here you are. Here is your pickaxe.", speaker: .blacksmith)
-            Game.stages.mine.stage4PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(durability: 50), canBeSold: false))
+            Game.stages.mine.stage4PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false))
             Game.stages.mine.stage4Stages = .mine
         } else {
             if Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith == false {

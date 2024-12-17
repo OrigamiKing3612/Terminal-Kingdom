@@ -98,22 +98,22 @@ struct MineMap: MapBoxMap {
             case .up where !grid[player.y - 1][player.x].isWalkable && Game.player.hasPickaxe() && isInBounds(x: player.x, y: player.y):
                 MineMap.givePlayerTile(tile: grid[player.y - 1][player.x])
                 grid[player.y - 1][player.x] = .init(type: .plain, isWalkable: true)
-                Game.player.removeDurability(of: .pickaxe())
+                Game.player.removeDurability(of: .pickaxe)
                 player.y -= 1
             case .down where !grid[player.y + 1][player.x].isWalkable && Game.player.hasPickaxe() && isInBounds(x: player.x, y: player.y):
                 MineMap.givePlayerTile(tile: grid[player.y + 1][player.x])
                 grid[player.y + 1][player.x] = .init(type: .plain, isWalkable: true)
-                Game.player.removeDurability(of: .pickaxe())
+                Game.player.removeDurability(of: .pickaxe)
                 player.y += 1
             case .left where !grid[player.y][player.x - 1].isWalkable && Game.player.hasPickaxe() && isInBounds(x: player.x, y: player.y):
                 MineMap.givePlayerTile(tile: grid[player.y][player.x - 1])
                 grid[player.y][player.x - 1] = .init(type: .plain, isWalkable: true)
-                Game.player.removeDurability(of: .pickaxe())
+                Game.player.removeDurability(of: .pickaxe)
                 player.x -= 1
             case .right where !grid[player.y][player.x + 1].isWalkable && Game.player.hasPickaxe() && isInBounds(x: player.x, y: player.y):
                 MineMap.givePlayerTile(tile: grid[player.y][player.x + 1])
                 grid[player.y][player.x + 1] = .init(type: .plain, isWalkable: true)
-                Game.player.removeDurability(of: .pickaxe())
+                Game.player.removeDurability(of: .pickaxe)
                 player.x += 1
             default:
                 break
@@ -143,7 +143,7 @@ struct MineMap: MapBoxMap {
             default: break
         }
         if let itemTypeToGive {
-            Game.player.collect(item: .init(type: itemTypeToGive))
+            _ = Game.player.collect(item: .init(type: itemTypeToGive))
         }
     }
     static func createGrid() -> [[MineTile]] {

@@ -1,12 +1,12 @@
 enum ItemType: Codable, Equatable, Hashable {
     //MARK: Weapons
-    case sword, axe, pickaxe(durability: Int = 50), boomerang  // bow? net? dagger?
-
+    case sword, axe, pickaxe(type: PickaxeItem), boomerang  // bow? net? dagger?
+    
     //MARK: Armor?
-    case backpack(type: BackpackType) // TODO: DO BACKPACK
-
+    case backpack(type: BackpackItem) // TODO: DO BACKPACK
+    
     //MARK: Food
-
+    
     //MARK: Materials
     case lumber //plank?
     case iron
@@ -15,27 +15,20 @@ enum ItemType: Codable, Equatable, Hashable {
     case stone
     case clay
     case tree_seed
-
+    
     //MARK: Buildings
     case door(tile: DoorTile)
     case fence
     case gate
-
+    
     //MARK: Other
     case coin
-
-    func removeDurability() -> ItemType {
-        if case .pickaxe(let durability) = self {
-           return .pickaxe(durability: max(durability - 1, 0))
-        }
-        return self
-    }
-
+    
     var inventoryName: String {
         switch self {
             case .sword: return "Sword"
             case .axe: return "Axe"
-            case .pickaxe(let durability): return "Pickaxe (\(durability.description))"
+            case .pickaxe(type: let type): return "Pickaxe (\(type.durability))"
             case .boomerang: return "Boomerang"
             case .backpack(type: let type): return "\(type.inventoryName) Backpack"
             case .lumber: return "Lumber"
@@ -73,9 +66,9 @@ enum ItemType: Codable, Equatable, Hashable {
     }
 }
 
-enum BackpackType: Codable, Equatable {
+enum BackpackItem: Codable, Equatable {
     case small, medium, large
-
+    
     var inventoryName: String {
         switch self {
             case .small: return "Small"

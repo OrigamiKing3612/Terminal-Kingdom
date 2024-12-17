@@ -6,7 +6,7 @@ enum MapTileEvent: TileEvent {
     case collectCrop
     //    case collectItem(item: String)
     //    case combat(enemy: String)
-
+    
     static func trigger(event: MapTileEvent) {
         switch event {
             case .openDoor(tile: let doorTile):
@@ -20,7 +20,7 @@ enum MapTileEvent: TileEvent {
                     MessageBox.message("Ouch!", speaker: .game)
                 }
             case .startMining:
-                if Game.player.has(item: .pickaxe()) {
+                if Game.player.hasPickaxe() {
                     StartMiningEvent.startMining()
                 } else {
                     MessageBox.message("You need a pickaxe to start mining", speaker: .miner)

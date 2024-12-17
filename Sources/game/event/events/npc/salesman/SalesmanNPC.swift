@@ -97,7 +97,7 @@ extension SalesmanNPC {
         }
         switch (skillLevel, skillLevel.stat) {
             case (.miningSkillLevel, .one):
-                buyOption(options: &options, item: .pickaxe(durability: 50))
+                buyOption(options: &options, item: .pickaxe(type: .init()))
                 buyOption(options: &options, item: .stone)
                 //TODO: press on item, and see a buy 1, buy 2...
                 //TODO: Add more stuff here

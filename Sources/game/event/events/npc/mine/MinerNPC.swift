@@ -91,7 +91,7 @@ struct MinerNPC {
                 StatusBox.quest(.mine2)
                 //TODO: make a door in the mine to come back
                 MessageBox.message("Oh also, press '\("l".styled(with: .bold))' to leave the mine.", speaker: .miner)
-                Game.stages.mine.stage2PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(durability: 50), canBeSold: false))
+                Game.stages.mine.stage2PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false))
                 Game.stages.mine.stage2Stages = .mine
             case .mine:
                 if Game.player.has(item: .clay, count: 20) {
@@ -100,12 +100,15 @@ struct MinerNPC {
                     Game.player.removeItem(item: .clay, count: 20)
                     StatusBox.removeQuest(quest: .mine1)
                     Game.stages.mine.stage2Stages = .done
+                    if let id = Game.stages.mine.stage2PickaxeUUIDToRemove {
+                        Game.player.removeItem(id: id)
+                    }
                     StatusBox.removeQuest(quest: .mine2)
                     fallthrough
                 } else {
                     if let stage2AxeUUIDToRemove = Game.stages.mine.stage2PickaxeUUIDToRemove, !Game.player.has(id: stage2AxeUUIDToRemove) {
                         MessageBox.message("Uh oh, looks like you lost your pickaxe, here is a new one.", speaker: .miner)
-                        Game.stages.mine.stage2PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(durability: 50), canBeSold: false))
+                        Game.stages.mine.stage2PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false))
                     }
                     MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .clay) - 20)) clay.", speaker: .miner)
                 }

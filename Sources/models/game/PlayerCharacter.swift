@@ -16,13 +16,21 @@ struct PlayerCharacter: Codable {
         items.contains { $0.type == item }
     }
 
-    @available(*, deprecated, message: "Need to use UUID")
     func hasPickaxe(withDurability: Int = 0) -> Bool {
         for item in items {
-            if case .pickaxe(let durability) = item.type {
-                if durability > withDurability {
+            if case .pickaxe(type: let type) = item.type {
+                if type.durability > withDurability {
                     return true
                 }
+            }
+        }
+        return false
+    }
+
+    func hasPickaxe() -> Bool {
+        for item in items {
+            if case .pickaxe = item.type {
+                return true
             }
         }
         return false
@@ -44,16 +52,36 @@ struct PlayerCharacter: Codable {
         items.filter({$0.type == item}).count
     }
 
-    mutating func removeDurability(of itemType: ItemType, count: Int = 1) {
+    mutating func removeDurability(of itemType: ItemType, count: Int = 1, amount: Int = 1) {
         for (index, item) in items.enumerated() {
-            if case .pickaxe(let durability) = itemType {
-                if durability > 1 {
-                    let newItem: Item = .init(id: item.id, type: item.type.removeDurability(), canBeSold: item.canBeSold)
+            if case .pickaxe(type: let type) = itemType {
+                if type.durability > amount {
+                    let newItem: Item = .init(id: item.id, type: .pickaxe(type: .init(durability: type.durability - amount)), canBeSold: item.canBeSold)
                     updateItem(at: index, newItem)// Decrease durability
                 } else {
                     removeItem(at: index) // Remove if durability reaches 0
                 }
             }
+        }
+    }
+
+    enum RemoveDurabilityTypes {
+        case pickaxe
+    }
+
+    mutating func removeDurability(of itemType: RemoveDurabilityTypes, count: Int = 1, amount: Int = 1) {
+        switch itemType {
+            case .pickaxe:
+                for (index, item) in items.enumerated() {
+                    if case .pickaxe(type: let type) = item.type {
+                        if type.durability > amount {
+                            let newItem: Item = .init(id: item.id, type: .pickaxe(type: .init(durability: type.durability - amount)), canBeSold: item.canBeSold)
+                            updateItem(at: index, newItem)// Decrease durability
+                        } else {
+                            removeItem(at: index) // Remove if durability reaches 0
+                        }
+                    }
+                }
         }
     }
 
