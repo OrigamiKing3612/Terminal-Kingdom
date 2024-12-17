@@ -4,6 +4,10 @@ struct BlacksmithNPC {
             MessageBox.message("Ah, here you are. Here is your pickaxe.", speaker: .blacksmith)
             Game.player.collect(item: .pickaxe(durability: 50))
             Game.stages.mine.stage1Stages = .bringBack
+        } else if Game.stages.mine.stage4Stages == .collectPickaxe {
+            MessageBox.message("Here you are. Here is your pickaxe.", speaker: .blacksmith)
+            Game.player.collect(item: .pickaxe(durability: 50))
+            Game.stages.mine.stage4Stages = .mine
         } else {
             if Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith == false {
                 Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith = true

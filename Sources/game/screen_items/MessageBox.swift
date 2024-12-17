@@ -316,6 +316,13 @@ struct MessageBox {
 struct MessageOption: Equatable {
     let label: String
     let action: () -> Void
+    let id: Int
+
+    init(label: String, action: @escaping () -> Void, id: Int = 1) {
+        self.label = label
+        self.action = action
+        self.id = id
+    }
 
     static func == (lhs: MessageOption, rhs: MessageOption) -> Bool {
         lhs.label == rhs.label

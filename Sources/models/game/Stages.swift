@@ -19,6 +19,11 @@ struct MineStages: Codable {
     var stage1Stages: MineStage1Stages = .notStarted
     var stage2Stages: MineStage2Stages = .notStarted
     var stage3Stages: MineStage3Stages = .notStarted
+    var stage4Stages: MineStage4Stages = .notStarted {
+        didSet {
+            StatusBox.statusBox()
+        }
+    }
 
     mutating func next() {
         stageNumber += 1
