@@ -6,7 +6,7 @@ struct MinerNPC {
         if Game.stages.blacksmith.stage1Stages == .goToMine {
             MessageBox.message("Ah, here you are. This is the iron the \("Blacksmith".styled(with: .bold)) needs.", speaker: .miner)
             Game.stages.blacksmith.stage1Stages = .bringItBack
-            Game.player.collect(item: .iron)
+            Game.stages.blacksmith.stage1AIronUUIDToRemove = Game.player.collect(item: .init(type: .iron, canBeSold: false))
         } else {
             getStage()
         }
@@ -71,7 +71,9 @@ struct MinerNPC {
             case .bringBack:
                 MessageBox.message("Thank you for getting the pickaxe!", speaker: .miner)
                 Game.stages.mine.stage1Stages = .done
-                Game.player.remove(item: .pickaxe())
+                if let id = Game.stages.mine.stage1PickaxeUUIDToRemove {
+                    Game.player.removeItem(id: id)
+                }
                 StatusBox.removeQuest(quest: .mine1)
                 fallthrough
             case .done:
@@ -89,21 +91,21 @@ struct MinerNPC {
                 StatusBox.quest(.mine2)
                 //TODO: make a door in the mine to come back
                 MessageBox.message("Oh also, press '\("l".styled(with: .bold))' to leave the mine.", speaker: .miner)
-               Game.player.collect(item: .pickaxe())
+                Game.stages.mine.stage2PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(durability: 50), canBeSold: false))
                 Game.stages.mine.stage2Stages = .mine
             case .mine:
                 if Game.player.has(item: .clay, count: 20) {
                     MessageBox.message("Yay thank you! You have collected enough clay.", speaker: .miner)
                     Game.player.stats.miningSkillLevel = .one
-                    Game.player.remove(item: .clay, count: 20)
+                    Game.player.removeItem(item: .clay, count: 20)
                     StatusBox.removeQuest(quest: .mine1)
                     Game.stages.mine.stage2Stages = .done
                     StatusBox.removeQuest(quest: .mine2)
                     fallthrough
                 } else {
-                    if !Game.player.hasPickaxe() {
+                    if let stage2AxeUUIDToRemove = Game.stages.mine.stage2PickaxeUUIDToRemove, !Game.player.has(id: stage2AxeUUIDToRemove) {
                         MessageBox.message("Uh oh, looks like you lost your pickaxe, here is a new one.", speaker: .miner)
-                        Game.player.collect(item: .pickaxe())
+                        Game.stages.mine.stage2PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(durability: 50), canBeSold: false))
                     }
                     MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .clay) - 20)) clay.", speaker: .miner)
                 }
@@ -118,14 +120,16 @@ struct MinerNPC {
         switch Game.stages.mine.stage3Stages {
             case .notStarted:
                 MessageBox.message("We need 50 lumber to upgrade the mine to be able to mine more stuff. Can you please go get 50 lumber and bring it back to me?", speaker: .miner)
-                Game.player.collect(item: .axe)
+                Game.stages.mine.stage3AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe, canBeSold: false))
                 StatusBox.quest(.mine3)
                 Game.stages.mine.stage3Stages = .collect
             case .collect:
                 if Game.player.has(item: .lumber, count: 50) {
                     MessageBox.message("Thank you for getting the lumber! Now we can upgrade the mine.", speaker: .miner)
-                    Game.player.remove(item: .lumber, count: 50)
-                    Game.player.remove(item: .axe)
+                    Game.player.removeItem(item: .lumber, count: 50)
+                    if let id = Game.stages.mine.stage3AxeUUIDToRemove {
+                        Game.player.removeItem(id: id)
+                    }
                     Game.player.stats.mineLevel = .two
                     Game.stages.mine.stage3Stages = .done
                     Game.player.stats.miningSkillLevel = .two
@@ -153,8 +157,10 @@ struct MinerNPC {
             case .mine:
                 if Game.player.has(item: .stone, count: 20) {
                     MessageBox.message("Thank you for getting the stone!", speaker: .miner)
-                    Game.player.remove(item: .stone, count: 20)
-                    Game.player.remove(item: .pickaxe())
+                    Game.player.removeItem(item: .stone, count: 20)
+                    if let id = Game.stages.mine.stage4PickaxeUUIDToRemove {
+                        Game.player.removeItem(id: id)
+                    }
                     Game.stages.mine.stage4Stages = .done
                     Game.player.stats.miningSkillLevel = .three
                     StatusBox.removeQuest(quest: .mine4)

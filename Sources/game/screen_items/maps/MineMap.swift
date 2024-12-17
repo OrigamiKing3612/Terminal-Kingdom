@@ -134,16 +134,16 @@ struct MineMap: MapBoxMap {
         }
     }
     static func givePlayerTile(tile: MineTile) {
-        var itemToGive: Item?
+        var itemTypeToGive: ItemType?
         switch tile.type {
-            case .coal: itemToGive = .coal
-            case .iron: itemToGive = .iron
-            case .stone: itemToGive = .stone
-            case .clay: itemToGive = .clay
+            case .coal: itemTypeToGive = .coal
+            case .iron: itemTypeToGive = .iron
+            case .stone: itemTypeToGive = .stone
+            case .clay: itemTypeToGive = .clay
             default: break
         }
-        if let itemToGive {
-            Game.player.collect(item: itemToGive)
+        if let itemTypeToGive {
+            Game.player.collect(item: .init(type: itemTypeToGive))
         }
     }
     static func createGrid() -> [[MineTile]] {

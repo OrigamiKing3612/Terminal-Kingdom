@@ -2,11 +2,11 @@ struct BlacksmithNPC {
     static func talk() {
         if Game.stages.mine.stage1Stages == .collect {
             MessageBox.message("Ah, here you are. Here is your pickaxe.", speaker: .blacksmith)
-            Game.player.collect(item: .pickaxe(durability: 50))
+            Game.stages.mine.stage1PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(durability: 50), canBeSold: false))
             Game.stages.mine.stage1Stages = .bringBack
         } else if Game.stages.mine.stage4Stages == .collectPickaxe {
             MessageBox.message("Here you are. Here is your pickaxe.", speaker: .blacksmith)
-            Game.player.collect(item: .pickaxe(durability: 50))
+            Game.stages.mine.stage4PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(durability: 50), canBeSold: false))
             Game.stages.mine.stage4Stages = .mine
         } else {
             if Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith == false {
@@ -30,11 +30,11 @@ struct BlacksmithNPC {
             }
         }
     }
-    
+
     static func getStage() {
         //TODO: Get stage
     }
-    
+
     static func stage1() {
         Game.stages.blacksmith.stage = .inProgress
         switch Game.stages.blacksmith.stage1Stages {
@@ -47,7 +47,9 @@ struct BlacksmithNPC {
                     MessageBox.message("Thank you!", speaker: .blacksmith)
                     Game.stages.blacksmith.next()
                     Game.stages.blacksmith.stage = .done
-                    Game.player.remove(item: .iron)
+                    if let ironUUID = Game.stages.blacksmith.stage1AIronUUIDToRemove {
+                        Game.player.removeItem(id: ironUUID)
+                    }
                     StatusBox.removeQuest(quest: .blacksmith1)
                     MessageBox.message("WHAT SHOULD I DO AFTER THIS?", speaker: .game)
                 } else {

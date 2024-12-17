@@ -75,18 +75,18 @@ struct SalesmanNPC {
 }
 
 extension SalesmanNPC {
-    private static func buyItem(item: Item, count: Int, price: Int) {
+    private static func buyItem(item: ItemType, count: Int, price: Int) {
         if Game.player.has(item: .coin, count: price) {
-            Game.player.collect(item: item, count: count)
-            Game.player.remove(item: .coin, count: price * count)
+            _ = Game.player.collect(item: .init(type: item), count: count)
+            Game.player.removeItem(item: .coin, count: price * count)
         } else {
             MessageBox.message("You don't have enough coins!", speaker: .salesman(type: .buy))
         }
     }
     private static func sellItem(item: Item, count: Int, price: Int) {
         if Game.player.has(item: item, count: count) {
-            Game.player.remove(item: item, count: count)
-            Game.player.collect(item: .coin, count: price * count)
+            Game.player.removeItem(item: item.type, count: count)
+            _ = Game.player.collect(item: .init(type: .coin), count: price * count)
         } else {
             MessageBox.message("You don't have that much!", speaker: .salesman(type: .sell))
         }
@@ -105,7 +105,7 @@ extension SalesmanNPC {
                 break
         }
     }
-    private static func buyOption(options: inout [MessageOption], item: Item) {
+    private static func buyOption(options: inout [MessageOption], item: ItemType) {
         if let price = item.price {
             let newItem = MessageOption(label: "\(item.inventoryName); price: \(price) coin\(price > 1 ? "s" : "")", action: { buyItem(item: item, count: 1, price: price) })
             if !options.contains(where: { $0 != newItem}) {
