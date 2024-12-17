@@ -21,8 +21,6 @@ if Game.hasInited == false {
     mainGameLoop()
 }
 
-//TODO: make this work on linux and macos
-
 func endProgram() {
 //    let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
 //    if let filePath {
@@ -89,6 +87,7 @@ func mainGameLoop() {
                 MapBox.buildingMap.player.y = 2
                 MapBox.mapBox()
             case .p:
+                //TODO: move to status box
                 switch MapBox.mapType {
                     case .mainMap:
                         let x = MapBox.player.x
@@ -108,6 +107,9 @@ func mainGameLoop() {
                 } else {
                     MessageBox.message("tileType: \(tile.type.name), tileEvent: nil, isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType)", speaker: .dev)
                 }
+            case .zero:
+                Screen.clear()
+                Screen.initialize()
 
             default:
                 MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)

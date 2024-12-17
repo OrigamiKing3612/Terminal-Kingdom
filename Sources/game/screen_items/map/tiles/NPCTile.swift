@@ -1,10 +1,10 @@
 struct NPCTile: Codable, Equatable {
     let type: NPCTileType
-    
+
     init(type: NPCTileType) {
         self.type = type
     }
-    
+
     static func renderNPC(tile: NPCTile) -> String {
         switch tile.type {
             case .blacksmith where !Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith:
@@ -41,7 +41,7 @@ struct NPCTile: Codable, Equatable {
                 return "N".styled(with: .bold)
         }
     }
-    
+
     func talk() {
         switch self.type {
             case .blacksmith:
@@ -57,7 +57,7 @@ struct NPCTile: Codable, Equatable {
             case .carpenter_helper:
                 CarpenterHelperNPC.talk()
             case .king:
-                break
+                KingNPC.talk()
             case .salesman:
                 SalesmanNPC.talk()
             case .builder:

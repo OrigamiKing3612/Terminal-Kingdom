@@ -11,19 +11,28 @@ struct MineMap: MapBoxMap {
     }
 
     init() {
-        self.grid = Array(repeating: [], count: 2 * MapBox.q1Height).map { _ in
-            (0..<(2 * MapBox.q1Width)).map { _ in
-                let randomValue = Int.random(in: 1...100)
-                let tileType: MineTileType
-                if randomValue <= 70 {
-                    tileType = .clay
-                } else if randomValue <= 85 {
-                    tileType = .coal
-                } else {
-                    tileType = .iron
-                }
-                return MineTile(type: tileType)
+        let options: [MessageOption] = MineLevel.allCases.map { level in
+            return .init(label: "\(level.rawValue)", action: {})
+        }
+        let selectedOption = MessageBox.messageWithOptionsWithLabel("What level would you like to go to?", speaker: .game, options: options, label: "Level")
+        switch Int(selectedOption.label) {
+            case MineLevel.one.rawValue:
+                self.grid = Array(repeating: [], count: 2 * MapBox.q1Height).map { _ in
+                    (0..<(2 * MapBox.q1Width)).map { _ in
+                        let randomValue = Int.random(in: 1...100)
+                        let tileType: MineTileType
+                        if randomValue <= 70 {
+                            tileType = .clay
+                        } else if randomValue <= 85 {
+                            tileType = .coal
+                        } else {
+                            tileType = .iron
+                        }
+                        return MineTile(type: tileType)
+                    }
             }
+            default:
+                self.grid = Array(repeating: Array(repeating: .init(type: .plain), count: 2 * MapBox.q1Width), count: 2 * MapBox.q1Height)
         }
         self.width = grid[0].count + 1
         self.height = grid.count + 1

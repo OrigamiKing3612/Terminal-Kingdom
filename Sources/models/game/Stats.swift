@@ -9,7 +9,13 @@ struct Stats: Codable {
     nonisolated(unsafe) var medicalSkillLevel: SkillLevels = .zero
     nonisolated(unsafe) var carpentrySkillLevel: SkillLevels = .zero
     nonisolated(unsafe) var cookingSkillLevel: SkillLevels = .zero
-    nonisolated(unsafe) var mineLevel: MineLevel = .one
+    nonisolated(unsafe) var mineLevel: MineLevel = .one {
+        didSet {
+            if (mineLevel.rawValue < oldValue.rawValue) {
+                mineLevel = oldValue
+            }
+        }
+    }
 }
 
 enum AllSkillLevels: CaseIterable {
@@ -83,7 +89,7 @@ enum SkillLevels: Int, Codable {
     case ten = 10
 }
 
-enum MineLevel: Int, Codable {
+enum MineLevel: Int, Codable, CaseIterable {
     case one = 1
     case two = 2
 }

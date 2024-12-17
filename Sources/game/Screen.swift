@@ -93,52 +93,52 @@ struct Screen {
 }
 
 extension MapBox {
-    static let q1StartX = (Screen.columns / 2)
-    static let q1EndX = Screen.columns
+    static var q1StartX: Int { (Screen.columns / 2) }
+    static var q1EndX: Int { Screen.columns }
     static var q1Width: Int {
         abs((Screen.columns / 2) - 3)
     }
 
-    static let q1StartY = 1
-    static let q1EndY = Screen.rows / 2
+    static var q1StartY: Int { 1 }
+    static var q1EndY: Int { Screen.rows / 2 }
     static var q1Height: Int {
         abs((Screen.rows / 2) - 2)
     }
 }
 
 extension MessageBox {
-    static let q2StartX = 0
-    static let q2EndX = Screen.columns / 2
-    static let q2Width = q2EndX - q2StartX
+    static var q2StartX: Int { 0 }
+    static var q2EndX: Int { Screen.columns / 2 }
+    static var q2Width: Int { q2EndX - q2StartX }
 
-    static let q2StartY = 1
-    static let q2EndY = Screen.rows / 2
-    static let q2Height = q2EndY - q2StartY
+    static var q2StartY: Int { 1 }
+    static var q2EndY: Int { Screen.rows / 2 }
+    static var q2Height: Int { q2EndY - q2StartY }
 }
 
 extension InventoryBox {
-    static let q3StartX = 0
-    static let q3EndX = (Screen.columns / 2)
+    static var q3StartX: Int { 0 }
+    static var q3EndX: Int { (Screen.columns / 2) }
     static var q3Width: Int {
         abs((Screen.columns / 2) - 3)
     }
 
-    static let q3StartY = (Screen.rows / 2) + 1
-    static let q3EndY = Screen.rows - 1
+    static var q3StartY: Int { (Screen.rows / 2) + 1 }
+    static var q3EndY: Int { Screen.rows - 1 }
     static var q3Height: Int {
         abs((Screen.rows / 2) - 2)
     }
 }
 
 extension StatusBox {
-    static let q4StartX = (Screen.columns / 2)
-    static let q4EndX = Screen.columns - 1
+    static var q4StartX: Int { (Screen.columns / 2) }
+    static var q4EndX: Int { Screen.columns - 1 }
     static var q4Width: Int {
         abs((Screen.columns / 2) - 3)
     }
 
-    static let q4StartY = (Screen.rows / 2)
-    static let q4EndY = Screen.rows - 1
+    static var q4StartY: Int { (Screen.rows / 2) }
+    static var q4EndY: Int { Screen.rows - 1 }
     static var q4Height: Int {
         abs((Screen.rows / 2) - 2)
     }

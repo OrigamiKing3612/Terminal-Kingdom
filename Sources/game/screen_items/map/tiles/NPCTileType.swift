@@ -7,7 +7,7 @@ enum NPCTileType: Codable, Equatable {
     case carpenter_helper
     case farmer
     case farmer_helper
-    
+
     case king
     case salesman(type: SalesmanType)
     case builder
@@ -18,7 +18,7 @@ enum NPCTileType: Codable, Equatable {
     case doctor
     case chef
     case potter
-    
+
     var render: String {
         switch self {
             case .king: return "King Randolph"
@@ -34,7 +34,7 @@ enum NPCTileType: Codable, Equatable {
             case .carpenter: return "Carpenter"
             case .chef: return "Chef"
             case .potter: return "Potter"
-                
+
             case .blacksmith_helper: return "Blacksmith Helper"
             case .mine_helper: return "Miner Helper"
             case .carpenter_helper: return "Carpenter Helper"
@@ -47,7 +47,7 @@ enum MessageSpeakers {
     case player //TODO: do I need this
     case game
     case dev
-    
+
     var render: String {
         switch self {
             case .player: return Game.player.name

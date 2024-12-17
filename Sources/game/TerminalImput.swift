@@ -102,13 +102,7 @@ struct TerminalInput {
                 default: return .unknown
             }
         } else if buffer[0] >= 32 && buffer[0] <= 126 { // Printable characters
-            let char = Character(UnicodeScalar(buffer[0]))
-
-            if char.isUppercase {
-                return KeyboardKeys(rawValue: String(char).capitalized) ?? .unknown
-            } else {
-                return KeyboardKeys(rawValue: String(char).lowercased()) ?? .unknown
-            }
+            return KeyboardKeys(rawValue: String(UnicodeScalar(buffer[0]))) ?? .unknown
         }
 
         return .unknown

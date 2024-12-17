@@ -6,10 +6,10 @@ struct MessageBox {
 
     static func messageBox() {
         Screen.print(x: q2StartX, y: q2StartY, String(repeating: "=", count: q2Width))
-        
+
         let maxVisibleLines = q2Height - 2
         var renderedLines: [String] = []
-        
+
         for message in messages {
             if message.count >= q2Width - 1 {
                 var currentLineStart = message.startIndex
@@ -23,37 +23,37 @@ struct MessageBox {
                 renderedLines.append(message)
             }
         }
-        
+
         if renderedLines.count > maxVisibleLines {
             let overflow = renderedLines.count - maxVisibleLines
             renderedLines.removeFirst(overflow)
         }
-        
+
         var currentY = q2StartY + 1
         for line in renderedLines {
             Screen.print(x: q2StartX + 2, y: currentY, line)
             currentY += 1
         }
-        
+
         for y in currentY..<q2EndY {
             Screen.print(x: q2StartX + 1, y: y, String(repeating: " ", count: q2Width - 2))
         }
-        
+
         for y in (q2StartY + 1)..<q2EndY {
             Screen.print(x: q2StartX, y: y, "|")
             Screen.print(x: q2EndX, y: y, "|")
         }
-        
+
         Screen.print(x: q2StartX, y: q2EndY, String(repeating: "=", count: q2Width))
     }
-    
+
     static func clear() {
         let blankLine = String(repeating: " ", count: q2Width - 2)
         for y in (q2StartY + 1)..<q2EndY {
             Screen.print(x: q2StartX + 1, y: y, blankLine)
         }
     }
-    
+
     static func message(_ text: String, speaker: MessageSpeakers) {
         message(text, speaker: speaker.render)
     }
@@ -144,7 +144,7 @@ struct MessageBox {
                 if (input.count > 20) {
                     input.removeLast()
                 }
-                
+
                 updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: .game)
             }
         }
@@ -177,7 +177,7 @@ struct MessageBox {
         guard !options.isEmpty else {
             return MessageOption(label: "Why did you this?", action: {})
         }
-        
+
         hideAllBoxes(inventoryBox: hideInventoryBox)
         Game.setIsTypingInMessageBox(true)
 
@@ -185,7 +185,7 @@ struct MessageBox {
             showAllBoxes
             Game.setIsTypingInMessageBox(false)
         }
-        
+
         let typingIcon = ">".styled(with: .bold)
         var newText = text
         if !Game.startingVillageChecks.hasUsedMessageWithOptions {
@@ -193,9 +193,9 @@ struct MessageBox {
             Game.startingVillageChecks.hasUsedMessageWithOptions = true
         }
         message(newText, speaker: speaker)
-        
+
         var selectedOptionIndex: Int = 0
-        
+
         var messageToPrint = ""
         for (index, option) in options.enumerated() {
             let selected = (index == selectedOptionIndex) ? typingIcon : " "
@@ -208,9 +208,9 @@ struct MessageBox {
                 let selected = (index == selectedOptionIndex) ? typingIcon : " "
                 messageToPrint += "   \(selected)\(index + 1). \(option.label)"
             }
-            
+
             updateLastMessage(newMessage: messageToPrint, speaker: .game)
-            
+
             let key = TerminalInput.readKey()
             switch key {
                 case .up, .left:
@@ -230,13 +230,76 @@ struct MessageBox {
             }
         }
     }
-    
+    static func messageWithOptionsWithLabel(_ text: String, speaker: MessageSpeakers, options: [MessageOption], hideInventoryBox: Bool = true, label: String) -> MessageOption {
+        messageWithOptionsWithLabel(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox, label: label)
+    }
+    static func messageWithOptionsWithLabel(_ text: String, speaker: NPCTileType, options: [MessageOption], hideInventoryBox: Bool = true, label: String) -> MessageOption {
+        messageWithOptionsWithLabel(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox, label: label)
+    }
+    private static func messageWithOptionsWithLabel(_ text: String, speaker: String, options: [MessageOption], hideInventoryBox: Bool, label: String) -> MessageOption {
+        guard !options.isEmpty else {
+            return MessageOption(label: "Why did you this?", action: {})
+        }
+
+        hideAllBoxes(inventoryBox: hideInventoryBox)
+        Game.setIsTypingInMessageBox(true)
+
+        defer {
+            showAllBoxes
+            Game.setIsTypingInMessageBox(false)
+        }
+
+        let typingIcon = ">".styled(with: .bold)
+        var newText = text
+        if !Game.startingVillageChecks.hasUsedMessageWithOptions {
+            newText += " (Use your arrow keys to select an option)".styled(with: .bold)
+            Game.startingVillageChecks.hasUsedMessageWithOptions = true
+        }
+        message(newText, speaker: speaker)
+
+        var selectedOptionIndex: Int = 0
+
+        var messageToPrint = ""
+        for (index, option) in options.enumerated() {
+            let selected = (index == selectedOptionIndex) ? typingIcon : " "
+            messageToPrint += "   \(selected)\(index + 1). \(option.label)"
+        }
+        message(messageToPrint, speaker: .game)
+        while true {
+            var messageToPrint = ""
+            for (index, option) in options.enumerated() {
+                let selected = (index == selectedOptionIndex) ? typingIcon : " "
+                messageToPrint += "   \(selected)\(index + 1). \(label) \(option.label)"
+            }
+
+            updateLastMessage(newMessage: messageToPrint, speaker: .game)
+
+            let key = TerminalInput.readKey()
+            switch key {
+                case .up, .left:
+                    if selectedOptionIndex > 0 {
+                        selectedOptionIndex -= 1
+                    }
+                case .down, .right:
+                    if selectedOptionIndex < options.count - 1 {
+                        selectedOptionIndex += 1
+                    }
+                case .enter:
+                    removeLastMessage()
+                    updateLastMessage(newMessage: "\(text) - \(options[selectedOptionIndex].label)", speaker: speaker)
+                    return options[selectedOptionIndex]
+                default:
+                    break
+            }
+        }
+    }
+
     static var showAllBoxes: Void {
         MapBox.showMapBox = true
         InventoryBox.showInventoryBox = true
         StatusBox.showStatusBox = true
     }
-    
+
     static func hideAllBoxes(mapBox: Bool = true, inventoryBox: Bool = true, statusBox: Bool = true) {
         if mapBox {
             MapBox.showMapBox = false
@@ -253,7 +316,7 @@ struct MessageBox {
 struct MessageOption: Equatable {
     let label: String
     let action: () -> Void
-    
+
     static func == (lhs: MessageOption, rhs: MessageOption) -> Bool {
         lhs.label == rhs.label
     }

@@ -123,6 +123,7 @@ struct MinerNPC {
                     MessageBox.message("Thank you for getting the lumber! Now we can upgrade the mine.", speaker: .miner)
                     Game.player.remove(item: .lumber, count: 50)
                     Game.player.remove(item: .axe)
+                    Game.player.stats.mineLevel = .two
                     Game.stages.mine.stage3Stages = .done
                 } else {
                     MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .lumber) - 50)) lumber.", speaker: .miner)
