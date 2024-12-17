@@ -8,7 +8,7 @@ struct RandomEventStuff {
         switch Game.startingVillageChecks.hasBeenTaughtToChopLumber {
             case .no:
                 MessageBox.message("Here is what you need to do, take this axe and walk up to a tree and press the '\("i".styled(with: .bold))' key, the \("spacebar".styled(with: .bold)), or the \("enter".styled(with: .bold)) key to chop it down. Please go get 10 lumber and bring it to me to show me you can do it.", speaker: speaker)
-                Game.stages.random.chopTreeAxeUUIDToRemove = Game.player.collectIfNotPresent(item: .init(type: .axe, canBeSold: false))
+                Game.stages.random.chopTreeAxeUUIDToRemove = Game.player.collectIfNotPresent(item: .init(type: .axe(type: .init()), canBeSold: false))
                 StatusBox.quest(.chopLumber(for: choppingLumberTeachingDoorTypes.name))
                 Game.startingVillageChecks.hasBeenTaughtToChopLumber = .inProgress(by: choppingLumberTeachingDoorTypes)
             case .inProgress(by: choppingLumberTeachingDoorTypes):

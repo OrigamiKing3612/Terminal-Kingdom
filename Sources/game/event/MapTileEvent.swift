@@ -6,7 +6,7 @@ enum MapTileEvent: TileEvent {
     case collectCrop
     //    case collectItem(item: String)
     //    case combat(enemy: String)
-    
+
     static func trigger(event: MapTileEvent) {
         switch event {
             case .openDoor(tile: let doorTile):
@@ -14,7 +14,7 @@ enum MapTileEvent: TileEvent {
                     OpenDoorEvent.openDoor(doorTile: doorTile)
                 }
             case .chopTree:
-                if Game.player.has(item: .axe) {
+                if Game.player.hasAxe() {
                     ChopTreeEvent.chopTree()
                 } else {
                     MessageBox.message("Ouch!", speaker: .game)

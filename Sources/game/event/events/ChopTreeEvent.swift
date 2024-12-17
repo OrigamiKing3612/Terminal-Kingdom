@@ -9,6 +9,7 @@ struct ChopTreeEvent {
 
             let lumberCount = Int.random(in: 1...3)
             _ = Game.player.collect(item: .init(type: .lumber), count: lumberCount)
+            Game.player.removeDurability(of: .axe)
         }
     }
 }

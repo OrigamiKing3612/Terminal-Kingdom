@@ -35,6 +35,14 @@ struct PlayerCharacter: Codable {
         }
         return false
     }
+    func hasAxe() -> Bool {
+        for item in items {
+            if case .axe = item.type {
+                return true
+            }
+        }
+        return false
+    }
 
     func has(item: ItemType, count: Int) -> Bool {
         items.filter { $0.type == item }.count >= count
@@ -66,7 +74,7 @@ struct PlayerCharacter: Codable {
     }
 
     enum RemoveDurabilityTypes {
-        case pickaxe
+        case pickaxe, axe
     }
 
     mutating func removeDurability(of itemType: RemoveDurabilityTypes, count: Int = 1, amount: Int = 1) {
@@ -76,6 +84,17 @@ struct PlayerCharacter: Codable {
                     if case .pickaxe(type: let type) = item.type {
                         if type.durability > amount {
                             let newItem: Item = .init(id: item.id, type: .pickaxe(type: .init(durability: type.durability - amount)), canBeSold: item.canBeSold)
+                            updateItem(at: index, newItem)// Decrease durability
+                        } else {
+                            removeItem(at: index) // Remove if durability reaches 0
+                        }
+                    }
+                }
+            case .axe:
+                for (index, item) in items.enumerated() {
+                    if case .axe(type: let type) = item.type {
+                        if type.durability > amount {
+                            let newItem: Item = .init(id: item.id, type: .axe(type: .init(durability: type.durability - amount)), canBeSold: item.canBeSold)
                             updateItem(at: index, newItem)// Decrease durability
                         } else {
                             removeItem(at: index) // Remove if durability reaches 0

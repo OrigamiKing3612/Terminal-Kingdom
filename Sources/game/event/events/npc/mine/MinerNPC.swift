@@ -123,7 +123,7 @@ struct MinerNPC {
         switch Game.stages.mine.stage3Stages {
             case .notStarted:
                 MessageBox.message("We need 50 lumber to upgrade the mine to be able to mine more stuff. Can you please go get 50 lumber and bring it back to me?", speaker: .miner)
-                Game.stages.mine.stage3AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe, canBeSold: false))
+                Game.stages.mine.stage3AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
                 StatusBox.quest(.mine3)
                 Game.stages.mine.stage3Stages = .collect
             case .collect:
