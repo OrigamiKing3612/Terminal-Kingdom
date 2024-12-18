@@ -13,7 +13,7 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
     case carpenter
     case restaurant
     case potter
-    
+
     var name: String {
         switch self {
             case .castle:
@@ -52,26 +52,26 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
             case .castle(let side):
                 switch side {
                     case .top:
-                        return (x: 66, y: 24)
+                        return (x: 243, y: 119)
                     case .right:
-                        return (x: 73, y: 28)
+                        return (x: 250, y: 123)
                     case .bottom:
-                        return (x: 66, y: 32)
+                        return (x: 243, y: 127)
                     case .left:
-                        return (x: 59, y: 28)
+                        return (x: 236, y: 123)
                 }
             case .blacksmith:
-                return (x: 90, y: 35)
+                return (x: 267, y: 130)
             case .mine:
-                return (x: 39, y: 39)
+                return (x: 216, y: 124)
             case .shop:
-                return (x: 100, y: 21)
+                return (x: 277, y: 116)
             case .builder:
-                return (x: 125, y: 28)
+                return (x: 302, y: 123)
             case .hunting_area:
-                return (x: 56, y: 45)
+                return (x: 233, y: 140)
             case .inventor:
-                return (x: 96, y: 13)
+                return (x: 273, y: 108)
             case .house:
                 print("house coordinatesForStartingVillageBuildings not set")
                 return (x: 1000, y: 1000)
@@ -81,19 +81,19 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
             case .farm(let type):
                 switch type {
                     case .main:
-                        return (x: 52, y: 10)
+                        return (x: 229, y: 105)
                     case .farm_area:
-                        return (x: 52, y: 6)
+                        return (x: 231, y: 101)
                 }
             case .hospital(side: let side):
                 switch side {
                     case .top:
-                        return (x: 19, y: 21)
+                        return (x: 196, y: 116)
                     case .bottom:
-                        return (x: 19, y: 34)
+                        return (x: 196, y: 129)
                 }
             case .carpenter:
-                return (x: 120, y: 41)
+                return (x: 279, y: 136)
             case .restaurant:
                 print("restaurant coordinatesForStartingVillageBuildings not set")
                 return (x: 1000, y: 1000)

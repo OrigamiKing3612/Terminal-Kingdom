@@ -2,21 +2,21 @@ struct BuildingMap: MapBoxMap {
     var grid: [[MapTile]]
     var width: Int
     var height: Int
-    
+
     private var hasUpdatedDims = false
     var player: Player = Player(x: 1, y: 1)
-    
+
     var tilePlayerIsOn: MapTile {
         grid[player.y][player.x]
     }
-    
+
     init(_ mapType: MapType) {
         self.grid = StaticMaps.buildingMap(for: StaticMaps.mapTypeToBuilding(mapType: mapType))
-        
+
         self.width = grid[0].count + 1
         self.height = grid.count + 1
 
-        // Coordinates for the castle
+        // Coordinates for inside the building
         if case .castle(side: let side) = mapType {
             switch side {
                 case .top:
@@ -44,7 +44,7 @@ struct BuildingMap: MapBoxMap {
             findPayerStart()
         }
     }
-    
+
     private mutating func findPayerStart() {
         if let (startX, startY) = MapTile.findTilePosition(of: .playerStart, in: grid) {
             player.x = startX
@@ -53,38 +53,38 @@ struct BuildingMap: MapBoxMap {
             print("Error: Could not find playerStart tile in the building grid.")
         }
     }
-    
+
     mutating func map() {
         if !hasUpdatedDims {
             self.updateDimensions(width: MapBox.q1Width, height: MapBox.q1Height)
             hasUpdatedDims = true
         }
-        
+
         let viewportWidth = MapBox.q1Width + 1
         let viewportHeight = MapBox.q1Height
         self.render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
     }
-    
+
     mutating func updateDimensions(width: Int, height: Int) {
         self.width = width
         self.height = height
     }
-    
+
     func isWalkable(x: Int, y: Int) -> Bool {
         guard x >= 0, y >= 0, y < grid.count, x < grid[y].count else { return false }
         return grid[y][x].isWalkable
     }
-    
+
     func render(playerX: Int, playerY: Int, viewportWidth: Int, viewportHeight: Int) {
         let halfViewportWidth = viewportWidth / 2
         let halfViewportHeight = viewportHeight / 2
-        
+
         let startX = max(0, playerX - halfViewportWidth)
         let startY = max(0, playerY - halfViewportHeight)
-        
+
         let endX = min(grid[0].count, startX + viewportWidth)
         let endY = min(grid.count, startY + viewportHeight)
-        
+
         for (screenY, mapY) in (startY..<endY).enumerated() {
             var rowString = ""
             for mapX in startX..<endX {
@@ -100,7 +100,7 @@ struct BuildingMap: MapBoxMap {
     mutating func movePlayer(_ direction: Direction) {
         let oldX = player.x
         let oldY = player.y
-        
+
         switch direction {
             case .up where isWalkable(x: player.x, y: player.y - 1):
                 player.y -= 1
@@ -113,7 +113,7 @@ struct BuildingMap: MapBoxMap {
             default:
                 break
         }
-        
+
         if oldX != player.x || oldY != player.y {
             map()
         }
