@@ -1,6 +1,14 @@
 [
   [
     {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+
+        }
+      }
+    },
+    {
       "type" : {
         "building" : {
 
@@ -39,14 +47,6 @@
 
         }
       }
-    },
-    {
-      "type" : {
-        "building" : {
-
-        }
-      },
-      "isWalkable" : false
     },
     {
       "isWalkable" : false,
@@ -59,28 +59,12 @@
   ],
   [
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      }
-    },
-    {
-      "isWalkable" : true,
-      "type" : {
-        "plain" : {
-
-        }
-      }
-    },
-    {
-      "isWalkable" : true,
-      "type" : {
-        "plain" : {
-
-        }
-      }
+      },
+      "isWalkable" : false
     },
     {
       "type" : {
@@ -108,6 +92,22 @@
     },
     {
       "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "isWalkable" : true,
+      "type" : {
+        "plain" : {
+
+        }
+      }
+    },
+    {
+      "type" : {
         "building" : {
 
         }
@@ -125,36 +125,36 @@
       "isWalkable" : false
     },
     {
-      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      }
+      },
+      "isWalkable" : true
     },
     {
-      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      }
+      },
+      "isWalkable" : true
     },
     {
-      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      }
+      },
+      "isWalkable" : true
     },
     {
+      "isWalkable" : true,
       "type" : {
         "playerStart" : {
 
         }
-      },
-      "isWalkable" : true
+      }
     },
     {
       "type" : {
@@ -165,30 +165,30 @@
       "isWalkable" : true
     },
     {
-      "event" : {
-        "openDoor" : {
+      "type" : {
+        "door" : {
           "tile" : {
-            "isPartOfPlayerVillage" : false,
             "level" : 1,
             "type" : {
               "potter" : {
 
               }
-            }
+            },
+            "isPartOfPlayerVillage" : false
           }
         }
       },
       "isWalkable" : true,
-      "type" : {
-        "door" : {
+      "event" : {
+        "openDoor" : {
           "tile" : {
-            "isPartOfPlayerVillage" : false,
-            "level" : 1,
             "type" : {
               "potter" : {
 
               }
-            }
+            },
+            "isPartOfPlayerVillage" : false,
+            "level" : 1
           }
         }
       }
@@ -196,12 +196,12 @@
   ],
   [
     {
+      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      },
-      "isWalkable" : false
+      }
     },
     {
       "type" : {
@@ -220,28 +220,28 @@
       "isWalkable" : true
     },
     {
+      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      },
-      "isWalkable" : true
+      }
     },
     {
+      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      },
-      "isWalkable" : true
+      }
     },
     {
+      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      },
-      "isWalkable" : true
+      }
     },
     {
       "isWalkable" : false,
@@ -270,14 +270,6 @@
       }
     },
     {
-      "type" : {
-        "building" : {
-
-        }
-      },
-      "isWalkable" : false
-    },
-    {
       "isWalkable" : false,
       "type" : {
         "building" : {
@@ -294,20 +286,28 @@
       "isWalkable" : false
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      }
+      },
+      "isWalkable" : false
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      }
+      },
+      "isWalkable" : false
+    },
+    {
+      "type" : {
+        "building" : {
+
+        }
+      },
+      "isWalkable" : false
     }
   ]
 ]

@@ -1,12 +1,12 @@
 [
   [
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      }
+      },
+      "isWalkable" : false
     },
     {
       "type" : {
@@ -33,28 +33,28 @@
       "isWalkable" : false
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      }
+      },
+      "isWalkable" : false
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      }
+      },
+      "isWalkable" : false
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      }
+      },
+      "isWalkable" : false
     }
   ],
   [
@@ -75,12 +75,12 @@
       }
     },
     {
+      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      },
-      "isWalkable" : true
+      }
     },
     {
       "type" : {
@@ -107,22 +107,22 @@
       }
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      }
+      },
+      "isWalkable" : false
     }
   ],
   [
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      }
+      },
+      "isWalkable" : false
     },
     {
       "type" : {
@@ -141,12 +141,12 @@
       "isWalkable" : true
     },
     {
-      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      }
+      },
+      "isWalkable" : true
     },
     {
       "type" : {
@@ -157,37 +157,37 @@
       "isWalkable" : true
     },
     {
-      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      }
+      },
+      "isWalkable" : true
     },
     {
+      "event" : {
+        "openDoor" : {
+          "tile" : {
+            "isPartOfPlayerVillage" : false,
+            "type" : {
+              "hunting_area" : {
+
+              }
+            },
+            "level" : 1
+          }
+        }
+      },
       "isWalkable" : true,
       "type" : {
         "door" : {
           "tile" : {
+            "level" : 1,
             "type" : {
               "hunting_area" : {
 
               }
             },
-            "level" : 1,
-            "isPartOfPlayerVillage" : false
-          }
-        }
-      },
-      "event" : {
-        "openDoor" : {
-          "tile" : {
-            "type" : {
-              "hunting_area" : {
-
-              }
-            },
-            "level" : 1,
             "isPartOfPlayerVillage" : false
           }
         }
@@ -236,20 +236,20 @@
       "isWalkable" : true
     },
     {
-      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      }
+      },
+      "isWalkable" : true
     },
     {
+      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      },
-      "isWalkable" : false
+      }
     }
   ],
   [
@@ -270,20 +270,20 @@
       "isWalkable" : false
     },
     {
-      "type" : {
-        "building" : {
-
-        }
-      },
-      "isWalkable" : false
-    },
-    {
       "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
       }
+    },
+    {
+      "type" : {
+        "building" : {
+
+        }
+      },
+      "isWalkable" : false
     },
     {
       "isWalkable" : false,

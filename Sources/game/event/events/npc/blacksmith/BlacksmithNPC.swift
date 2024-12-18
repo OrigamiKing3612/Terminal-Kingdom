@@ -18,30 +18,29 @@ struct BlacksmithNPC {
         } else {
             if Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith == false {
                 Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith = true
-            }
-            if Game.stages.blacksmith.stageNumber == 0 {
+                Game.stages.blacksmith.next()
                 let options: [MessageOption] = [
                     .init(label: "Yes", action: {}),
                     .init(label: "No", action: {}),
                 ]
-                let selectedOption = MessageBox.messageWithOptions(
-                    "Hello \(Game.player.name)! Would you like to learn how to be a blacksmith?",
-                    speaker: .blacksmith, options: options)
-                if selectedOption.label == "Yes" {
-                    stage1()
-                } else {
+                let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to be a blacksmith?", speaker: .blacksmith, options: options)
+                if selectedOption.label != "Yes" {
                     return
                 }
-            } else if Game.stages.blacksmith.stageNumber == 1 {
-                stage1()
             }
+            getStage()
         }
     }
-    
+
     static func getStage() {
-        //TODO: Get stage
+       switch Game.stages.blacksmith.stageNumber {
+           case 1:
+               stage1()
+           default:
+               break
+       }
     }
-    
+
     static func stage1() {
         Game.stages.blacksmith.stage = .inProgress
         switch Game.stages.blacksmith.stage1Stages {
@@ -58,13 +57,16 @@ struct BlacksmithNPC {
                         Game.player.removeItem(id: ironUUID)
                     }
                     StatusBox.removeQuest(quest: .blacksmith1)
-                    MessageBox.message("WHAT SHOULD I DO AFTER THIS?", speaker: .game)
+                    Game.stages.blacksmith.stage1Stages = .done
+                    fallthrough
                 } else {
                     MessageBox.message("Somehow do don't have iron.", speaker: .blacksmith)
                 }
-                Game.stages.blacksmith.stage1Stages = .done
             case .done:
-                break
+                Game.stages.blacksmith.next()
+                if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+                    getStage()
+                }
         }
     }
 }

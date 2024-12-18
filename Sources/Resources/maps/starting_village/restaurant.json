@@ -1,12 +1,20 @@
 [
   [
     {
+      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      },
-      "isWalkable" : false
+      }
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+
+        }
+      }
     },
     {
       "type" : {
@@ -47,14 +55,6 @@
         }
       },
       "isWalkable" : false
-    },
-    {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-
-        }
-      }
     }
   ],
   [
@@ -62,14 +62,6 @@
       "isWalkable" : false,
       "type" : {
         "building" : {
-
-        }
-      }
-    },
-    {
-      "isWalkable" : true,
-      "type" : {
-        "plain" : {
 
         }
       }
@@ -91,9 +83,43 @@
       "isWalkable" : true
     },
     {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
       "isWalkable" : true,
       "type" : {
         "plain" : {
+
+        }
+      }
+    },
+    {
+      "isWalkable" : true,
+      "type" : {
+        "plain" : {
+
+        }
+      }
+    },
+    {
+      "type" : {
+        "building" : {
+
+        }
+      },
+      "isWalkable" : false
+    }
+  ],
+  [
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
 
         }
       }
@@ -108,37 +134,11 @@
     },
     {
       "type" : {
-        "building" : {
-
-        }
-      },
-      "isWalkable" : false
-    }
-  ],
-  [
-    {
-      "type" : {
-        "building" : {
-
-        }
-      },
-      "isWalkable" : false
-    },
-    {
-      "isWalkable" : true,
-      "type" : {
         "plain" : {
 
         }
-      }
-    },
-    {
-      "isWalkable" : true,
-      "type" : {
-        "plain" : {
-
-        }
-      }
+      },
+      "isWalkable" : true
     },
     {
       "isWalkable" : true,
@@ -157,41 +157,41 @@
       "isWalkable" : true
     },
     {
+      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      },
-      "isWalkable" : true
+      }
     },
     {
-      "event" : {
-        "openDoor" : {
-          "tile" : {
-            "isPartOfPlayerVillage" : false,
-            "level" : 1,
-            "type" : {
-              "restaurant" : {
-
-              }
-            }
-          }
-        }
-      },
-      "isWalkable" : true,
       "type" : {
         "door" : {
           "tile" : {
-            "isPartOfPlayerVillage" : false,
             "level" : 1,
             "type" : {
               "restaurant" : {
 
               }
-            }
+            },
+            "isPartOfPlayerVillage" : false
           }
         }
-      }
+      },
+      "event" : {
+        "openDoor" : {
+          "tile" : {
+            "level" : 1,
+            "type" : {
+              "restaurant" : {
+
+              }
+            },
+            "isPartOfPlayerVillage" : false
+          }
+        }
+      },
+      "isWalkable" : true
     }
   ],
   [
@@ -220,12 +220,12 @@
       "isWalkable" : true
     },
     {
+      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      },
-      "isWalkable" : true
+      }
     },
     {
       "type" : {
@@ -236,32 +236,24 @@
       "isWalkable" : true
     },
     {
+      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      },
-      "isWalkable" : true
+      }
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      }
+      },
+      "isWalkable" : false
     }
   ],
   [
     {
-      "type" : {
-        "building" : {
-
-        }
-      },
-      "isWalkable" : false
-    },
-    {
       "isWalkable" : false,
       "type" : {
         "building" : {
@@ -278,6 +270,14 @@
       "isWalkable" : false
     },
     {
+      "type" : {
+        "building" : {
+
+        }
+      },
+      "isWalkable" : false
+    },
+    {
       "isWalkable" : false,
       "type" : {
         "building" : {
@@ -286,12 +286,12 @@
       }
     },
     {
+      "isWalkable" : false,
       "type" : {
         "building" : {
 
         }
-      },
-      "isWalkable" : false
+      }
     },
     {
       "isWalkable" : false,

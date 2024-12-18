@@ -25,9 +25,7 @@ struct BlacksmithStages: Codable {
 
 struct MineStages: Codable {
     private(set) var stageNumber = 0
-    var isDone: Bool {
-        return stageNumber > 10
-    }
+    var isDone: Bool { stageNumber > 10 }
     var stage1PickaxeUUIDToRemove: UUID?
     var stage2PickaxeUUIDToRemove: UUID?
     var stage3AxeUUIDToRemove: UUID?
