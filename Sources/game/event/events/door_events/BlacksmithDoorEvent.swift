@@ -18,7 +18,3 @@ struct BlacksmithDoorEvent {
         //TODO: upgrade building
     }
 }
-
-enum BlacksmithStage1Stages: Codable {
-    case notStarted, goToMine, bringItBack, done
-}

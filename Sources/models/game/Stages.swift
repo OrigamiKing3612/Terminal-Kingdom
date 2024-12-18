@@ -14,9 +14,11 @@ struct RandomStages: Codable {
 
 struct BlacksmithStages: Codable {
     private(set) var stageNumber = 0
-    var stage: DoorStages = .no
-    var stage1AIronUUIDToRemove: UUID?
+    var stage1AIronUUIDsToRemove: [UUID]?
+    var stage2AxeUUIDToRemove: UUID?
+
     var stage1Stages: BlacksmithStage1Stages = .notStarted
+    var stage2Stages: BlacksmithStage2Stages = .notStarted
 
     mutating func next() {
         stageNumber += 1

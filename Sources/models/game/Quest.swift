@@ -3,6 +3,7 @@ enum Quest: Codable, Equatable {
 
     //MARK: Blacksmith
     case blacksmith1
+    case blacksmith2
 
     //MARK: Mine
     case mine1
@@ -26,6 +27,8 @@ enum Quest: Codable, Equatable {
                 }
             case .blacksmith1:
                 return "Go get iron from the Mine and bring it to the blacksmith"
+            case .blacksmith2:
+                return "Go get 20 lumber and band ring it to the blacksmith"
             case .mine1:
                 return "Get a pickaxe from the blacksmith and bring it to the Miner"
             case .mine2:

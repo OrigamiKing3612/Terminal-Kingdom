@@ -6,7 +6,7 @@ enum MapTileEvent: TileEvent {
     case collectCrop
     //    case collectItem(item: String)
     //    case combat(enemy: String)
-    
+
     static func trigger(event: MapTileEvent) {
         switch event {
             case .openDoor(tile: let doorTile):
@@ -54,8 +54,4 @@ enum MapTileEvent: TileEvent {
                 return "collectCrop"
         }
     }
-}
-
-enum DoorStages: Codable {
-    case no, inProgress, done
 }

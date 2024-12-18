@@ -6,7 +6,7 @@ struct MinerNPC {
         if Game.stages.blacksmith.stage1Stages == .goToMine {
             MessageBox.message("Ah, here you are. This is the iron the \("Blacksmith".styled(with: .bold)) needs.", speaker: .miner)
             Game.stages.blacksmith.stage1Stages = .bringItBack
-            Game.stages.blacksmith.stage1AIronUUIDToRemove = Game.player.collect(item: .init(type: .iron, canBeSold: false))
+            Game.stages.blacksmith.stage1AIronUUIDsToRemove = Game.player.collect(item: .init(type: .iron, canBeSold: false), count: 5)
         } else {
             getStage()
         }
