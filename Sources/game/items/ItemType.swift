@@ -47,21 +47,17 @@ enum ItemType: Codable, Equatable, Hashable {
     var price: Int? {
         switch self {
             case .sword: return 10
-            case .axe: return 10
-            case .pickaxe(_): return 10
+            case .axe(let type): return (type.durability / 11) * 2
+            case .pickaxe(let type): return (type.durability / 10) * 2
             case .boomerang: return 10
             case .backpack(_): return 10
             case .lumber: return 1
             case .iron: return 5
             case .coal: return 2
-            case .gold: return nil
             case .stone: return 5
             case .tree_seed: return 1
-            case .door(_): return nil
-            case .fence: return nil
-            case .gate: return nil
-            case .coin: return nil
             case .clay: return 2
+            default: return nil
         }
     }
 }

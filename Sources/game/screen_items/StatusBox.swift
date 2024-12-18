@@ -1,4 +1,5 @@
 struct StatusBox {
+    static private(set) nonisolated(unsafe) var updateQuestBox = false
     static var quests: [Quest] {
         Game.player.quests
     }
@@ -36,8 +37,12 @@ struct StatusBox {
         abs((q4StartY + 1) - 2)
     }
 
+    static func questBoxUpdate() {
+        updateQuestBox = true
+    }
 
     static func statusBox() {
+        updateQuestBox = false
         clear()
 
         Screen.print(x: q4StartX, y: q4StartY, String(repeating: "=", count: q4Width + 3))

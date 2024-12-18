@@ -6,7 +6,7 @@ struct ChopTreeEvent {
         let y = MapBox.player.y
         if MapBox.mainMap.grid[y][x].type == .tree {
             MapBox.mainMap.grid[y][x] = MapTile(type: .plain)
-
+            
             let lumberCount = Int.random(in: 1...3)
             _ = Game.player.collect(item: .init(type: .lumber), count: lumberCount)
             Game.player.removeDurability(of: .axe)

@@ -12,7 +12,9 @@ struct BlacksmithNPC {
             MessageBox.message("Here you are. Here is your axe.", speaker: .blacksmith)
             Game.stages.mine.stage6AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe(type: .init(durability: 100)), canBeSold: false))
             Game.stages.mine.stage6Stages = .collect
-
+        } else if Game.stages.mine.stage8Stages == .getPickaxe {
+            MessageBox.message("Here you are. Here is your gift.", speaker: .blacksmith)
+            Game.stages.mine.stage8PickaxeUUID = Game.player.collect(item: .init(type: .pickaxe(type: .init(durability: 1_000)), canBeSold: true))
         } else {
             if Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith == false {
                 Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith = true
@@ -35,11 +37,11 @@ struct BlacksmithNPC {
             }
         }
     }
-
+    
     static func getStage() {
         //TODO: Get stage
     }
-
+    
     static func stage1() {
         Game.stages.blacksmith.stage = .inProgress
         switch Game.stages.blacksmith.stage1Stages {

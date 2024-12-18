@@ -140,6 +140,7 @@ struct MineMap: MapBoxMap {
             case .iron: itemTypeToGive = .iron
             case .stone: itemTypeToGive = .stone
             case .clay: itemTypeToGive = .clay
+            case .gold: itemTypeToGive = .gold
             default: break
         }
         if let itemTypeToGive {
@@ -152,42 +153,56 @@ struct MineMap: MapBoxMap {
                 return MineMapLevelGrids.createGridLevel1()
             case .two:
                 return MineMapLevelGrids.createGridLevel2()
+            case .three:
+                return MineMapLevelGrids.createGridLevel3()
         }
     }
 }
 
 struct MineMapLevelGrids {
-    static func createGridLevel1() -> [[MineTile]] {
+    private static func createGrid(tiles: (_ randomValue: Int) -> MineTile) -> [[MineTile]] {
         return Array(repeating: [], count: 2 * MapBox.q1Height).map { _ in
             (0..<(2 * MapBox.q1Width)).map { _ in
                 let randomValue = Int.random(in: 1...100)
-                let tileType: MineTileType
-                if randomValue <= 85 {
-                    tileType = .clay
-                } else {
-                    tileType = .stone
-                }
-                return MineTile(type: tileType)
+                return tiles(randomValue)
+            }
+        }
+    }
+    static func createGridLevel1() -> [[MineTile]] {
+        return createGrid { randomValue  in
+            if randomValue <= 85 {
+                return MineTile(type: .clay)
+            } else {
+                return MineTile(type: .stone)
             }
         }
     }
     static func createGridLevel2() -> [[MineTile]] {
-        return Array(repeating: [], count: 2 * MapBox.q1Height).map { _ in
-            (0..<(2 * MapBox.q1Width)).map { _ in
-                let randomValue = Int.random(in: 1...100)
-                let tileType: MineTileType
-                if randomValue <= 20 {
-                    tileType = .clay
-                } else if randomValue <= 70 {
-                    tileType = .stone
-                } else if randomValue <= 85 {
-                    tileType = .coal
-                } else {
-                    tileType = .iron
-                }
-                return MineTile(type: tileType)
+        return createGrid { randomValue in
+            if randomValue <= 10 {
+                return MineTile(type: .clay)
+            } else if randomValue <= 70 {
+                return MineTile(type: .stone)
+            } else if randomValue <= 85 {
+                return MineTile(type: .coal)
+            } else {
+                return MineTile(type: .iron)
             }
         }
-
+    }
+    static func createGridLevel3() -> [[MineTile]] {
+        return createGrid { randomValue in
+            if randomValue <= 5 {
+                return MineTile(type: .gold)
+            } else if randomValue <= 10 {
+                return MineTile(type: .clay)
+            } else if randomValue <= 70 {
+                return MineTile(type: .stone)
+            } else if randomValue <= 85 {
+                return MineTile(type: .coal)
+            } else {
+                return MineTile(type: .iron)
+            }
+        }
     }
 }

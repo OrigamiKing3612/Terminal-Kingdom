@@ -12,7 +12,7 @@ enum MapTileType: TileType {
     case snow
     case snow_tree
     case ice //TODO: slips and skips to another tile!
-    
+
     //MARK: Other
     case path
     case building
@@ -23,23 +23,23 @@ enum MapTileType: TileType {
     case TOBEGENERATED
     case playerStart
     case biomeTOBEGENERATED(type: BiomeType)
-    
+
     //MARK: Building Stuff
     case anvil
     case furnace
     case startMining
-    
+
     //MARK: Crops
     case fence
     case gate
     //TODO: rename crop -> tile
     case crop(crop: CropTile)
     case pot(tile: PotTile)
-    
+
     //MARK: NPC
     case npc(tile: NPCTile)
     case shopStandingArea(type: ShopStandingAreaType)
-    
+
     func render() -> String {
         return switch self {
             case .plain: " "
@@ -68,36 +68,7 @@ enum MapTileType: TileType {
             case .biomeTOBEGENERATED(type: _): "/"
         }
     }
-    
-    func renderWithoutStyle() -> String {
-        return switch self {
-            case .plain: " "
-            case .water: "W"
-            case .path: "P"
-            case .tree: "󰐅"
-            case .building: "#" //TODO: style dim if walkable
-            case .player: "*"
-            case .sand: "S"
-            case .door(let doorTile): DoorTile.renderDoorNoStyle(tile: doorTile)
-            case .TOBEGENERATED: "."
-            case .playerStart: " "
-            case .snow: "S"
-            case .snow_tree: "󰐅"
-            case .cactus: "C"
-            case .ice: "I"
-            case .fence: "f"
-            case .gate: "g"
-            case .crop(crop: let cropTile): CropTile.renderCrop(tile: cropTile)
-            case .pot(tile: let potTile): PotTile.renderCropInPot(tile: potTile)
-            case .anvil: "a"
-            case .furnace: "F"
-            case .startMining: "M"
-            case .npc(tile: let tile): NPCTile.renderNPC(tile: tile)
-            case .shopStandingArea(type: _): "."
-            case .biomeTOBEGENERATED(type: _): "/"
-        }
-    }
-    
+
     var name: String {
         switch self {
             case .plain: return "plain"
@@ -131,7 +102,7 @@ enum MapTileType: TileType {
                 return biome.rawValue
         }
     }
-    
+
 //    func specialAction(direction: Direction) -> () -> Void {
 //        switch self {
 //            case .ice:
@@ -142,7 +113,7 @@ enum MapTileType: TileType {
 //    }
 }
 
-enum ShopStandingAreaType: String, Codable{
+enum ShopStandingAreaType: String, Codable {
     case buy, sell, help
 }
 

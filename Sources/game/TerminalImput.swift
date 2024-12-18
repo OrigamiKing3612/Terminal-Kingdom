@@ -26,7 +26,7 @@ enum KeyboardKeys: String {
     case eight = "8"
     case nine = "9"
     case zero = "0"
-
+    
     var isLetter: Bool {
         switch self {
             case .a,.b,.c,.d,.e,.f,.g,.h,.i,.j,.k,.l,.m,.n,.o,.p,.q,.r,.s,.t,.u,.v,.w,.x,.y,.z: return true
@@ -44,30 +44,30 @@ enum KeyboardKeys: String {
 
 struct TerminalInput {
     @MainActor private static var originalTermios = termios()
-
+    
     // Enable raw mode
     @MainActor static func enableRawMode() {
         var raw = termios()
         tcgetattr(STDIN_FILENO, &originalTermios) // Get current terminal attributes
         raw = originalTermios
-        #if os(Linux)
+#if os(Linux)
         raw.c_lflag &= ~(UInt32(ECHO | ICANON)) // Disable echo and canonical mode
-        #else
+#else
         raw.c_lflag &= ~(UInt(ECHO | ICANON)) // Disable echo and canonical mode
-        #endif
+#endif
         tcsetattr(STDIN_FILENO, TCSANOW, &raw) // Apply raw mode
     }
-
+    
     // Restore original terminal attributes
     @MainActor static func restoreOriginalMode() {
         tcsetattr(STDIN_FILENO, TCSANOW, &originalTermios)
     }
-
+    
     // Read a single key press
     static func readKey() -> KeyboardKeys {
         var buffer = [UInt8](repeating: 0, count: 3)
         read(STDIN_FILENO, &buffer, 3)
-
+        
         if buffer[0] == 27 { // Escape character
             if buffer[1] == 91 { // CSI (Control Sequence Introducer)
                 switch buffer[2] {
@@ -104,7 +104,7 @@ struct TerminalInput {
         } else if buffer[0] >= 32 && buffer[0] <= 126 { // Printable characters
             return KeyboardKeys(rawValue: String(UnicodeScalar(buffer[0]))) ?? .unknown
         }
-
+        
         return .unknown
     }
 }

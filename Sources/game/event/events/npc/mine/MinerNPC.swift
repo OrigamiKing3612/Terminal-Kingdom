@@ -13,42 +13,48 @@ struct MinerNPC {
     }
 
     static func getStage() {
-        switch Game.stages.mine.stageNumber {
-            case 0:
-                if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
-                    let options: [MessageOption] = [
-                        .init(label: "Yes", action: {}),
-                        .init(label: "No", action: {}),
-                    ]
-                    let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to mine?", speaker: .miner, options: options)
-                    if selectedOption.label == "Yes" {
-                        stage0()
+        if Game.stages.mine.isDone {
+            MessageBox.message("Thank you for helping me. You have completed all of the tasks I have for you.", speaker: .miner)
+        } else {
+            switch Game.stages.mine.stageNumber {
+                case 0:
+                    if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
+                        let options: [MessageOption] = [
+                            .init(label: "Yes", action: {}),
+                            .init(label: "No", action: {}),
+                        ]
+                        let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to mine?", speaker: .miner, options: options)
+                        if selectedOption.label == "Yes" {
+                            stage0()
+                        } else {
+                            return
+                        }
                     } else {
-                        return
+                        stage0()
                     }
-                } else {
-                    stage0()
-                }
-            case 1:
-                stage1()
-            case 2:
-                stage2()
-            case 3:
-                stage3()
-            case 4:
-                stage4()
-            case 5:
-                stage5()
-            case 6:
-                stage6()
-            case 7:
-                stage7()
-            // case 8:
-            //     stage8()
-            // case 9:
-            //     stage9()
-            default:
-                break
+                case 1:
+                    stage1()
+                case 2:
+                    stage2()
+                case 3:
+                    stage3()
+                case 4:
+                    stage4()
+                case 5:
+                    stage5()
+                case 6:
+                    stage6()
+                case 7:
+                    stage7()
+                case 8:
+                    stage8()
+                case 9:
+                    stage9()
+                case 10:
+                    stage10()
+                default:
+                    break
+            }
         }
     }
 
@@ -64,8 +70,15 @@ struct MinerNPC {
                 }
             }
         } else {
-            MessageBox.message("Looks like you already know how to chop lumber. Lets start.", speaker: .miner)
-            stage1()
+            MessageBox.message("Hello \(Game.player.name)! Looks like you already know how to chop lumber.", speaker: .miner)
+            let options: [MessageOption] = [
+                .init(label: "Yes", action: {}),
+                .init(label: "No", action: {}),
+            ]
+            let selectedOption = MessageBox.messageWithOptions("Would you like to learn how to mine?", speaker: .miner, options: options)
+            if selectedOption.label == "Yes" {
+                stage1()
+            }
         }
     }
     static func stage1() {
@@ -177,7 +190,11 @@ struct MinerNPC {
                     StatusBox.removeQuest(quest: .mine4)
                     fallthrough
                 } else {
-                    MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .stone) - 20)) stone from level 2 of the mine.", speaker: .miner)
+                    if !Game.player.hasPickaxe() {
+                        MessageBox.message("Uh oh, looks like you lost your pickaxe, here is a new one.", speaker: .miner)
+                        Game.stages.mine.stage4PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false))
+                    }
+                    MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .stone) - 30)) stone from level 2 of the mine.", speaker: .miner)
                 }
             case .done:
                 Game.stages.mine.next()
@@ -196,7 +213,7 @@ struct MinerNPC {
             case .mine:
                 if Game.player.has(item: .iron, count: 20) {
                     MessageBox.message("Thank you for getting the iron!", speaker: .miner)
-                    Game.player.removeItem(item: .stone, count: 20)
+                    Game.player.removeItem(item: .iron, count: 20)
                     if let id = Game.stages.mine.stage5PickaxeUUIDToRemove {
                         Game.player.removeItem(id: id)
                     }
@@ -205,7 +222,11 @@ struct MinerNPC {
                     StatusBox.removeQuest(quest: .mine5)
                     fallthrough
                 } else {
-                    MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .stone) - 20)) iron.", speaker: .miner)
+                    if !Game.player.hasPickaxe() {
+                        MessageBox.message("Uh oh, looks like you lost your pickaxe, here is a new one.", speaker: .miner)
+                        Game.stages.mine.stage5PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false))
+                    }
+                    MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .iron) - 20)) iron.", speaker: .miner)
                 }
             case .done:
                 Game.stages.mine.next()
@@ -235,6 +256,10 @@ struct MinerNPC {
                     StatusBox.removeQuest(quest: .mine6)
                     fallthrough
                 } else {
+                    if !Game.player.hasPickaxe() {
+                        MessageBox.message("Uh oh, looks like you lost your pickaxe, here is a new one.", speaker: .miner)
+                        Game.stages.mine.stage6AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
+                    }
                     MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .lumber) - 100)) lumber.", speaker: .miner)
                 }
             case .done:
@@ -261,6 +286,7 @@ struct MinerNPC {
                 MessageBox.message("Now that you have upgraded the mine, you can go to level 3! There you can find gold.", speaker: .miner)
                 Game.stages.mine.stage7Stages = .done
                 Game.player.stats.miningSkillLevel = .seven
+                Game.player.stats.mineLevel = .three
                 StatusBox.removeQuest(quest: .mine7)
                 fallthrough
             case .done:
@@ -268,6 +294,82 @@ struct MinerNPC {
                 if RandomEventStuff.wantsToContinue(speaker: .miner) {
                     getStage()
                 }
+        }
+    }
+    static func stage8() {
+        switch Game.stages.mine.stage8Stages {
+            case .notStarted:
+                MessageBox.message("I asked the blacksmith to make a special gift for you. Go collect it from the blacksmith. Then come talk to me.", speaker: .miner)
+                StatusBox.quest(.mine8)
+                Game.stages.mine.stage8Stages = .getPickaxe
+            case .getPickaxe:
+                if let id = Game.stages.mine.stage8PickaxeUUID {
+                    if Game.player.has(id: id) {
+                        MessageBox.message("Thank you for getting the gift from the blacksmith! I hope you like it. It should help you in the future.", speaker: .miner)
+                        Game.stages.mine.stage8Stages = .done
+                        StatusBox.removeQuest(quest: .mine8)
+                        fallthrough
+                    } else {
+                        MessageBox.message("You haven't gotten the gift from the blacksmith yet.", speaker: .miner)
+                    }
+                } else {
+                    MessageBox.message("You haven't gotten the gift from the blacksmith yet.", speaker: .miner)
+                }
+            case .done:
+                Game.stages.mine.next()
+                if RandomEventStuff.wantsToContinue(speaker: .miner) {
+                    getStage()
+                }
+        }
+    }
+    static func stage9() {
+        switch Game.stages.mine.stage9Stages {
+            case .notStarted:
+                MessageBox.message("I want to teach you one more thing, but to do that I need to go get 5 gold from level 3 of the mine", speaker: .miner)
+                StatusBox.quest(.mine9)
+                Game.stages.mine.stage9Stages = .mine
+            case .mine:
+                if Game.player.has(item: .gold, count: 5) {
+                    MessageBox.message("Thank you for getting the gold!", speaker: .miner)
+                    Game.player.removeItem(item: .gold, count: 5)
+                    Game.stages.mine.stage9Stages = .done
+                    Game.player.stats.miningSkillLevel = .nine
+                    if let id = Game.stages.mine.stage9PickaxeUUIDToRemove {
+                        Game.player.removeItem(id: id)
+                    }
+                    StatusBox.removeQuest(quest: .mine9)
+                    fallthrough
+                } else {
+                    if !Game.player.hasPickaxe() {
+                        MessageBox.message("Uh oh, looks like you lost your pickaxe, here is a new one.", speaker: .miner)
+                        Game.stages.mine.stage9PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false))
+                    }
+                    MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .gold) - 5)) gold.", speaker: .miner)
+                }
+            case .done:
+                Game.stages.mine.next()
+                if RandomEventStuff.wantsToContinue(speaker: .miner) {
+                    getStage()
+                }
+        }
+    }
+    static func stage10() {
+        switch Game.stages.mine.stage10Stages {
+            case .notStarted:
+                MessageBox.message("I have one more thing for you to do. I need you to take this gold to the \("Salesman".styled(with: .bold)) and sell it for coins. Then come back to me.", speaker: .miner)
+                StatusBox.quest(.mine10)
+                Game.stages.mine.stage10Stages = .goToSalesman
+                Game.stages.mine.stage10GoldUUIDsToRemove = Game.player.collect(item: .init(type: .gold, canBeSold: false), count: 5)
+            case .goToSalesman:
+                MessageBox.message("You haven't sold the gold to the \("Salesman".styled(with: .bold)) yet.", speaker: .miner)
+            case .comeBack:
+                MessageBox.message("Thank you for selling the gold to the \("Salesman".styled(with: .bold)). I want you to keep the coins! Thank you for being a good junior miner!", speaker: .miner)
+                Game.stages.mine.stage10Stages = .done
+                Game.player.stats.miningSkillLevel = .ten
+                StatusBox.removeQuest(quest: .mine10)
+                fallthrough
+            case .done:
+                Game.stages.mine.next()
         }
     }
 }
@@ -308,6 +410,6 @@ enum MineStage9Stages: Codable {
     case notStarted, mine, done
 }
 
-// enum MineStage10Stages: Codable {
-//     case notStarted, mine, done
-// }
+enum MineStage10Stages: Codable {
+    case notStarted, goToSalesman, comeBack, done
+}

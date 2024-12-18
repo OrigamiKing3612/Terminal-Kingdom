@@ -14,6 +14,7 @@ enum Quest: Codable, Equatable {
     case mine7
     case mine8
     case mine9
+    case mine10
 
     var label: String {
         switch self {
@@ -58,9 +59,20 @@ enum Quest: Codable, Equatable {
             case .mine7:
                 return "Upgrade the mine!"
             case .mine8:
-                return "Collect a new pickaxe from the Blacksmith"
+                return "Collect a gift from the Blacksmith"
             case .mine9:
-                return "Mine 5 gold"
+                return "Mine 5 gold for the miner"
+            case .mine10:
+                switch Game.stages.mine.stage10Stages {
+                    case .notStarted:
+                        return "Mine Stage 10 not started"
+                    case .goToSalesman:
+                        return "Bring the coins back to the miner"
+                    case .comeBack:
+                        return "Return to the miner"
+                    case .done:
+                        return "Mine Stage 10 done"
+                }
         }
     }
 }

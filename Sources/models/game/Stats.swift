@@ -28,7 +28,7 @@ enum AllSkillLevels: CaseIterable {
     case farmingSkillLevel
     case medicalSkillLevel
     case carpentrySkillLevel
-
+    
     var stat: SkillLevels {
         switch self {
             case .blacksmithSkillLevel:
@@ -92,4 +92,5 @@ enum SkillLevels: Int, Codable {
 enum MineLevel: Int, Codable, CaseIterable {
     case one = 1
     case two = 2
+    case three = 3
 }

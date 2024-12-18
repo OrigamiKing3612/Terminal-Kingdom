@@ -1,23 +1,42 @@
 struct SalesmanNPC {
     static func talk() {
-        let tile = MapBox.tilePlayerIsOn
-        if case .shopStandingArea(type: let type) = tile.type {
-            switch type {
-                case .buy:
-                    if Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy == false {
-                        Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy = true
+        if Game.stages.mine.stage10Stages == .goToSalesman {
+            MessageBox.message("Oooh 5 gold! Can buy that for 10 coins!", speaker: .salesman(type: .buy))
+            let options: [MessageOption] = [
+                .init(label: "Yes", action: {
+                    if let ids = Game.stages.mine.stage10GoldUUIDsToRemove {
+                        Game.player.removeItems(ids: ids)
+                        _ = Game.player.collect(item: .init(type: .coin), count: 10)
+                        MessageBox.message("Thank you!", speaker: .salesman(type: .buy))
+                        Game.stages.mine.stage10Stages = .comeBack
                     }
-                    buy()
-                case .sell:
-                    if Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell == false {
-                        Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell = true
-                    }
-                    sell()
-                case .help:
-                    if Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp == false {
-                        Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp = true
-                    }
-                    help()
+                }),
+                .init(label: "No", action: {
+                    MessageBox.message("Oh ok", speaker: .miner)
+                })
+            ]
+            let selectedOption = MessageBox.messageWithOptions("Would you like to sell the 5 gold?", speaker: .salesman(type: .buy), options: options)
+            selectedOption.action()
+        } else {
+            let tile = MapBox.tilePlayerIsOn
+            if case .shopStandingArea(type: let type) = tile.type {
+                switch type {
+                    case .buy:
+                        if Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy == false {
+                            Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy = true
+                        }
+                        buy()
+                    case .sell:
+                        if Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell == false {
+                            Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell = true
+                        }
+                        sell()
+                    case .help:
+                        if Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp == false {
+                            Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp = true
+                        }
+                        help()
+                }
             }
         }
     }
@@ -99,7 +118,7 @@ extension SalesmanNPC {
             case (.miningSkillLevel, .one):
                 buyOption(options: &options, item: .pickaxe(type: .init()))
                 buyOption(options: &options, item: .stone)
-                //TODO: press on item, and see a buy 1, buy 2...
+                //TODO: press on item, and see a buy 1, buy 2, buy 5, buy 10...
                 //TODO: Add more stuff here
             default:
                 break
@@ -114,14 +133,7 @@ extension SalesmanNPC {
         }
     }
     private static func sellOption(options: inout [MessageOption], item: Item) {
-        //TODO: prevent infinite money
-//        guard Game.player.quests.contains(.chopLumber()) && item == .axe else {
-//            return
-//        }
-//        guard Game.player.quests.contains(.mine1) && item == .pickaxe() else {
-//            return
-//        }
-        if let price = item.price {
+        if let price = item.price, item.canBeSold {
             let newItem = MessageOption(label: "\(item.inventoryName); price: \(price) coins", action: { sellItem(item: item, count: 1, price: price) })
             if options.contains(where: { $0 != newItem}){
                 options.append(newItem)

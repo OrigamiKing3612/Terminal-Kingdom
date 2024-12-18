@@ -63,6 +63,9 @@ func preGame() {
 
 func mainGameLoop() {
     while true {
+        if StatusBox.updateQuestBox {
+            StatusBox.questBox()
+        }
         InventoryBox.printInventory()
 
         guard !Game.isTypingInMessageBox else { continue }

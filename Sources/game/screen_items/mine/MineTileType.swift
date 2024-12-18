@@ -7,6 +7,7 @@ enum MineTileType: TileType {
     case clay
     case coal
     case iron
+    case gold
 
     func render(grid: [[MineTile]], tileX: Int, tileY: Int) -> String {
         let tile = grid[tileY][tileX]
@@ -18,6 +19,7 @@ enum MineTileType: TileType {
             case .coal: !MineTile.isSeen(tile: tile, tileX: tileX, tileY: tileY, grid: grid) ? "." : "C".styled(with: .dim)
             case .iron: !MineTile.isSeen(tile: tile, tileX: tileX, tileY: tileY, grid: grid) ? "." : "I".styled(with: .bold)
             case .clay: !MineTile.isSeen(tile: tile, tileX: tileX, tileY: tileY, grid: grid) ? "." : "c".styled(with: .brown)
+            case .gold: !MineTile.isSeen(tile: tile, tileX: tileX, tileY: tileY, grid: grid) ? "." : "G".styled(with: .yellow)
         }
         return name
     }
@@ -30,6 +32,7 @@ enum MineTileType: TileType {
             case .coal: return "coal"
             case .iron: return "iron"
             case .clay: return "clay"
+            case .gold: return "gold"
         }
     }
 }
