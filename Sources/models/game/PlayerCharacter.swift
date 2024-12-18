@@ -16,17 +16,6 @@ struct PlayerCharacter: Codable {
         items.contains { $0.type == item }
     }
 
-    func hasPickaxe(withDurability: Int = 0) -> Bool {
-        for item in items {
-            if case .pickaxe(type: let type) = item.type {
-                if type.durability > withDurability {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-
     func hasPickaxe() -> Bool {
         for item in items {
             if case .pickaxe = item.type {
@@ -60,47 +49,26 @@ struct PlayerCharacter: Codable {
         items.filter({$0.type == item}).count
     }
 
-    mutating func removeDurability(of itemType: ItemType, count: Int = 1, amount: Int = 1) {
-        for (index, item) in items.enumerated() {
-            if case .pickaxe(type: let type) = itemType {
-                if type.durability > amount {
-                    let newItem: Item = .init(id: item.id, type: .pickaxe(type: .init(durability: type.durability - amount)), canBeSold: item.canBeSold)
-                    updateItem(at: index, newItem)// Decrease durability
-                } else {
-                    removeItem(at: index) // Remove if durability reaches 0
-                }
-            }
-        }
-    }
-
     enum RemoveDurabilityTypes {
         case pickaxe, axe
     }
 
     mutating func removeDurability(of itemType: RemoveDurabilityTypes, count: Int = 1, amount: Int = 1) {
-        switch itemType {
-            case .pickaxe:
-                for (index, item) in items.enumerated() {
-                    if case .pickaxe(type: let type) = item.type {
-                        if type.durability > amount {
-                            let newItem: Item = .init(id: item.id, type: .pickaxe(type: .init(durability: type.durability - amount)), canBeSold: item.canBeSold)
-                            updateItem(at: index, newItem)// Decrease durability
-                        } else {
-                            removeItem(at: index) // Remove if durability reaches 0
-                        }
-                    }
-                }
-            case .axe:
-                for (index, item) in items.enumerated() {
-                    if case .axe(type: let type) = item.type {
-                        if type.durability > amount {
-                            let newItem: Item = .init(id: item.id, type: .axe(type: .init(durability: type.durability - amount)), canBeSold: item.canBeSold)
-                            updateItem(at: index, newItem)// Decrease durability
-                        } else {
-                            removeItem(at: index) // Remove if durability reaches 0
-                        }
-                    }
-                }
+        for (index, item) in items.enumerated() {
+            switch (itemType, item.type) {
+            case (.pickaxe, .pickaxe(let type)) where type.durability > amount:
+                let newItem = Item(id: item.id, type: .pickaxe(type: .init(durability: type.durability - amount)), canBeSold: item.canBeSold)
+                updateItem(at: index, newItem)
+            case (.pickaxe, .pickaxe):
+                removeItem(at: index)
+            case (.axe, .axe(let type)) where type.durability > amount:
+                let newItem = Item(id: item.id, type: .axe(type: .init(durability: type.durability - amount)), canBeSold: item.canBeSold)
+                updateItem(at: index, newItem)
+            case (.axe, .axe):
+                removeItem(at: index)
+            default:
+                continue
+            }
         }
     }
 
@@ -110,21 +78,21 @@ struct PlayerCharacter: Codable {
     }
 
     mutating func collect(item: Item, count: Int) -> [UUID] {
-        if count == 1 {
-            return [self.collect(item: item)]
-        } else {
-            var ids: [UUID] = []
-            for _ in 0..<count {
-                items.append(item)
-                ids.append(item.id)
-            }
-            return ids
+        var ids: [UUID] = []
+        for _ in 0..<count {
+            items.append(item)
+            ids.append(item.id)
         }
+        return ids
     }
 
     mutating func removeItem(id: UUID) {
-        if items.contains(where: { $0.id == id }) {
-            items.removeAll { $0.id == id }
+        items.removeAll { $0.id == id }
+    }
+
+    mutating func removeItems(ids: [UUID]) {
+        for id in ids {
+            removeItem(id: id)
         }
     }
 
@@ -137,15 +105,13 @@ struct PlayerCharacter: Codable {
     }
 
     mutating func removeItem(item: ItemType, count: Int = 1) {
-        if has(item: item, count: count) {
-            var removedCount = 0
-            items.removeAll { currentItem in
-                if currentItem.type == item && removedCount < count {
-                    removedCount += 1
-                    return true
-                }
-                return false
+        var removedCount = 0
+        items.removeAll { currentItem in
+            if currentItem.type == item && removedCount < count {
+                removedCount += 1
+                return true
             }
+            return false
         }
     }
     mutating func collectIfNotPresent(item: Item) -> UUID {
@@ -154,11 +120,13 @@ struct PlayerCharacter: Codable {
         }
         return item.id
     }
+
     mutating func updatePlayerPositionToSave(x: Int, y: Int) {
         self.position.x = x
         self.position.y = y
     }
-    mutating func quest(_ quest: Quest) {
+
+    mutating func addQuest(_ quest: Quest) {
         if !quests.contains(quest) {
             quests.append(quest)
         }

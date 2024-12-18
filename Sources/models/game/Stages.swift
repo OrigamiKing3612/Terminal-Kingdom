@@ -5,6 +5,7 @@ struct Stages: Codable {
     var random: RandomStages = .init()
     var blacksmith: BlacksmithStages = .init()
     var mine: MineStages = .init()
+    var farm: FarmStages = .init()
 }
 
 struct RandomStages: Codable {
@@ -28,6 +29,11 @@ struct MineStages: Codable {
     var stage2PickaxeUUIDToRemove: UUID?
     var stage3AxeUUIDToRemove: UUID?
     var stage4PickaxeUUIDToRemove: UUID?
+    var stage5PickaxeUUIDToRemove: UUID?
+    var stage6AxeUUIDToRemove: UUID?
+    var stage7ItemUUIDsToRemove: [UUID]?
+    var stage8PickaxeUUIDToRemove: UUID?
+
     var stage1Stages: MineStage1Stages = .notStarted
     var stage2Stages: MineStage2Stages = .notStarted
     var stage3Stages: MineStage3Stages = .notStarted
@@ -36,6 +42,15 @@ struct MineStages: Codable {
             StatusBox.statusBox()
         }
     }
+    var stage5Stages: MineStage5Stages = .notStarted
+    var stage6Stages: MineStage6Stages = .notStarted {
+        didSet {
+            StatusBox.statusBox()
+        }
+    }
+    var stage7Stages: MineStage7Stages = .notStarted
+    var stage8Stages: MineStage8Stages = .notStarted
+    var stage9Stages: MineStage9Stages = .notStarted
 
     mutating func next() {
         stageNumber += 1

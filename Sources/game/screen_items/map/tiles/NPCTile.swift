@@ -51,7 +51,7 @@ struct NPCTile: Codable, Equatable {
             case .miner:
                 MinerNPC.talk()
             case .mine_helper:
-                break
+                MineHelperNPC.talk()
             case .carpenter:
                 CarpenterNPC.talk()
             case .carpenter_helper:

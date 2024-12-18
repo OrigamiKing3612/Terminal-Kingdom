@@ -8,6 +8,11 @@ struct BlacksmithNPC {
             MessageBox.message("Here you are. Here is your pickaxe.", speaker: .blacksmith)
             Game.stages.mine.stage4PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false))
             Game.stages.mine.stage4Stages = .mine
+        } else if Game.stages.mine.stage6Stages == .goGetAxe {
+            MessageBox.message("Here you are. Here is your axe.", speaker: .blacksmith)
+            Game.stages.mine.stage6AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe(type: .init(durability: 100)), canBeSold: false))
+            Game.stages.mine.stage6Stages = .collect
+
         } else {
             if Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith == false {
                 Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith = true

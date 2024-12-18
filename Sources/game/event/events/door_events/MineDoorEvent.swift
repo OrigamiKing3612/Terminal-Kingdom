@@ -3,7 +3,7 @@ struct MineDoorEvent {
         var options: [MessageOption] = [
             .init(label: "Go Inside", action: { goInside(tile: tile) }),
         ]
-        if tile.isPartOfPlayerVillage {
+        if Game.player.has(item: .lumber, count: 100) && Game.player.has(item: .iron, count: 20) && Game.player.has(item: .stone, count: 30) && Game.stages.mine.stage7Stages == .upgrade {
             options.append(.init(label: "Upgrade", action: { upgrade(tile: tile) }))
         }
         options.append(.init(label: "Quit", action: {}))
@@ -15,7 +15,11 @@ struct MineDoorEvent {
     }
 
     static func upgrade(tile: DoorTile) {
-        //TODO: upgrade building
+        if let ids = Game.stages.mine.stage7ItemUUIDsToRemove {
+            Game.stages.mine.stage7Stages = .upgraded
+            Game.player.removeItems(ids: ids)
+            goInside(tile: tile)
+        }
     }
 }
 
