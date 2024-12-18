@@ -25,7 +25,7 @@ struct BlacksmithStages: Codable {
 
 struct MineStages: Codable {
     private(set) var stageNumber = 0
-    private(set) var isDone: Bool {
+    var isDone: Bool {
         return stageNumber > 10
     }
     var stage1PickaxeUUIDToRemove: UUID?
@@ -60,6 +60,10 @@ struct MineStages: Codable {
         didSet {
             StatusBox.questBoxUpdate()
         }
+    }
+
+    mutating func next() {
+        stageNumber += 1
     }
 }
 
