@@ -2,23 +2,25 @@ struct DoorTile: Codable, Equatable, Hashable {
     let type: DoorTileTypes
     let isPartOfPlayerVillage: Bool
     private(set) var level: Int
-
+    
     init(type: DoorTileTypes, isPartOfPlayerVillage: Bool = false) {
         self.type = type
         self.isPartOfPlayerVillage = isPartOfPlayerVillage
         self.level = 1
     }
-
+    
     static func renderDoor(tile: DoorTile) -> String {
+        let conditions: [(DoorTileTypes, Bool)] = [
+            (.mine, Game.stages.blacksmith.stage1Stages == .goToMine),
+            (.blacksmith, Game.stages.mine.stage1Stages == .collect),
+            (.shop, Game.stages.mine.stage10Stages == .goToSalesman),
+            (.carpenter, Game.stages.blacksmith.stage3Stages == .goToCarpenter)
+        ]
         if MapBox.mapType == .mainMap {
-            if Game.stages.blacksmith.stage1Stages == .goToMine && tile.type == .mine {
-                return "!".styled(with: [.bold, .red])
-            } else if Game.stages.mine.stage1Stages == .collect && tile.type == .blacksmith {
-                return "!".styled(with: [.bold, .red])
-            } else if Game.stages.mine.stage10Stages == .goToSalesman && tile.type == .shop {
-                return "!".styled(with: [.bold, .red])
-            } else if Game.stages.blacksmith.stage3Stages == .goToCarpenter && tile.type == .carpenter {
-                return "!".styled(with: [.bold, .red])
+            for (doorType, condition) in conditions {
+                if tile.type == doorType && condition {
+                    return "!".styled(with: [.bold, .red])
+                }
             }
         }
         return "D".styled(with: .bold)

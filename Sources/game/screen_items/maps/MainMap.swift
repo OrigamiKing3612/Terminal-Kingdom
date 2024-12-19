@@ -68,6 +68,8 @@ struct MainMap: MapBoxMap {
                 break
         }
         
+        tilePlayerIsOn.type.specialAction(direction: direction, player: &player, grid: grid)
+        
         if oldX != player.x || oldY != player.y {
             map()
         }

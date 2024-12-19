@@ -3,43 +3,43 @@ enum MapTileType: TileType {
     case plain
     case water
     case tree
-
+    
     //MARK: Desert Biome
     case sand
     case cactus
-
+    
     //MARK: Snow Biome
     case snow
     case snow_tree
     case ice //TODO: slips and skips to another tile!
-
+    
     //MARK: Other
     case path
     case building
     case player
     case door(tile: DoorTile)
-
+    
     //MARK: Dont Generate
     case TOBEGENERATED
     case playerStart
     case biomeTOBEGENERATED(type: BiomeType)
-
+    
     //MARK: Building Stuff
     case anvil
     case furnace
     case startMining
-
+    
     //MARK: Crops
     case fence
     case gate
     //TODO: rename crop -> tile
     case crop(crop: CropTile)
     case pot(tile: PotTile)
-
+    
     //MARK: NPC
     case npc(tile: NPCTile)
     case shopStandingArea(type: ShopStandingAreaType)
-
+    
     func render() -> String {
         return switch self {
             case .plain: " "
@@ -68,7 +68,7 @@ enum MapTileType: TileType {
             case .biomeTOBEGENERATED(type: _): "/"
         }
     }
-
+    
     var name: String {
         switch self {
             case .plain: return "plain"
@@ -102,15 +102,30 @@ enum MapTileType: TileType {
                 return biome.rawValue
         }
     }
-
-//    func specialAction(direction: Direction) -> () -> Void {
-//        switch self {
-//            case .ice:
-//                return { movePlayer +1 direction }
-//            default:
-//                return {}
-//        }
-//    }
+    
+    func specialAction(direction: Direction, player: inout Player, grid: [[MapTile]]) {
+        func isWalkable(x: Int, y: Int) -> Bool {
+            guard x >= 0, y >= 0, y < grid.count, x < grid[y].count else { return false }
+            return grid[y][x].isWalkable
+        }
+        switch self {
+            case .ice:
+                switch direction {
+                    case .up where isWalkable(x: player.x, y: player.y - 1):
+                        player.y -= 1
+                    case .down where isWalkable(x: player.x, y: player.y + 1):
+                        player.y += 1
+                    case .left where isWalkable(x: player.x - 1, y: player.y):
+                        player.x -= 1
+                    case .right where isWalkable(x: player.x + 1, y: player.y):
+                        player.x += 1
+                    default:
+                        break
+                }
+            default:
+                return
+        }
+    }
 }
 
 enum ShopStandingAreaType: String, Codable {

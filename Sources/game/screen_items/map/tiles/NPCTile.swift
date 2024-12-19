@@ -1,47 +1,20 @@
 struct NPCTile: Codable, Equatable {
     let type: NPCTileType
-
+    
     init(type: NPCTileType) {
         self.type = type
     }
-
+    
     static func renderNPC(tile: NPCTile) -> String {
+        if !tile.type.hasTalkedToBefore {
+            return "!".styled(with: [.bold, .red])
+        }
         switch tile.type {
-            case .blacksmith where !Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith:
-                return "!".styled(with: [.bold, .red])
-            case .miner where !Game.startingVillageChecks.firstTimes.hasTalkedToMiner:
-                return "!".styled(with: [.bold, .red])
-            case .carpenter where !Game.startingVillageChecks.firstTimes.hasTalkedToCarpenter:
-                return "!".styled(with: [.bold, .red])
-            case .salesman(type: let type) where !Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy && Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp && type == .buy:
-                return "!".styled(with: [.bold, .green])
-            case .salesman(type: let type) where !Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell && Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp && type == .sell:
-                return "!".styled(with: [.bold, .blue])
-            case .salesman(type: let type) where !Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp && type == .help:
-                return "!".styled(with: [.bold, .red])
-            case .king where !Game.startingVillageChecks.firstTimes.hasTalkedToKing:
-                return "!".styled(with: [.bold, .red])
-            case .builder where !Game.startingVillageChecks.firstTimes.hasTalkedToBuilder:
-                return "!".styled(with: [.bold, .red])
-            case .hunter where !Game.startingVillageChecks.firstTimes.hasTalkedToHunter:
-                return "!".styled(with: [.bold, .red])
-            case .inventor where !Game.startingVillageChecks.firstTimes.hasTalkedToInventor:
-                return "!".styled(with: [.bold, .red])
-            case .stable_master where !Game.startingVillageChecks.firstTimes.hasTalkedToStableMaster:
-                return "!".styled(with: [.bold, .red])
-            case .farmer where !Game.startingVillageChecks.firstTimes.hasTalkedToFarmer:
-                return "!".styled(with: [.bold, .red])
-            case .doctor where !Game.startingVillageChecks.firstTimes.hasTalkedToDoctor:
-                return "!".styled(with: [.bold, .red])
-            case .chef where !Game.startingVillageChecks.firstTimes.hasTalkedToChef:
-                return "!".styled(with: [.bold, .red])
-            case .potter where !Game.startingVillageChecks.firstTimes.hasTalkedToPotter:
-                return "!".styled(with: [.bold, .red])
             default:
                 return "N".styled(with: .bold)
         }
     }
-
+    
     func talk() {
         switch self.type {
             case .blacksmith:
