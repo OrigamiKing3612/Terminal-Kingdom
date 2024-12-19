@@ -17,6 +17,8 @@ struct DoorTile: Codable, Equatable, Hashable {
                 return "!".styled(with: [.bold, .red])
             } else if Game.stages.mine.stage10Stages == .goToSalesman && tile.type == .shop {
                 return "!".styled(with: [.bold, .red])
+            } else if Game.stages.blacksmith.stage3Stages == .goToCarpenter && tile.type == .carpenter {
+                return "!".styled(with: [.bold, .red])
             }
         }
         return "D".styled(with: .bold)

@@ -41,6 +41,8 @@ struct BlacksmithNPC {
                 stage1()
             case 2:
                 stage2()
+            case 3:
+                stage3()
             default:
                 break
         }
@@ -60,6 +62,7 @@ struct BlacksmithNPC {
                     }
                     StatusBox.removeQuest(quest: .blacksmith1)
                     Game.stages.blacksmith.stage1Stages = .done
+                    Game.player.stats.blacksmithSkillLevel = .one
                     fallthrough
                 } else {
                     MessageBox.message("Somehow do don't have iron.", speaker: .blacksmith)
@@ -86,6 +89,7 @@ struct BlacksmithNPC {
                     }
                     Game.player.removeItem(item: .lumber, count: 20)
                     StatusBox.removeQuest(quest: .blacksmith2)
+                    Game.player.stats.blacksmithSkillLevel = .two
                     Game.stages.blacksmith.stage2Stages = .done
                     fallthrough
                 } else {
@@ -94,6 +98,33 @@ struct BlacksmithNPC {
                         Game.stages.blacksmith.stage2AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
                     }
                     MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .clay) - 20)) clay.", speaker: .blacksmith)
+                }
+            case .done:
+                Game.stages.blacksmith.next()
+                if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+                    getStage()
+                }
+        }
+    }
+    static func stage3() {
+        switch Game.stages.blacksmith.stage3Stages {
+            case .notStarted:
+                MessageBox.message("Now I need you to give this lumber to the carpenter to get sticks.", speaker: .blacksmith)
+                Game.stages.blacksmith.stage3LumberUUIDsToRemove = Game.player.collect(item: .init(type: .lumber, canBeSold: false), count: 20)
+                Game.stages.blacksmith.stage3Stages = .goToCarpenter
+                StatusBox.quest(.blacksmith3)
+            case .goToCarpenter:
+                MessageBox.message("You haven't gone to the carpenter yet.", speaker: .blacksmith)
+            case .comeBack:
+                if Game.player.has(item: .stick, count: 20) {
+                    MessageBox.message("Thank you!", speaker: .blacksmith)
+                    StatusBox.removeQuest(quest: .blacksmith3)
+                    if let sticksUUIDs = Game.stages.blacksmith.stage3LumberUUIDsToRemove {
+                        Game.player.removeItems(ids: sticksUUIDs)
+                    }
+                    Game.player.stats.blacksmithSkillLevel = .four
+                    Game.stages.blacksmith.stage3Stages = .done
+                    fallthrough
                 }
             case .done:
                 Game.stages.blacksmith.next()
@@ -111,3 +142,32 @@ enum BlacksmithStage1Stages: Codable {
 enum BlacksmithStage2Stages: Codable {
     case notStarted, getLumber, done
 }
+
+enum BlacksmithStage3Stages: Codable {
+    case notStarted, goToCarpenter, comeBack, done
+}
+
+enum BlacksmithStage4Stages: Codable {
+    case notStarted, collect, done
+}
+
+enum BlacksmithStage5Stages: Codable {
+    case notStarted, makeSteel, done
+}
+
+enum BlacksmithStage6Stages: Codable {
+    case notStarted, makePickaxe, done
+}
+
+enum BlacksmithStage7Stages: Codable {
+    case notStarted, makeSword, bringToHunter, done
+}
+
+enum BlacksmithStage8Stages: Codable {
+    case notStarted, getMaterials, makeSteel, done
+}
+
+enum BlacksmithStage9Stages: Codable {
+    case notStarted, goToSalesman, comeBack, done
+}
+

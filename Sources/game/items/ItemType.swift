@@ -15,6 +15,7 @@ enum ItemType: Codable, Equatable, Hashable {
     case stone
     case clay
     case tree_seed
+    case stick
 
     //MARK: Buildings
     case door(tile: DoorTile)
@@ -42,6 +43,7 @@ enum ItemType: Codable, Equatable, Hashable {
             case .gate: return "Gate"
             case .coin: return "Coin"
             case .clay: return "Clay"
+            case .stick: return "Stick"
         }
     }
     var price: Int? {
@@ -57,6 +59,7 @@ enum ItemType: Codable, Equatable, Hashable {
             case .stone: return 5
             case .tree_seed: return 1
             case .clay: return 2
+            case .stick: return 1
             default: return nil
         }
     }

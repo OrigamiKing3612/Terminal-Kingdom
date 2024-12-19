@@ -4,6 +4,14 @@ enum Quest: Codable, Equatable {
     //MARK: Blacksmith
     case blacksmith1
     case blacksmith2
+    case blacksmith3
+    case blacksmith4
+    case blacksmith5
+    case blacksmith6
+    case blacksmith7
+    case blacksmith8
+    case blacksmith9
+    case blacksmith10
 
     //MARK: Mine
     case mine1
@@ -28,7 +36,32 @@ enum Quest: Codable, Equatable {
             case .blacksmith1:
                 return "Go get iron from the Mine and bring it to the blacksmith"
             case .blacksmith2:
-                return "Go get 20 lumber and band ring it to the blacksmith"
+                return "Go get 20 lumber and band bring it to the blacksmith"
+            case .blacksmith3:
+                return "Bring Lumber to the carpenter and bring it back to the blacksmith"
+            case .blacksmith4:
+                return "Get 5 coal from the miner"
+            case .blacksmith5:
+                return "Use the furnace to make steel"
+            case .blacksmith6:
+                return "Make a pickaxe on the anvil"
+            case .blacksmith7:
+                switch Game.stages.blacksmith.stage7Stages {
+                    case .notStarted:
+                        return "Blacksmith Stage 7 not started"
+                    case .makeSword:
+                        return "Make a sword on the anvil"
+                    case .bringToHunter:
+                        return "Bring the sword to the hunter"
+                    case .done:
+                        return "Blacksmith Stage 7 done"
+                }
+            case .blacksmith8:
+                return "Get materials for steel and make some"
+            case .blacksmith9:
+                return "Sell the steel in the shop"
+            case .blacksmith10:
+                return "Collect gift from the blacksmith"
             case .mine1:
                 return "Get a pickaxe from the blacksmith and bring it to the Miner"
             case .mine2:
