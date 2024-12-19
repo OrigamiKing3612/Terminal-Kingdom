@@ -84,7 +84,7 @@ struct BlacksmithNPC {
                     if let id  = Game.stages.blacksmith.stage2AxeUUIDToRemove {
                         Game.player.removeItem(id: id)
                     }
-                    Game.player.removeItems(type: .lumber, count: 20)
+                    Game.player.removeItem(item: .lumber, count: 20)
                     StatusBox.removeQuest(quest: .blacksmith2)
                     Game.stages.blacksmith.stage2Stages = .done
                     fallthrough
