@@ -4,6 +4,7 @@ enum MapTileEvent: TileEvent {
     case startMining
     case talkToNPC(tile: NPCTile)
     case collectCrop
+    case useStation(station: StationTile)
     //    case collectItem(item: String)
     //    case combat(enemy: String)
 
@@ -38,6 +39,8 @@ enum MapTileEvent: TileEvent {
                         MessageBox.message("There is no crop here", speaker: .game)
                     }
                 }
+            case .useStation(station: let station):
+                UseStationEvent.useStation(tile: station)
         }
     }
     var name: String {
@@ -52,6 +55,8 @@ enum MapTileEvent: TileEvent {
                 return "talkToNPC(\(tile.type.render))"
             case .collectCrop:
                 return "collectCrop"
+            case .useStation(station: let station):
+                return "useStation(\(station.type.render))"
         }
     }
 }

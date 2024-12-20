@@ -7,7 +7,7 @@ struct BlacksmithStages: Codable {
     var stage3LumberUUIDsToRemove: [UUID]?
     var stage4CoalUUIDsToRemove: [UUID]?
     var stage5ItemsToMakeSteelUUIDs: [UUID]?
-    var stage5SteelUUIDsToRemove: [UUID]?
+    var stage5SteelUUIDsToRemove: [UUID] = []
     var stage6ItemsToMakePickaxeUUIDs: [UUID]?
     var stage6PickaxeUUIDToRemove: UUID?
     var stage7ItemsToMakeSwordUUIDs: [UUID]?

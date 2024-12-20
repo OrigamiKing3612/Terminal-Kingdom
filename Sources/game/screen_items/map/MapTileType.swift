@@ -3,43 +3,42 @@ enum MapTileType: TileType {
     case plain
     case water
     case tree
-    
+
     //MARK: Desert Biome
     case sand
     case cactus
-    
+
     //MARK: Snow Biome
     case snow
     case snow_tree
     case ice //TODO: slips and skips to another tile!
-    
+
     //MARK: Other
     case path
     case building
     case player
     case door(tile: DoorTile)
-    
+
     //MARK: Dont Generate
     case TOBEGENERATED
     case playerStart
     case biomeTOBEGENERATED(type: BiomeType)
-    
+
     //MARK: Building Stuff
-    case anvil
-    case furnace
+    case station(station: StationTile)
     case startMining
-    
+
     //MARK: Crops
     case fence
     case gate
     //TODO: rename crop -> tile
     case crop(crop: CropTile)
     case pot(tile: PotTile)
-    
+
     //MARK: NPC
     case npc(tile: NPCTile)
     case shopStandingArea(type: ShopStandingAreaType)
-    
+
     func render() -> String {
         return switch self {
             case .plain: " "
@@ -60,15 +59,14 @@ enum MapTileType: TileType {
             case .gate: "g"
             case .crop(crop: let cropTile): CropTile.renderCrop(tile: cropTile)
             case .pot(tile: let potTile): PotTile.renderCropInPot(tile: potTile)
-            case .anvil: "a"
-            case .furnace: "F"
+            case .station(station: let station): StationTile.render(tile: station)
             case .startMining: "M"
             case .npc(tile: let tile): NPCTile.renderNPC(tile: tile)
             case .shopStandingArea(type: _): "."
             case .biomeTOBEGENERATED(type: _): "/"
         }
     }
-    
+
     var name: String {
         switch self {
             case .plain: return "plain"
@@ -85,8 +83,7 @@ enum MapTileType: TileType {
             case .door(let tile): return tile.type.name
             case .TOBEGENERATED: return "TOBEGENERATED"
             case .playerStart: return "playerStart"
-            case .anvil: return "anvil"
-            case .furnace: return "furnace"
+            case .station(station: let station): return station.type.name
             case .startMining: return "startMining"
             case .fence: return "fence"
             case .gate: return "gate"
@@ -102,7 +99,7 @@ enum MapTileType: TileType {
                 return biome.rawValue
         }
     }
-    
+
     func specialAction(direction: Direction, player: inout Player, grid: [[MapTile]]) {
         func isWalkable(x: Int, y: Int) -> Bool {
             guard x >= 0, y >= 0, y < grid.count, x < grid[y].count else { return false }

@@ -7,9 +7,9 @@ struct Game: Codable {
     nonisolated(unsafe) static var stages: Stages = Stages()
     nonisolated(unsafe) static var messages: [String] = []
     nonisolated(unsafe) static var mapGen: MapGenSave = .init(amplitude: MapGenSave.defaultAmplitude, frequency: MapGenSave.defaultFrequency, seed: .random(in: 2...1000000000))
-    
+
     //    nonisolated(unsafe) private(set) static var map = MapGen.generateFullMap()
-    
+
     static func initGame() {
         Self.hasInited = true
         MapBox.mainMap = MainMap()
@@ -27,7 +27,7 @@ struct Game: Codable {
         self.messages = decodedGame.messages
     }
 }
-
+//TODO: remove because Game is codable
 struct CodableGame: Codable {
     var hasInited: Bool
     var isTypingInMessageBox: Bool

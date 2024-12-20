@@ -7,6 +7,10 @@ struct MinerNPC {
             MessageBox.message("Ah, here you are. This is the iron the \("Blacksmith".styled(with: .bold)) needs.", speaker: .miner)
             Game.stages.blacksmith.stage1Stages = .bringItBack
             Game.stages.blacksmith.stage1AIronUUIDsToRemove = Game.player.collect(item: .init(type: .iron, canBeSold: false), count: 5)
+        } else if Game.stages.blacksmith.stage4Stages == .collect {
+            MessageBox.message("Yes let me get that for you.", speaker: .miner)
+            Game.stages.blacksmith.stage4Stages = .bringItBack
+            Game.stages.blacksmith.stage4CoalUUIDsToRemove = Game.player.collect(item: .init(type: .coal, canBeSold: false), count: 5)
         } else {
             getStage()
         }

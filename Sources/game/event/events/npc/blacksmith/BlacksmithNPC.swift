@@ -43,6 +43,10 @@ struct BlacksmithNPC {
                 stage2()
             case 3:
                 stage3()
+            case 4:
+                stage4()
+            case 5:
+                stage5()
             default:
                 break
         }
@@ -122,7 +126,7 @@ struct BlacksmithNPC {
                     if let sticksUUIDs = Game.stages.blacksmith.stage3LumberUUIDsToRemove {
                         Game.player.removeItems(ids: sticksUUIDs)
                     }
-                    Game.player.stats.blacksmithSkillLevel = .four
+                    Game.player.stats.blacksmithSkillLevel = .three
                     Game.stages.blacksmith.stage3Stages = .done
                     fallthrough
                 }
@@ -131,6 +135,60 @@ struct BlacksmithNPC {
                 if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
                     getStage()
                 }
+        }
+    }
+    static func stage4() {
+        switch Game.stages.blacksmith.stage4Stages {
+            case .notStarted:
+                MessageBox.message("I need you to get 5 coal from the miner. We need the iron, lumber and this coal, because I want to show you how to make a pickaxe.", speaker: .blacksmith)
+                Game.stages.blacksmith.stage4Stages = .collect
+                StatusBox.quest(.blacksmith4)
+            case .collect:
+                MessageBox.message("You haven't gotten the coal yet.", speaker: .blacksmith)
+            case .bringItBack:
+                if Game.player.has(item: .coal, count: 5) {
+                    MessageBox.message("Thank you!", speaker: .blacksmith)
+                    StatusBox.removeQuest(quest: .blacksmith4)
+                    if let coalUUIDs = Game.stages.blacksmith.stage4CoalUUIDsToRemove {
+                        Game.player.removeItems(ids: coalUUIDs)
+                    }
+                    Game.player.stats.blacksmithSkillLevel = .four
+                    Game.stages.blacksmith.stage4Stages = .done
+                    fallthrough
+                }
+            case .done:
+                Game.stages.blacksmith.next()
+                if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+                    getStage()
+                }
+        }
+    }
+    static func stage5() {
+        switch Game.stages.blacksmith.stage5Stages {
+            case .notStarted:
+                MessageBox.message("Now you get to do the fun stuff. I need to you make a picaxe. Go over to on of the furnace (\(StationTileType.furnace(progress: .empty).render))", speaker: .blacksmith)
+                let uuids1 = Game.player.collect(item: .init(type: .coal, canBeSold: false), count: 5)
+                let uuids2 = Game.player.collect(item: .init(type: .iron, canBeSold: false), count: 5)
+                Game.stages.blacksmith.stage5ItemsToMakeSteelUUIDs = uuids1 + uuids2
+                StatusBox.quest(.blacksmith5)
+                Game.stages.blacksmith.stage5Stages = .makeSteel
+            case .makeSteel:
+                MessageBox.message("You haven't gone to the furnace yet. It is labled with an \"\(StationTileType.furnace(progress: .empty).render)\"", speaker: .blacksmith)
+            case .returnToBlacksmith:
+                if Game.player.hasPickaxe() {
+                    MessageBox.message("Yay! You made your first Pickaxe!", speaker: .blacksmith)
+                    StatusBox.removeQuest(quest: .blacksmith5)
+                    Game.player.removeItems(ids: Game.stages.blacksmith.stage5SteelUUIDsToRemove)
+                    Game.player.stats.blacksmithSkillLevel = .five
+                    Game.stages.blacksmith.stage5Stages = .done
+                    fallthrough
+                }
+            case .done:
+                Game.stages.blacksmith.next()
+                if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+                    getStage()
+                }
+
         }
     }
 }
@@ -148,11 +206,11 @@ enum BlacksmithStage3Stages: Codable {
 }
 
 enum BlacksmithStage4Stages: Codable {
-    case notStarted, collect, done
+    case notStarted, collect, bringItBack, done
 }
 
 enum BlacksmithStage5Stages: Codable {
-    case notStarted, makeSteel, done
+    case notStarted, makeSteel, returnToBlacksmith, done
 }
 
 enum BlacksmithStage6Stages: Codable {
