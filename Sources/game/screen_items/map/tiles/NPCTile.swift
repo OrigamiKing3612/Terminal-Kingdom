@@ -1,10 +1,10 @@
 struct NPCTile: Codable, Equatable {
     let type: NPCTileType
-    
+
     init(type: NPCTileType) {
         self.type = type
     }
-    
+
     static func renderNPC(tile: NPCTile) -> String {
         if !tile.type.hasTalkedToBefore {
             return "!".styled(with: [.bold, .red])
@@ -14,7 +14,7 @@ struct NPCTile: Codable, Equatable {
                 return "N".styled(with: .bold)
         }
     }
-    
+
     func talk() {
         switch self.type {
             case .blacksmith:
@@ -38,7 +38,7 @@ struct NPCTile: Codable, Equatable {
             case .builder_helper:
                 BuilderHelperNPC.talk()
             case .hunter:
-                break
+                HunterNPC.talk()
             case .inventor:
                 break
             case .stable_master:

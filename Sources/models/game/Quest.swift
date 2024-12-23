@@ -53,6 +53,8 @@ enum Quest: Codable, Equatable {
                         return "Make a sword on the anvil"
                     case .bringToHunter:
                         return "Bring the sword to the hunter"
+                    case .comeBack:
+                        return "Return to the Blacksmith"
                     case .done:
                         return "Blacksmith Stage 7 done"
                 }

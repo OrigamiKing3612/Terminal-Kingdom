@@ -166,7 +166,7 @@ struct BlacksmithNPC {
     static func stage5() {
         switch Game.stages.blacksmith.stage5Stages {
             case .notStarted:
-                MessageBox.message("Now you get to do the fun stuff. I need to you make a picaxe. Go over to on of the furnace (\(StationTileType.furnace(progress: .empty).render))", speaker: .blacksmith)
+                MessageBox.message("Now you get to do the fun stuff. I need to you make a picaxe. Go over to the furnace (\(StationTileType.furnace(progress: .empty).render))", speaker: .blacksmith)
                 let uuids1 = Game.player.collect(item: .init(type: .coal, canBeSold: false), count: 5)
                 let uuids2 = Game.player.collect(item: .init(type: .iron, canBeSold: false), count: 5)
                 Game.stages.blacksmith.stage5ItemsToMakeSteelUUIDs = uuids1 + uuids2
@@ -185,11 +185,70 @@ struct BlacksmithNPC {
                 }
             case .done:
                 Game.stages.blacksmith.next()
+
                 if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
                     getStage()
                 }
 
         }
+    }
+    static func stage6() {
+        switch Game.stages.blacksmith.stage6Stages {
+            case .notStarted:
+                MessageBox.message("I need you to make a pickaxe. Go over to the anvil (\(StationTileType.anvil.render)) and make a pickaxe. Here is all of the things you will need.", speaker: .blacksmith)
+                Game.stages.blacksmith.stage6Stages = .makePickaxe
+                StatusBox.quest(.blacksmith6)
+                let uuid1 = Game.player.collect(item: .init(type: .stick, canBeSold: false), count: 2)
+                let uuid2 = Game.player.collect(item: .init(type: .steel, canBeSold: false), count: 3)
+                Game.stages.blacksmith.stage6ItemsToMakePickaxeUUIDs = uuid1 + uuid2
+            case .makePickaxe:
+                MessageBox.message("You haven't gone to the anvil yet. It is labled with an \"\(StationTileType.anvil.render)\"", speaker: .blacksmith)
+            case .returnToBlacksmith:
+                if Game.player.hasPickaxe() {
+                    MessageBox.message("Yay! You made your first Pickaxe!", speaker: .blacksmith)
+                    StatusBox.removeQuest(quest: .blacksmith6)
+                    if let ids = Game.stages.blacksmith.stage6ItemsToMakePickaxeUUIDs {
+                        Game.player.removeItems(ids: ids)
+                    }
+                    if let id = Game.stages.blacksmith.stage6PickaxeUUIDToRemove {
+                        Game.player.removeItem(id: id)
+                    }
+                    Game.player.stats.blacksmithSkillLevel = .six
+                    Game.stages.blacksmith.stage6Stages = .done
+                    fallthrough
+                } else {
+                    MessageBox.message("Somehow, you haven't made the pickaxe yet.", speaker: .blacksmith)
+                }
+            case .done:
+                Game.stages.blacksmith.next()
+                if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+                    getStage()
+                }
+        }
+    }
+    static func stage7() {
+        switch Game.stages.blacksmith.stage7Stages {
+            case .notStarted:
+                MessageBox.message("The hunter asked me to make him a sword. Why don't you do that? Here is the stuff you need. Make a sword on the anvil and then bring it to the Hunter in the \(DoorTileTypes.hunting_area.name.styled(with: .bold)).", speaker: .blacksmith)
+                Game.stages.blacksmith.stage7Stages = .makeSword
+                StatusBox.quest(.blacksmith7)
+                let uuid1 = Game.player.collect(item: .init(type: .stick, canBeSold: false), count: 2)
+                let uuid2 = Game.player.collect(item: .init(type: .steel, canBeSold: false), count: 2)
+                Game.stages.blacksmith.stage7ItemsToMakeSwordUUIDs = uuid1 + uuid2
+            case .makeSword:
+                MessageBox.message("You haven't gone to the anvil yet. It is labled with an \"\(StationTileType.anvil.render)\"", speaker: .blacksmith)
+            case .bringToHunter:
+                MessageBox.message("You haven't brought the sword to the hunter yet. The \(DoorTileTypes.hunting_area.name.styled(with: .bold)) is marked with an \("!".styled(with: [.bold, .red])).", speaker: .blacksmith)
+            case .comeBack:
+                MessageBox.message("Yay! You made your first sword!", speaker: .blacksmith)
+                StatusBox.removeQuest(quest: .blacksmith7)
+                Game.player.stats.blacksmithSkillLevel = .seven
+            case .done:
+                Game.stages.blacksmith.next()
+                if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+                    getStage()
+                }
+}
     }
 }
 
@@ -214,11 +273,11 @@ enum BlacksmithStage5Stages: Codable {
 }
 
 enum BlacksmithStage6Stages: Codable {
-    case notStarted, makePickaxe, done
+    case notStarted, makePickaxe, returnToBlacksmith, done
 }
 
 enum BlacksmithStage7Stages: Codable {
-    case notStarted, makeSword, bringToHunter, done
+    case notStarted, makeSword, bringToHunter, comeBack, done
 }
 
 enum BlacksmithStage8Stages: Codable {

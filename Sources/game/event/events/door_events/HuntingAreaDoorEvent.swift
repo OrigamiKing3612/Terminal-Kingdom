@@ -11,8 +11,7 @@ struct HuntingAreaDoorEvent {
         selectedOption.action()
     }
     static func goInside(tile: DoorTile) {
-        //TODO: Map changed to be a "map" of the building
-        MessageBox.message("You go inside the door.", speaker: .game)
+        MapBox.mapType = .hunting_area
     }
     static func upgrade(tile: DoorTile) {
         //TODO: upgrade building
