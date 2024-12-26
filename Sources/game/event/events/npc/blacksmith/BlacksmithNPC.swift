@@ -24,32 +24,33 @@ struct BlacksmithNPC {
     }
 
     static func getStage() {
-        switch Game.stages.blacksmith.stageNumber {
-            case 0:
-                let options: [MessageOption] = [
-                    .init(label: "Yes", action: {}),
-                    .init(label: "No", action: {}),
-                ]
-                let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to be a blacksmith?", speaker: .blacksmith, options: options)
-                if selectedOption.label == "Yes" {
-                    Game.stages.blacksmith.next()
-                    getStage()
-                } else {
-                    return
-                }
-            case 1:
-                stage1()
-            case 2:
-                stage2()
-            case 3:
-                stage3()
-            case 4:
-                stage4()
-            case 5:
-                stage5()
-            default:
-                break
-        }
+        stage8()
+        // switch Game.stages.blacksmith.stageNumber {
+        //     case 0:
+        //         let options: [MessageOption] = [
+        //             .init(label: "Yes", action: {}),
+        //             .init(label: "No", action: {}),
+        //         ]
+        //         let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to be a blacksmith?", speaker: .blacksmith, options: options)
+        //         if selectedOption.label == "Yes" {
+        //             Game.stages.blacksmith.next()
+        //             getStage()
+        //         } else {
+        //             return
+        //         }
+        //     case 1:
+        //         stage1()
+        //     case 2:
+        //         stage2()
+        //     case 3:
+        //         stage3()
+        //     case 4:
+        //         stage4()
+        //     case 5:
+        //         stage5()
+        //     default:
+        //         break
+        // }
     }
 
     static func stage1() {
@@ -248,7 +249,33 @@ struct BlacksmithNPC {
                 if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
                     getStage()
                 }
-}
+        }
+    }
+    static func stage8() {
+        switch Game.stages.blacksmith.stage8Stages {
+            case .notStarted:
+                MessageBox.message("You are almost there to becoming a blacksmith! I need you to get some materials from the mine. Then I need you to make some steel. Then come back to me", speaker: .blacksmith)
+                Game.stages.blacksmith.stage8Stages = .getMaterials
+                StatusBox.quest(.blacksmith8)
+            case .getMaterials:
+                MessageBox.message("You haven't gotten the materials yet.", speaker: .blacksmith)
+            case .makeSteel:
+                MessageBox.message("You haven't made the steel at the furnace yet.", speaker: .blacksmith)
+            case .comeBack:
+                MessageBox.message("Yay!", speaker: .blacksmith)
+                StatusBox.removeQuest(quest: .blacksmith8)
+                Game.player.stats.blacksmithSkillLevel = .eight
+                if let ids = Game.stages.blacksmith.stage8MaterialsToRemove {
+                    Game.player.removeItems(ids: ids)
+                }
+                Game.stages.blacksmith.stage8Stages = .done
+                fallthrough
+            case .done:
+                Game.stages.blacksmith.next()
+                if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+                    getStage()
+                }
+        }
     }
 }
 
@@ -281,7 +308,7 @@ enum BlacksmithStage7Stages: Codable {
 }
 
 enum BlacksmithStage8Stages: Codable {
-    case notStarted, getMaterials, makeSteel, done
+    case notStarted, getMaterials, makeSteel, comeBack, done
 }
 
 enum BlacksmithStage9Stages: Codable {

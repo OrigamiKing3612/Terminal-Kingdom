@@ -59,7 +59,18 @@ enum Quest: Codable, Equatable {
                         return "Blacksmith Stage 7 done"
                 }
             case .blacksmith8:
-                return "Get materials for steel and make some"
+                switch Game.stages.blacksmith.stage8Stages {
+                    case .notStarted:
+                        return "Blacksmith Stage 8 not started"
+                    case .getMaterials:
+                        return "Get materials from the Miner"
+                    case .makeSteel:
+                        return "Make steel on the anvil"
+                    case .comeBack:
+                        return "Return to the Blacksmith"
+                    case .done:
+                        return "Blacksmith Stage 8 done"
+                }
             case .blacksmith9:
                 return "Sell the steel in the shop"
             case .blacksmith10:

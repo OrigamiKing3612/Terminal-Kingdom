@@ -73,6 +73,10 @@ struct UseStationEvent {
                                     if let ids = Game.stages.blacksmith.stage5ItemsToMakeSteelUUIDs {
                                         Game.player.removeItems(ids: ids)
                                     }
+                                } else if Game.stages.blacksmith.stage8Stages == .makeSteel {
+                                    if let ids = Game.stages.blacksmith.stage8MaterialsToRemove {
+                                        Game.player.removeItems(ids: ids)
+                                    }
                                 } else {
                                     Game.player.removeItem(item: ingredient.item, count: ingredient.count)
                                 }
@@ -82,6 +86,9 @@ struct UseStationEvent {
                                 if Game.stages.blacksmith.stage5Stages == .makeSteel {
                                     Game.stages.blacksmith.stage5Stages = .done
                                     Game.stages.blacksmith.stage5SteelUUIDsToRemove = Game.player.collect(item: .init(type: result.item, canBeSold: false), count: 5)
+                                } else if Game.stages.blacksmith.stage8Stages == .makeSteel {
+                                    Game.stages.blacksmith.stage8Stages = .comeBack
+                                    Game.stages.blacksmith.stage8MaterialsToRemove = Game.player.collect(item: .init(type: result.item, canBeSold: false), count: 3)
                                 } else {
                                     _ = Game.player.collect(item: .init(type: result.item, canBeSold: true))
                                 }

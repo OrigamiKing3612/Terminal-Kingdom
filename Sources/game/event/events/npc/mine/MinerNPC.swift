@@ -11,6 +11,12 @@ struct MinerNPC {
             MessageBox.message("Yes let me get that for you.", speaker: .miner)
             Game.stages.blacksmith.stage4Stages = .bringItBack
             Game.stages.blacksmith.stage4CoalUUIDsToRemove = Game.player.collect(item: .init(type: .coal, canBeSold: false), count: 5)
+        } else if Game.stages.blacksmith.stage8Stages == .getMaterials {
+            MessageBox.message("Yes let me get that for you.", speaker: .miner)
+            let uuids1 = Game.player.collect(item: .init(type: .iron, canBeSold: false), count: 3)
+            let uuids2 = Game.player.collect(item: .init(type: .coal, canBeSold: false), count: 3)
+            Game.stages.blacksmith.stage8MaterialsToRemove = uuids1 + uuids2
+            Game.stages.blacksmith.stage8Stages = .makeSteel
         } else {
             getStage()
         }
