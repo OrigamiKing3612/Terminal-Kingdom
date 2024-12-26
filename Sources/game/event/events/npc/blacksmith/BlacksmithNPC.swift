@@ -47,10 +47,16 @@ struct BlacksmithNPC {
                 stage4()
             case 5:
                 stage5()
+            case 6:
+                stage6()
+            case 7:
+                stage7()
+            case 8:
+                stage8()
             default:
                 break
         }
-    }
+   }
 
     static func stage1() {
         switch Game.stages.blacksmith.stage1Stages {
