@@ -24,33 +24,32 @@ struct BlacksmithNPC {
     }
 
     static func getStage() {
-        stage8()
-        // switch Game.stages.blacksmith.stageNumber {
-        //     case 0:
-        //         let options: [MessageOption] = [
-        //             .init(label: "Yes", action: {}),
-        //             .init(label: "No", action: {}),
-        //         ]
-        //         let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to be a blacksmith?", speaker: .blacksmith, options: options)
-        //         if selectedOption.label == "Yes" {
-        //             Game.stages.blacksmith.next()
-        //             getStage()
-        //         } else {
-        //             return
-        //         }
-        //     case 1:
-        //         stage1()
-        //     case 2:
-        //         stage2()
-        //     case 3:
-        //         stage3()
-        //     case 4:
-        //         stage4()
-        //     case 5:
-        //         stage5()
-        //     default:
-        //         break
-        // }
+        switch Game.stages.blacksmith.stageNumber {
+            case 0:
+                let options: [MessageOption] = [
+                    .init(label: "Yes", action: {}),
+                    .init(label: "No", action: {}),
+                ]
+                let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to be a blacksmith?", speaker: .blacksmith, options: options)
+                if selectedOption.label == "Yes" {
+                    Game.stages.blacksmith.next()
+                    getStage()
+                } else {
+                    return
+                }
+            case 1:
+                stage1()
+            case 2:
+                stage2()
+            case 3:
+                stage3()
+            case 4:
+                stage4()
+            case 5:
+                stage5()
+            default:
+                break
+        }
     }
 
     static func stage1() {
