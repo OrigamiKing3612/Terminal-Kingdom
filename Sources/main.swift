@@ -74,13 +74,13 @@ func mainGameLoop() {
         switch key {
             case .q:
                 endProgram()
-            case .w, .up:
+            case .w where Game.config.wasdKeys, .up where Game.config.arrowKeys, .k where Game.config.vimKeys:
                 MapBox.movePlayer(.up)
-            case .a, .left:
+            case .a where Game.config.wasdKeys, .left where Game.config.arrowKeys, .h where Game.config.vimKeys:
                 MapBox.movePlayer(.left)
-            case .s, .down:
+            case .s where Game.config.wasdKeys, .down where Game.config.arrowKeys, .j where Game.config.vimKeys:
                 MapBox.movePlayer(.down)
-            case .d, .right:
+            case .d where Game.config.wasdKeys, .right where Game.config.arrowKeys, .l where Game.config.vimKeys:
                 MapBox.movePlayer(.right)
             case .space, .enter, .i:
                 MapBox.interactWithTile()
