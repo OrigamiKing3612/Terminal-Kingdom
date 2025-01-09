@@ -53,6 +53,8 @@ struct BlacksmithNPC {
                 stage7()
             case 8:
                 stage8()
+            case 9:
+                stage9()
             default:
                 break
         }
@@ -274,6 +276,28 @@ struct BlacksmithNPC {
                     Game.player.removeItems(ids: ids)
                 }
                 Game.stages.blacksmith.stage8Stages = .done
+                fallthrough
+            case .done:
+                Game.stages.blacksmith.next()
+                if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+                    getStage()
+                }
+        }
+    }
+    static func stage9() {
+        switch Game.stages.blacksmith.stage9Stages {
+            case .notStarted:
+                MessageBox.message("Now I want you to sell this steel in the shop. The shop will be marked with an \"\("!".styled(with: [.bold, .red]))\"", speaker: .blacksmith)
+                Game.stages.blacksmith.stage9Stages = .goToSalesman
+                StatusBox.quest(.blacksmith9)
+                Game.stages.blacksmith.stage9SteelUUIDToRemove = Game.player.collect(item: .init(type: .steel, canBeSold: false), count: 3)
+            case .goToSalesman:
+                MessageBox.message("You haven't gone to the salesman yet.", speaker: .blacksmith)
+            case .comeBack:
+                MessageBox.message("I want you to keep these coins. I have one more thing I want to give you.", speaker: .blacksmith)
+                Game.stages.blacksmith.stage9Stages = .done
+                StatusBox.removeQuest(quest: .blacksmith9)
+                Game.player.stats.blacksmithSkillLevel = .nine
                 fallthrough
             case .done:
                 Game.stages.blacksmith.next()

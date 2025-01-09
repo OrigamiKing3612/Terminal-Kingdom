@@ -15,7 +15,8 @@ struct DoorTile: Codable, Equatable, Hashable {
             (.blacksmith, Game.stages.mine.stage1Stages == .collect),
             (.shop, Game.stages.mine.stage10Stages == .goToSalesman),
             (.carpenter, Game.stages.blacksmith.stage3Stages == .goToCarpenter),
-            (.hunting_area, Game.stages.blacksmith.stage7Stages == .bringToHunter)
+            (.hunting_area, Game.stages.blacksmith.stage7Stages == .bringToHunter),
+            (.shop, Game.stages.blacksmith.stage9Stages == .goToSalesman)
         ]
         if MapBox.mapType == .mainMap {
             for (doorType, condition) in conditions {

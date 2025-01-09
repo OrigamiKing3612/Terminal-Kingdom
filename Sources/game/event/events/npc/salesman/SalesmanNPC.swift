@@ -12,10 +12,28 @@ struct SalesmanNPC {
                     }
                 }),
                 .init(label: "No", action: {
-                    MessageBox.message("Oh ok", speaker: .miner)
+                    MessageBox.message("Oh ok", speaker: .salesman(type: .buy))
                 })
             ]
             let selectedOption = MessageBox.messageWithOptions("Would you like to sell the 5 gold?", speaker: .salesman(type: .buy), options: options)
+            selectedOption.action()
+        } else if Game.stages.blacksmith.stage9Stages == .goToSalesman {
+            let price = ItemType.steel.price! * 3
+            MessageBox.message("Oooh 3 steel! Can buy that for \(price) coins!", speaker: .salesman(type: .buy))
+            let options: [MessageOption] = [
+                .init(label: "Yes", action: {
+                    if let ids = Game.stages.blacksmith.stage9SteelUUIDToRemove {
+                        Game.player.removeItems(ids: ids)
+                        _ = Game.player.collect(item: .init(type: .coin), count: price)
+                        MessageBox.message("Thank you!", speaker: .salesman(type: .buy))
+                        Game.stages.blacksmith.stage9Stages = .comeBack
+                    }
+                }),
+                .init(label: "No", action: {
+                    MessageBox.message("Oh ok", speaker: .salesman(type: .buy))
+                })
+            ]
+            let selectedOption = MessageBox.messageWithOptions("Would you like to sell the 3 steel?", speaker: .salesman(type: .buy), options: options)
             selectedOption.action()
         } else {
             let tile = MapBox.tilePlayerIsOn
