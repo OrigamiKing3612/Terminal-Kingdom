@@ -1,81 +1,87 @@
 enum ItemType: Codable, Equatable, Hashable {
-    //MARK: Weapons
-    case sword, axe(type: AxeItem), pickaxe(type: PickaxeItem), boomerang  // bow? net? dagger?
+	// MARK: Weapons
 
-    //MARK: Armor?
-    case backpack(type: BackpackItem) // TODO: DO BACKPACK
+	case sword, axe(type: AxeItem), pickaxe(type: PickaxeItem), boomerang // bow? net? dagger?
 
-    //MARK: Food
+	// MARK: Armor?
 
-    //MARK: Materials
-    case lumber //plank?
-    case iron
-    case coal
-    case gold
-    case stone
-    case clay
-    case tree_seed
-    case stick
-    case steel
+	case backpack(type: BackpackItem) // TODO: DO BACKPACK
 
-    //MARK: Buildings
-    case door(tile: DoorTile)
-    case fence
-    case gate
+	// MARK: Food
 
-    //MARK: Other
-    case coin
+	// MARK: Materials
 
-    var inventoryName: String {
-        switch self {
-            case .sword: return "Sword"
-            case .axe(type: let type): return "Axe (\(type.durability))"
-            case .pickaxe(type: let type): return "Pickaxe (\(type.durability))"
-            case .boomerang: return "Boomerang"
-            case .backpack(type: let type): return "\(type.inventoryName) Backpack"
-            case .lumber: return "Lumber"
-            case .iron: return "Iron"
-            case .coal: return "Coal"
-            case .gold: return "Gold"
-            case .stone: return "Stone"
-            case .tree_seed: return "Tree Seed"
-            case .door(tile: let tile): return "\(tile.type.name) Door"
-            case .fence: return "Fence"
-            case .gate: return "Gate"
-            case .coin: return "Coin"
-            case .clay: return "Clay"
-            case .stick: return "Stick"
-            case .steel: return "Steel"
-        }
-    }
-    var price: Int? {
-        switch self {
-            case .sword: return 10
-            case .axe(let type): return (type.durability / 11) * 2
-            case .pickaxe(let type): return (type.durability / 10) * 2
-            case .boomerang: return 10
-            case .backpack(_): return 10
-            case .lumber: return 1
-            case .iron: return 5
-            case .coal: return 2
-            case .stone: return 5
-            case .tree_seed: return 1
-            case .clay: return 2
-            case .stick: return 1
-            case .steel: return 3
-            default: return nil
-        }
-    }
+	case lumber // plank?
+	case iron
+	case coal
+	case gold
+	case stone
+	case clay
+	case tree_seed
+	case stick
+	case steel
+
+	// MARK: Buildings
+
+	case door(tile: DoorTile)
+	case fence
+	case gate
+
+	// MARK: Other
+
+	case coin
+
+	var inventoryName: String {
+		switch self {
+			case .sword: "Sword"
+			case let .axe(type: type): "Axe (\(type.durability))"
+			case let .pickaxe(type: type): "Pickaxe (\(type.durability))"
+			case .boomerang: "Boomerang"
+			case let .backpack(type: type): "\(type.inventoryName) Backpack"
+			case .lumber: "Lumber"
+			case .iron: "Iron"
+			case .coal: "Coal"
+			case .gold: "Gold"
+			case .stone: "Stone"
+			case .tree_seed: "Tree Seed"
+			case let .door(tile: tile): "\(tile.type.name) Door"
+			case .fence: "Fence"
+			case .gate: "Gate"
+			case .coin: "Coin"
+			case .clay: "Clay"
+			case .stick: "Stick"
+			case .steel: "Steel"
+		}
+	}
+
+	var price: Int? {
+		switch self {
+			case .sword: 10
+			case let .axe(type): (type.durability / 11) * 2
+			case let .pickaxe(type): (type.durability / 10) * 2
+			case .boomerang: 10
+			case .backpack: 10
+			case .lumber: 1
+			case .iron: 5
+			case .coal: 2
+			case .stone: 5
+			case .tree_seed: 1
+			case .clay: 2
+			case .stick: 1
+			case .steel: 3
+			default: nil
+		}
+	}
 }
 
 enum BackpackItem: Codable, Equatable {
-    case small, medium, large
+	case small, medium, large
 
-    var inventoryName: String {
-        switch self {
-            case .small: return "Small"
-            case .medium: return "Medium"
-            case .large: return "Large"
-        }
-    }
+	var inventoryName: String {
+		switch self {
+			case .small: "Small"
+			case .medium: "Medium"
+			case .large: "Large"
+		}
+	}
 }

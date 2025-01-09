@@ -1,5 +1,5 @@
-struct StartMiningEvent {
-    static func startMining() {
-        MapBox.mapType = .mining
-    }
+enum StartMiningEvent {
+	static func startMining() {
+		MapBox.mapType = .mining
+	}
 }
