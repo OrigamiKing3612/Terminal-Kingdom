@@ -254,7 +254,7 @@ enum MinerNPC {
 	static func stage6() {
 		switch Game.stages.mine.stage6Stages {
 			case .notStarted:
-				MessageBox.message("I haven't told you why you need to get all of this stuff yet. We are going to upgrade the mine again. Everytime the items required to do so increase. So this time we need 100 lumber to upgrade. You are almost there to being a professional miner!", speaker: .miner)
+				MessageBox.message("I haven't told you why you need to get all of this stuff yet. We are going to upgrade the mine again. Every time the items required to do so increase. So this time we need 100 lumber to upgrade. You are almost there to being a professional miner!", speaker: .miner)
 				MessageBox.message("Oh, also, I don't have an axe for you. The \("Blacksmith".styled(with: .bold)) can give you one.", speaker: .miner)
 				StatusBox.quest(.mine6)
 				Game.stages.mine.stage6Stages = .goGetAxe

@@ -214,7 +214,7 @@ enum BlacksmithNPC {
 				let uuid2 = Game.player.collect(item: .init(type: .steel, canBeSold: false), count: 3)
 				Game.stages.blacksmith.stage6ItemsToMakePickaxeUUIDs = uuid1 + uuid2
 			case .makePickaxe:
-				MessageBox.message("You haven't gone to the anvil yet. It is labled with an \"\(StationTileType.anvil.render)\"", speaker: .blacksmith)
+				MessageBox.message("You haven't gone to the anvil yet. It is labeled with an \"\(StationTileType.anvil.render)\"", speaker: .blacksmith)
 			case .returnToBlacksmith:
 				if Game.player.hasPickaxe() {
 					MessageBox.message("Yay! You made your first Pickaxe!", speaker: .blacksmith)
@@ -249,7 +249,7 @@ enum BlacksmithNPC {
 				let uuid2 = Game.player.collect(item: .init(type: .steel, canBeSold: false), count: 2)
 				Game.stages.blacksmith.stage7ItemsToMakeSwordUUIDs = uuid1 + uuid2
 			case .makeSword:
-				MessageBox.message("You haven't gone to the anvil yet. It is labled with an \"\(StationTileType.anvil.render)\"", speaker: .blacksmith)
+				MessageBox.message("You haven't gone to the anvil yet. It is labeled with an \"\(StationTileType.anvil.render)\"", speaker: .blacksmith)
 			case .bringToHunter:
 				MessageBox.message("You haven't brought the sword to the hunter yet. The \(DoorTileTypes.hunting_area.name.styled(with: .bold)) is marked with an \("!".styled(with: [.bold, .red])).", speaker: .blacksmith)
 			case .comeBack:
