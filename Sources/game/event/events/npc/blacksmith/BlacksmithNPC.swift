@@ -178,14 +178,14 @@ enum BlacksmithNPC {
 	static func stage5() {
 		switch Game.stages.blacksmith.stage5Stages {
 			case .notStarted:
-				MessageBox.message("Now you get to do the fun stuff. I need to you make a picaxe. Go over to the furnace (\(StationTileType.furnace(progress: .empty).render))", speaker: .blacksmith)
+				MessageBox.message("Now you get to do the fun stuff. I need to you make some steel. Go over to the furnace (\(StationTileType.furnace(progress: .empty).render))", speaker: .blacksmith)
 				let uuids1 = Game.player.collect(item: .init(type: .coal, canBeSold: false), count: 5)
 				let uuids2 = Game.player.collect(item: .init(type: .iron, canBeSold: false), count: 5)
 				Game.stages.blacksmith.stage5ItemsToMakeSteelUUIDs = uuids1 + uuids2
 				StatusBox.quest(.blacksmith5)
 				Game.stages.blacksmith.stage5Stages = .makeSteel
 			case .makeSteel:
-				MessageBox.message("You haven't gone to the furnace yet. It is labled with an \"\(StationTileType.furnace(progress: .empty).render)\"", speaker: .blacksmith)
+				MessageBox.message("You haven't gone to the furnace yet. It is labeled with an \"\(StationTileType.furnace(progress: .empty).render)\"", speaker: .blacksmith)
 			case .returnToBlacksmith:
 				if Game.player.hasPickaxe() {
 					MessageBox.message("Yay! You made your first Pickaxe!", speaker: .blacksmith)
@@ -256,6 +256,8 @@ enum BlacksmithNPC {
 				MessageBox.message("Yay! You made your first sword!", speaker: .blacksmith)
 				StatusBox.removeQuest(quest: .blacksmith7)
 				Game.player.stats.blacksmithSkillLevel = .seven
+				Game.stages.blacksmith.stage7Stages = .done
+				fallthrough
 			case .done:
 				Game.stages.blacksmith.next()
 				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {

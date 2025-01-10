@@ -10,6 +10,63 @@ extension String {
 	func styled(with textStyle: TextStyles) -> String {
 		styled(with: [textStyle])
 	}
+
+	/// Removes ANSI escape sequences (style codes) from the string.
+	var withoutStyles: String {
+		replacingOccurrences(of: "\u{1B}\\[[0-9;]*[a-zA-Z]", with: "", options: .regularExpression)
+	}
+
+	/// Splits the string into an array of lines fitting the specified width.
+	func wrappedWithStyles(toWidth width: Int) -> [String] {
+		var words = split(separator: " ", omittingEmptySubsequences: false)
+		var lines: [String] = []
+		var currentLine = ""
+		var currentLineVisibleWidth = 0
+
+		while !words.isEmpty {
+			let word = words.first!
+			let wordWithoutStyles = String(word).withoutStyles
+
+			// Calculate the visible width of the word and check if it fits
+			if currentLineVisibleWidth + wordWithoutStyles.count + (currentLine.isEmpty ? 0 : 1) <= width {
+				// Add space if it's not the first word
+				if !currentLine.isEmpty {
+					currentLine.append(" ")
+					currentLineVisibleWidth += 1
+				}
+				currentLine += word
+				currentLineVisibleWidth += wordWithoutStyles.count
+				words.removeFirst()
+			} else {
+				// If the word itself is too long, split it
+				if wordWithoutStyles.count > width {
+					let splitIndex = width - currentLineVisibleWidth
+					let remainingPart = String(word.dropFirst(splitIndex))
+					let styledVisiblePart = word.prefix(splitIndex) // Preserve styles for the visible part
+
+					currentLine += styledVisiblePart
+					lines.append(currentLine)
+
+					// Add remaining part back to words
+					words[0] = Substring(remainingPart)
+					currentLine = ""
+					currentLineVisibleWidth = 0
+				} else {
+					// Word doesn't fit, move to next line
+					lines.append(currentLine)
+					currentLine = ""
+					currentLineVisibleWidth = 0
+				}
+			}
+		}
+
+		// Add the last line if it has content
+		if !currentLine.isEmpty {
+			lines.append(currentLine)
+		}
+
+		return lines
+	}
 }
 
 enum TextStyles {

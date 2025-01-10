@@ -11,22 +11,12 @@ enum MessageBox {
 		var renderedLines: [String] = []
 
 		for message in messages {
-			if message.count >= q2Width - 1 {
-				var currentLineStart = message.startIndex
-				while currentLineStart < message.endIndex {
-					let lineEnd = message.index(currentLineStart, offsetBy: q2Width - 2, limitedBy: message.endIndex) ?? message.endIndex
-					let line = String(message[currentLineStart ..< lineEnd])
-					renderedLines.append(line)
-					currentLineStart = lineEnd
-				}
-			} else {
-				renderedLines.append(message)
-			}
+			renderedLines.append(contentsOf: message.wrappedWithStyles(toWidth: q2Width - 2))
 		}
 
+		// Trim to fit the visible area
 		if renderedLines.count > maxVisibleLines {
-			let overflow = renderedLines.count - maxVisibleLines
-			renderedLines.removeFirst(overflow)
+			renderedLines = Array(renderedLines.suffix(maxVisibleLines))
 		}
 
 		var currentY = q2StartY + 1

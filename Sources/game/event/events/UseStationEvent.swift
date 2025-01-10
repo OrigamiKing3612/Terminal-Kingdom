@@ -19,6 +19,7 @@ enum UseStationEvent {
 					}
 					if canMake {
 						options.append(.init(label: recipe.name, action: {
+							// TODO: only allow the player to make what they need for a quest
 							for ingredient in recipe.ingredients {
 								if Game.stages.blacksmith.stage6Stages == .makePickaxe {
 									if let ids = Game.stages.blacksmith.stage6ItemsToMakePickaxeUUIDs {
