@@ -88,7 +88,10 @@ struct PlayerCharacter: Codable {
 	}
 
 	mutating func removeItem(id: UUID) {
-		items.removeAll { $0.id == id }
+		let item = items.filter { $0.id == id }
+		if item[0].canBeSold {
+			items.removeAll { $0.id == id }
+		}
 	}
 
 	mutating func removeItems(ids: [UUID]) {

@@ -26,6 +26,8 @@ enum KeyboardKeys: String {
 	case eight = "8"
 	case nine = "9"
 	case zero = "0"
+	case questionMark = "?"
+	case forward_slash = "/"
 
 	var isLetter: Bool {
 		switch self {
@@ -40,6 +42,10 @@ enum KeyboardKeys: String {
 			case .one, .two, .three, .four, .five, .six, .seven, .eight, .nine, .zero: true
 			default: false
 		}
+	}
+
+	var render: String {
+		rawValue.styled(with: .bold)
 	}
 }
 
@@ -102,6 +108,10 @@ enum TerminalInput {
 				case 57: return .nine
 				default: return .unknown
 			}
+		} else if buffer[0] == 63 {
+			return .questionMark
+		} else if buffer[0] == 47 {
+			return .forward_slash
 		} else if buffer[0] >= 32, buffer[0] <= 126 { // Printable characters
 			return KeyboardKeys(rawValue: String(UnicodeScalar(buffer[0]))) ?? .unknown
 		}

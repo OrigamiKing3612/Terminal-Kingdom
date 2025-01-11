@@ -11,6 +11,9 @@ struct Game: Codable {
 	nonisolated(unsafe) static var messages: [String] = []
 	nonisolated(unsafe) static var mapGen: MapGenSave = .init(amplitude: MapGenSave.defaultAmplitude, frequency: MapGenSave.defaultFrequency, seed: .random(in: 2 ... 1_000_000_000))
 
+	// Don't save
+	nonisolated(unsafe) static var isInInventoryBox: Bool = false
+
 	//    nonisolated(unsafe) private(set) static var map = MapGen.generateFullMap()
 
 	static func initGame() {

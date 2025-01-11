@@ -1,14 +1,14 @@
 extension String {
-	func styled(with textStyles: [TextStyles]) -> String {
+	func styled(with textStyles: [TextStyles], styledIf: Bool = true) -> String {
 		var newString = self
 		for textStyle in textStyles {
 			newString = "\(textStyle.render)\(newString)"
 		}
-		return "\(newString)\(TextStyles.resetAll.render)"
+		return styledIf ? "\(newString)\(TextStyles.resetAll.render)" : self
 	}
 
-	func styled(with textStyle: TextStyles) -> String {
-		styled(with: [textStyle])
+	func styled(with textStyle: TextStyles, styledIf: Bool = true) -> String {
+		styled(with: [textStyle], styledIf: styledIf)
 	}
 
 	/// Removes ANSI escape sequences (style codes) from the string.

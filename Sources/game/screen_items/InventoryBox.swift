@@ -1,6 +1,18 @@
 import Foundation
 
 enum InventoryBox {
+	nonisolated(unsafe) static var showHelp: Bool = false
+	nonisolated(unsafe) static var selectedInventoryIndex: Int = 0 {
+		didSet {
+			if selectedInventoryIndex < 0 {
+				selectedInventoryIndex = 0
+			} else if selectedInventoryIndex >= Game.player.items.count {
+				selectedInventoryIndex = Game.player.items.count - 1
+			}
+			printInventory()
+		}
+	}
+
 	nonisolated(unsafe) static var showInventoryBox = true {
 		didSet {
 			if showInventoryBox {
@@ -11,27 +23,55 @@ enum InventoryBox {
 		}
 	}
 
+	static func sides() {
+		Screen.print(x: q3StartX, y: q3StartY - 1, String(repeating: "=", count: q3Width + 3).styled(with: .bold, styledIf: Game.isInInventoryBox))
+		for y in q3StartY ..< q3EndY {
+			Screen.print(x: q3StartX, y: y, "|".styled(with: .bold, styledIf: Game.isInInventoryBox))
+			Screen.print(x: q3EndX, y: y, "|".styled(with: .bold, styledIf: Game.isInInventoryBox))
+		}
+		Screen.print(x: q3StartX, y: q3EndY, String(repeating: "=", count: q3Width + 3).styled(with: .bold, styledIf: Game.isInInventoryBox))
+	}
+
 	static func inventoryBox() {
 		clear()
-
-		Screen.print(x: q3StartX, y: q3StartY - 1, String(repeating: "=", count: q3Width + 3))
-		for y in q3StartY ..< q3EndY {
-			Screen.print(x: q3StartX, y: y, "|")
-			Screen.print(x: q3EndX, y: y, "|")
-		}
-		Screen.print(x: q3StartX, y: q3EndY, String(repeating: "=", count: q3Width + 3))
+		sides()
 		printInventory()
 	}
 
 	static func printInventory() {
 		clear()
-		var alreadyPrinted: [ItemType] = []
-		for item in Game.player.items {
-			if !alreadyPrinted.contains(where: { $0 == item.type }) {
-				Screen.print(x: q3StartX + 2, y: q3StartY + alreadyPrinted.count, "\(item.inventoryName): \(Game.player.getCount(of: item.type))")
-				alreadyPrinted.append(item.type)
+		if showHelp {
+			Screen.print(x: q3StartX + 2, y: q3StartX, "Press '\(KeyboardKeys.i.render)' to toggle inventory")
+			Screen.print(x: q3StartX + 2, y: q3StartY + 1, "Press '\(KeyboardKeys.d.render)' to destroy 1")
+		} else {
+			var alreadyPrinted: [ItemType] = []
+			for (index, item) in Game.player.items.enumerated() {
+				if !alreadyPrinted.contains(where: { $0 == item.type }) {
+					var icon = ""
+					if index == selectedInventoryIndex, Game.isInInventoryBox {
+						icon = "> ".styled(with: .bold)
+					} else if index != selectedInventoryIndex, Game.isInInventoryBox {
+						icon = "  "
+					}
+					Screen.print(x: q3StartX + 2, y: q3StartY + alreadyPrinted.count, "\(icon)\(item.inventoryName): \(Game.player.getCount(of: item.type))")
+					alreadyPrinted.append(item.type)
+				}
 			}
 		}
+		if Game.isInInventoryBox {
+			if !showHelp {
+				Screen.print(x: q3StartX + 2, y: q3EndY - 1, "Press '\(KeyboardKeys.questionMark.render)' for controls")
+			} else {
+				Screen.print(x: q3StartX + 2, y: q3EndY - 1, "Press '\(KeyboardKeys.questionMark.render)' to leave")
+			}
+		} else {
+			Screen.print(x: q3StartX + 2, y: q3EndY - 1, "Press '\(KeyboardKeys.i.render)'")
+		}
+	}
+
+	static func destroyItem() {
+		let uuid = Game.player.items[selectedInventoryIndex].id
+		Game.player.removeItem(id: uuid)
 	}
 
 	static func clear() {
