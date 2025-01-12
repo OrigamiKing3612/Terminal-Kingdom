@@ -28,6 +28,7 @@ enum KeyboardKeys: String {
 	case zero = "0"
 	case questionMark = "?"
 	case forward_slash = "/"
+	case esc
 
 	var isLetter: Bool {
 		switch self {
@@ -85,7 +86,7 @@ enum TerminalInput {
 					default: return .unknown
 				}
 			}
-			return .unknown
+			return .esc
 		} else if buffer[0] == 13 {
 			return .enter
 		} else if buffer[0] == 10 {

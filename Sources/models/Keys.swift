@@ -46,13 +46,13 @@ enum Keys {
 				Game.isInInventoryBox = true
 				InventoryBox.sides()
 			default:
-				MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
+				break
 		}
 	}
 
 	static func inventory(key: KeyboardKeys) {
 		switch key {
-			case .i:
+			case .i, .esc:
 				Game.isInInventoryBox = false
 				InventoryBox.sides()
 			case .up:
@@ -64,7 +64,7 @@ enum Keys {
 			case .d:
 				InventoryBox.destroyItem()
 			default:
-				MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
+				break
 		}
 	}
 }
