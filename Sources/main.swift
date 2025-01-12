@@ -12,12 +12,21 @@ defer {
 if Game.hasInited == false {
 	Game.initGame()
 	Screen.initialize()
-	if prePreGame() {
-	} else {
-		MessageBox.message("Welcome to Adventure!", speaker: .game)
-		preGame()
-	}
+	showTitleScreen()
 	mainGameLoop()
+}
+
+func showTitleScreen() {
+	let option = TitleScreen.show()
+	Screen.clear()
+	if option == .helpOption {
+		option.action
+		_ = TerminalInput.readKey()
+		showTitleScreen()
+	} else {
+		Screen.initializeBoxes()
+		option.action
+	}
 }
 
 func endProgram() {
@@ -36,7 +45,7 @@ func endProgram() {
 	exit(0)
 }
 
-func prePreGame() -> Bool {
+func loadGame() -> Bool {
 	let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
 
 	if let filePath {
@@ -53,7 +62,8 @@ func prePreGame() -> Bool {
 	return false
 }
 
-func preGame() {
+func newGame() {
+	MessageBox.message("Welcome to Adventure!", speaker: .game)
 	let playerName = MessageBox.messageWithTyping("Let's create your character. What is your name?", speaker: .game)
 	MessageBox.message("Welcome \(playerName)!", speaker: .game)
 	Game.player.setName(playerName)

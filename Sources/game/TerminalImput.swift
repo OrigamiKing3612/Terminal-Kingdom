@@ -46,7 +46,10 @@ enum KeyboardKeys: String {
 	}
 
 	var render: String {
-		rawValue.styled(with: .bold)
+		if self == .space {
+			return "space".styled(with: .bold)
+		}
+		return rawValue.styled(with: .bold)
 	}
 }
 

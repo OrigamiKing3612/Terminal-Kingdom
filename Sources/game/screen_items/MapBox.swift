@@ -1,7 +1,7 @@
 enum MapBox {
 	nonisolated(unsafe) static var mainMap: MainMap = .init()
 	nonisolated(unsafe) static var miningMap: MineMap = .init()
-	nonisolated(unsafe) static var buildingMap: BuildingMap = .init(.blacksmith)
+	nonisolated(unsafe) static var buildingMap: BuildingMap = .init(.castle(side: .left))
 	nonisolated(unsafe) static var showMapBox = true {
 		didSet {
 			if showMapBox {
@@ -12,8 +12,15 @@ enum MapBox {
 		}
 	}
 
-	nonisolated(unsafe) static var mapType: MapType = .mainMap {
-		didSet {
+	nonisolated(unsafe) static var mapType: MapType {
+		get {
+			Game.player.mapType
+		}
+		set {
+			Game.player.setMapType(newValue)
+			// }
+			// didSet {
+			// 	Game.mapType = mapType
 			switch mapType {
 				case .mainMap:
 					break
@@ -91,7 +98,7 @@ enum MapBox {
 	}
 }
 
-enum MapType: Equatable {
+enum MapType: Codable, Equatable {
 	case mainMap
 	case mining
 	case castle(side: CastleSide)

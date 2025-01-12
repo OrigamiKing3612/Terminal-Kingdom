@@ -17,7 +17,11 @@ struct BuildingMap: MapBoxMap {
 		height = grid.count + 1
 
 		// Coordinates for inside the building
-		if case let .castle(side: side) = mapType {
+		if Game.player.position.x == 55, Game.player.position.y == 23 {
+			// Start player in correct spot on start
+			player.x = 55
+			player.y = 23
+		} else if case let .castle(side: side) = mapType {
 			switch side {
 				case .top:
 					player.x = 64

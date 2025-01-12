@@ -24,6 +24,9 @@ enum Screen {
 			Swift.print("Error: Could not determine terminal size.")
 			exit(123)
 		}
+	}
+
+	static func initializeBoxes() {
 		MessageBox.messageBox()
 		MapBox.mapBox()
 		InventoryBox.inventoryBox()

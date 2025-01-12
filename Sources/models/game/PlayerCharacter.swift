@@ -3,8 +3,17 @@ import Foundation
 struct PlayerCharacter: Codable {
 	private(set) var name: String = ""
 	private(set) var items: [Item] = []
-	private(set) var position: Player = .init(x: 5, y: 5)
+	#if DEBUG
+		private(set) var position: Player = .init(x: 5, y: 5)
+	#else
+		private(set) var position: Player = .init(x: 55, y: 23)
+	#endif
 	private(set) var quests: [Quest] = []
+	#if DEBUG
+		private(set) var mapType: MapType = .mainMap
+	#else
+		private(set) var mapType: MapType = .castle(side: .left)
+	#endif
 
 	var stats: Stats = .init()
 
@@ -153,5 +162,9 @@ struct PlayerCharacter: Codable {
 	mutating func updateLastQuest(newQuest: Quest) {
 		quests.removeLast()
 		quests.append(newQuest)
+	}
+
+	mutating func setMapType(_ newMapType: MapType) {
+		mapType = newMapType
 	}
 }
