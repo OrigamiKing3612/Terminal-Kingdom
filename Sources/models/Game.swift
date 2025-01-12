@@ -74,6 +74,7 @@ struct CodableGame: Codable {
 
 struct Config: Codable {
 	static let configFile: String = "adventure-config.json"
+	var useNerdFont: Bool = true
 	var vimKeys: Bool = false
 	var arrowKeys: Bool = false
 	var wasdKeys: Bool = true

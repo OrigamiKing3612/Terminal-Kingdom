@@ -52,7 +52,7 @@ enum MapTileType: TileType {
 			case .plain: " "
 			case .water: "W".styled(with: .brightBlue)
 			case .path: "P"
-			case .tree: "󰐅".styled(with: .green)
+			case .tree: (Game.config.useNerdFont ? "󰐅" : "T").styled(with: .green)
 			case .building: "#" // TODO: style dim if walkable
 			case .player: "*".styled(with: [.blue, .bold])
 			case .sand: "S".styled(with: .yellow)
@@ -60,7 +60,7 @@ enum MapTileType: TileType {
 			case .TOBEGENERATED: "."
 			case .playerStart: " "
 			case .snow: "S".styled(with: .bold)
-			case .snow_tree: "󰐅".styled(with: .bold)
+			case .snow_tree: (Game.config.useNerdFont ? "󰐅" : "T").styled(with: .bold)
 			case .cactus: "C".styled(with: .brightGreen)
 			case .ice: "I".styled(with: .brightCyan)
 			case .fence: "f".styled(with: .brown)
