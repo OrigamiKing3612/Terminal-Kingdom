@@ -44,6 +44,7 @@ enum Keys {
 			case .zero:
 				Screen.clear()
 				Screen.initialize()
+				Screen.initializeBoxes()
 			case .i:
 				Game.isInInventoryBox = true
 				InventoryBox.sides()

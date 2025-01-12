@@ -93,6 +93,8 @@ enum TitleScreen {
 		Screen.print(x: x - (text.count / 2), y: y, text.styled(with: .bold))
 		printHelpMessage(x: x, y: y + 3, "Press \("wasd".styled(with: .bold)) or the \("arrow keys".styled(with: .bold)) to move.")
 		printHelpMessage(x: x, y: y + 4, "Press \(KeyboardKeys.space.render) or \(KeyboardKeys.enter.render) to interact with the tile you are on.")
+		printHelpMessage(x: x, y: y + 5, "Press \(KeyboardKeys.i.render) to open the inventory.")
+		printHelpMessage(x: x, y: y + 6, "Press \(KeyboardKeys.zero.render) to quit.")
 
 		printHelpMessage(x: x, y: y + 5, "Press any key to quit.")
 	}

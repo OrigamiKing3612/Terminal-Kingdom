@@ -14,25 +14,25 @@ enum StatusBox {
 		}
 	}
 
-	static let questBoxStartX = q4StartX + 1
-	static let questBoxEndX = q4StartX + (q4Width / 2) // Halfway point of the 4th quadrant
+	static var questBoxStartX: Int { q4StartX + 1 }
+	static var questBoxEndX: Int { q4StartX + (q4Width / 2) } // Halfway point of the 4th quadrant
 	static var questBoxWidth: Int {
 		questBoxEndX - questBoxStartX
 	}
 
-	static let questBoxStartY = q4StartY + 1
-	static let questBoxEndY = q4EndY
+	static var questBoxStartY: Int { q4StartY + 1 }
+	static var questBoxEndY: Int { q4EndY }
 	static var questBoxHeight: Int {
 		abs((q4StartY + 1) - 2)
 	}
 
-	static let statusAreaEndX = q4EndX - 1
+	static var statusAreaEndX: Int { q4EndX - 1 }
 	static var statusAreaWidth: Int {
 		questBoxEndX - questBoxStartX
 	}
 
-	static let statusAreaStartY = q4StartY + 1
-	static let statusAreaEndY = q4EndY
+	static var statusAreaStartY: Int { q4StartY + 1 }
+	static var statusAreaEndY: Int { q4EndY }
 	static var statusAreaHeight: Int {
 		abs((q4StartY + 1) - 2)
 	}
