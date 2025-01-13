@@ -1,6 +1,11 @@
 enum KingNPC {
 	static func talk() {
-		if Game.startingVillageChecks.firstTimes.hasTalkedToKing == false {
+		if Game.stages.builder.stage4Stages == .talkToKing {
+			MessageBox.message("Hello \(NPCTileType.king.render), I am the builders apprentice, we were wondering if we could build a new house in the village?", speaker: .player)
+			MessageBox.message("Hello \(Game.player.name)! Yes that is a good idea.", speaker: .king)
+			MessageBox.message("Ok! Thank you! I'll go let him know", speaker: .player)
+			Game.stages.builder.stage4Stages = .comeBack
+		} else if Game.startingVillageChecks.firstTimes.hasTalkedToKing == false {
 			Game.startingVillageChecks.firstTimes.hasTalkedToKing = true
 			firstDialogue()
 		} else {

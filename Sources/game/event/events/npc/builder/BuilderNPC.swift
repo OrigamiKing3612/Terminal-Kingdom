@@ -7,30 +7,33 @@ enum BuilderNPC {
 	}
 
 	static func getStage() {
-		stage3()
-		// switch Game.stages.builder.stageNumber {
-		// 	case 0:
-		// 		if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
-		// 			let options: [MessageOption] = [
-		// 				.init(label: "Yes", action: {}),
-		// 				.init(label: "No", action: {}),
-		// 			]
-		// 			let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to build?", speaker: .builder, options: options)
-		// 			if selectedOption.label == "Yes" {
-		// 				stage0()
-		// 			} else {
-		// 				return
-		// 			}
-		// 		} else {
-		// 			stage0()
-		// 		}
-		// 	case 1:
-		// 		stage1()
-		// case 2:
-		// stage2()
-		// 	default:
-		// 		break
-		// }
+		switch Game.stages.builder.stageNumber {
+			case 0:
+				if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
+					let options: [MessageOption] = [
+						.init(label: "Yes", action: {}),
+						.init(label: "No", action: {}),
+					]
+					let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to build?", speaker: .builder, options: options)
+					if selectedOption.label == "Yes" {
+						stage0()
+					} else {
+						return
+					}
+				} else {
+					stage0()
+				}
+			case 1:
+				stage1()
+			case 2:
+				stage2()
+			case 3:
+				stage3()
+			case 4:
+				stage4()
+			default:
+				break
+		}
 	}
 
 	static func stage0() {
@@ -142,6 +145,29 @@ enum BuilderNPC {
 				} else {
 					MessageBox.message("You still need to make the door. It is marked as a \(StationTileType.workbench.render).", speaker: .builder)
 				}
+			case .done:
+				Game.stages.builder.next()
+				if RandomEventStuff.wantsToContinue(speaker: .builder) {
+					getStage()
+				}
+		}
+	}
+
+	static func stage4() {
+		switch Game.stages.builder.stage4Stages {
+			case .notStarted:
+				MessageBox.message("Now that we have the door, we can start building. Can you go talk to the king and ask him for permission to build a house?", speaker: .builder)
+				Game.stages.builder.stage4Stages = .talkToKing
+				StatusBox.quest(.builder4)
+			case .talkToKing:
+				MessageBox.message("You haven't talked to the king yet.", speaker: .builder)
+			case .comeBack:
+				MessageBox.message("I see you've talked to the king. What did he say?", speaker: .builder)
+				MessageBox.message("He said we can build a new house!", speaker: .player)
+				MessageBox.message("Nice! Lets get started", speaker: .builder)
+				Game.stages.builder.stage4Stages = .done
+				StatusBox.removeQuest(quest: .builder4)
+				fallthrough
 			case .done:
 				Game.stages.builder.next()
 				if RandomEventStuff.wantsToContinue(speaker: .builder) {
