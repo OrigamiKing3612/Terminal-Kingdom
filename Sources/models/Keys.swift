@@ -94,8 +94,9 @@ enum Keys {
 	static func inventory(key: KeyboardKeys) {
 		switch key {
 			case .i, .esc:
+				InventoryBox.showHelp = false
 				Game.isInInventoryBox = false
-				InventoryBox.sides()
+				InventoryBox.inventoryBox()
 			case .up:
 				InventoryBox.selectedInventoryIndex -= 1
 			case .down:

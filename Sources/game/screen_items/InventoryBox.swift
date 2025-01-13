@@ -41,7 +41,7 @@ enum InventoryBox {
 	static func printInventory() {
 		clear()
 		if showHelp {
-			Screen.print(x: q3StartX + 2, y: q3StartX, "Press '\(KeyboardKeys.i.render)' to toggle inventory")
+			Screen.print(x: q3StartX + 2, y: q3StartY, "Press '\(KeyboardKeys.i.render)' to toggle inventory")
 			Screen.print(x: q3StartX + 2, y: q3StartY + 1, "Press '\(KeyboardKeys.d.render)' to destroy 1")
 		} else {
 			var alreadyPrinted: [ItemType] = []

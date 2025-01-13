@@ -5,6 +5,7 @@ This game is still in early development and is not *fully* yet playable.
 Right now, I've only worked on the tutorial. It is not done yet, but the tutorial will guide you through the basics of the game, but not be annoying. You will be able to skip the tutorial if you want to the game will just be harder.
 
 ## Installation
+To see all of the characters, you will need a nerd font. You can download one from [here](https://www.nerdfonts.com/font-downloads). If you can't download a nerd font, you can turn them off in the config file.
 TODO
 
 ## How to Play
