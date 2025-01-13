@@ -133,4 +133,8 @@ struct MainMap: MapBoxMap {
 			MessageBox.message("You need 5 lumber to build a building.", speaker: .game)
 		}
 	}
+
+	mutating func updateTile(newTile: MapTile) {
+		grid[player.y][player.x] = newTile
+	}
 }

@@ -1,15 +1,15 @@
 struct PotTile: Codable, Equatable {
-	let cropTile: CropTile?
+	let cropTile: CropTile
 
-	init(cropTile: CropTile? = nil) {
+	init(cropTile: CropTile = .init(type: .none)) {
 		self.cropTile = cropTile
 	}
 
 	static func renderCropInPot(tile: PotTile) -> String {
-		if let cropTile = tile.cropTile {
-			CropTile.renderCrop(tile: cropTile)
-		} else {
+		if tile.cropTile.type == .none {
 			"p"
+		} else {
+			CropTile.renderCrop(tile: tile.cropTile)
 		}
 	}
 }

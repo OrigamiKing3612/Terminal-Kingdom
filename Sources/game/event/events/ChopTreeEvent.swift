@@ -1,6 +1,6 @@
 enum ChopTreeEvent {
 	static func chopTree() {
-		// TODO: get seed need pot then plant half grown tree?
+		// TODO: get seed (acorn?) need pot then plant half grown tree?
 		MessageBox.message("Timber!", speaker: .game)
 		let x = MapBox.player.x
 		let y = MapBox.player.y

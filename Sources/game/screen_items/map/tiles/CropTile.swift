@@ -10,7 +10,7 @@ struct CropTile: Codable, Equatable {
 			case .none:
 				"."
 			case .carrot:
-				"c"
+				""
 			case .potato:
 				"p"
 			case .wheat:

@@ -31,6 +31,13 @@ enum ItemType: Codable, Equatable, Hashable {
 
 	case coin
 
+	// MARK: Crops
+
+	case carrot
+	case potato
+	case wheat
+	case lettuce
+
 	var inventoryName: String {
 		switch self {
 			case .sword: "Sword"
@@ -51,6 +58,10 @@ enum ItemType: Codable, Equatable, Hashable {
 			case .clay: "Clay"
 			case .stick: "Stick"
 			case .steel: "Steel"
+			case .carrot: "Carrot"
+			case .lettuce: "Lettuce"
+			case .potato: "Potato"
+			case .wheat: "Wheat"
 		}
 	}
 
@@ -69,6 +80,10 @@ enum ItemType: Codable, Equatable, Hashable {
 			case .clay: 2
 			case .stick: 1
 			case .steel: 3
+			case .carrot: 1
+			case .lettuce: 1
+			case .potato: 1
+			case .wheat: 1
 			default: nil
 		}
 	}

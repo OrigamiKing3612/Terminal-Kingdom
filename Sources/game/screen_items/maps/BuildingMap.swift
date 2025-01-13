@@ -134,4 +134,8 @@ struct BuildingMap: MapBoxMap {
 			MessageBox.message("There is nothing to do here.", speaker: .game)
 		}
 	}
+
+	mutating func updateTile(newTile: MapTile) {
+		grid[player.y][player.x] = newTile
+	}
 }

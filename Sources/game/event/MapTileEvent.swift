@@ -31,10 +31,10 @@ enum MapTileEvent: TileEvent {
 			case .collectCrop:
 				let tile = MapBox.tilePlayerIsOn
 				if case let .crop(crop: crop) = tile.type {
-					CollectCropEvent.collectCrop(cropTile: crop)
+					CollectCropEvent.collectCrop(cropTile: crop, isInPot: false)
 				} else if case let .pot(tile: tile) = tile.type {
-					if let cropTile = tile.cropTile {
-						CollectCropEvent.collectCrop(cropTile: cropTile)
+					if tile.cropTile.type != .none {
+						CollectCropEvent.collectCrop(cropTile: tile.cropTile, isInPot: true)
 					} else {
 						MessageBox.message("There is no crop here", speaker: .game)
 					}

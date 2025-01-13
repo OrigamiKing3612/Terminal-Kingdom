@@ -106,6 +106,17 @@ enum MapBox {
 			mainMap.build()
 		}
 	}
+
+	static func updateTile(newTile: MapTile) {
+		switch mapType {
+			case .mainMap:
+				mainMap.updateTile(newTile: newTile)
+			case .mining:
+				break
+			default:
+				buildingMap.updateTile(newTile: newTile)
+		}
+	}
 }
 
 enum MapType: Codable, Equatable {

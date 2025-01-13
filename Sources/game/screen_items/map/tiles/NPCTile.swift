@@ -11,7 +11,8 @@ struct NPCTile: Codable, Equatable {
 		}
 		switch tile.type {
 			default:
-				return "N".styled(with: .bold)
+				// TODO: Not sure if this will stay
+				return (Game.config.useNerdFont ? "󰙍" : "N").styled(with: .bold)
 		}
 	}
 

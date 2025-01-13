@@ -61,9 +61,9 @@ enum MapTileType: TileType {
 			case .playerStart: " "
 			case .snow: "S".styled(with: .bold)
 			case .snow_tree: (Game.config.useNerdFont ? "󰐅" : "T").styled(with: .bold)
-			case .cactus: "C".styled(with: .brightGreen)
+			case .cactus: (Game.config.useNerdFont ? "󰶵" : "C").styled(with: .brightGreen)
 			case .ice: "I".styled(with: .brightCyan)
-			case .fence: "f".styled(with: .brown)
+			case .fence: (Game.config.useNerdFont ? "f" : "f").styled(with: .brown)
 			case .gate: "g"
 			case let .crop(crop: cropTile): CropTile.renderCrop(tile: cropTile)
 			case let .pot(tile: potTile): PotTile.renderCropInPot(tile: potTile)
@@ -98,7 +98,7 @@ enum MapTileType: TileType {
 			case let .crop(crop):
 				crop.type.rawValue
 			case let .pot(tile):
-				tile.cropTile?.type.rawValue ?? "nil"
+				tile.cropTile.type.rawValue
 			case let .npc(tile):
 				tile.type.render
 			case let .shopStandingArea(type):
