@@ -2,7 +2,6 @@ enum RandomEventStuff {
 	static func teachToChopLumber(by choppingLumberTeachingDoorTypes: ChoppingLumberTeachingDoorTypes) {
 		let speaker: NPCTileType = switch choppingLumberTeachingDoorTypes {
 			case .builder: .builder
-			case .carpenter: .carpenter
 			case .miner: .miner
 		}
 		switch Game.startingVillageChecks.hasBeenTaughtToChopLumber {

@@ -7,6 +7,7 @@ struct Stages: Codable {
 	var blacksmith: BlacksmithStages = .init()
 	var mine: MineStages = .init()
 	var farm: FarmStages = .init()
+	var builder: BuilderStages = .init()
 }
 
 struct RandomStages: Codable {

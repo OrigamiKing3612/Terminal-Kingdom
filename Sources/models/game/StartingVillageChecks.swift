@@ -18,7 +18,6 @@ struct FirstTimes: Codable {
 	var hasTalkedToStableMaster: Bool = false
 	var hasTalkedToFarmer: Bool = false
 	var hasTalkedToDoctor: Bool = false
-	var hasTalkedToCarpenter: Bool = false
 	var hasTalkedToChef: Bool = false
 	var hasTalkedToPotter: Bool = false
 }
@@ -28,7 +27,7 @@ enum StartingVillageChecksStages: Codable, Equatable {
 }
 
 enum ChoppingLumberTeachingDoorTypes: String, Codable, Equatable {
-	case builder, miner, carpenter
+	case builder, miner
 
 	var name: String {
 		rawValue.capitalized

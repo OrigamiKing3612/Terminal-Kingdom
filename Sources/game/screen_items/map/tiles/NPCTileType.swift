@@ -53,7 +53,7 @@ enum NPCTileType: Codable, Equatable {
 			case .builder_helper:
 				true
 			case .carpenter:
-				Game.startingVillageChecks.firstTimes.hasTalkedToCarpenter
+				true
 			case .carpenter_helper:
 				true
 			case .chef:

@@ -21,7 +21,7 @@ enum KingNPC {
 		MessageBox.message("For example, to open a door, you would press one of those keys while standing on the door.", speaker: .king)
 		MessageBox.message("You can also press the \("p".styled(with: .bold)) key to see your current location on the map.", speaker: .king)
 		MessageBox.message("If you have any questions, feel free to ask me.", speaker: .king)
-		MessageBox.message("I suggest starting with the miner, blacksmith, or the carpenter.", speaker: .king)
+		// MessageBox.message("I suggest starting with the miner, blacksmith, or the builder.", speaker: .king)
 		MessageBox.message("Good luck!", speaker: .king)
 	}
 }
