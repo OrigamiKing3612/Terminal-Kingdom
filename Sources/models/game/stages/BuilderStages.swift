@@ -3,7 +3,7 @@ import Foundation
 struct BuilderStages: Codable {
 	private(set) var stageNumber = 0
 	var isDone: Bool { stageNumber > 10 }
-	var stage1ItemsUUIDToRemove: [UUID]?
+	var stage1ItemsUUIDsToRemove: [UUID]?
 	var stage2LumberUUIDToRemove: [UUID]?
 	var stage2AxeUUIDToRemove: UUID?
 	var stage3ItemsUUIDToRemove: [UUID]?

@@ -78,7 +78,7 @@ enum BuilderNPC {
 			case .bringBack:
 				if Game.player.has(item: .stone, count: 20), Game.player.has(item: .iron, count: 10) {
 					MessageBox.message("Great! You have collected the materials.", speaker: .builder)
-					if let ids = Game.stages.builder.stage1ItemsUUIDToRemove {
+					if let ids = Game.stages.builder.stage1ItemsUUIDsToRemove {
 						Game.player.removeItems(ids: ids)
 					}
 					Game.stages.builder.stage1Stages = .done
@@ -88,6 +88,7 @@ enum BuilderNPC {
 					MessageBox.message("You still need to collect the materials. It will be marked with an \("!".styled(with: .bold)) on the map.", speaker: .builder)
 				}
 			case .done:
+				Game.stages.builder.next()
 				if RandomEventStuff.wantsToContinue(speaker: .builder) {
 					getStage()
 				}
@@ -118,6 +119,7 @@ enum BuilderNPC {
 					MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .lumber) - 20)) lumber.", speaker: .builder)
 				}
 			case .done:
+				Game.stages.builder.next()
 				if RandomEventStuff.wantsToContinue(speaker: .builder) {
 					getStage()
 				}

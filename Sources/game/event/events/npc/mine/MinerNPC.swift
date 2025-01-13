@@ -17,6 +17,12 @@ enum MinerNPC {
 			let uuids2 = Game.player.collect(item: .init(type: .coal, canBeSold: false), count: 3)
 			Game.stages.blacksmith.stage8MaterialsToRemove = uuids1 + uuids2
 			Game.stages.blacksmith.stage8Stages = .makeSteel
+		} else if Game.stages.builder.stage1Stages == .collect {
+			MessageBox.message("Yes let me get that for you.", speaker: .miner)
+			let uuids1 = Game.player.collect(item: .init(type: .stone, canBeSold: false), count: 20)
+			let uuids2 = Game.player.collect(item: .init(type: .iron, canBeSold: false), count: 10)
+			Game.stages.builder.stage1ItemsUUIDsToRemove = uuids1 + uuids2
+			Game.stages.builder.stage1Stages = .bringBack
 		} else {
 			getStage()
 		}
