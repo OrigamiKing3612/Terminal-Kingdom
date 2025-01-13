@@ -45,7 +45,7 @@ enum InventoryBox {
 			Screen.print(x: q3StartX + 2, y: q3StartY + 1, "Press '\(KeyboardKeys.d.render)' to destroy 1")
 		} else {
 			var alreadyPrinted: [ItemType] = []
-			for (index, item) in Game.player.items.enumerated() {
+			for (index, item) in Game.player.items.sorted(by: { $0.type.inventoryName < $1.type.inventoryName }).enumerated() {
 				if !alreadyPrinted.contains(where: { $0 == item.type }) {
 					var icon = ""
 					if index == selectedInventoryIndex, Game.isInInventoryBox {
