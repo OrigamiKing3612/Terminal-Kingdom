@@ -20,31 +20,7 @@ struct Game: Codable {
 	static func initGame() {
 		hasInited = true
 		MapBox.mainMap = MainMap()
-
-		let filePath = FileManager.default.homeDirectoryForCurrentUser
-		let directory = filePath.appendingPathComponent(".adventure")
-		let file = directory.appendingPathComponent(Config.configFile)
-
-		do {
-			if !FileManager.default.fileExists(atPath: directory.path) {
-				try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
-			}
-
-			let data = try JSONDecoder().decode(Config.self, from: Data(contentsOf: file))
-			config = data
-		} catch {
-			print("Error: Could not read config file. Creating a new one.")
-
-			do {
-				let encoder = JSONEncoder()
-				encoder.outputFormatting = .prettyPrinted
-				let data = try encoder.encode(config)
-				try data.write(to: file)
-			} catch {
-				print("Error: Could not write config file at \(file). \(error)")
-				exit(1)
-			}
-		}
+		config = Config.load()
 	}
 
 	static func setIsTypingInMessageBox(_ newIsTypingInMessageBox: Bool) {
@@ -73,12 +49,4 @@ struct CodableGame: Codable {
 	var stages: Stages
 	var messages: [String]
 	var mapGen: MapGenSave
-}
-
-struct Config: Codable {
-	static let configFile: String = "adventure-config.json"
-	var useNerdFont: Bool = true
-	var vimKeys: Bool = false
-	var arrowKeys: Bool = false
-	var wasdKeys: Bool = true
 }

@@ -23,6 +23,9 @@ func showTitleScreen() {
 		option.action
 		_ = TerminalInput.readKey()
 		showTitleScreen()
+	} else if option == .settingsOption {
+		option.action
+		showTitleScreen()
 	} else {
 		Screen.initializeBoxes()
 		option.action

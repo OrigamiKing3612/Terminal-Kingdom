@@ -98,6 +98,9 @@ struct PlayerCharacter: Codable {
 	}
 
 	mutating func removeItem(id: UUID) {
+		if items.isEmpty {
+			return
+		}
 		let item = items.filter { $0.id == id }
 		if item[0].canBeSold {
 			items.removeAll { $0.id == id }
@@ -105,20 +108,32 @@ struct PlayerCharacter: Codable {
 	}
 
 	mutating func removeItems(ids: [UUID]) {
+		if items.isEmpty {
+			return
+		}
 		for id in ids {
 			removeItem(id: id)
 		}
 	}
 
 	mutating func removeItem(at index: Int) {
+		if items.isEmpty {
+			return
+		}
 		items.remove(at: index)
 	}
 
 	mutating func updateItem(at index: Int, _ newValue: Item) {
+		if items.isEmpty {
+			return
+		}
 		items[index] = newValue
 	}
 
 	mutating func removeItem(item: ItemType, count: Int = 1) {
+		if items.isEmpty {
+			return
+		}
 		var removedCount = 0
 		items.removeAll { currentItem in
 			if currentItem.type == item, removedCount < count {
