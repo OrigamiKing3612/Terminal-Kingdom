@@ -9,8 +9,10 @@ struct CropTile: Codable, Equatable {
 		switch tile.type {
 			case .none:
 				"."
+			case .tree_seed:
+				Game.config.useNerdFont ? "" : "t"
 			case .carrot:
-				""
+				Game.config.useNerdFont ? "" : "c"
 			case .potato:
 				"p"
 			case .wheat:

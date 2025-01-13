@@ -36,7 +36,15 @@ enum MapTileEvent: TileEvent {
 					if tile.cropTile.type != .none {
 						CollectCropEvent.collectCrop(cropTile: tile.cropTile, isInPot: true)
 					} else {
-						MessageBox.message("There is no crop here", speaker: .game)
+						if !Game.player.has(item: .tree_seed) {
+							MessageBox.message("There is no crop here", speaker: .game)
+							return
+						}
+						let options: [MessageOption] = [.init(label: "Quit", action: {}), .init(label: "Plant Seed", action: {
+							MapBox.updateTile(newTile: .init(type: .pot(tile: .init(cropTile: .init(type: .tree_seed)))))
+						})]
+						let selectedOption = MessageBox.messageWithOptions("Plant Seed", speaker: .game, options: options)
+						selectedOption.action()
 					}
 				}
 			case let .useStation(station: station):

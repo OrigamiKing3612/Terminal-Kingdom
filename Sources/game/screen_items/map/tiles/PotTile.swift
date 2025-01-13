@@ -7,7 +7,7 @@ struct PotTile: Codable, Equatable {
 
 	static func renderCropInPot(tile: PotTile) -> String {
 		if tile.cropTile.type == .none {
-			"p"
+			Game.config.useNerdFont ? "󰋥" : "p"
 		} else {
 			CropTile.renderCrop(tile: tile.cropTile)
 		}

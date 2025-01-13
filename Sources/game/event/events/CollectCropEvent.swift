@@ -3,7 +3,7 @@ enum CollectCropEvent {
 		if isInPot {
 			if cropTile.type != .none {
 				_ = Game.player.collect(item: .init(type: cropTileToItem(cropTile.type)!))
-				MapBox.updateTile(newTile: .init(type: .pot(tile: .init(cropTile: .init(type: .none)))))
+				MapBox.updateTile(newTile: .init(type: .pot(tile: .init(cropTile: .init(type: .none))), event: .collectCrop))
 			} else {
 				MessageBox.message("There is no crop here", speaker: .game)
 			}
