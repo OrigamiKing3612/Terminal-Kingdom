@@ -27,6 +27,19 @@ enum Quest: Codable, Equatable {
 	case mine9
 	case mine10
 
+	// MARK: Builder
+
+	case builder1
+	case builder2
+	case builder3
+	case builder4
+	case builder5
+	case builder6
+	case builder7
+	case builder8
+	case builder9
+	case builder10
+
 	var label: String {
 		switch self {
 			case let .chopLumber(count, `for`):
@@ -124,6 +137,16 @@ enum Quest: Codable, Equatable {
 					case .done:
 						"Mine Stage 10 done"
 				}
+			case .builder1: "Get materials from the Miner"
+			case .builder2: "Collect 20 lumber for the builder"
+			case .builder3: "Make a door on the workbench"
+			case .builder4: "Go talk to the King"
+			case .builder5: "TODO"
+			case .builder6: "Collect 20 lumber for the builder"
+			case .builder7: "TODO"
+			case .builder8: "TODO"
+			case .builder9: "Build a house for the builder"
+			case .builder10: "Take the door and have fun!"
 		}
 	}
 }
