@@ -36,6 +36,8 @@ enum BuilderNPC {
 				} else {
 					stage0()
 				}
+			default:
+				break
 		}
 	}
 
