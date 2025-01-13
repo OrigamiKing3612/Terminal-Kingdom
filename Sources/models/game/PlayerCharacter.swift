@@ -102,7 +102,7 @@ struct PlayerCharacter: Codable {
 			return
 		}
 		let item = items.filter { $0.id == id }
-		if item[0].canBeSold {
+		if !item.isEmpty, item[0].canBeSold {
 			items.removeAll { $0.id == id }
 		}
 	}

@@ -70,7 +70,7 @@ enum BuilderNPC {
 	static func stage1() {
 		switch Game.stages.builder.stage1Stages {
 			case .notStarted:
-				MessageBox.message("Before we can start building we need matirals. Can you go get 20 stone and 10 iron from the mine and bring it back to me?", speaker: .builder)
+				MessageBox.message("Before we can start building we need materials. Can you go get 20 stone and 10 iron from the mine and bring it back to me?", speaker: .builder)
 				Game.stages.builder.stage1Stages = .collect
 				StatusBox.quest(.builder1)
 			case .collect:

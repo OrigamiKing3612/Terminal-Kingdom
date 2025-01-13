@@ -14,6 +14,7 @@ enum RandomEventStuff {
 				if Game.player.has(item: .lumber, count: 10) {
 					MessageBox.message("Nice! 10 lumber! Now we can continue.", speaker: speaker)
 					Game.player.removeItem(item: .lumber, count: 10)
+
 					if let id = Game.stages.random.chopTreeAxeUUIDToRemove {
 						Game.player.removeItem(id: id)
 					}
