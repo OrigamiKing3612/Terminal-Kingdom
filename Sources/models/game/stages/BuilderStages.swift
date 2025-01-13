@@ -6,7 +6,7 @@ struct BuilderStages: Codable {
 	var stage1ItemsUUIDsToRemove: [UUID]?
 	var stage2LumberUUIDToRemove: [UUID]?
 	var stage2AxeUUIDToRemove: UUID?
-	var stage3ItemsUUIDToRemove: [UUID]?
+	var stage3ItemsToMakeDoorUUIDsToRemove: [UUID]?
 	var stage3DoorUUIDToRemove: UUID?
 	var stage5_UUIDToRemove: [UUID]?
 	var stage6LumberUUIDToRemove: UUID?

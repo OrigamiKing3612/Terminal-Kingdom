@@ -27,4 +27,5 @@ struct Recipe: Codable {
 enum StationType: String, Codable {
 	case furnace
 	case anvil
+	case workbench
 }

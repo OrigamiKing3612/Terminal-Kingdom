@@ -81,7 +81,6 @@ enum UseStationEvent {
 								} else {
 									Game.player.removeItem(item: ingredient.item, count: ingredient.count)
 								}
-								Game.player.removeItem(item: ingredient.item, count: ingredient.count)
 							}
 							for result in recipe.result {
 								if Game.stages.blacksmith.stage5Stages == .makeSteel {
@@ -90,6 +89,47 @@ enum UseStationEvent {
 								} else if Game.stages.blacksmith.stage8Stages == .makeSteel {
 									Game.stages.blacksmith.stage8Stages = .comeBack
 									Game.stages.blacksmith.stage8MaterialsToRemove = Game.player.collect(item: .init(type: result.item, canBeSold: false), count: 3)
+								} else {
+									_ = Game.player.collect(item: .init(type: result.item, canBeSold: true))
+								}
+							}
+						}))
+					}
+				}
+				options.append(.init(label: "Quit", action: {}))
+				let selectedOption = MessageBox.messageWithOptions("What would you like to make?", speaker: .game, options: options)
+				selectedOption.action()
+			case .workbench:
+				var options: [MessageOption] = []
+				for Allrecipe in AllRecipes.allCases {
+					let recipe = Allrecipe.recipe
+					if recipe.station != .workbench {
+						continue
+					}
+					var canMake = true
+					for ingredient in recipe.ingredients {
+						if Game.player.has(item: ingredient.item, count: ingredient.count) {
+							continue
+						} else {
+							canMake = false
+							break
+						}
+					}
+					if canMake, Game.stages.builder.stage3Stages == .makeDoor {
+						options.append(.init(label: recipe.name, action: {
+							for ingredient in recipe.ingredients {
+								if Game.stages.builder.stage3Stages == .makeDoor {
+									if let ids = Game.stages.builder.stage3ItemsToMakeDoorUUIDsToRemove {
+										Game.player.removeItems(ids: ids)
+									}
+								} else {
+									Game.player.removeItem(item: ingredient.item, count: ingredient.count)
+								}
+							}
+							for result in recipe.result {
+								if Game.stages.builder.stage3Stages == .makeDoor {
+									Game.stages.builder.stage3Stages = .returnToBuilder
+									Game.stages.builder.stage3DoorUUIDToRemove = Game.player.collect(item: .init(type: result.item, canBeSold: false))
 								} else {
 									_ = Game.player.collect(item: .init(type: result.item, canBeSold: true))
 								}

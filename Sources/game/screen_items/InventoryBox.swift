@@ -74,7 +74,7 @@ enum InventoryBox {
 			return
 		}
 		let uuid = Game.player.items[selectedInventoryIndex].id
-		Game.player.removeItem(id: uuid)
+		Game.player.destroyItem(id: uuid)
 	}
 
 	static func clear() {

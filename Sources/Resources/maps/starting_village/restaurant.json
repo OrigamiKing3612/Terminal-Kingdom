@@ -1,24 +1,14 @@
 [
   [
     {
+      "isWalkable" : false,
       "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      },
-      "isWalkable" : false
-    },
-    {
-      "type" : {
-        "building" : {
-          "tile" : {
-            "isPlacedByPlayer" : false
-          }
-        }
-      },
-      "isWalkable" : false
+      }
     },
     {
       "type" : {
@@ -61,34 +51,36 @@
       }
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      }
+      },
+      "isWalkable" : false
+    },
+    {
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      },
+      "isWalkable" : false
     }
   ],
   [
     {
+      "isWalkable" : false,
       "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      },
-      "isWalkable" : false
-    },
-    {
-      "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
+      }
     },
     {
       "isWalkable" : true,
@@ -123,14 +115,22 @@
       "isWalkable" : true
     },
     {
+      "isWalkable" : true,
+      "type" : {
+        "plain" : {
+
+        }
+      }
+    },
+    {
+      "isWalkable" : false,
       "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      },
-      "isWalkable" : false
+      }
     }
   ],
   [
@@ -177,19 +177,20 @@
       "isWalkable" : true
     },
     {
-      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      }
+      },
+      "isWalkable" : true
     },
     {
-      "event" : {
-        "openDoor" : {
+      "isWalkable" : true,
+      "type" : {
+        "door" : {
           "tile" : {
-            "level" : 1,
             "isPartOfPlayerVillage" : false,
+            "level" : 1,
             "type" : {
               "restaurant" : {
 
@@ -198,32 +199,55 @@
           }
         }
       },
-      "type" : {
-        "door" : {
+      "event" : {
+        "openDoor" : {
           "tile" : {
             "isPartOfPlayerVillage" : false,
+            "level" : 1,
             "type" : {
               "restaurant" : {
 
               }
-            },
-            "level" : 1
+            }
           }
         }
-      },
-      "isWalkable" : true
+      }
     }
   ],
   [
     {
+      "isWalkable" : false,
       "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
+      }
+    },
+    {
+      "isWalkable" : true,
+      "type" : {
+        "plain" : {
+
+        }
+      }
+    },
+    {
+      "isWalkable" : true,
+      "type" : {
+        "plain" : {
+
+        }
+      }
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
       },
-      "isWalkable" : false
+      "isWalkable" : true
     },
     {
       "isWalkable" : true,
@@ -243,37 +267,13 @@
     },
     {
       "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
-      "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
-      "isWalkable" : true,
-      "type" : {
-        "plain" : {
-
-        }
-      }
-    },
-    {
-      "isWalkable" : false,
-      "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      }
+      },
+      "isWalkable" : false
     }
   ],
   [
@@ -298,24 +298,14 @@
       }
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      }
-    },
-    {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-          "tile" : {
-            "isPlacedByPlayer" : false
-          }
-        }
-      }
+      },
+      "isWalkable" : false
     },
     {
       "isWalkable" : false,
@@ -346,6 +336,16 @@
           }
         }
       }
+    },
+    {
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      },
+      "isWalkable" : false
     }
   ]
 ]

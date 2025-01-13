@@ -1,6 +1,7 @@
 enum StationTileType: Codable, Equatable {
 	case furnace(progress: FurnaceProgress)
 	case anvil
+	case workbench
 
 	var render: String {
 		switch self {
@@ -15,6 +16,8 @@ enum StationTileType: Codable, Equatable {
 				}
 			case .anvil:
 				"a".styled(with: .bold)
+			case .workbench:
+				"w".styled(with: .bold)
 		}
 	}
 
@@ -24,6 +27,8 @@ enum StationTileType: Codable, Equatable {
 				"furnace"
 			case .anvil:
 				"anvil"
+			case .workbench:
+				"workbench"
 		}
 	}
 }

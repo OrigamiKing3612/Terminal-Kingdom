@@ -97,12 +97,22 @@ struct PlayerCharacter: Codable {
 		return ids
 	}
 
-	mutating func removeItem(id: UUID) {
+	mutating func destroyItem(id: UUID) {
 		if items.isEmpty {
 			return
 		}
 		let item = items.filter { $0.id == id }
 		if !item.isEmpty, item[0].canBeSold {
+			items.removeAll { $0.id == id }
+		}
+	}
+
+	mutating func removeItem(id: UUID) {
+		if items.isEmpty {
+			return
+		}
+		let item = items.filter { $0.id == id }
+		if !item.isEmpty {
 			items.removeAll { $0.id == id }
 		}
 	}

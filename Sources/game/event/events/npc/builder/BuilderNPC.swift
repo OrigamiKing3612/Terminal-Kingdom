@@ -3,44 +3,34 @@ enum BuilderNPC {
 		if Game.startingVillageChecks.firstTimes.hasTalkedToBuilder == false {
 			Game.startingVillageChecks.firstTimes.hasTalkedToBuilder = true
 		}
-		if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
-			let options: [MessageOption] = [
-				.init(label: "Yes", action: {}),
-				.init(label: "No", action: {}),
-			]
-			let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to build?", speaker: .builder, options: options)
-			if selectedOption.label == "Yes" {
-				stage0()
-			} else {
-				return
-			}
-		} else {
-			stage0()
-		}
+		getStage()
 	}
 
 	static func getStage() {
-		switch Game.stages.builder.stageNumber {
-			case 0:
-				if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
-					let options: [MessageOption] = [
-						.init(label: "Yes", action: {}),
-						.init(label: "No", action: {}),
-					]
-					let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to build?", speaker: .builder, options: options)
-					if selectedOption.label == "Yes" {
-						stage0()
-					} else {
-						return
-					}
-				} else {
-					stage0()
-				}
-			case 1:
-				stage1()
-			default:
-				break
-		}
+		stage3()
+		// switch Game.stages.builder.stageNumber {
+		// 	case 0:
+		// 		if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
+		// 			let options: [MessageOption] = [
+		// 				.init(label: "Yes", action: {}),
+		// 				.init(label: "No", action: {}),
+		// 			]
+		// 			let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to build?", speaker: .builder, options: options)
+		// 			if selectedOption.label == "Yes" {
+		// 				stage0()
+		// 			} else {
+		// 				return
+		// 			}
+		// 		} else {
+		// 			stage0()
+		// 		}
+		// 	case 1:
+		// 		stage1()
+		// case 2:
+		// stage2()
+		// 	default:
+		// 		break
+		// }
 	}
 
 	static func stage0() {
@@ -117,6 +107,40 @@ enum BuilderNPC {
 						Game.stages.builder.stage2AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
 					}
 					MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .lumber) - 20)) lumber.", speaker: .builder)
+				}
+			case .done:
+				Game.stages.builder.next()
+				if RandomEventStuff.wantsToContinue(speaker: .builder) {
+					getStage()
+				}
+		}
+	}
+
+	static func stage3() {
+		switch Game.stages.builder.stage3Stages {
+			case .notStarted:
+				MessageBox.message("Now that we have the materials, we can start building. Can you go make a door on the workstation. It is marked as a \(StationTileType.workbench.render). Here are the materials you will need.", speaker: .builder)
+				Game.stages.builder.stage3Stages = .makeDoor
+				StatusBox.quest(.builder3)
+				let uuid1 = Game.player.collect(item: .init(type: .lumber, canBeSold: false), count: 4)
+				let uuid2 = Game.player.collect(item: .init(type: .iron, canBeSold: false), count: 1)
+				Game.stages.builder.stage3ItemsToMakeDoorUUIDsToRemove = uuid1 + uuid2
+			case .makeDoor:
+				MessageBox.message("You haven't made the door yet. It is marked as a \(StationTileType.workbench.render).", speaker: .builder)
+			case .returnToBuilder:
+				if Game.player.has(item: .door(tile: .init(type: .house)), count: 1) {
+					MessageBox.message("Great! You have made the door.", speaker: .builder)
+					if let ids = Game.stages.builder.stage3ItemsToMakeDoorUUIDsToRemove {
+						Game.player.removeItems(ids: ids)
+					}
+					if let id = Game.stages.builder.stage3DoorUUIDToRemove {
+						Game.player.removeItem(id: id)
+					}
+					Game.stages.builder.stage3Stages = .done
+					StatusBox.removeQuest(quest: .builder3)
+					fallthrough
+				} else {
+					MessageBox.message("You still need to make the door. It is marked as a \(StationTileType.workbench.render).", speaker: .builder)
 				}
 			case .done:
 				Game.stages.builder.next()
