@@ -70,6 +70,9 @@ enum InventoryBox {
 	}
 
 	static func destroyItem() {
+		if Game.player.items.isEmpty {
+			return
+		}
 		let uuid = Game.player.items[selectedInventoryIndex].id
 		Game.player.removeItem(id: uuid)
 	}

@@ -36,7 +36,9 @@ struct Game: Codable {
 			print("Error: Could not read config file. Creating a new one.")
 
 			do {
-				let data = try JSONEncoder().encode(config)
+				let encoder = JSONEncoder()
+				encoder.outputFormatting = .prettyPrinted
+				let data = try encoder.encode(config)
 				try data.write(to: file)
 			} catch {
 				print("Error: Could not write config file at \(file). \(error)")
