@@ -19,7 +19,7 @@ enum MapTileType: TileType {
 	// MARK: Other
 
 	case path
-	case building
+	case building(tile: BuildingTile)
 	case player
 	case door(tile: DoorTile)
 
@@ -53,7 +53,7 @@ enum MapTileType: TileType {
 			case .water: "W".styled(with: .brightBlue)
 			case .path: "P"
 			case .tree: (Game.config.useNerdFont ? "󰐅" : "T").styled(with: .green)
-			case .building: "#" // TODO: style dim if walkable
+			case let .building(tile: buildingTile): "#".styled(with: .dim, styledIf: Game.isBuilding && buildingTile.isPlacedByPlayer)
 			case .player: "*".styled(with: [.blue, .bold])
 			case .sand: "S".styled(with: .yellow)
 			case let .door(doorTile): DoorTile.renderDoor(tile: doorTile)

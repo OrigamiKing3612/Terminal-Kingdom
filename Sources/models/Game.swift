@@ -13,6 +13,7 @@ struct Game: Codable {
 
 	// Don't save
 	nonisolated(unsafe) static var isInInventoryBox: Bool = false
+	nonisolated(unsafe) static var isBuilding: Bool = false
 
 	//    nonisolated(unsafe) private(set) static var map = MapGen.generateFullMap()
 

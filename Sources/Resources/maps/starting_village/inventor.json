@@ -3,7 +3,9 @@
     {
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       },
       "isWalkable" : false
@@ -11,31 +13,19 @@
     {
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       },
       "isWalkable" : false
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
-
-        }
-      }
-    },
-    {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-
-        }
-      }
-    },
-    {
-      "type" : {
-        "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       },
       "isWalkable" : false
@@ -44,7 +34,29 @@
       "isWalkable" : false,
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      }
+    },
+    {
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      },
+      "isWalkable" : false
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       }
     },
@@ -52,27 +64,31 @@
       "isWalkable" : false,
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       }
     }
   ],
   [
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
-      }
+      },
+      "isWalkable" : false
     },
     {
-      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      }
+      },
+      "isWalkable" : true
     },
     {
       "isWalkable" : true,
@@ -99,17 +115,19 @@
       "isWalkable" : true
     },
     {
-      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      }
+      },
+      "isWalkable" : true
     },
     {
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       },
       "isWalkable" : false
@@ -117,44 +135,46 @@
   ],
   [
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      },
+      "isWalkable" : false
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "isWalkable" : true,
+      "type" : {
+        "plain" : {
 
         }
       }
     },
     {
-      "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
-      "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
-      "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
+      "isWalkable" : true,
       "type" : {
         "playerStart" : {
 
         }
-      },
-      "isWalkable" : true
+      }
     },
     {
       "type" : {
@@ -165,6 +185,7 @@
       "isWalkable" : true
     },
     {
+      "isWalkable" : true,
       "event" : {
         "openDoor" : {
           "tile" : {
@@ -186,69 +207,72 @@
 
               }
             },
-            "level" : 1,
-            "isPartOfPlayerVillage" : false
+            "isPartOfPlayerVillage" : false,
+            "level" : 1
+          }
+        }
+      }
+    }
+  ],
+  [
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      }
+    },
+    {
+      "isWalkable" : true,
+      "type" : {
+        "plain" : {
+
+        }
+      }
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
           }
         }
       },
-      "isWalkable" : true
-    }
-  ],
-  [
-    {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-
-        }
-      }
-    },
-    {
-      "isWalkable" : true,
-      "type" : {
-        "plain" : {
-
-        }
-      }
-    },
-    {
-      "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
-      "isWalkable" : true,
-      "type" : {
-        "plain" : {
-
-        }
-      }
-    },
-    {
-      "isWalkable" : true,
-      "type" : {
-        "plain" : {
-
-        }
-      }
-    },
-    {
-      "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
-      "type" : {
-        "building" : {
-
-        }
-      },
       "isWalkable" : false
     }
   ],
@@ -257,7 +281,9 @@
       "isWalkable" : false,
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       }
     },
@@ -265,7 +291,9 @@
       "isWalkable" : false,
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       }
     },
@@ -273,22 +301,18 @@
       "isWalkable" : false,
       "type" : {
         "building" : {
-
-        }
-      }
-    },
-    {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       }
     },
     {
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       },
       "isWalkable" : false
@@ -296,7 +320,9 @@
     {
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       },
       "isWalkable" : false
@@ -305,9 +331,21 @@
       "isWalkable" : false,
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       }
+    },
+    {
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      },
+      "isWalkable" : false
     }
   ]
 ]

@@ -3,7 +3,19 @@
     {
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      },
+      "isWalkable" : false
+    },
+    {
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       },
       "isWalkable" : false
@@ -12,59 +24,133 @@
       "isWalkable" : false,
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      }
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      }
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      }
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       }
     },
     {
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      },
+      "isWalkable" : false
+    }
+  ],
+  [
+    {
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       },
       "isWalkable" : false
     },
     {
       "type" : {
-        "building" : {
+        "plain" : {
 
         }
       },
-      "isWalkable" : false
+      "isWalkable" : true
     },
     {
       "type" : {
-        "building" : {
+        "plain" : {
 
         }
       },
-      "isWalkable" : false
+      "isWalkable" : true
     },
     {
       "type" : {
-        "building" : {
+        "plain" : {
 
         }
       },
-      "isWalkable" : false
+      "isWalkable" : true
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
     },
     {
       "isWalkable" : false,
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       }
     }
   ],
   [
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      },
+      "isWalkable" : false
+    },
+    {
+      "type" : {
+        "plain" : {
 
         }
-      }
+      },
+      "isWalkable" : true
     },
     {
       "isWalkable" : true,
@@ -73,72 +159,6 @@
 
         }
       }
-    },
-    {
-      "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
-      "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
-      "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
-      "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
-      "type" : {
-        "building" : {
-
-        }
-      },
-      "isWalkable" : false
-    }
-  ],
-  [
-    {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-
-        }
-      }
-    },
-    {
-      "isWalkable" : true,
-      "type" : {
-        "plain" : {
-
-        }
-      }
-    },
-    {
-      "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
     },
     {
       "type" : {
@@ -168,17 +188,16 @@
       "event" : {
         "openDoor" : {
           "tile" : {
-            "level" : 1,
             "type" : {
               "restaurant" : {
 
               }
             },
+            "level" : 1,
             "isPartOfPlayerVillage" : false
           }
         }
       },
-      "isWalkable" : true,
       "type" : {
         "door" : {
           "tile" : {
@@ -191,17 +210,28 @@
             "isPartOfPlayerVillage" : false
           }
         }
-      }
+      },
+      "isWalkable" : true
     }
   ],
   [
     {
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       },
       "isWalkable" : false
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
     },
     {
       "type" : {
@@ -237,16 +267,10 @@
     },
     {
       "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
-      "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       },
       "isWalkable" : false
@@ -254,9 +278,61 @@
   ],
   [
     {
+      "isWalkable" : false,
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      }
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      }
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      }
+    },
+    {
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      },
+      "isWalkable" : false
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      }
+    },
+    {
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       },
       "isWalkable" : false
@@ -264,50 +340,12 @@
     {
       "type" : {
         "building" : {
-
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
         }
       },
       "isWalkable" : false
-    },
-    {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-
-        }
-      }
-    },
-    {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-
-        }
-      }
-    },
-    {
-      "type" : {
-        "building" : {
-
-        }
-      },
-      "isWalkable" : false
-    },
-    {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-
-        }
-      }
-    },
-    {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-
-        }
-      }
     }
   ]
 ]

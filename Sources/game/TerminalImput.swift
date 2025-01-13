@@ -29,6 +29,8 @@ enum KeyboardKeys: String {
 	case questionMark = "?"
 	case forward_slash = "/"
 	case esc
+	case tab
+	case back_tab
 
 	var isLetter: Bool {
 		switch self {
@@ -86,10 +88,13 @@ enum TerminalInput {
 					case 66: return .down
 					case 67: return .right
 					case 68: return .left
+					case 90: return .back_tab // Shift + Tab
 					default: return .unknown
 				}
 			}
 			return .esc
+		} else if buffer[0] == 9 {
+			return .tab
 		} else if buffer[0] == 13 {
 			return .enter
 		} else if buffer[0] == 10 {

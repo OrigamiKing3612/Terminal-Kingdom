@@ -33,9 +33,9 @@ enum TitleScreen {
 				switch key {
 					case .enter:
 						return TitleScreenOptions.allCases[selectedOptionIndex]
-					case .up, .w, .k:
+					case .up, .w, .k, .back_tab:
 						selectedOptionIndex = max(0, selectedOptionIndex - 1)
-					case .down, .s, .j:
+					case .down, .s, .j, .tab:
 						selectedOptionIndex = min(2, selectedOptionIndex + 1)
 					case .q:
 						endProgram()
@@ -94,9 +94,10 @@ enum TitleScreen {
 		printHelpMessage(x: x, y: y + 3, "Press \("wasd".styled(with: .bold)) or the \("arrow keys".styled(with: .bold)) to move.")
 		printHelpMessage(x: x, y: y + 4, "Press \(KeyboardKeys.space.render) or \(KeyboardKeys.enter.render) to interact with the tile you are on.")
 		printHelpMessage(x: x, y: y + 5, "Press \(KeyboardKeys.i.render) to open the inventory.")
-		printHelpMessage(x: x, y: y + 6, "Press \(KeyboardKeys.zero.render) to quit.")
+		printHelpMessage(x: x, y: y + 6, "Press \(KeyboardKeys.b.render) to start building.")
+		printHelpMessage(x: x, y: y + 7, "Press \(KeyboardKeys.zero.render) to quit.")
 
-		printHelpMessage(x: x, y: y + 5, "Press any key to quit.")
+		printHelpMessage(x: x, y: y + 8, "Press any key to quit.")
 	}
 
 	private static func printHelpMessage(x: Int, y: Int, _ text: String) {

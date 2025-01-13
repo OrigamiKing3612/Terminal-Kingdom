@@ -27,6 +27,9 @@ struct MainMap: MapBoxMap {
 
 	func isWalkable(x: Int, y: Int) -> Bool {
 		guard x >= 0, y >= 0, y < grid.count, x < grid[y].count else { return false }
+		if grid[y][x].type == .building(tile: .init(isPlacedByPlayer: true)) {
+			return Game.isBuilding
+		}
 		return grid[y][x].isWalkable
 	}
 
@@ -107,6 +110,27 @@ struct MainMap: MapBoxMap {
 			}
 		} else {
 			MessageBox.message("There is nothing to do here.", speaker: .game)
+		}
+	}
+
+	mutating func build() {
+		if case let .building(tile: buildingTile) = grid[player.y][player.x].type {
+			if buildingTile.isPlacedByPlayer {
+				grid[player.y][player.x] = MapTile(type: .plain)
+				_ = Game.player.collect(item: .init(type: .lumber), count: 4)
+			} else {
+				MessageBox.message("You can't remove this building.", speaker: .game)
+			}
+		}
+		if grid[player.y][player.x].type != .plain {
+			MessageBox.message("You can't build here.", speaker: .game)
+			return
+		}
+		if Game.player.has(item: .lumber, count: 5) {
+			grid[player.y][player.x] = MapTile(type: .building(tile: .init(isPlacedByPlayer: true)))
+			Game.player.removeItem(item: .lumber, count: 5)
+		} else {
+			MessageBox.message("You need 5 lumber to build a building.", speaker: .game)
 		}
 	}
 }

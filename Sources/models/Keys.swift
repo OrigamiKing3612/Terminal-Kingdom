@@ -48,8 +48,46 @@ enum Keys {
 			case .i:
 				Game.isInInventoryBox = true
 				InventoryBox.sides()
+			case .b:
+				// Only build in main map for now
+				if Game.player.canBuild, MapBox.mapType == .mainMap {
+					Game.isBuilding = true
+					MapBox.sides()
+				}
 			default:
-				break
+				#if DEBUG
+					MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
+				#else
+					break
+				#endif
+		}
+	}
+
+	static func building(key: KeyboardKeys) {
+		switch key {
+			case .b, .esc:
+				Game.isBuilding = false
+				MapBox.sides()
+			case .w where Game.config.wasdKeys, .up where Game.config.arrowKeys, .k where Game.config.vimKeys:
+				MapBox.movePlayer(.up)
+			case .a where Game.config.wasdKeys, .left where Game.config.arrowKeys, .h where Game.config.vimKeys:
+				MapBox.movePlayer(.left)
+			case .s where Game.config.wasdKeys, .down where Game.config.arrowKeys, .j where Game.config.vimKeys:
+				MapBox.movePlayer(.down)
+			case .d where Game.config.wasdKeys, .right where Game.config.arrowKeys, .l where Game.config.vimKeys:
+				MapBox.movePlayer(.right)
+			case .space, .enter:
+				MapBox.build()
+			// case .tab:
+			// 	Game.player.nextBuilding()
+			// case .back_tab:
+			// 	Game.player.previousBuilding()
+			default:
+				#if DEBUG
+					MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
+				#else
+					break
+				#endif
 		}
 	}
 
@@ -67,7 +105,11 @@ enum Keys {
 			case .d:
 				InventoryBox.destroyItem()
 			default:
-				break
+				#if DEBUG
+					MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
+				#else
+					break
+				#endif
 		}
 	}
 }

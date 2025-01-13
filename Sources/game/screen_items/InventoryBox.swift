@@ -24,12 +24,12 @@ enum InventoryBox {
 	}
 
 	static func sides() {
-		Screen.print(x: q3StartX, y: q3StartY - 1, String(repeating: "=", count: q3Width + 3).styled(with: .bold, styledIf: Game.isInInventoryBox))
+		Screen.print(x: q3StartX, y: q3StartY - 1, String(repeating: "=", count: q3Width + 3).styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox))
 		for y in q3StartY ..< q3EndY {
-			Screen.print(x: q3StartX, y: y, "|".styled(with: .bold, styledIf: Game.isInInventoryBox))
-			Screen.print(x: q3EndX, y: y, "|".styled(with: .bold, styledIf: Game.isInInventoryBox))
+			Screen.print(x: q3StartX, y: y, "|".styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox))
+			Screen.print(x: q3EndX, y: y, "|".styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox))
 		}
-		Screen.print(x: q3StartX, y: q3EndY, String(repeating: "=", count: q3Width + 3).styled(with: .bold, styledIf: Game.isInInventoryBox))
+		Screen.print(x: q3StartX, y: q3EndY, String(repeating: "=", count: q3Width + 3).styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox))
 	}
 
 	static func inventoryBox() {

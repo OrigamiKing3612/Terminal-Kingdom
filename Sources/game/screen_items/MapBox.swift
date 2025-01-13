@@ -44,12 +44,7 @@ enum MapBox {
 	static func mapBox() {
 		clear()
 
-		Screen.print(x: q1StartX, y: q1StartY, String(repeating: "=", count: q1Width + 3))
-		for y in (q1StartY + 1) ..< q1EndY {
-			Screen.print(x: q1StartX, y: y, "|")
-			Screen.print(x: q1EndX - 1, y: y, "|")
-		}
-		Screen.print(x: q1StartX, y: q1EndY, String(repeating: "=", count: q1Width + 3))
+		sides()
 
 		switch mapType {
 			case .mainMap:
@@ -59,6 +54,15 @@ enum MapBox {
 			default:
 				buildingMap.map()
 		}
+	}
+
+	static func sides() {
+		Screen.print(x: q1StartX, y: q1StartY, String(repeating: "=", count: q1Width + 4).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+		for y in (q1StartY + 1) ..< q1EndY {
+			Screen.print(x: q1StartX, y: y, "|".styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+			Screen.print(x: q1EndX - 1, y: y, "|".styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+		}
+		Screen.print(x: q1StartX, y: q1EndY, String(repeating: "=", count: q1Width + 4).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
 	}
 
 	static func clear() {
@@ -95,6 +99,12 @@ enum MapBox {
 			}
 		}
 		return nil
+	}
+
+	static func build() {
+		if mapType == .mainMap {
+			mainMap.build()
+		}
 	}
 }
 

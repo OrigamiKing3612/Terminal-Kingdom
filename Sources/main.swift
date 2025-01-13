@@ -82,6 +82,8 @@ func mainGameLoop() {
 		let key = TerminalInput.readKey()
 		if Game.isInInventoryBox {
 			Keys.inventory(key: key)
+		} else if Game.isBuilding {
+			Keys.building(key: key)
 		} else {
 			Keys.normal(key: key)
 		}
