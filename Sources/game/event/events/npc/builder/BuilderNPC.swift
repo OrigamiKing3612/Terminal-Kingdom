@@ -7,34 +7,35 @@ enum BuilderNPC {
 	}
 
 	static func getStage() {
-		stage5()
-		// switch Game.stages.builder.stageNumber {
-		// 	case 0:
-		// 		if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
-		// 			let options: [MessageOption] = [
-		// 				.init(label: "Yes", action: {}),
-		// 				.init(label: "No", action: {}),
-		// 			]
-		// 			let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to build?", speaker: .builder, options: options)
-		// 			if selectedOption.label == "Yes" {
-		// 				stage0()
-		// 			} else {
-		// 				return
-		// 			}
-		// 		} else {
-		// 			stage0()
-		// 		}
-		// 	case 1:
-		// 		stage1()
-		// 	case 2:
-		// 		stage2()
-		// 	case 3:
-		// 		stage3()
-		// 	case 4:
-		// 		stage4()
-		// 	default:
-		// 		break
-		// }
+		switch Game.stages.builder.stageNumber {
+			case 0:
+				if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
+					let options: [MessageOption] = [
+						.init(label: "Yes", action: {}),
+						.init(label: "No", action: {}),
+					]
+					let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to build?", speaker: .builder, options: options)
+					if selectedOption.label == "Yes" {
+						stage0()
+					} else {
+						return
+					}
+				} else {
+					stage0()
+				}
+			case 1:
+				stage1()
+			case 2:
+				stage2()
+			case 3:
+				stage3()
+			case 4:
+				stage4()
+			case 5:
+				stage5()
+			default:
+				break
+		}
 	}
 
 	static func stage0() {
