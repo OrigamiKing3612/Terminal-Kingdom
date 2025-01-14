@@ -38,6 +38,14 @@ enum ItemType: Codable, Equatable, Hashable {
 	case wheat
 	case lettuce
 
+	var isBuildable: Bool {
+		switch self {
+			// in inventory, building comes first, if this is changed make sure building is still first.
+			case .door, .fence, .gate, .lumber: true
+			default: false
+		}
+	}
+
 	var inventoryName: String {
 		switch self {
 			case .sword: "Sword"

@@ -1,12 +1,14 @@
 struct DoorTile: Codable, Equatable, Hashable {
 	let type: DoorTileTypes
 	let isPartOfPlayerVillage: Bool
+	let isPlacedByPlayer: Bool
 	private(set) var level: Int
 
-	init(type: DoorTileTypes, isPartOfPlayerVillage: Bool = false) {
+	init(type: DoorTileTypes, isPartOfPlayerVillage: Bool = false, isPlacedByPlayer: Bool = false) {
 		self.type = type
 		self.isPartOfPlayerVillage = isPartOfPlayerVillage
 		level = 1
+		self.isPlacedByPlayer = isPlacedByPlayer
 	}
 
 	static func renderDoor(tile: DoorTile) -> String {

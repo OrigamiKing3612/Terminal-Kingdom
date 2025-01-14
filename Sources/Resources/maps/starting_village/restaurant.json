@@ -1,14 +1,24 @@
 [
   [
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      }
+      },
+      "isWalkable" : false
+    },
+    {
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      },
+      "isWalkable" : false
     },
     {
       "type" : {
@@ -41,16 +51,6 @@
       }
     },
     {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-          "tile" : {
-            "isPlacedByPlayer" : false
-          }
-        }
-      }
-    },
-    {
       "type" : {
         "building" : {
           "tile" : {
@@ -59,68 +59,6 @@
         }
       },
       "isWalkable" : false
-    },
-    {
-      "type" : {
-        "building" : {
-          "tile" : {
-            "isPlacedByPlayer" : false
-          }
-        }
-      },
-      "isWalkable" : false
-    }
-  ],
-  [
-    {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-          "tile" : {
-            "isPlacedByPlayer" : false
-          }
-        }
-      }
-    },
-    {
-      "isWalkable" : true,
-      "type" : {
-        "plain" : {
-
-        }
-      }
-    },
-    {
-      "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
-      "isWalkable" : true,
-      "type" : {
-        "plain" : {
-
-        }
-      }
-    },
-    {
-      "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
-      "isWalkable" : true,
-      "type" : {
-        "plain" : {
-
-        }
-      }
     },
     {
       "isWalkable" : false,
@@ -153,12 +91,12 @@
       "isWalkable" : true
     },
     {
-      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      }
+      },
+      "isWalkable" : true
     },
     {
       "isWalkable" : true,
@@ -169,12 +107,74 @@
       }
     },
     {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      },
+      "isWalkable" : false
+    }
+  ],
+  [
+    {
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      },
+      "isWalkable" : false
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "isWalkable" : true,
+      "type" : {
+        "plain" : {
+
+        }
+      }
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "isWalkable" : true,
       "type" : {
         "playerStart" : {
 
         }
-      },
-      "isWalkable" : true
+      }
     },
     {
       "type" : {
@@ -189,26 +189,28 @@
       "type" : {
         "door" : {
           "tile" : {
-            "isPartOfPlayerVillage" : false,
             "level" : 1,
+            "isPartOfPlayerVillage" : false,
             "type" : {
               "restaurant" : {
 
               }
-            }
+            },
+            "isPlacedByPlayer" : false
           }
         }
       },
       "event" : {
         "openDoor" : {
           "tile" : {
-            "isPartOfPlayerVillage" : false,
-            "level" : 1,
             "type" : {
               "restaurant" : {
 
               }
-            }
+            },
+            "level" : 1,
+            "isPlacedByPlayer" : false,
+            "isPartOfPlayerVillage" : false
           }
         }
       }
@@ -226,20 +228,12 @@
       }
     },
     {
-      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      }
-    },
-    {
-      "isWalkable" : true,
-      "type" : {
-        "plain" : {
-
-        }
-      }
+      },
+      "isWalkable" : true
     },
     {
       "type" : {
@@ -267,17 +261,55 @@
     },
     {
       "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      },
-      "isWalkable" : false
+      }
     }
   ],
   [
     {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      }
+    },
+    {
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      },
+      "isWalkable" : false
+    },
+    {
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      },
+      "isWalkable" : false
+    },
+    {
       "type" : {
         "building" : {
           "tile" : {
@@ -306,36 +338,6 @@
         }
       },
       "isWalkable" : false
-    },
-    {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-          "tile" : {
-            "isPlacedByPlayer" : false
-          }
-        }
-      }
-    },
-    {
-      "type" : {
-        "building" : {
-          "tile" : {
-            "isPlacedByPlayer" : false
-          }
-        }
-      },
-      "isWalkable" : false
-    },
-    {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-          "tile" : {
-            "isPlacedByPlayer" : false
-          }
-        }
-      }
     },
     {
       "type" : {

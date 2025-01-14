@@ -7,33 +7,34 @@ enum BuilderNPC {
 	}
 
 	static func getStage() {
-		switch Game.stages.builder.stageNumber {
-			case 0:
-				if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
-					let options: [MessageOption] = [
-						.init(label: "Yes", action: {}),
-						.init(label: "No", action: {}),
-					]
-					let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to build?", speaker: .builder, options: options)
-					if selectedOption.label == "Yes" {
-						stage0()
-					} else {
-						return
-					}
-				} else {
-					stage0()
-				}
-			case 1:
-				stage1()
-			case 2:
-				stage2()
-			case 3:
-				stage3()
-			case 4:
-				stage4()
-			default:
-				break
-		}
+		stage5()
+		// switch Game.stages.builder.stageNumber {
+		// 	case 0:
+		// 		if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
+		// 			let options: [MessageOption] = [
+		// 				.init(label: "Yes", action: {}),
+		// 				.init(label: "No", action: {}),
+		// 			]
+		// 			let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to build?", speaker: .builder, options: options)
+		// 			if selectedOption.label == "Yes" {
+		// 				stage0()
+		// 			} else {
+		// 				return
+		// 			}
+		// 		} else {
+		// 			stage0()
+		// 		}
+		// 	case 1:
+		// 		stage1()
+		// 	case 2:
+		// 		stage2()
+		// 	case 3:
+		// 		stage3()
+		// 	case 4:
+		// 		stage4()
+		// 	default:
+		// 		break
+		// }
 	}
 
 	static func stage0() {
@@ -75,6 +76,7 @@ enum BuilderNPC {
 						Game.player.removeItems(ids: ids)
 					}
 					Game.stages.builder.stage1Stages = .done
+					Game.player.stats.builderSkillLevel = .one
 					StatusBox.removeQuest(quest: .builder1)
 					fallthrough
 				} else {
@@ -102,7 +104,9 @@ enum BuilderNPC {
 						Game.player.removeItem(id: id)
 					}
 					Game.player.removeItem(item: .lumber, count: 20)
+					Game.player.stats.builderSkillLevel = .two
 					Game.stages.builder.stage2Stages = .done
+					StatusBox.removeQuest(quest: .builder2)
 					fallthrough
 				} else {
 					if let id = Game.stages.builder.stage2AxeUUIDToRemove, !Game.player.has(id: id) {
@@ -140,6 +144,7 @@ enum BuilderNPC {
 						Game.player.removeItem(id: id)
 					}
 					Game.stages.builder.stage3Stages = .done
+					Game.player.stats.builderSkillLevel = .three
 					StatusBox.removeQuest(quest: .builder3)
 					fallthrough
 				} else {
@@ -166,6 +171,7 @@ enum BuilderNPC {
 				MessageBox.message("He said we can build a new house!", speaker: .player)
 				MessageBox.message("Nice! Lets get started", speaker: .builder)
 				Game.stages.builder.stage4Stages = .done
+				Game.player.stats.builderSkillLevel = .four
 				StatusBox.removeQuest(quest: .builder4)
 				fallthrough
 			case .done:
@@ -173,6 +179,42 @@ enum BuilderNPC {
 				if RandomEventStuff.wantsToContinue(speaker: .builder) {
 					getStage()
 				}
+		}
+	}
+
+	static func stage5() {
+		switch Game.stages.builder.stage5Stages {
+			case .notStarted:
+				MessageBox.message("Now that we have permission to build a house, we can start building. Can you go build the house?", speaker: .builder)
+				intructions()
+				Game.stages.builder.stage5Stages = .buildHouse
+				Game.player.canBuild = true
+				let uuid1 = Game.player.collect(item: .init(type: .lumber, canBeSold: false), count: 5 * 24)
+				let uuid2 = Game.player.collect(item: .init(type: .door(tile: .init(type: .house)), canBeSold: false), count: 1)
+				Game.stages.builder.stage5ItemsToBuildHouseUUIDsToRemove = uuid1 + uuid2
+				StatusBox.quest(.builder5)
+			case .buildHouse:
+				if Game.stages.builder.stage5HasBuiltHouse {
+					MessageBox.message("Nice you have built the house!", speaker: .builder)
+					Game.stages.builder.stage5Stages = .done
+					Game.player.stats.builderSkillLevel = .five
+					StatusBox.removeQuest(quest: .builder5)
+					if let ids = Game.stages.builder.stage5ItemsToBuildHouseUUIDsToRemove {
+						Game.player.removeItems(ids: ids)
+					}
+					fallthrough
+				} else {
+					MessageBox.message("You haven't built the house yet.", speaker: .builder)
+					MessageBox.messageWithOptions("Do you want to hear the intructions again?", speaker: .builder, options: [.init(label: "Yes", action: intructions), .init(label: "No", action: {})]).action()
+				}
+			case .done:
+				Game.stages.builder.next()
+				if RandomEventStuff.wantsToContinue(speaker: .builder) {
+					getStage()
+				}
+		}
+		func intructions() {
+			MessageBox.message("This is what you need to do. Go pick an area and press \(KeyboardKeys.b.render). This will put you in \("build mode".styled(with: .bold)). The press \(KeyboardKeys.enter.render), as long as you have 5 lumber you will build a building tile. Place the buildings next to each other. Then place the door in a small area. If you are unsure, look at the other buildings in this village. If you want to see all the controls press \(KeyboardKeys.questionMark.render) in build mode.", speaker: .builder)
 		}
 	}
 }
@@ -194,8 +236,7 @@ enum BuilderStage4Stages: Codable {
 }
 
 enum BuilderStage5Stages: Codable {
-	// TODO: add more cases
-	case notStarted, done
+	case notStarted, buildHouse, done
 }
 
 enum BuilderStage6Stages: Codable {

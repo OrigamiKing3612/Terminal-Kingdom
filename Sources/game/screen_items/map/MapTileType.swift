@@ -47,6 +47,13 @@ enum MapTileType: TileType {
 	case npc(tile: NPCTile)
 	case shopStandingArea(type: ShopStandingAreaType)
 
+	var isBuildable: Bool {
+		switch self {
+			case .building, .door, .fence, .gate: true
+			default: false
+		}
+	}
+
 	func render() -> String {
 		switch self {
 			case .plain: " "

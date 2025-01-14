@@ -8,7 +8,15 @@ struct BuilderStages: Codable {
 	var stage2AxeUUIDToRemove: UUID?
 	var stage3ItemsToMakeDoorUUIDsToRemove: [UUID]?
 	var stage3DoorUUIDToRemove: UUID?
-	var stage5_UUIDToRemove: [UUID]?
+	var stage5HasBuiltHouse: Bool = false
+	var stage5BuildingsPlaced: Int = 0
+	var stage5LastBuildingPlaced: LastBuildingPlaced? {
+		didSet {
+			stage5BuildingsPlaced += 1
+		}
+	}
+
+	var stage5ItemsToBuildHouseUUIDsToRemove: [UUID]?
 	var stage6LumberUUIDToRemove: UUID?
 	var stage7_UUIDsToRemove: [UUID]?
 	var stage8_UUID: [UUID]?
@@ -26,5 +34,10 @@ struct BuilderStages: Codable {
 
 	mutating func next() {
 		stageNumber += 1
+	}
+
+	struct LastBuildingPlaced: Codable {
+		var x: Int
+		var y: Int
 	}
 }

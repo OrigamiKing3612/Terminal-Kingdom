@@ -53,6 +53,7 @@ enum Keys {
 				if Game.player.canBuild, MapBox.mapType == .mainMap {
 					Game.isBuilding = true
 					MapBox.sides()
+					InventoryBox.inventoryBox()
 				}
 			default:
 				#if DEBUG
@@ -67,7 +68,9 @@ enum Keys {
 		switch key {
 			case .b, .esc:
 				Game.isBuilding = false
+				InventoryBox.showBuildHelp = false
 				MapBox.sides()
+				InventoryBox.inventoryBox()
 			case .w where Game.config.wasdKeys, .up where Game.config.arrowKeys, .k where Game.config.vimKeys:
 				MapBox.movePlayer(.up)
 			case .a where Game.config.wasdKeys, .left where Game.config.arrowKeys, .h where Game.config.vimKeys:
@@ -78,10 +81,14 @@ enum Keys {
 				MapBox.movePlayer(.right)
 			case .space, .enter:
 				MapBox.build()
-			// case .tab:
-			// 	Game.player.nextBuilding()
-			// case .back_tab:
-			// 	Game.player.previousBuilding()
+			case .e:
+				MapBox.destroy()
+			case .tab:
+				InventoryBox.nextBuildItem()
+			case .back_tab:
+				InventoryBox.previousBuildItem()
+			case .questionMark:
+				InventoryBox.showBuildHelp.toggle()
 			default:
 				#if DEBUG
 					MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
@@ -97,10 +104,10 @@ enum Keys {
 				InventoryBox.showHelp = false
 				Game.isInInventoryBox = false
 				InventoryBox.inventoryBox()
-			case .up:
-				InventoryBox.selectedInventoryIndex -= 1
-			case .down:
-				InventoryBox.selectedInventoryIndex += 1
+			case .up, .back_tab:
+				InventoryBox.previousInventoryItem()
+			case .down, .tab:
+				InventoryBox.nextInventoryItem()
 			case .questionMark:
 				InventoryBox.showHelp.toggle()
 			case .d:

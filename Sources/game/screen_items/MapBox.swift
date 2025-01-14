@@ -101,6 +101,12 @@ enum MapBox {
 		return nil
 	}
 
+	static func destroy() {
+		if mapType == .mainMap {
+			mainMap.destory()
+		}
+	}
+
 	static func build() {
 		if mapType == .mainMap {
 			mainMap.build()
