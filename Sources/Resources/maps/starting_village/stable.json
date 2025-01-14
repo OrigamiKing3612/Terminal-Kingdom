@@ -11,14 +11,14 @@
       }
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      }
+      },
+      "isWalkable" : false
     },
     {
       "isWalkable" : false,
@@ -115,22 +115,22 @@
       }
     },
     {
+      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      },
-      "isWalkable" : true
+      }
     },
     {
+      "isWalkable" : false,
       "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      },
-      "isWalkable" : false
+      }
     }
   ],
   [
@@ -145,12 +145,20 @@
       }
     },
     {
-      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      }
+      },
+      "isWalkable" : true
+    },
+    {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
     },
     {
       "type" : {
@@ -162,19 +170,11 @@
     },
     {
       "isWalkable" : true,
-      "type" : {
-        "plain" : {
-
-        }
-      }
-    },
-    {
       "type" : {
         "playerStart" : {
 
         }
-      },
-      "isWalkable" : true
+      }
     },
     {
       "type" : {
@@ -185,31 +185,31 @@
       "isWalkable" : true
     },
     {
+      "isWalkable" : true,
       "type" : {
         "door" : {
           "tile" : {
+            "level" : 1,
             "isPlacedByPlayer" : false,
+            "isPartOfPlayerVillage" : false,
             "tileType" : {
               "stable" : {
 
               }
-            },
-            "isPartOfPlayerVillage" : false,
-            "level" : 1
+            }
           }
         }
       },
-      "isWalkable" : true,
       "event" : {
         "openDoor" : {
           "tile" : {
-            "isPartOfPlayerVillage" : false,
+            "isPlacedByPlayer" : false,
             "tileType" : {
               "stable" : {
 
               }
             },
-            "isPlacedByPlayer" : false,
+            "isPartOfPlayerVillage" : false,
             "level" : 1
           }
         }
@@ -218,14 +218,14 @@
   ],
   [
     {
+      "isWalkable" : false,
       "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      },
-      "isWalkable" : false
+      }
     },
     {
       "isWalkable" : true,
@@ -236,12 +236,12 @@
       }
     },
     {
+      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      },
-      "isWalkable" : true
+      }
     },
     {
       "isWalkable" : true,
@@ -280,6 +280,16 @@
   ],
   [
     {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      }
+    },
+    {
       "type" : {
         "building" : {
           "tile" : {
@@ -328,16 +338,6 @@
         }
       },
       "isWalkable" : false
-    },
-    {
-      "isWalkable" : false,
-      "type" : {
-        "building" : {
-          "tile" : {
-            "isPlacedByPlayer" : false
-          }
-        }
-      }
     },
     {
       "isWalkable" : false,
