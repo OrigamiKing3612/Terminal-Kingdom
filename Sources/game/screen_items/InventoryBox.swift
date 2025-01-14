@@ -5,23 +5,19 @@ enum InventoryBox {
 	nonisolated(unsafe) static var showBuildHelp: Bool = false
 	private(set) nonisolated(unsafe) static var selectedInventoryIndex: Int = 0 {
 		didSet {
-			if selectedInventoryIndex < 0 {
-				selectedInventoryIndex = 0
-			} else if selectedInventoryIndex >= Game.player.items.count {
-				selectedInventoryIndex = Game.player.items.count - 1
-			}
+			selectedInventoryIndex = max(0, min(selectedInventoryIndex, Game.player.items.count - 1))
 			printInventory()
 		}
 	}
 
-	static var buildableItems: [Item] { Game.player.items.filter(\.type.isBuildable) }
+	static var buildableItems: [Item] {
+		Array(Set(Game.player.items.filter(\.type.isBuildable)))
+			.sorted(by: sortBuildables)
+	}
+
 	private(set) nonisolated(unsafe) static var selectedBuildItemIndex: Int = 0 {
 		didSet {
-			if selectedBuildItemIndex < 0 {
-				selectedBuildItemIndex = 0
-			} else if selectedBuildItemIndex >= buildableItems.count {
-				selectedBuildItemIndex = buildableItems.count - 1
-			}
+			selectedBuildItemIndex = max(0, min(selectedBuildItemIndex, buildableItems.count - 1))
 			printInventory()
 		}
 	}
@@ -63,7 +59,7 @@ enum InventoryBox {
 			Screen.print(x: q3StartX + 2, y: q3StartY + 3, "Press '\(KeyboardKeys.tab.render)' and '\(KeyboardKeys.back_tab.render)' to cycle items")
 		} else if Game.isBuilding {
 			var alreadyPrinted: [ItemType] = []
-			for (index, item) in buildableItems.sorted(by: sortBuildables).enumerated() {
+			for (index, item) in buildableItems.enumerated() {
 				if !alreadyPrinted.contains(where: { $0 == item.type }) {
 					var icon = ""
 					if index == selectedBuildItemIndex, Game.isBuilding {
