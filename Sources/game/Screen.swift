@@ -96,53 +96,57 @@ enum Screen {
 }
 
 extension MapBox {
-	static var q1StartX: Int { Screen.columns / 2 }
-	static var q1EndX: Int { Screen.columns }
-	static var q1Width: Int {
-		abs((Screen.columns / 2) - 3)
+	static var startX: Int { StatusBox.endX + 1 }
+	static var endX: Int { Screen.columns }
+	static var width: Int {
+		endX - startX
 	}
 
-	static var q1StartY: Int { 1 }
-	static var q1EndY: Int { Screen.rows / 2 }
-	static var q1Height: Int {
-		abs((Screen.rows / 2) - 2)
+	static var startY: Int { 2 }
+	static var endY: Int { (Screen.rows / 2) + (Screen.rows / 4) }
+	static var height: Int {
+		endY - startY
 	}
 }
 
 extension MessageBox {
-	static var q2StartX: Int { 0 }
-	static var q2EndX: Int { Screen.columns / 2 }
-	static var q2Width: Int { q2EndX - q2StartX }
-
-	static var q2StartY: Int { 1 }
-	static var q2EndY: Int { Screen.rows / 2 }
-	static var q2Height: Int { q2EndY - q2StartY }
-}
-
-extension InventoryBox {
-	static var q3StartX: Int { 0 }
-	static var q3EndX: Int { Screen.columns / 2 }
-	static var q3Width: Int {
-		abs((Screen.columns / 2) - 3)
+	static var startX: Int { StatusBox.endX }
+	static var endX: Int { Screen.columns }
+	static var width: Int {
+		endX - startX
 	}
 
-	static var q3StartY: Int { (Screen.rows / 2) + 1 }
-	static var q3EndY: Int { Screen.rows - 1 }
-	static var q3Height: Int {
-		abs((Screen.rows / 2) - 2)
+	static var startY: Int { MapBox.endY }
+	static var endY: Int { Screen.rows - 1 }
+	static var height: Int {
+		endY - startY
 	}
 }
 
 extension StatusBox {
-	static var q4StartX: Int { Screen.columns / 2 }
-	static var q4EndX: Int { Screen.columns - 1 }
-	static var q4Width: Int {
-		abs((Screen.columns / 2) - 3)
+	static var startX: Int { 0 }
+	static var endX: Int { Screen.columns / 4 }
+	static var width: Int {
+		endX - startX
 	}
 
-	static var q4StartY: Int { Screen.rows / 2 }
-	static var q4EndY: Int { Screen.rows - 1 }
-	static var q4Height: Int {
-		abs((Screen.rows / 2) - 2)
+	static var startY: Int { 1 }
+	static var endY: Int { Screen.rows / 2 }
+	static var height: Int {
+		endY - startY
+	}
+}
+
+extension InventoryBox {
+	static var startX: Int { StatusBox.startX }
+	static var endX: Int { StatusBox.endX }
+	static var width: Int {
+		endX - startX
+	}
+
+	static var startY: Int { StatusBox.endY + 1 }
+	static var endY: Int { Screen.rows - 1 }
+	static var height: Int {
+		endY - startY
 	}
 }

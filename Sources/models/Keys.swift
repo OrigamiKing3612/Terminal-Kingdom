@@ -18,20 +18,6 @@ enum Keys {
 				MapBox.buildingMap.player.x = 2
 				MapBox.buildingMap.player.y = 2
 				MapBox.mapBox()
-			case .p:
-				// TODO: move to status box
-				switch MapBox.mapType {
-					case .mainMap:
-						let x = MapBox.player.x
-						let y = MapBox.player.y
-						MessageBox.message("x: \(x); y: \(y)", speaker: .game)
-					case .mining:
-						break
-					default:
-						let x = MapBox.buildingMap.player.x
-						let y = MapBox.buildingMap.player.y
-						MessageBox.message("x: \(x); y: \(y)", speaker: .game)
-				}
 			#if DEBUG
 				case .o:
 					let tile = MapBox.mapType.map.tilePlayerIsOn

@@ -1,9 +1,6 @@
 struct MineMap: MapBoxMap {
 	var grid: [[MineTile]]
-	var width: Int
-	var height: Int
 
-	private var hasUpdatedDims = false
 	var player: Player = .init(x: 1, y: 1)
 
 	var tilePlayerIsOn: MineTile {
@@ -12,8 +9,6 @@ struct MineMap: MapBoxMap {
 
 	init() {
 		grid = MineMap.createGrid()
-		width = grid[0].count + 1
-		height = grid.count + 1
 
 		let middleX = grid[0].count / 2
 		//        let middleY = self.grid.count / 2
@@ -31,19 +26,9 @@ struct MineMap: MapBoxMap {
 	}
 
 	mutating func map() {
-		if !hasUpdatedDims {
-			updateDimensions(width: MapBox.q1Width, height: MapBox.q1Height)
-			hasUpdatedDims = true
-		}
-
-		let viewportWidth = MapBox.q1Width + 1
-		let viewportHeight = MapBox.q1Height
+		let viewportWidth = MapBox.width + 1
+		let viewportHeight = MapBox.height
 		render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
-	}
-
-	mutating func updateDimensions(width: Int, height: Int) {
-		self.width = width
-		self.height = height
 	}
 
 	func isWalkable(x: Int, y: Int) -> Bool {
@@ -57,7 +42,6 @@ struct MineMap: MapBoxMap {
 	}
 
 	func render(playerX: Int, playerY: Int, viewportWidth: Int, viewportHeight: Int) {
-		// Calculate viewport bounds relative to the player's position
 		let halfViewportWidth = viewportWidth / 2
 		let halfViewportHeight = viewportHeight / 2
 
@@ -67,7 +51,6 @@ struct MineMap: MapBoxMap {
 		let endX = min(grid[0].count, startX + viewportWidth)
 		let endY = min(grid.count, startY + viewportHeight)
 
-		// Iterate through the viewport and render each tile
 		for (screenY, mapY) in (startY ..< endY).enumerated() {
 			var rowString = ""
 			for mapX in startX ..< endX {
@@ -77,8 +60,7 @@ struct MineMap: MapBoxMap {
 					rowString += grid[mapY][mapX].type.render(grid: grid, tileX: mapX, tileY: mapY)
 				}
 			}
-			// Print each row to the screen at the appropriate position
-			Screen.print(x: MapBox.q1StartX + 1, y: MapBox.q1StartY + 1 + screenY, rowString)
+			Screen.print(x: MapBox.startX, y: MapBox.startY + screenY, rowString)
 		}
 	}
 
@@ -165,8 +147,8 @@ struct MineMap: MapBoxMap {
 
 enum MineMapLevelGrids {
 	private static func createGrid(tiles: (_ randomValue: Int) -> MineTile) -> [[MineTile]] {
-		Array(repeating: [], count: 2 * MapBox.q1Height).map { _ in
-			(0 ..< (2 * MapBox.q1Width)).map { _ in
+		Array(repeating: [], count: 2 * MapBox.height).map { _ in
+			(0 ..< (2 * MapBox.width)).map { _ in
 				let randomValue = Int.random(in: 1 ... 100)
 				return tiles(randomValue)
 			}

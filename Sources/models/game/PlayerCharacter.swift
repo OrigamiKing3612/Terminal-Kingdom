@@ -16,7 +16,11 @@ struct PlayerCharacter: Codable {
 	#endif
 
 	var stats: Stats = .init()
-	var canBuild: Bool = false
+	#if DEBUG
+		var canBuild: Bool = true
+	#else
+		var canBuild: Bool = false
+	#endif
 
 	mutating func setName(_ name: String) {
 		self.name = name

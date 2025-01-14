@@ -61,7 +61,7 @@ enum MapTileType: TileType {
 			case .path: "P"
 			case .tree: (Game.config.useNerdFont ? "󰐅" : "T").styled(with: .green)
 			case let .building(tile: buildingTile): "#".styled(with: .dim, styledIf: Game.isBuilding && buildingTile.isPlacedByPlayer)
-			case .player: "*".styled(with: [.blue, .bold])
+			case .player: "@".styled(with: [.blue, .bold])
 			case .sand: "S".styled(with: .yellow)
 			case let .door(doorTile): DoorTile.renderDoor(tile: doorTile)
 			case .TOBEGENERATED: "."
