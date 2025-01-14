@@ -1,7 +1,7 @@
 struct BuildingMap: MapBoxMap {
 	var grid: [[MapTile]]
-	var width: Int
-	var height: Int
+	// var width: Int
+	// var height: Int
 
 	private var hasUpdatedDims = false
 	var player: Player = .init(x: 1, y: 1)
@@ -13,8 +13,8 @@ struct BuildingMap: MapBoxMap {
 	init(_ mapType: MapType) {
 		grid = StaticMaps.buildingMap(for: StaticMaps.mapTypeToBuilding(mapType: mapType))
 
-		width = grid[0].count + 1
-		height = grid.count + 1
+		// width = grid[0].count + 1
+		// height = grid.count + 1
 
 		// Coordinates for inside the building
 		if Game.player.position.x == 55, Game.player.position.y == 23 {
@@ -60,18 +60,18 @@ struct BuildingMap: MapBoxMap {
 
 	mutating func map() {
 		if !hasUpdatedDims {
-			updateDimensions(width: MapBox.q1Width, height: MapBox.q1Height)
+			updateDimensions(width: MapBox.width, height: MapBox.height)
 			hasUpdatedDims = true
 		}
 
-		let viewportWidth = MapBox.q1Width + 1
-		let viewportHeight = MapBox.q1Height
+		let viewportWidth = MapBox.width + 1
+		let viewportHeight = MapBox.height
 		render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
 	}
 
-	mutating func updateDimensions(width: Int, height: Int) {
-		self.width = width
-		self.height = height
+	mutating func updateDimensions(width _: Int, height _: Int) {
+		// self.width = width
+		// self.height = height
 	}
 
 	func isWalkable(x: Int, y: Int) -> Bool {
@@ -98,7 +98,7 @@ struct BuildingMap: MapBoxMap {
 					rowString += grid[mapY][mapX].type.render()
 				}
 			}
-			Screen.print(x: MapBox.q1StartX + 1, y: MapBox.q1StartY + 1 + screenY, rowString)
+			Screen.print(x: MapBox.startX + 1, y: MapBox.startY + 1 + screenY, rowString)
 		}
 	}
 

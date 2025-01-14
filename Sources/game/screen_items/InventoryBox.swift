@@ -33,12 +33,12 @@ enum InventoryBox {
 	}
 
 	static func sides() {
-		Screen.print(x: q3StartX, y: q3StartY - 1, String(repeating: "=", count: q3Width + 3).styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
-		for y in q3StartY ..< q3EndY {
-			Screen.print(x: q3StartX, y: y, "|".styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
-			Screen.print(x: q3EndX, y: y, "|".styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+		Screen.print(x: startX + 2, y: startY - 1, String(repeating: Screen.horizontalLine, count: width - 2).styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+		for y in (startY - 1) ..< endY {
+			Screen.print(x: startX, y: y, Screen.verticalLine.styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+			Screen.print(x: endX, y: y, Screen.verticalLine.styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
 		}
-		Screen.print(x: q3StartX, y: q3EndY, String(repeating: "=", count: q3Width + 3).styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+		Screen.print(x: startX, y: endY, String(repeating: Screen.horizontalLine, count: width).styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
 	}
 
 	static func inventoryBox() {
@@ -50,13 +50,13 @@ enum InventoryBox {
 	static func printInventory() {
 		clear()
 		if showHelp {
-			Screen.print(x: q3StartX + 2, y: q3StartY, "Press '\(KeyboardKeys.i.render)' to toggle inventory")
-			Screen.print(x: q3StartX + 2, y: q3StartY + 1, "Press '\(KeyboardKeys.d.render)' to destroy 1")
+			Screen.print(x: startX + 2, y: startY, "Press '\(KeyboardKeys.i.render)' to toggle inventory")
+			Screen.print(x: startX + 2, y: startY + 1, "Press '\(KeyboardKeys.d.render)' to destroy 1")
 		} else if showBuildHelp {
-			Screen.print(x: q3StartX + 2, y: q3StartY, "Press '\(KeyboardKeys.b.render)' to toggle inventory")
-			Screen.print(x: q3StartX + 2, y: q3StartY + 1, "Press '\(KeyboardKeys.enter.render)' or '\(KeyboardKeys.space.render)' to build")
-			Screen.print(x: q3StartX + 2, y: q3StartY + 2, "Press '\(KeyboardKeys.e.render)' to destroy")
-			Screen.print(x: q3StartX + 2, y: q3StartY + 3, "Press '\(KeyboardKeys.tab.render)' and '\(KeyboardKeys.back_tab.render)' to cycle items")
+			Screen.print(x: startX + 2, y: startY, "Press '\(KeyboardKeys.b.render)' to toggle inventory")
+			Screen.print(x: startX + 2, y: startY + 1, "Press '\(KeyboardKeys.enter.render)' or '\(KeyboardKeys.space.render)' to build")
+			Screen.print(x: startX + 2, y: startY + 2, "Press '\(KeyboardKeys.e.render)' to destroy")
+			Screen.print(x: startX + 2, y: startY + 3, "Press '\(KeyboardKeys.tab.render)' and '\(KeyboardKeys.back_tab.render)' to cycle items")
 		} else if Game.isBuilding {
 			var alreadyPrinted: [ItemType] = []
 			for (index, item) in buildableItems.enumerated() {
@@ -67,7 +67,7 @@ enum InventoryBox {
 					} else if index != selectedBuildItemIndex, Game.isBuilding {
 						icon = "  "
 					}
-					Screen.print(x: q3StartX + 2, y: q3StartY + alreadyPrinted.count, "\(icon)\(item.inventoryName): \(Game.player.getCount(of: item.type))")
+					Screen.print(x: startX + 2, y: startY + alreadyPrinted.count, "\(icon)\(item.inventoryName): \(Game.player.getCount(of: item.type))")
 					alreadyPrinted.append(item.type)
 				}
 			}
@@ -81,19 +81,19 @@ enum InventoryBox {
 					} else if index != selectedInventoryIndex, Game.isInInventoryBox {
 						icon = "  "
 					}
-					Screen.print(x: q3StartX + 2, y: q3StartY + alreadyPrinted.count, "\(icon)\(item.inventoryName): \(Game.player.getCount(of: item.type))")
+					Screen.print(x: startX + 2, y: startY + alreadyPrinted.count, "\(icon)\(item.inventoryName): \(Game.player.getCount(of: item.type))")
 					alreadyPrinted.append(item.type)
 				}
 			}
 		}
 		if Game.isInInventoryBox || Game.isBuilding {
 			if !showHelp {
-				Screen.print(x: q3StartX + 2, y: q3EndY - 1, "Press '\(KeyboardKeys.questionMark.render)' for controls")
+				Screen.print(x: startX + 2, y: endY - 1, "Press '\(KeyboardKeys.questionMark.render)' for controls")
 			} else {
-				Screen.print(x: q3StartX + 2, y: q3EndY - 1, "Press '\(KeyboardKeys.questionMark.render)' to leave")
+				Screen.print(x: startX + 2, y: endY - 1, "Press '\(KeyboardKeys.questionMark.render)' to leave")
 			}
 		} else {
-			Screen.print(x: q3StartX + 2, y: q3EndY - 1, "Press '\(KeyboardKeys.i.render)'")
+			Screen.print(x: startX + 2, y: endY - 1, "Press '\(KeyboardKeys.i.render)'")
 		}
 	}
 
@@ -115,9 +115,9 @@ enum InventoryBox {
 	}
 
 	static func clear() {
-		let spaceString = String(repeating: " ", count: q3Width + 1)
-		for y in q3StartY ..< q3EndY {
-			Screen.print(x: q3StartX + 2, y: y, spaceString)
+		let spaceString = String(repeating: " ", count: width - 2)
+		for y in startY ..< endY {
+			Screen.print(x: startX + 2, y: y, spaceString)
 		}
 	}
 

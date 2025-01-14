@@ -52,7 +52,7 @@ struct MainMap: MapBoxMap {
 					rowString += grid[mapY][mapX].type.render()
 				}
 			}
-			Screen.print(x: MapBox.q1StartX + 1, y: MapBox.q1StartY + 1 + screenY, rowString)
+			Screen.print(x: MapBox.startX, y: MapBox.startY + screenY, rowString)
 		}
 	}
 
@@ -81,8 +81,9 @@ struct MainMap: MapBoxMap {
 	}
 
 	mutating func map() {
+		// TODO: could fix #2
 		if !hasUpdatedDims {
-			updateDimensions(width: MapBox.q1Width, height: MapBox.q1Height)
+			updateDimensions(width: MapBox.width - 1, height: MapBox.height - 1)
 			if let (startX, startY) = MapTile.findTilePosition(of: .playerStart, in: grid) {
 				player.x = startX
 				player.y = startY
@@ -92,8 +93,8 @@ struct MainMap: MapBoxMap {
 			hasUpdatedDims = true
 		}
 
-		let viewportWidth = MapBox.q1Width + 1
-		let viewportHeight = MapBox.q1Height
+		let viewportWidth = MapBox.width
+		let viewportHeight = MapBox.height
 		render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
 	}
 

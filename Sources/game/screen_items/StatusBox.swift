@@ -14,28 +14,11 @@ enum StatusBox {
 		}
 	}
 
-	static var questBoxStartX: Int { q4StartX + 1 }
-	static var questBoxEndX: Int { q4StartX + (q4Width / 2) } // Halfway point of the 4th quadrant
-	static var questBoxWidth: Int {
-		questBoxEndX - questBoxStartX
-	}
+	static var playerInfoStartX: Int { startX + 2 }
+	static var playerInfoStartY: Int { startY + 1 }
 
-	static var questBoxStartY: Int { q4StartY + 1 }
-	static var questBoxEndY: Int { q4EndY }
-	static var questBoxHeight: Int {
-		abs((q4StartY + 1) - 2)
-	}
-
-	static var statusAreaEndX: Int { q4EndX - 1 }
-	static var statusAreaWidth: Int {
-		questBoxEndX - questBoxStartX
-	}
-
-	static var statusAreaStartY: Int { q4StartY + 1 }
-	static var statusAreaEndY: Int { q4EndY }
-	static var statusAreaHeight: Int {
-		abs((q4StartY + 1) - 2)
-	}
+	static var questAreaStartX: Int { startX + 2 }
+	private(set) nonisolated(unsafe) static var questAreaStartY: Int = startY + 1
 
 	static func questBoxUpdate() {
 		updateQuestBox = true
@@ -44,84 +27,90 @@ enum StatusBox {
 	static func statusBox() {
 		updateQuestBox = false
 		clear()
-
-		Screen.print(x: q4StartX, y: q4StartY, String(repeating: "=", count: q4Width + 3))
-		for y in (q4StartY + 1) ..< q4EndY {
-			Screen.print(x: q4StartX, y: y, "|")
-			Screen.print(x: q4EndX, y: y, "|")
-		}
-		if !quests.isEmpty {
-			questBox()
-		}
-		statusArea(startX: !quests.isEmpty ? questBoxEndX + 1 : q4StartX + 1)
-
-		Screen.print(x: q4StartX, y: q4EndY, String(repeating: "=", count: q4Width + 3))
+		sides()
+		playerInfoArea()
+		questArea()
+		inventoryArea()
 	}
 
-	static func statusArea(startX: Int) {
+	static func playerInfoArea() {
 		if !(Game.player.name == "") {
-			Screen.print(x: startX, y: statusAreaStartY, "\(Game.player.name):")
+			Screen.print(x: playerInfoStartX, y: playerInfoStartY, "\(Game.player.name):".styled(with: .bold))
 		}
-		var yValueToPrint = statusAreaStartY + 1
+		#if DEBUG
+			Game.player.stats.blacksmithSkillLevel = .ten
+			Game.player.stats.miningSkillLevel = .ten
+			Game.player.stats.builderSkillLevel = .ten
+			Game.player.stats.huntingSkillLevel = .ten
+			Game.player.stats.inventorSkillLevel = .ten
+			Game.player.stats.stableSkillLevel = .ten
+			Game.player.stats.farmingSkillLevel = .ten
+			Game.player.stats.medicalSkillLevel = .ten
+			Game.player.stats.carpentrySkillLevel = .ten
+			Game.player.stats.cookingSkillLevel = .ten
+		#endif
+		var yValueToPrint = playerInfoStartY + 1
 		for skillLevel in AllSkillLevels.allCases {
 			if skillLevel.stat.rawValue > 0 {
 				var count = ""
 				for _ in 0 ..< skillLevel.stat.rawValue {
 					count += "#"
 				}
-				Screen.print(x: startX, y: yValueToPrint, "\(skillLevel.name): \(count)")
+				Screen.print(x: playerInfoStartX + 1, y: yValueToPrint, "\(skillLevel.name): \(count)")
 				yValueToPrint += 1
 			}
 		}
+		questAreaStartY = yValueToPrint + 1
 	}
 
-	static func questBox() {
-		for y in questBoxStartY ..< questBoxEndY {
-			Screen.print(x: questBoxStartX - 1, y: y, "|")
-			Screen.print(x: questBoxEndX, y: y, "|")
-		}
-
-		let maxVisibleLines = q4Height - 2
+	static func questArea() {
+		Screen.print(x: questAreaStartX, y: questAreaStartY, "Quests:".styled(with: .bold))
+		let maxVisibleLines = height - 2
 		var renderedLines: [String] = []
-
-		Screen.print(x: questBoxStartX, y: questBoxStartY, "Quests:")
-
-		for quest in quests {
-			if quest.label.count >= questBoxWidth - 1 {
-				var currentLineStart = quest.label.startIndex
-				while currentLineStart < quest.label.endIndex {
-					let lineEnd = quest.label.index(currentLineStart, offsetBy: questBoxWidth - 2, limitedBy: quest.label.endIndex) ?? quest.label.endIndex
-					let line = String(quest.label[currentLineStart ..< lineEnd])
-					renderedLines.append(line)
-					currentLineStart = lineEnd
-				}
-			} else {
-				renderedLines.append(quest.label)
-			}
+		#if DEBUG
+			Game.player.addQuest(.mine1)
+			Game.player.addQuest(.mine2)
+			Game.player.addQuest(.mine3)
+			Game.player.addQuest(.mine4)
+			Game.player.addQuest(.mine5)
+			Game.player.addQuest(.mine6)
+			Game.player.addQuest(.mine7)
+			Game.player.addQuest(.mine8)
+			Game.player.addQuest(.mine9)
+			Game.player.addQuest(.mine10)
+		#endif
+		for (index, quest) in quests.enumerated() {
+			let number = "\(index + 1)".styled(with: .bold)
+			let text = "\(number). \(quest.label)"
+			renderedLines.append(contentsOf: text.wrappedWithStyles(toWidth: width - 2))
 		}
+
 		if renderedLines.count > maxVisibleLines {
-			let overflow = renderedLines.count - maxVisibleLines
-			renderedLines.removeFirst(overflow)
+			renderedLines = Array(renderedLines.suffix(maxVisibleLines))
 		}
 
-		var currentY = questBoxStartY + 1
+		var currentY = questAreaStartY + 1
 		for line in renderedLines {
-			Screen.print(x: questBoxStartX, y: currentY, line)
+			Screen.print(x: questAreaStartX + 1, y: currentY, line)
 			currentY += 1
 		}
 	}
 
-	static func clear() {
-		let spaceString = String(repeating: " ", count: q4Width + 2)
-		for y in (q4StartY + 1) ..< q4EndY {
-			Screen.print(x: q4StartX + 1, y: y, spaceString)
+	static func inventoryArea() {}
+
+	static func sides() {
+		Screen.print(x: startX, y: startY, String(repeating: Screen.horizontalLine, count: width + 1))
+		for y in (startY + 1) ..< endY {
+			Screen.print(x: startX, y: y, Screen.verticalLine)
+			Screen.print(x: endX, y: y, Screen.verticalLine)
 		}
+		Screen.print(x: startX + 2, y: endY, String(repeating: Screen.horizontalLine, count: width - 2))
 	}
 
-	static func clearQuestBox() {
-		let blankLine = String(repeating: " ", count: questBoxWidth - 2)
-		for y in (questBoxStartY + 1) ..< questBoxEndY {
-			Screen.print(x: questBoxStartX + 1, y: y, blankLine)
+	static func clear() {
+		let spaceString = String(repeating: " ", count: width - 2)
+		for y in (startY + 1) ..< endY {
+			Screen.print(x: startX + 2, y: y, spaceString)
 		}
 	}
 

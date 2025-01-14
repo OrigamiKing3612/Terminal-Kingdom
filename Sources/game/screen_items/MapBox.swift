@@ -57,18 +57,18 @@ enum MapBox {
 	}
 
 	static func sides() {
-		Screen.print(x: q1StartX, y: q1StartY, String(repeating: "=", count: q1Width + 4).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
-		for y in (q1StartY + 1) ..< q1EndY {
-			Screen.print(x: q1StartX, y: y, "|".styled(with: [.bold, .blue], styledIf: Game.isBuilding))
-			Screen.print(x: q1EndX - 1, y: y, "|".styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+		Screen.print(x: startX, y: startY - 1, String(repeating: Screen.horizontalLine, count: width + 1).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+		for y in startY ..< (endY + 1) {
+			Screen.print(x: startX - 1, y: y, Screen.verticalLine.styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+			Screen.print(x: endX, y: y, Screen.verticalLine.styled(with: [.bold, .blue], styledIf: Game.isBuilding))
 		}
-		Screen.print(x: q1StartX, y: q1EndY, String(repeating: "=", count: q1Width + 4).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+		Screen.print(x: startX, y: endY, String(repeating: Screen.horizontalLine, count: width).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
 	}
 
 	static func clear() {
-		let spaceString = String(repeating: " ", count: q1Width + 1)
-		for y in (q1StartY + 1) ..< q1EndY {
-			Screen.print(x: q1StartX + 1, y: y, spaceString)
+		let spaceString = String(repeating: " ", count: width)
+		for y in startY ..< endY {
+			Screen.print(x: startX, y: y, spaceString)
 		}
 	}
 
@@ -167,8 +167,8 @@ struct Player: Codable {
 protocol MapBoxMap {
 	associatedtype pTile: Tile
 	var grid: [[pTile]] { get set }
-	var width: Int { get set }
-	var height: Int { get set }
+	// var width: Int { get set }
+	// var height: Int { get set }
 
 	var player: Player { get }
 	var tilePlayerIsOn: pTile { get }

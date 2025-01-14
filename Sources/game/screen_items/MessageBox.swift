@@ -5,13 +5,13 @@ enum MessageBox {
 	}
 
 	static func messageBox() {
-		Screen.print(x: q2StartX, y: q2StartY, String(repeating: "=", count: q2Width))
-
-		let maxVisibleLines = q2Height - 2
+		sides()
+		clear()
+		let maxVisibleLines = height - 2
 		var renderedLines: [String] = []
 
 		for message in messages {
-			renderedLines.append(contentsOf: message.wrappedWithStyles(toWidth: q2Width - 2))
+			renderedLines.append(contentsOf: message.wrappedWithStyles(toWidth: width - 2))
 		}
 
 		// Trim to fit the visible area
@@ -19,28 +19,31 @@ enum MessageBox {
 			renderedLines = Array(renderedLines.suffix(maxVisibleLines))
 		}
 
-		var currentY = q2StartY + 1
+		var currentY = startY + 1
 		for line in renderedLines {
-			Screen.print(x: q2StartX + 2, y: currentY, line)
+			Screen.print(x: startX + 2, y: currentY, line)
 			currentY += 1
 		}
 
-		for y in currentY ..< q2EndY {
-			Screen.print(x: q2StartX + 1, y: y, String(repeating: " ", count: q2Width - 2))
+		for y in currentY ..< endY {
+			Screen.print(x: startX + 1, y: y, String(repeating: " ", count: width - 2))
 		}
+	}
 
-		for y in (q2StartY + 1) ..< q2EndY {
-			Screen.print(x: q2StartX, y: y, "|")
-			Screen.print(x: q2EndX, y: y, "|")
+	static func sides() {
+		Screen.print(x: startX + 1, y: startY, String(repeating: Screen.horizontalLine, count: width - 1))
+		for y in (startY + 1) ..< endY {
+			Screen.print(x: startX, y: y, Screen.verticalLine)
+			Screen.print(x: endX, y: y, Screen.verticalLine)
 		}
-
-		Screen.print(x: q2StartX, y: q2EndY, String(repeating: "=", count: q2Width))
+		Screen.print(x: startX, y: endY, String(repeating: Screen.horizontalLine, count: width + 1))
 	}
 
 	static func clear() {
-		let blankLine = String(repeating: " ", count: q2Width - 2)
-		for y in (q2StartY + 1) ..< q2EndY {
-			Screen.print(x: q2StartX + 1, y: y, blankLine)
+		// Redraw blank lines inside the message box
+		let blankLine = String(repeating: " ", count: width - 1)
+		for y in (startY + 1) ..< (endY - 1) {
+			Screen.print(x: startX + 1, y: y, blankLine)
 		}
 	}
 
@@ -53,7 +56,7 @@ enum MessageBox {
 	}
 
 	private static func message(_ text: String, speaker: String) {
-		clear()
+		// clear()
 		if speaker == MessageSpeakers.game.render {
 			messages.append(text)
 		} else {
@@ -91,6 +94,7 @@ enum MessageBox {
 
 	private static func messageWithTyping(_ text: String, speaker: String) -> String {
 		MapBox.showMapBox = false
+		StatusBox.showStatusBox = false
 		let typingIcon = ">".styled(with: .bold)
 		message(text, speaker: speaker)
 		message("   \(typingIcon)", speaker: .game)
