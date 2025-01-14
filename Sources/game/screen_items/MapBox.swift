@@ -167,8 +167,6 @@ struct Player: Codable {
 protocol MapBoxMap {
 	associatedtype pTile: Tile
 	var grid: [[pTile]] { get set }
-	// var width: Int { get set }
-	// var height: Int { get set }
 
 	var player: Player { get }
 	var tilePlayerIsOn: pTile { get }
@@ -176,7 +174,6 @@ protocol MapBoxMap {
 	func render(playerX: Int, playerY: Int, viewportWidth: Int, viewportHeight: Int)
 	func interactWithTile()
 
-	mutating func updateDimensions(width: Int, height: Int)
 	mutating func movePlayer(_ direction: Direction)
 	mutating func map()
 }

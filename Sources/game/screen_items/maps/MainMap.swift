@@ -1,28 +1,19 @@
 struct MainMap: MapBoxMap {
 	var grid: [[MapTile]]
-	var width: Int
-	var height: Int
 
 	var player: Player {
 		get { Game.player.position }
 		set { Game.player.updatePlayerPositionToSave(x: newValue.x, y: newValue.y) }
 	}
 
-	private var hasUpdatedDims = false
+	private var hasFoundPlayerStart = false
 
 	init() {
 		grid = Game.map
-		width = grid[0].count + 1
-		height = grid.count + 1
 	}
 
 	var tilePlayerIsOn: MapTile {
 		grid[player.y][player.x]
-	}
-
-	mutating func updateDimensions(width: Int, height: Int) {
-		self.width = width
-		self.height = height
 	}
 
 	func isWalkable(x: Int, y: Int) -> Bool {
@@ -82,15 +73,14 @@ struct MainMap: MapBoxMap {
 
 	mutating func map() {
 		// TODO: could fix #2
-		if !hasUpdatedDims {
-			updateDimensions(width: MapBox.width - 1, height: MapBox.height - 1)
+		if !hasFoundPlayerStart {
 			if let (startX, startY) = MapTile.findTilePosition(of: .playerStart, in: grid) {
 				player.x = startX
 				player.y = startY
 			} else {
 				print("Error: Could not find playerStart tile in the grid.")
 			}
-			hasUpdatedDims = true
+			hasFoundPlayerStart = true
 		}
 
 		let viewportWidth = MapBox.width
