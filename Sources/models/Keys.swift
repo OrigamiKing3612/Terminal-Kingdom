@@ -69,7 +69,7 @@ enum Keys {
 			case .b, .esc:
 				Game.isBuilding = false
 				InventoryBox.showBuildHelp = false
-				MapBox.sides()
+				MapBox.mapBox()
 				InventoryBox.inventoryBox()
 			case .w where Game.config.wasdKeys, .up where Game.config.arrowKeys, .k where Game.config.vimKeys:
 				MapBox.movePlayer(.up)

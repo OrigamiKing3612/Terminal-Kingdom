@@ -180,6 +180,9 @@ struct MainMap: MapBoxMap {
 						try checkDoor(tile: tile)
 						grid[player.y][player.x] = MapTile(type: .door(tile: .init(tileType: tile.tileType, isPlacedByPlayer: true)), isWalkable: true, event: .openDoor(tile: .init(tileType: tile.tileType)))
 						Game.player.removeItem(item: .door(tile: tile), count: 1)
+						if Game.stages.builder.stage5Stages == .buildHouse {
+							Game.stages.builder.stage5HasBuiltHouse = true
+						}
 					} catch {
 						MessageBox.message(error.localizedDescription, speaker: .game)
 					}
