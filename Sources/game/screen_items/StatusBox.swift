@@ -15,6 +15,7 @@ enum StatusBox {
 	}
 
 	static var playerInfoStartX: Int { startX + 2 }
+	static var playerInfoEndX: Int { endX }
 	static var playerInfoStartY: Int { startY + 1 }
 
 	static var questAreaStartX: Int { startX + 2 }
@@ -37,18 +38,6 @@ enum StatusBox {
 		if !(Game.player.name == "") {
 			Screen.print(x: playerInfoStartX, y: playerInfoStartY, "\(Game.player.name):".styled(with: .bold))
 		}
-		#if DEBUG
-			Game.player.stats.blacksmithSkillLevel = .ten
-			Game.player.stats.miningSkillLevel = .ten
-			Game.player.stats.builderSkillLevel = .ten
-			Game.player.stats.huntingSkillLevel = .ten
-			Game.player.stats.inventorSkillLevel = .ten
-			Game.player.stats.stableSkillLevel = .ten
-			Game.player.stats.farmingSkillLevel = .ten
-			Game.player.stats.medicalSkillLevel = .ten
-			Game.player.stats.carpentrySkillLevel = .ten
-			Game.player.stats.cookingSkillLevel = .ten
-		#endif
 		var yValueToPrint = playerInfoStartY + 1
 		for skillLevel in AllSkillLevels.allCases {
 			if skillLevel.stat.rawValue > 0 {
@@ -63,22 +52,17 @@ enum StatusBox {
 		questAreaStartY = yValueToPrint + 1
 	}
 
+	static func position() {
+		if MapBox.mapType == .mainMap {
+			let text = "x: \(Game.player.position.x); y: \(Game.player.position.y)"
+			Screen.print(x: playerInfoEndX - text.count, y: playerInfoStartY, text)
+		}
+	}
+
 	static func questArea() {
 		Screen.print(x: questAreaStartX, y: questAreaStartY, "Quests:".styled(with: .bold))
 		let maxVisibleLines = height - 2
 		var renderedLines: [String] = []
-		#if DEBUG
-			Game.player.addQuest(.mine1)
-			Game.player.addQuest(.mine2)
-			Game.player.addQuest(.mine3)
-			Game.player.addQuest(.mine4)
-			Game.player.addQuest(.mine5)
-			Game.player.addQuest(.mine6)
-			Game.player.addQuest(.mine7)
-			Game.player.addQuest(.mine8)
-			Game.player.addQuest(.mine9)
-			Game.player.addQuest(.mine10)
-		#endif
 		for (index, quest) in quests.enumerated() {
 			let number = "\(index + 1)".styled(with: .bold)
 			let text = "\(number). \(quest.label)"
@@ -99,12 +83,12 @@ enum StatusBox {
 	static func inventoryArea() {}
 
 	static func sides() {
-		Screen.print(x: startX, y: startY, String(repeating: Screen.horizontalLine, count: width + 1))
+		Screen.print(x: startX, y: startY, String(repeating: Game.horizontalLine, count: width + 1))
 		for y in (startY + 1) ..< endY {
-			Screen.print(x: startX, y: y, Screen.verticalLine)
-			Screen.print(x: endX, y: y, Screen.verticalLine)
+			Screen.print(x: startX, y: y, Game.verticalLine)
+			Screen.print(x: endX, y: y, Game.verticalLine)
 		}
-		Screen.print(x: startX + 2, y: endY, String(repeating: Screen.horizontalLine, count: width - 2))
+		Screen.print(x: startX + 2, y: endY, String(repeating: Game.horizontalLine, count: width - 2))
 	}
 
 	static func clear() {

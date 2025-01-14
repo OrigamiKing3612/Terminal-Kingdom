@@ -57,12 +57,12 @@ enum MapBox {
 	}
 
 	static func sides() {
-		Screen.print(x: startX, y: startY - 1, String(repeating: Screen.horizontalLine, count: width + 1).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+		Screen.print(x: startX, y: startY - 1, String(repeating: Game.horizontalLine, count: width + 1).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
 		for y in startY ..< (endY + 1) {
-			Screen.print(x: startX - 1, y: y, Screen.verticalLine.styled(with: [.bold, .blue], styledIf: Game.isBuilding))
-			Screen.print(x: endX, y: y, Screen.verticalLine.styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+			Screen.print(x: startX - 1, y: y, Game.verticalLine.styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+			Screen.print(x: endX, y: y, Game.verticalLine.styled(with: [.bold, .blue], styledIf: Game.isBuilding))
 		}
-		Screen.print(x: startX, y: endY, String(repeating: Screen.horizontalLine, count: width).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+		Screen.print(x: startX, y: endY, String(repeating: Game.horizontalLine, count: width).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
 	}
 
 	static func clear() {

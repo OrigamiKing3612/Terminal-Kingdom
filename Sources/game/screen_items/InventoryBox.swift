@@ -33,12 +33,12 @@ enum InventoryBox {
 	}
 
 	static func sides() {
-		Screen.print(x: startX + 2, y: startY - 1, String(repeating: Screen.horizontalLine, count: width - 2).styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+		Screen.print(x: startX + 2, y: startY - 1, String(repeating: Game.horizontalLine, count: width - 2).styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
 		for y in (startY - 1) ..< endY {
-			Screen.print(x: startX, y: y, Screen.verticalLine.styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
-			Screen.print(x: endX, y: y, Screen.verticalLine.styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+			Screen.print(x: startX, y: y, Game.verticalLine.styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+			Screen.print(x: endX, y: y, Game.verticalLine.styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
 		}
-		Screen.print(x: startX, y: endY, String(repeating: Screen.horizontalLine, count: width).styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+		Screen.print(x: startX, y: endY, String(repeating: Game.horizontalLine, count: width).styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
 	}
 
 	static func inventoryBox() {

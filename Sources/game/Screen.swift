@@ -13,8 +13,6 @@ enum Placement {
 }
 
 enum Screen {
-	static let horizontalLine = "─"
-	static let verticalLine = "│"
 	private(set) nonisolated(unsafe) static var columns: Int = 0
 	private(set) nonisolated(unsafe) static var rows: Int = 0
 

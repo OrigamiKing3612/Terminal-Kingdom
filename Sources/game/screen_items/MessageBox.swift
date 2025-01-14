@@ -31,12 +31,12 @@ enum MessageBox {
 	}
 
 	static func sides() {
-		Screen.print(x: startX + 1, y: startY, String(repeating: Screen.horizontalLine, count: width - 1))
+		Screen.print(x: startX + 1, y: startY, String(repeating: Game.horizontalLine, count: width - 1))
 		for y in (startY + 1) ..< endY {
-			Screen.print(x: startX, y: y, Screen.verticalLine)
-			Screen.print(x: endX, y: y, Screen.verticalLine)
+			Screen.print(x: startX, y: y, Game.verticalLine)
+			Screen.print(x: endX, y: y, Game.verticalLine)
 		}
-		Screen.print(x: startX, y: endY, String(repeating: Screen.horizontalLine, count: width + 1))
+		Screen.print(x: startX, y: endY, String(repeating: Game.horizontalLine, count: width + 1))
 	}
 
 	static func clear() {

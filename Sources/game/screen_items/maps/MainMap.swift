@@ -68,6 +68,7 @@ struct MainMap: MapBoxMap {
 
 		if oldX != player.x || oldY != player.y {
 			map()
+			StatusBox.position()
 		}
 	}
 
