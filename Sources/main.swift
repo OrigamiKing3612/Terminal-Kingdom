@@ -76,9 +76,9 @@ func newGame() {
 
 func mainGameLoop() {
 	while true {
-		// if StatusBox.updateQuestBox {
-		// 	StatusBox.questBox()
-		// }
+		if StatusBox.updateQuestBox {
+			StatusBox.questArea()
+		}
 		InventoryBox.inventoryBox()
 
 		guard !Game.isTypingInMessageBox else { continue }

@@ -39,13 +39,15 @@ enum StatusBox {
 			Screen.print(x: playerInfoStartX, y: playerInfoStartY, "\(Game.player.name):".styled(with: .bold))
 		}
 		var yValueToPrint = playerInfoStartY + 1
+		let longestSkillName = AllSkillLevels.allCases.map(\.name.count).max() ?? 0
 		for skillLevel in AllSkillLevels.allCases {
 			if skillLevel.stat.rawValue > 0 {
 				var count = ""
 				for _ in 0 ..< skillLevel.stat.rawValue {
 					count += "#"
 				}
-				Screen.print(x: playerInfoStartX + 1, y: yValueToPrint, "\(skillLevel.name): \(count)")
+				let spaces = String(repeating: " ", count: longestSkillName - skillLevel.name.count)
+				Screen.print(x: playerInfoStartX + 1, y: yValueToPrint, "\(skillLevel.name): \(spaces)\(count)")
 				yValueToPrint += 1
 			}
 		}
