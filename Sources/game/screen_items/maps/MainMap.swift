@@ -178,7 +178,7 @@ struct MainMap: MapBoxMap {
 				if case let .door(tile: tile) = selectedItem.type {
 					do {
 						try checkDoor(tile: tile)
-						grid[player.y][player.x] = MapTile(type: .door(tile: .init(type: tile.type, isPlacedByPlayer: true)), isWalkable: true, event: .openDoor(tile: .init(type: tile.type)))
+						grid[player.y][player.x] = MapTile(type: .door(tile: .init(tileType: tile.tileType, isPlacedByPlayer: true)), isWalkable: true, event: .openDoor(tile: .init(tileType: tile.tileType)))
 						Game.player.removeItem(item: .door(tile: tile), count: 1)
 					} catch {
 						MessageBox.message(error.localizedDescription, speaker: .game)

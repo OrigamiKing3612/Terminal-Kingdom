@@ -15,7 +15,7 @@ enum AllRecipes: CaseIterable {
 			case .sword:
 				Recipe(ingredients: [.init(item: .steel, count: 2), .init(item: .stick, count: 2)], result: [.init(item: .sword, count: 1)], station: .anvil)
 			case .door:
-				Recipe(ingredients: [.init(item: .lumber, count: 4), .init(item: .iron, count: 1)], result: [.init(item: .door(tile: .init(type: .house)), count: 1)], station: .workbench)
+				Recipe(ingredients: [.init(item: .lumber, count: 4), .init(item: .iron, count: 1)], result: [.init(item: .door(tile: .init(tileType: .house)), count: 1)], station: .workbench)
 		}
 	}
 }

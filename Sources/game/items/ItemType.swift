@@ -59,7 +59,7 @@ enum ItemType: Codable, Equatable, Hashable {
 			case .gold: "Gold"
 			case .stone: "Stone"
 			case .tree_seed: "Tree Seed"
-			case let .door(tile: tile): "\(tile.type.name) Door"
+			case let .door(tile: tile): "\(tile.tileType.name) Door"
 			case .fence: "Fence"
 			case .gate: "Gate"
 			case .coin: "Coin"

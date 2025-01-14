@@ -11,34 +11,34 @@
       "isWalkable" : false
     },
     {
+      "isWalkable" : false,
       "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      },
-      "isWalkable" : false
+      }
     },
     {
+      "isWalkable" : false,
       "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      },
-      "isWalkable" : false
+      }
     },
     {
+      "isWalkable" : false,
       "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      },
-      "isWalkable" : false
+      }
     },
     {
       "isWalkable" : false,
@@ -61,14 +61,14 @@
       "isWalkable" : false
     },
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      }
+      },
+      "isWalkable" : false
     }
   ],
   [
@@ -83,20 +83,12 @@
       }
     },
     {
+      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      },
-      "isWalkable" : true
-    },
-    {
-      "type" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
+      }
     },
     {
       "isWalkable" : true,
@@ -124,6 +116,14 @@
     },
     {
       "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
@@ -161,12 +161,12 @@
       }
     },
     {
+      "isWalkable" : true,
       "type" : {
         "plain" : {
 
         }
-      },
-      "isWalkable" : true
+      }
     },
     {
       "isWalkable" : true,
@@ -185,32 +185,32 @@
       "isWalkable" : true
     },
     {
-      "isWalkable" : true,
       "type" : {
         "door" : {
           "tile" : {
-            "level" : 1,
+            "isPlacedByPlayer" : false,
             "isPartOfPlayerVillage" : false,
-            "type" : {
+            "tileType" : {
               "restaurant" : {
 
               }
             },
-            "isPlacedByPlayer" : false
+            "level" : 1
           }
         }
       },
+      "isWalkable" : true,
       "event" : {
         "openDoor" : {
           "tile" : {
-            "type" : {
+            "isPlacedByPlayer" : false,
+            "isPartOfPlayerVillage" : false,
+            "tileType" : {
               "restaurant" : {
 
               }
             },
-            "level" : 1,
-            "isPlacedByPlayer" : false,
-            "isPartOfPlayerVillage" : false
+            "level" : 1
           }
         }
       }
@@ -218,22 +218,14 @@
   ],
   [
     {
-      "isWalkable" : false,
       "type" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      }
-    },
-    {
-      "type" : {
-        "plain" : {
-
-        }
       },
-      "isWalkable" : true
+      "isWalkable" : false
     },
     {
       "type" : {
@@ -268,6 +260,14 @@
       "isWalkable" : true
     },
     {
+      "type" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
       "isWalkable" : false,
       "type" : {
         "building" : {
@@ -310,16 +310,6 @@
       "isWalkable" : false
     },
     {
-      "type" : {
-        "building" : {
-          "tile" : {
-            "isPlacedByPlayer" : false
-          }
-        }
-      },
-      "isWalkable" : false
-    },
-    {
       "isWalkable" : false,
       "type" : {
         "building" : {
@@ -348,6 +338,16 @@
         }
       },
       "isWalkable" : false
+    },
+    {
+      "isWalkable" : false,
+      "type" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      }
     }
   ]
 ]

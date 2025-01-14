@@ -1,11 +1,11 @@
 struct DoorTile: Codable, Equatable, Hashable {
-	let type: DoorTileTypes
+	let tileType: DoorTileTypes
 	let isPartOfPlayerVillage: Bool
 	let isPlacedByPlayer: Bool
 	private(set) var level: Int
 
-	init(type: DoorTileTypes, isPartOfPlayerVillage: Bool = false, isPlacedByPlayer: Bool = false) {
-		self.type = type
+	init(tileType: DoorTileTypes, isPartOfPlayerVillage: Bool = false, isPlacedByPlayer: Bool = false) {
+		self.tileType = tileType
 		self.isPartOfPlayerVillage = isPartOfPlayerVillage
 		level = 1
 		self.isPlacedByPlayer = isPlacedByPlayer
@@ -23,7 +23,7 @@ struct DoorTile: Codable, Equatable, Hashable {
 		]
 		if MapBox.mapType == .mainMap {
 			for (doorType, condition) in conditions {
-				if tile.type == doorType, condition {
+				if tile.tileType == doorType, condition {
 					return "!".styled(with: [.bold, .red])
 				}
 			}

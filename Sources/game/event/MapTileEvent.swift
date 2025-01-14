@@ -33,7 +33,7 @@ enum MapTileEvent: TileEvent {
 				if case let .crop(crop: crop) = tile.type {
 					CollectCropEvent.collectCrop(cropTile: crop, isInPot: false)
 				} else if case let .pot(tile: tile) = tile.type {
-					if tile.cropTile.type != .none {
+					if tile.cropTile.tileType != .none {
 						CollectCropEvent.collectCrop(cropTile: tile.cropTile, isInPot: true)
 					} else {
 						if !Game.player.has(item: .tree_seed) {
@@ -41,7 +41,7 @@ enum MapTileEvent: TileEvent {
 							return
 						}
 						let options: [MessageOption] = [.init(label: "Quit", action: {}), .init(label: "Plant Seed", action: {
-							MapBox.updateTile(newTile: .init(type: .pot(tile: .init(cropTile: .init(type: .tree_seed)))))
+							MapBox.updateTile(newTile: .init(type: .pot(tile: .init(cropTile: .init(tileType: .tree_seed)))))
 						})]
 						let selectedOption = MessageBox.messageWithOptions("Plant Seed", speaker: .game, options: options)
 						selectedOption.action()
@@ -55,17 +55,17 @@ enum MapTileEvent: TileEvent {
 	var name: String {
 		switch self {
 			case let .openDoor(tile):
-				"openDoor(\(tile.type.name))"
+				"openDoor(\(tile.tileType.name))"
 			case .chopTree:
 				"chopTree"
 			case .startMining:
 				"startMining"
 			case let .talkToNPC(tile):
-				"talkToNPC(\(tile.type.render))"
+				"talkToNPC(\(tile.tileType.render))"
 			case .collectCrop:
 				"collectCrop"
 			case let .useStation(station: station):
-				"useStation(\(station.type.render))"
+				"useStation(\(station.tileType.render))"
 		}
 	}
 }

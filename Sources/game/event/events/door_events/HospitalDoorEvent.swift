@@ -12,7 +12,7 @@ enum HospitalDoorEvent {
 	}
 
 	static func goInside(tile: DoorTile) {
-		if case let .hospital(side: side) = tile.type {
+		if case let .hospital(side: side) = tile.tileType {
 			MapBox.mapType = .hospital(side: side)
 		}
 	}

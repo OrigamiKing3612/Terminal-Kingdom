@@ -1,12 +1,12 @@
 struct CropTile: Codable, Equatable {
-	let type: CropTileType
+	let tileType: CropTileType
 
-	init(type: CropTileType) {
-		self.type = type
+	init(tileType: CropTileType) {
+		self.tileType = tileType
 	}
 
 	static func renderCrop(tile: CropTile) -> String {
-		switch tile.type {
+		switch tile.tileType {
 			case .none:
 				"."
 			case .tree_seed:

@@ -12,7 +12,7 @@ enum FarmDoorEvent {
 	}
 
 	static func goInside(tile: DoorTile) {
-		if case let .farm(type: type) = tile.type {
+		if case let .farm(type: type) = tile.tileType {
 			MapBox.mapType = .farm(type: type)
 		}
 	}

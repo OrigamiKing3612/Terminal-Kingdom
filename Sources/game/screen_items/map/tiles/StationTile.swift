@@ -1,11 +1,11 @@
 struct StationTile: Codable, Equatable {
-	let type: StationTileType
+	let tileType: StationTileType
 
-	init(type: StationTileType) {
-		self.type = type
+	init(tileType: StationTileType) {
+		self.tileType = tileType
 	}
 
 	static func render(tile: StationTile) -> String {
-		tile.type.render
+		tile.tileType.render
 	}
 }

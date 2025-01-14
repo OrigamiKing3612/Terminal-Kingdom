@@ -1,6 +1,6 @@
 enum UseStationEvent {
 	static func useStation(tile: StationTile) {
-		switch tile.type {
+		switch tile.tileType {
 			case .anvil:
 				var options: [MessageOption] = []
 				for Allrecipe in AllRecipes.allCases {
