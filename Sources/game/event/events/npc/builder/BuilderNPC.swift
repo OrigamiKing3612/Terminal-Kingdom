@@ -41,7 +41,7 @@ enum BuilderNPC {
 	static func stage0() {
 		if Game.startingVillageChecks.hasBeenTaughtToChopLumber != .yes {
 			if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
-				MessageBox.message("Before I can teach you how to mine, you need to learn how to chop lumber.", speaker: .builder)
+				MessageBox.message("Before I can teach you how to build, you need to learn how to chop lumber.", speaker: .builder)
 			}
 			RandomEventStuff.teachToChopLumber(by: .builder)
 			if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .yes {
@@ -55,7 +55,7 @@ enum BuilderNPC {
 				.init(label: "Yes", action: {}),
 				.init(label: "No", action: {}),
 			]
-			let selectedOption = MessageBox.messageWithOptions("Would you like to learn how to mine?", speaker: .builder, options: options)
+			let selectedOption = MessageBox.messageWithOptions("Would you like to learn how to build?", speaker: .builder, options: options)
 			if selectedOption.label == "Yes" {
 				stage1()
 			}
