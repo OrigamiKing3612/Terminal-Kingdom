@@ -4,6 +4,12 @@ enum MessageBox {
 		set { Game.messages = newValue }
 	}
 
+	private nonisolated(unsafe) static var scrollOffset = 0
+	private nonisolated(unsafe) static var lastMessageCount = 1
+	private static var showXCounter: Bool {
+		lastMessageCount > 1
+	}
+
 	static func messageBox() {
 		sides()
 		clear()
@@ -11,13 +17,19 @@ enum MessageBox {
 		var renderedLines: [String] = []
 
 		for message in messages {
-			renderedLines.append(contentsOf: message.wrappedWithStyles(toWidth: width - 2))
+			if message == messages.last, showXCounter {
+				renderedLines.append(contentsOf: "\(message) (x\(lastMessageCount))".wrappedWithStyles(toWidth: width - 2))
+			} else {
+				renderedLines.append(contentsOf: message.wrappedWithStyles(toWidth: width - 2))
+			}
 		}
 
-		// Trim to fit the visible area
-		if renderedLines.count > maxVisibleLines {
-			renderedLines = Array(renderedLines.suffix(maxVisibleLines))
-		}
+		scrollOffset = max(0, min(scrollOffset, max(0, renderedLines.count - maxVisibleLines)))
+
+		// Trim to fit the visible area based on scrollOffset
+		let startIndex = max(0, renderedLines.count - maxVisibleLines - scrollOffset)
+		let endIndex = renderedLines.count - scrollOffset
+		renderedLines = Array(renderedLines[startIndex ..< endIndex])
 
 		var currentY = startY + 1
 		for line in renderedLines {
@@ -47,6 +59,20 @@ enum MessageBox {
 		}
 	}
 
+	static func lineUp() {
+		// Scroll up by increasing the scrollOffset
+		scrollOffset += 1
+		messageBox()
+	}
+
+	static func lineDown() {
+		// Scroll down by decreasing the scrollOffset
+		if scrollOffset > 0 {
+			scrollOffset -= 1
+			messageBox()
+		}
+	}
+
 	static func message(_ text: String, speaker: MessageSpeakers) {
 		message(text, speaker: speaker.render)
 	}
@@ -57,10 +83,15 @@ enum MessageBox {
 
 	private static func message(_ text: String, speaker: String) {
 		// clear()
-		if speaker == MessageSpeakers.game.render {
-			messages.append(text)
+		if text == messages.last {
+			lastMessageCount += 1
 		} else {
-			messages.append("\(speaker.styled(with: .bold)): \(text)")
+			lastMessageCount = 1
+			if speaker == MessageSpeakers.game.render {
+				messages.append(text)
+			} else {
+				messages.append("\(speaker.styled(with: .bold)): \(text)")
+			}
 		}
 		messageBox()
 	}

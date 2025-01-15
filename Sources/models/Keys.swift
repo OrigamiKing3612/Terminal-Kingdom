@@ -41,6 +41,10 @@ enum Keys {
 					MapBox.sides()
 					InventoryBox.inventoryBox()
 				}
+			case .W:
+				MessageBox.lineUp()
+			case .S:
+				MessageBox.lineDown()
 			default:
 				#if DEBUG
 					MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
