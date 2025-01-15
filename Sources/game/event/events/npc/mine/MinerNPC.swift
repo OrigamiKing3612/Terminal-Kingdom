@@ -129,7 +129,7 @@ enum MinerNPC {
 				MessageBox.message("I need you to mine 20 clay. You can do this by mining. The mine entrance the 'M' above and below me. is Here is a pickaxe. Be careful, it can only be used 50 times. ", speaker: .miner)
 				StatusBox.quest(.mine2)
 				// TODO: make a door in the mine to come back
-				MessageBox.message("Oh also, press '\("l".styled(with: .bold))' to leave the mine.", speaker: .miner)
+				MessageBox.message("Oh also, press '\(KeyboardKeys.L.render)' to leave the mine.", speaker: .miner)
 				Game.stages.mine.stage2PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false))
 				Game.stages.mine.stage2Stages = .mine
 			case .mine:

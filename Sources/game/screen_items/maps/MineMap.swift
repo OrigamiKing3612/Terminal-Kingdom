@@ -37,8 +37,7 @@ struct MineMap: MapBoxMap {
 	}
 
 	func isInBounds(x: Int, y: Int) -> Bool {
-		guard x >= 0, y >= 0, y < grid.count, x < grid[y].count else { return false }
-		return true
+		x >= 0 && y >= 0 && y < grid.count && x < grid[y].count
 	}
 
 	func render(playerX: Int, playerY: Int, viewportWidth: Int, viewportHeight: Int) {
@@ -78,22 +77,22 @@ struct MineMap: MapBoxMap {
 			case .right where isWalkable(x: player.x + 1, y: player.y):
 				player.x += 1
 			// mine
-			case .up where !grid[player.y - 1][player.x].isWalkable && Game.player.hasPickaxe() && isInBounds(x: player.x, y: player.y):
+			case .up where Game.player.hasPickaxe() && isInBounds(x: player.x, y: player.y - 1):
 				MineMap.givePlayerTile(tile: grid[player.y - 1][player.x])
 				grid[player.y - 1][player.x] = .init(type: .plain, isWalkable: true)
 				Game.player.removeDurability(of: .pickaxe)
 				player.y -= 1
-			case .down where !grid[player.y + 1][player.x].isWalkable && Game.player.hasPickaxe() && isInBounds(x: player.x, y: player.y):
+			case .down where Game.player.hasPickaxe() && isInBounds(x: player.x, y: player.y + 1):
 				MineMap.givePlayerTile(tile: grid[player.y + 1][player.x])
 				grid[player.y + 1][player.x] = .init(type: .plain, isWalkable: true)
 				Game.player.removeDurability(of: .pickaxe)
 				player.y += 1
-			case .left where !grid[player.y][player.x - 1].isWalkable && Game.player.hasPickaxe() && isInBounds(x: player.x, y: player.y):
+			case .left where Game.player.hasPickaxe() && isInBounds(x: player.x - 1, y: player.y):
 				MineMap.givePlayerTile(tile: grid[player.y][player.x - 1])
 				grid[player.y][player.x - 1] = .init(type: .plain, isWalkable: true)
 				Game.player.removeDurability(of: .pickaxe)
 				player.x -= 1
-			case .right where !grid[player.y][player.x + 1].isWalkable && Game.player.hasPickaxe() && isInBounds(x: player.x, y: player.y):
+			case .right where Game.player.hasPickaxe() && isInBounds(x: player.x + 1, y: player.y):
 				MineMap.givePlayerTile(tile: grid[player.y][player.x + 1])
 				grid[player.y][player.x + 1] = .init(type: .plain, isWalkable: true)
 				Game.player.removeDurability(of: .pickaxe)

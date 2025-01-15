@@ -13,7 +13,7 @@ enum Keys {
 				MapBox.movePlayer(.right)
 			case .space, .enter:
 				MapBox.interactWithTile()
-			case .l where MapBox.mapType == .mining:
+			case .L where MapBox.mapType == .mining:
 				MapBox.mapType = .mine
 				MapBox.buildingMap.player.x = 2
 				MapBox.buildingMap.player.y = 2
