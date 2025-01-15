@@ -26,7 +26,7 @@ enum ItemType: Codable, Equatable, Hashable {
 	case door(tile: DoorTile)
 	case fence
 	case gate
-	case chest(tile: ChestTile)
+	case chest /* (tile: ChestTile) */
 	case bed
 	case desk
 
