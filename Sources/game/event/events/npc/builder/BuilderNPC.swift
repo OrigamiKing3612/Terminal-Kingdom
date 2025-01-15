@@ -218,6 +218,39 @@ enum BuilderNPC {
 			MessageBox.message("This is what you need to do. Go pick an area and press \(KeyboardKeys.b.render). This will put you in \("build mode".styled(with: .bold)). The press \(KeyboardKeys.enter.render), as long as you have 5 lumber you will build a building tile. Place the buildings next to each other. Then place the door in a small area. If you are unsure, look at the other buildings in this village. If you want to see all the controls press \(KeyboardKeys.questionMark.render) in build mode.", speaker: .builder)
 		}
 	}
+
+	static func stage6() {
+		switch Game.stages.builder.stage6Stages {
+			case .notStarted:
+				MessageBox.message("Now that we have the house, we need to decorate the inside. Can you go get 30 lumber and bring it back to me?", speaker: .builder)
+				Game.stages.builder.stage6Stages = .collect
+				StatusBox.quest(.builder6)
+				Game.stages.builder.stage6AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
+			case .collect:
+				if Game.player.has(item: .lumber, count: 30) {
+					MessageBox.message("Great! You have collected the lumber. Now we can start decorating the inside.", speaker: .builder)
+					if let id = Game.stages.builder.stage6AxeUUIDToRemove {
+						Game.player.removeItem(id: id)
+					}
+					Game.player.removeItem(item: .lumber, count: 30)
+					Game.player.stats.builderSkillLevel = .six
+					Game.stages.builder.stage6Stages = .done
+					StatusBox.removeQuest(quest: .builder6)
+					fallthrough
+				} else {
+					if let id = Game.stages.builder.stage6AxeUUIDToRemove, !Game.player.has(id: id) {
+						MessageBox.message("Uh oh, looks like you lost your axe, here is a new one.", speaker: .builder)
+						Game.stages.builder.stage6AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
+					}
+					MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .lumber) - 30)) lumber.", speaker: .builder)
+				}
+			case .done:
+				Game.stages.builder.next()
+				if RandomEventStuff.wantsToContinue(speaker: .builder) {
+					getStage()
+				}
+		}
+	}
 }
 
 enum BuilderStage1Stages: Codable {
@@ -241,7 +274,7 @@ enum BuilderStage5Stages: Codable {
 }
 
 enum BuilderStage6Stages: Codable {
-	case notStarted, collect, bringBack, done
+	case notStarted, collect, done
 }
 
 enum BuilderStage7Stages: Codable {
