@@ -92,7 +92,7 @@ enum NPCTileType: Codable, Equatable {
 }
 
 enum MessageSpeakers {
-	case player // TODO: do I need this
+	case player
 	case game
 	case dev
 

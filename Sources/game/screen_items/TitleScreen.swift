@@ -39,6 +39,9 @@ enum TitleScreen {
 						selectedOptionIndex = max(0, selectedOptionIndex - 1)
 					case .down, .s, .j, .tab:
 						selectedOptionIndex = min(TitleScreenOptions.allCases.count - 1, selectedOptionIndex + 1)
+					case .zero:
+						Screen.clear()
+						Screen.initialize()
 					case .q:
 						endProgram()
 					default:
