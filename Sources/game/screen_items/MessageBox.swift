@@ -261,7 +261,7 @@ enum MessageBox {
 					if selectedOptionIndex < options.count - 1 {
 						selectedOptionIndex += 1
 					}
-				case .enter:
+				case .enter, .space:
 					removeLastMessage()
 					updateLastMessage(newMessage: "\(text) - \(options[selectedOptionIndex].label)", speaker: speaker)
 					return options[selectedOptionIndex]
@@ -327,7 +327,7 @@ enum MessageBox {
 					if selectedOptionIndex < options.count - 1 {
 						selectedOptionIndex += 1
 					}
-				case .enter:
+				case .enter, .space:
 					removeLastMessage()
 					updateLastMessage(newMessage: "\(text) - \(options[selectedOptionIndex].label)", speaker: speaker)
 					return options[selectedOptionIndex]
