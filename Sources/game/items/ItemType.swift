@@ -26,6 +26,9 @@ enum ItemType: Codable, Equatable, Hashable {
 	case door(tile: DoorTile)
 	case fence
 	case gate
+	case chest(tile: ChestTile)
+	case bed
+	case desk
 
 	// MARK: Other
 
@@ -40,8 +43,7 @@ enum ItemType: Codable, Equatable, Hashable {
 
 	var isBuildable: Bool {
 		switch self {
-			// in inventory, building comes first, if this is changed make sure building is still first.
-			case .door, .fence, .gate, .lumber: true
+			case .door, .fence, .gate, .lumber, .chest, .bed, .desk: true
 			default: false
 		}
 	}
@@ -70,6 +72,9 @@ enum ItemType: Codable, Equatable, Hashable {
 			case .lettuce: "Lettuce"
 			case .potato: "Potato"
 			case .wheat: "Wheat"
+			case .chest: "Chest"
+			case .bed: "Bed"
+			case .desk: "Desk"
 		}
 	}
 

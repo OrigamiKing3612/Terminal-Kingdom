@@ -33,6 +33,9 @@ enum MapTileType: TileType {
 
 	case station(station: StationTile)
 	case startMining
+	case chest(tile: ChestTile)
+	case bed
+	case desk
 
 	// MARK: Crops
 
@@ -49,7 +52,7 @@ enum MapTileType: TileType {
 
 	var isBuildable: Bool {
 		switch self {
-			case .building, .door, .fence, .gate: true
+			case .building, .door, .fence, .gate, .chest, .bed, .desk: true
 			default: false
 		}
 	}
@@ -79,6 +82,9 @@ enum MapTileType: TileType {
 			case let .npc(tile: tile): NPCTile.renderNPC(tile: tile)
 			case .shopStandingArea(type: _): "."
 			case .biomeTOBEGENERATED(type: _): "/"
+			case .chest(tile: _): (Game.config.useNerdFont ? "󰜦" : "C").styled(with: .yellow)
+			case .bed: Game.config.useNerdFont ? "" : "B"
+			case .desk: Game.config.useNerdFont ? "󱈹" : "D"
 		}
 	}
 
@@ -112,6 +118,9 @@ enum MapTileType: TileType {
 				type.rawValue
 			case let .biomeTOBEGENERATED(type: biome):
 				biome.rawValue
+			case .chest: "chest"
+			case .bed: "bed"
+			case .desk: "desk"
 		}
 	}
 
