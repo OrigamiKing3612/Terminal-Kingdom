@@ -46,6 +46,7 @@ func endProgram() {
 //
 	//        }
 	//    }
+	TerminalInput.restoreOriginalMode()
 	exit(0)
 }
 

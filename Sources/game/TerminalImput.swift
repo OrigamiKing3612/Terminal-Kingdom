@@ -56,10 +56,10 @@ enum KeyboardKeys: String {
 }
 
 enum TerminalInput {
-	@MainActor private static var originalTermios = termios()
+	private nonisolated(unsafe) static var originalTermios = termios()
 
 	// Enable raw mode
-	@MainActor static func enableRawMode() {
+	static func enableRawMode() {
 		var raw = termios()
 		tcgetattr(STDIN_FILENO, &originalTermios) // Get current terminal attributes
 		raw = originalTermios
@@ -72,7 +72,7 @@ enum TerminalInput {
 	}
 
 	// Restore original terminal attributes
-	@MainActor static func restoreOriginalMode() {
+	static func restoreOriginalMode() {
 		tcsetattr(STDIN_FILENO, TCSANOW, &originalTermios)
 	}
 
