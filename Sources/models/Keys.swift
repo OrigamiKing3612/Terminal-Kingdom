@@ -36,7 +36,7 @@ enum Keys {
 				InventoryBox.sides()
 			case .b:
 				// Only build in main map for now
-				if Game.player.canBuild, MapBox.mapType == .mainMap {
+				if Game.player.canBuild, MapBox.mapType != .mining {
 					Game.isBuilding = true
 					MapBox.sides()
 					InventoryBox.inventoryBox()

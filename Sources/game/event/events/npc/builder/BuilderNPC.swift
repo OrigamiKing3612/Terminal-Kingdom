@@ -33,6 +33,10 @@ enum BuilderNPC {
 				stage4()
 			case 5:
 				stage5()
+			case 6:
+				stage6()
+			case 7:
+				stage7()
 			default:
 				break
 		}
@@ -203,6 +207,7 @@ enum BuilderNPC {
 					if let ids = Game.stages.builder.stage5ItemsToBuildHouseUUIDsToRemove {
 						Game.player.removeItems(ids: ids)
 					}
+					Game.player.canBuild = false
 					fallthrough
 				} else {
 					MessageBox.message("You haven't built the house yet.", speaker: .builder)
@@ -251,6 +256,38 @@ enum BuilderNPC {
 				}
 		}
 	}
+
+	static func stage7() {
+		switch Game.stages.builder.stage7Stages {
+			case .notStarted:
+				MessageBox.message("Can you take these decorations and put them inside of the house? You can decorate it however you want.", speaker: .builder)
+				Game.stages.builder.stage7Stages = .buildInside
+				StatusBox.quest(.builder7)
+				let uuid1 = Game.player.collect(item: .init(type: .bed, canBeSold: false), count: 1)
+				let uuid2 = Game.player.collect(item: .init(type: .chest, canBeSold: false), count: 2)
+				let uuid3 = Game.player.collect(item: .init(type: .desk, canBeSold: false), count: 1)
+				Game.stages.builder.stage7ItemsToBuildInsideUUIDsToRemove = uuid1 + uuid2 + uuid3
+				Game.player.canBuild = true
+			case .buildInside:
+				if Game.stages.builder.stage7HasBuiltInside {
+					MessageBox.message("Looks like you are done!", speaker: .builder)
+					Game.stages.builder.stage7Stages = .done
+					Game.player.stats.builderSkillLevel = .seven
+					StatusBox.removeQuest(quest: .builder7)
+					if let ids = Game.stages.builder.stage7ItemsToBuildInsideUUIDsToRemove {
+						Game.player.removeItems(ids: ids)
+					}
+					fallthrough
+				} else {
+					MessageBox.message("You haven't decorated the inside of the house yet.", speaker: .builder)
+				}
+			case .done:
+				Game.stages.builder.next()
+				if RandomEventStuff.wantsToContinue(speaker: .builder) {
+					getStage()
+				}
+		}
+	}
 }
 
 enum BuilderStage1Stages: Codable {
@@ -279,7 +316,7 @@ enum BuilderStage6Stages: Codable {
 
 enum BuilderStage7Stages: Codable {
 	// TODO: add more cases
-	case notStarted, done
+	case notStarted, buildInside, done
 }
 
 enum BuilderStage8Stages: Codable {

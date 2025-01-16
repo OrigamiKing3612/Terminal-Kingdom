@@ -5,9 +5,14 @@ enum InventoryBox {
 	nonisolated(unsafe) static var showBuildHelp: Bool = false
 	private(set) nonisolated(unsafe) static var selectedInventoryIndex: Int = 0 {
 		didSet {
-			selectedInventoryIndex = max(0, min(selectedInventoryIndex, Game.player.items.count - 1))
+			selectedInventoryIndex = max(0, min(selectedInventoryIndex, inventoryItems.count - 1))
 			printInventory()
 		}
+	}
+
+	static var inventoryItems: [Item] {
+		Array(Set(Game.player.items))
+			.sorted(by: { $0.type.inventoryName < $1.type.inventoryName })
 	}
 
 	static var buildableItems: [Item] {
@@ -73,7 +78,7 @@ enum InventoryBox {
 			}
 		} else {
 			var alreadyPrinted: [ItemType] = []
-			for (index, item) in Game.player.items.sorted(by: { $0.type.inventoryName < $1.type.inventoryName }).enumerated() {
+			for (index, item) in inventoryItems.enumerated() {
 				if !alreadyPrinted.contains(where: { $0 == item.type }) {
 					var icon = ""
 					if index == selectedInventoryIndex, Game.isInInventoryBox {
@@ -107,10 +112,10 @@ enum InventoryBox {
 	}
 
 	static func destroyItem() {
-		if Game.player.items.isEmpty {
+		if inventoryItems.isEmpty {
 			return
 		}
-		let uuid = Game.player.items[selectedInventoryIndex].id
+		let uuid = inventoryItems[selectedInventoryIndex].id
 		Game.player.destroyItem(id: uuid)
 	}
 

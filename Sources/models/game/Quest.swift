@@ -142,7 +142,7 @@ enum Quest: Codable, Equatable {
 			case .builder3: "Make a door on the workbench"
 			case .builder4: "Go talk to the King"
 			case .builder5: "Build a house for the builder"
-			case .builder6: "Collect 20 lumber for the builder"
+			case .builder6: "Collect 30 lumber for the builder"
 			case .builder7: "TODO"
 			case .builder8: "TODO"
 			case .builder9: "Build a house for the builder"

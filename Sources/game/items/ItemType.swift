@@ -1,4 +1,4 @@
-enum ItemType: Codable, Equatable, Hashable {
+enum ItemType: Codable, Equatable {
 	// MARK: Weapons
 
 	case sword, axe(type: AxeItem), pickaxe(type: PickaxeItem), boomerang // bow? net? dagger?
