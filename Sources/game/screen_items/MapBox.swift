@@ -1,3 +1,5 @@
+import Foundation
+
 enum MapBox {
 	nonisolated(unsafe) static var mainMap: MainMap = .init()
 	nonisolated(unsafe) static var miningMap: MineMap = .init()
@@ -152,7 +154,7 @@ enum MapType: Codable, Equatable {
 	case carpenter
 	case restaurant
 	case potter
-	case custom(map: CustomMap)
+	case custom(mapID: UUID)
 
 	var map: any MapBoxMap {
 		switch self {

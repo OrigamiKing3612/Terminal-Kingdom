@@ -1,6 +1,6 @@
 import Foundation
 
-struct Item: Codable, Equatable {
+struct Item: Codable, Equatable, Hashable {
 	let id: UUID
 	let type: ItemType
 	let canBeSold: Bool

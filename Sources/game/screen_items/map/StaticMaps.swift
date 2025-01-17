@@ -46,6 +46,9 @@ enum StaticMaps {
 			case .mining:
 				print("Mining should not be passed into buildingMap.")
 				return .blacksmith
+			case .custom:
+				print("Custom map should not be passed into buildingMap.")
+				return .blacksmith
 		}
 	}
 }

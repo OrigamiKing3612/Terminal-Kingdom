@@ -10,6 +10,7 @@ struct Game: Codable {
 	nonisolated(unsafe) static var stages: Stages = .init()
 	nonisolated(unsafe) static var messages: [String] = []
 	nonisolated(unsafe) static var mapGen: MapGenSave = .init(amplitude: MapGenSave.defaultAmplitude, frequency: MapGenSave.defaultFrequency, seed: .random(in: 2 ... 1_000_000_000))
+	private(set) nonisolated(unsafe) static var customMaps: [CustomMap] = []
 
 	// Don't save
 	nonisolated(unsafe) static var isInInventoryBox: Bool = false
@@ -38,6 +39,14 @@ struct Game: Codable {
 		stages = decodedGame.stages
 		messages = decodedGame.messages
 		mapGen = decodedGame.mapGen
+	}
+
+	static func addMap(map: CustomMap) {
+		customMaps.append(map)
+	}
+
+	static func removeMap(map: CustomMap) {
+		customMaps.removeAll(where: { $0.id == map.id })
 	}
 }
 
