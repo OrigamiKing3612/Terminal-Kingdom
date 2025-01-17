@@ -63,10 +63,12 @@ enum MapBuilding {
 			if Game.player.has(item: selectedItem.type, count: 1) {
 				if case let .door(tile: tile) = selectedItem.type {
 					do {
+						MessageBox.message("Door Placed", speaker: .dev)
 						let (doorPosition, buildingPerimeter) = try CreateCustomMap.checkDoor(tile: tile, grid: grid, x: x, y: y)
 						let map = getDoorMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.tileType)
 						do {
 							let customMap = try CustomMap(grid: map)
+							MessageBox.message("Custom Map created", speaker: .dev)
 							if let customMap {
 								Game.addMap(map: customMap)
 								grid[y][x] = MapTile(type: .door(tile: .init(tileType: .custom(mapID: customMap.id), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor(tile: .init(tileType: tile.tileType)))
@@ -103,8 +105,8 @@ enum MapBuilding {
 	private static func getDoorMap(buildingPerimeter: BuildingPerimeter, doorPosition: DoorPosition, doorType: DoorTileTypes) -> [[MapTile]] {
 		let ratio = 4
 
-		let topLength = buildingPerimeter.top * ratio
-		let bottomLength = buildingPerimeter.bottom * ratio
+		let topLength = buildingPerimeter.top * ratio * 2
+		let bottomLength = buildingPerimeter.bottom * ratio * 2
 		let rightLength = buildingPerimeter.rightSide * ratio
 		let leftLength = buildingPerimeter.leftSide * ratio
 
@@ -148,17 +150,17 @@ enum MapBuilding {
 		var startX, startY: Int
 		switch doorPosition {
 			case .top:
-				startX = topLength / 2
-				startY = 0
+				startX = doorX
+				startY = doorY + 1
 			case .right:
-				startX = topLength - 1
-				startY = rightLength / 2
+				startX = doorX - 1
+				startY = doorY
 			case .left:
-				startX = 0
-				startY = rightLength / 2
+				startX = doorX + 1
+				startY = doorY
 			case .bottom:
-				startX = topLength / 2
-				startY = rightLength - 1
+				startX = doorX
+				startY = doorY + 1
 		}
 		map[startY][startX] = .init(type: .playerStart, isWalkable: true)
 

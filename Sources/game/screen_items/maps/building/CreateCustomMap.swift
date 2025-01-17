@@ -9,16 +9,18 @@ enum CreateCustomMap {
 		if !Game.player.has(item: .door(tile: tile), count: 1) {
 			throw .noDoor
 		}
-
 		let doorPosition = try checkBuildingsNearby(grid: grid, x: x, y: y)
+		MessageBox.message("Check Buildings Nearby is done", speaker: .dev)
 
 		var createMap = CreateMap(grid: grid, x: x, y: y)
-		let perimeter = switch doorPosition {
-			case .bottom: createMap.bottom()
-			case .left: createMap.leftSide()
-			case .right: createMap.rightSide()
-			case .top: createMap.top()
-		}
+		// let perimeter = switch doorPosition {
+		// 	case .bottom: createMap.bottom()
+		// 	case .left: createMap.leftSide()
+		// 	case .right: createMap.rightSide()
+		// 	case .top: createMap.top()
+		// }
+		let perimeter = BuildingPerimeter(rightSide: 10, leftSide: 10, top: 10, bottom: 10)
+		MessageBox.message("Created perimeter; t\(perimeter.top), b\(perimeter.bottom), r\(perimeter.rightSide), l\(perimeter.leftSide)", speaker: .dev)
 		if (perimeter.top != perimeter.bottom) || (perimeter.leftSide != perimeter.rightSide) {
 			throw .notARectangle
 		}
@@ -36,17 +38,51 @@ enum CreateCustomMap {
 		var buildingsNearby = 0
 		var validDoorPosition: DoorPosition?
 
-		for (nx, ny, position) in nearbyTiles {
-			if grid.indices.contains(ny), grid[ny].indices.contains(nx), isBuilding(grid[ny][nx]) {
-				buildingsNearby += 1
-				validDoorPosition = position
-			}
+		var buildingOnTheTop = false
+		var buildingOnTheBottom = false
+		var buildingOnTheLeft = false
+		var buildingOnTheRight = false
+
+		if isBuilding(grid[y + 1][x]) {
+			buildingOnTheTop = true
+			buildingsNearby += 1
 		}
 
-		guard buildingsNearby >= 3, let doorPosition = validDoorPosition else {
+		if isBuilding(grid[y - 1][x]) {
+			buildingOnTheBottom = true
+			buildingsNearby += 1
+		}
+
+		if isBuilding(grid[y][x + 1]) {
+			buildingOnTheRight = true
+			buildingsNearby += 1
+		}
+
+		if isBuilding(grid[y][x - 1]) {
+			buildingOnTheLeft = true
+			buildingsNearby += 1
+		}
+
+		if buildingOnTheTop == false {
+			validDoorPosition = .bottom
+		}
+
+		if buildingOnTheBottom == false {
+			validDoorPosition = .top
+		}
+
+		if buildingOnTheLeft == false {
+			validDoorPosition = .right
+		}
+
+		if buildingOnTheRight == false {
+			validDoorPosition = .left
+		}
+
+		guard buildingsNearby == 3, let doorPosition = validDoorPosition else {
 			throw DoorPlaceError.notEnoughBuildingsNearby
 		}
-
+		MessageBox.message("Buildings nearby \(buildingsNearby)", speaker: .dev)
 		return doorPosition
 	}
 
