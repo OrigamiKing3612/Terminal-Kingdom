@@ -22,9 +22,9 @@ enum CreateCustomMap {
 			case .top: createMap.top()
 		}
 		MessageBox.message("Created perimeter; t\(perimeter.top), b\(perimeter.bottom), r\(perimeter.rightSide), l\(perimeter.leftSide)", speaker: .dev)
-		if (perimeter.top != perimeter.bottom) || (perimeter.leftSide != perimeter.rightSide) {
-			throw .notARectangle
-		}
+		// if (perimeter.top != perimeter.bottom) || (perimeter.leftSide != perimeter.rightSide) {
+		// 	throw .notARectangle
+		// }
 		return (doorPosition, perimeter)
 	}
 
@@ -141,40 +141,40 @@ enum CreateCustomMap {
 				switch direction {
 					case .right:
 						x += 1
-						if isBuilding(at: x, y: y) {
-							buildingPerimeter.rightSide += 1
-						} else if isDoor(at: x, y: y) {
+						if isWhereDoorWillGo(at: x, y: y) {
 							hasReachedStart = (x == startX && y == startY)
+						} else if isBuilding(at: x, y: y) {
+							buildingPerimeter.rightSide += 1
 						} else {
 							direction = .up
 							x -= 1 // Backtrack to original position
 						}
 					case .up:
 						y -= 1
-						if isBuilding(at: x, y: y) {
-							buildingPerimeter.top += 1
-						} else if isDoor(at: x, y: y) {
+						if isWhereDoorWillGo(at: x, y: y) {
 							hasReachedStart = (x == startX && y == startY)
+						} else if isBuilding(at: x, y: y) {
+							buildingPerimeter.top += 1
 						} else {
 							direction = .left
 							y += 1 // Backtrack to original position
 						}
 					case .left:
 						x -= 1
-						if isBuilding(at: x, y: y) {
-							buildingPerimeter.leftSide += 1
-						} else if isDoor(at: x, y: y) {
+						if isWhereDoorWillGo(at: x, y: y) {
 							hasReachedStart = (x == startX && y == startY)
+						} else if isBuilding(at: x, y: y) {
+							buildingPerimeter.leftSide += 1
 						} else {
 							direction = .down
 							x += 1 // Backtrack to original position
 						}
 					case .down:
 						y += 1
-						if isBuilding(at: x, y: y) {
-							buildingPerimeter.bottom += 1
-						} else if isDoor(at: x, y: y) {
+						if isWhereDoorWillGo(at: x, y: y) {
 							hasReachedStart = (x == startX && y == startY)
+						} else if isBuilding(at: x, y: y) {
+							buildingPerimeter.bottom += 1
 						} else {
 							direction = .right
 							y -= 1 // Backtrack to original position
@@ -207,12 +207,8 @@ enum CreateCustomMap {
 			return false
 		}
 
-		private func isDoor(at x: Int, y: Int) -> Bool {
-			guard grid.indices.contains(y), grid[y].indices.contains(x) else { return false }
-			if case let .door(tile: door) = grid[y][x].type {
-				return door.isPlacedByPlayer
-			}
-			return false
+		private func isWhereDoorWillGo(at x: Int, y: Int) -> Bool {
+			x == startX && y == startY
 		}
 	}
 }
