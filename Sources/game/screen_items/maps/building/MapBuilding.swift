@@ -63,16 +63,13 @@ enum MapBuilding {
 			if Game.player.has(item: selectedItem.type, count: 1) {
 				if case let .door(tile: tile) = selectedItem.type {
 					do {
-						MessageBox.message("Door Placed", speaker: .dev)
 						let (doorPosition, buildingPerimeter) = try CreateCustomMap.checkDoor(tile: tile, grid: grid, x: x, y: y)
-						MessageBox.message("Door Position: \(doorPosition), Building Perimeter: \(buildingPerimeter)", speaker: .dev)
 						let map = getDoorMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.tileType)
 						do {
 							let customMap = try CustomMap(grid: map)
-							MessageBox.message("Custom Map created", speaker: .dev)
 							if let customMap {
 								Game.addMap(map: customMap)
-								grid[y][x] = MapTile(type: .door(tile: .init(tileType: .custom(mapID: customMap.id), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor(tile: .init(tileType: tile.tileType)))
+								grid[y][x] = MapTile(type: .door(tile: .init(tileType: .custom(mapID: customMap.id, type: tile.tileType), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor(tile: .init(tileType: tile.tileType)))
 								Game.player.removeItem(item: .door(tile: tile), count: 1)
 								if Game.stages.builder.stage5Stages == .buildHouse {
 									Game.stages.builder.stage5HasBuiltHouse = true
@@ -106,10 +103,10 @@ enum MapBuilding {
 	private static func getDoorMap(buildingPerimeter: BuildingPerimeter, doorPosition: DoorPosition, doorType: DoorTileTypes) -> [[MapTile]] {
 		let ratio = 4
 
-		let topLength = buildingPerimeter.top * ratio * 2
-		let bottomLength = buildingPerimeter.bottom * ratio * 2
+		let topLength = buildingPerimeter.top * ratio
+		// let bottomLength = buildingPerimeter.bottom * ratio
 		let rightLength = buildingPerimeter.rightSide * ratio
-		let leftLength = buildingPerimeter.leftSide * ratio
+		// let leftLength = buildingPerimeter.leftSide * ratio
 
 		var map: [[MapTile]] = Array(repeating: Array(repeating: .init(type: .plain, isWalkable: true), count: topLength), count: rightLength)
 
@@ -130,7 +127,6 @@ enum MapBuilding {
 				}
 			}
 		}
-		MessageBox.message("a", speaker: .dev)
 		// TODO: put door in the position that best matches where it is in the grid
 		var doorX, doorY: Int
 		switch doorPosition {
@@ -148,10 +144,8 @@ enum MapBuilding {
 				doorY = rightLength - 1
 		}
 
-		MessageBox.message("aa", speaker: .dev)
 		map[doorY][doorX] = .init(type: .door(tile: .init(tileType: doorType, isPlacedByPlayer: false)), isWalkable: true)
 
-		MessageBox.message("b", speaker: .dev)
 		var startX, startY: Int
 		switch doorPosition {
 			case .top:
@@ -169,7 +163,6 @@ enum MapBuilding {
 		}
 		map[startY][startX] = .init(type: .playerStart, isWalkable: true)
 
-		MessageBox.message("c", speaker: .dev)
 		return map
 	}
 }

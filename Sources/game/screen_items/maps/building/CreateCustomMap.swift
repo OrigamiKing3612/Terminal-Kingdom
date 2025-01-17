@@ -12,19 +12,17 @@ enum CreateCustomMap {
 			throw .noDoor
 		}
 		let doorPosition = try checkBuildingsNearby(grid: grid, x: x, y: y)
-		MessageBox.message("Check Buildings Nearby is done", speaker: .dev)
 
-		var createMap = CreateMap(grid: grid, x: x, y: y)
+		var createMap = CreateMap(grid: grid, x: x, y: y, doorPosition: doorPosition)
 		let perimeter = switch doorPosition {
 			case .bottom: createMap.bottom()
 			case .left: createMap.leftSide()
 			case .right: createMap.rightSide()
 			case .top: createMap.top()
 		}
-		MessageBox.message("Created perimeter; t\(perimeter.top), b\(perimeter.bottom), r\(perimeter.rightSide), l\(perimeter.leftSide)", speaker: .dev)
-		// if (perimeter.top != perimeter.bottom) || (perimeter.leftSide != perimeter.rightSide) {
-		// 	throw .notARectangle
-		// }
+		if (perimeter.top != perimeter.bottom) || (perimeter.leftSide != perimeter.rightSide) {
+			throw .notARectangle
+		}
 		return (doorPosition, perimeter)
 	}
 
@@ -76,7 +74,6 @@ enum CreateCustomMap {
 		guard buildingsNearby == 3, let doorPosition = validDoorPosition else {
 			throw DoorPlaceError.notEnoughBuildingsNearby
 		}
-		MessageBox.message("Buildings nearby \(buildingsNearby)", speaker: .dev)
 		return doorPosition
 	}
 
@@ -93,13 +90,15 @@ enum CreateCustomMap {
 		var y: Int
 		let startX: Int
 		let startY: Int
+		let doorPosition: DoorPosition
 
-		init(grid: [[MapTile]], x: Int, y: Int) {
+		init(grid: [[MapTile]], x: Int, y: Int, doorPosition: DoorPosition) {
 			self.grid = grid
 			self.x = x
 			self.y = y
 			startX = x
 			startY = y
+			self.doorPosition = doorPosition
 		}
 
 		private enum CheckDoorDirection {
@@ -137,12 +136,13 @@ enum CreateCustomMap {
 			visited.insert(startingPosition)
 
 			while !hasReachedStart {
-				// Move in the current direction
+				// TODO: if moving the coordinates to 0,0 this might now work
 				switch direction {
 					case .right:
 						x += 1
 						if isWhereDoorWillGo(at: x, y: y) {
 							hasReachedStart = (x == startX && y == startY)
+							buildingPerimeter.rightSide += 1
 						} else if isBuilding(at: x, y: y) {
 							buildingPerimeter.rightSide += 1
 						} else {
@@ -153,6 +153,7 @@ enum CreateCustomMap {
 						y -= 1
 						if isWhereDoorWillGo(at: x, y: y) {
 							hasReachedStart = (x == startX && y == startY)
+							buildingPerimeter.top += 1
 						} else if isBuilding(at: x, y: y) {
 							buildingPerimeter.top += 1
 						} else {
@@ -163,6 +164,7 @@ enum CreateCustomMap {
 						x -= 1
 						if isWhereDoorWillGo(at: x, y: y) {
 							hasReachedStart = (x == startX && y == startY)
+							buildingPerimeter.leftSide += 1
 						} else if isBuilding(at: x, y: y) {
 							buildingPerimeter.leftSide += 1
 						} else {
@@ -173,6 +175,7 @@ enum CreateCustomMap {
 						y += 1
 						if isWhereDoorWillGo(at: x, y: y) {
 							hasReachedStart = (x == startX && y == startY)
+							buildingPerimeter.bottom += 1
 						} else if isBuilding(at: x, y: y) {
 							buildingPerimeter.bottom += 1
 						} else {
@@ -181,22 +184,31 @@ enum CreateCustomMap {
 						}
 				}
 
+				// this = the door position
+
 				let currentPosition = Position(x: x, y: y)
-				// if visited.contains(currentPosition) {
-				// 	// Prevent infinite loops
-				// 	MessageBox.message("Detected a loop at \(x), \(y). Terminating.", speaker: .dev)
-				// 	break
-				// }
 				visited.insert(currentPosition)
 
-				// Check if we are back at the start
 				if currentPosition == startingPosition, visited.count > 1 {
 					hasReachedStart = true
-					MessageBox.message("Returned to starting point. Perimeter completed.", speaker: .dev)
 				}
 			}
+			var newBuildingPerimeter: BuildingPerimeter = .init()
+			switch doorPosition {
+				case .right:
+					break
+				case .top:
+					newBuildingPerimeter.top = buildingPerimeter.top + 1 + buildingPerimeter.bottom
+					newBuildingPerimeter.bottom = buildingPerimeter.top + 1 + buildingPerimeter.bottom
+					newBuildingPerimeter.rightSide = buildingPerimeter.rightSide - 1
+					newBuildingPerimeter.leftSide = buildingPerimeter.leftSide - 1
+				case .left:
+					break
+				case .bottom:
+					break
+			}
 
-			return buildingPerimeter
+			return newBuildingPerimeter
 		}
 
 		private func isBuilding(at x: Int, y: Int) -> Bool {
