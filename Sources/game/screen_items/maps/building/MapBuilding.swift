@@ -42,12 +42,6 @@ enum MapBuilding {
 				MessageBox.message("You can't remove this door.", speaker: .game)
 			}
 		} else {
-			// if doorTile.isPlacedByPlayer {
-			// 	grid[player.y][player.x] = MapTile(type: .plain)
-			// 	_ = Game.player.collect(item: .init(type: .door(tile: doorTile)), count: 1)
-			// } else {
-			// 	MessageBox.message("You can't remove this door.", speaker: .game)
-			// }
 			MessageBox.message("You can't remove this tile.", speaker: .game)
 		}
 	}
@@ -64,12 +58,14 @@ enum MapBuilding {
 				if case let .door(tile: tile) = selectedItem.type {
 					do {
 						let (doorPosition, buildingPerimeter) = try CreateCustomMap.checkDoor(tile: tile, grid: grid, x: x, y: y)
+						MessageBox.message("checkDoor dp:\(doorPosition), perimeter: \(buildingPerimeter)", speaker: .dev)
 						let map = getDoorMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.tileType)
+						MessageBox.message("getDoorMap", speaker: .dev)
 						do {
 							let customMap = try CustomMap(grid: map)
 							if let customMap {
 								Game.addMap(map: customMap)
-								grid[y][x] = MapTile(type: .door(tile: .init(tileType: .custom(mapID: customMap.id, type: tile.tileType), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor(tile: .init(tileType: tile.tileType)))
+								grid[y][x] = MapTile(type: .door(tile: .init(tileType: .custom(mapID: customMap.id), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor(tile: .init(tileType: tile.tileType)))
 								Game.player.removeItem(item: .door(tile: tile), count: 1)
 								if Game.stages.builder.stage5Stages == .buildHouse {
 									Game.stages.builder.stage5HasBuiltHouse = true
@@ -127,6 +123,7 @@ enum MapBuilding {
 				}
 			}
 		}
+		MessageBox.message("a", speaker: .dev)
 		// TODO: put door in the position that best matches where it is in the grid
 		var doorX, doorY: Int
 		switch doorPosition {
@@ -143,8 +140,11 @@ enum MapBuilding {
 				doorX = topLength / 2
 				doorY = rightLength - 1
 		}
+		MessageBox.message("b \(doorX),\(doorY)", speaker: .dev)
 
 		map[doorY][doorX] = .init(type: .door(tile: .init(tileType: doorType, isPlacedByPlayer: false)), isWalkable: true)
+
+		MessageBox.message("bb", speaker: .dev)
 
 		var startX, startY: Int
 		switch doorPosition {
@@ -159,10 +159,12 @@ enum MapBuilding {
 				startY = doorY
 			case .bottom:
 				startX = doorX
-				startY = doorY + 1
+				startY = doorY - 1
 		}
+		MessageBox.message("bbb \(startX),\(startY)", speaker: .dev)
 		map[startY][startX] = .init(type: .playerStart, isWalkable: true)
 
+		MessageBox.message("c", speaker: .dev)
 		return map
 	}
 }

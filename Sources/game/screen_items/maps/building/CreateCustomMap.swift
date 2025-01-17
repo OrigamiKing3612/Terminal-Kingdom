@@ -12,7 +12,7 @@ enum CreateCustomMap {
 			throw .noDoor
 		}
 		let doorPosition = try checkBuildingsNearby(grid: grid, x: x, y: y)
-
+		MessageBox.message("checkBuildingsNearby", speaker: .dev)
 		var createMap = CreateMap(grid: grid, x: x, y: y, doorPosition: doorPosition)
 		let perimeter = switch doorPosition {
 			case .bottom: createMap.bottom()
@@ -35,22 +35,22 @@ enum CreateCustomMap {
 		var buildingOnTheLeft = false
 		var buildingOnTheRight = false
 
-		if isBuilding(grid[y + 1][x]) {
+		if isBuilding(grid, x: x, y: y + 1) {
 			buildingOnTheTop = true
 			buildingsNearby += 1
 		}
 
-		if isBuilding(grid[y - 1][x]) {
+		if isBuilding(grid, x: x, y: y - 1) {
 			buildingOnTheBottom = true
 			buildingsNearby += 1
 		}
 
-		if isBuilding(grid[y][x + 1]) {
+		if isBuilding(grid, x: x + 1, y: y) {
 			buildingOnTheRight = true
 			buildingsNearby += 1
 		}
 
-		if isBuilding(grid[y][x - 1]) {
+		if isBuilding(grid, x: x - 1, y: y) {
 			buildingOnTheLeft = true
 			buildingsNearby += 1
 		}
@@ -77,9 +77,10 @@ enum CreateCustomMap {
 		return doorPosition
 	}
 
-	private static func isBuilding(_ tile: MapTile) -> Bool {
-		if case let .building(tile: building) = tile.type, building.isPlacedByPlayer {
-			return true
+	private static func isBuilding(_ grid: [[MapTile]], x: Int, y: Int) -> Bool {
+		guard grid.indices.contains(y), grid[y].indices.contains(x) else { return false }
+		if case let .building(tile: building) = grid[y][x].type {
+			return building.isPlacedByPlayer
 		}
 		return false
 	}
@@ -196,16 +197,25 @@ enum CreateCustomMap {
 			var newBuildingPerimeter: BuildingPerimeter = .init()
 			switch doorPosition {
 				case .right:
-					break
+					newBuildingPerimeter.top = buildingPerimeter.top
+					newBuildingPerimeter.bottom = buildingPerimeter.bottom
+					newBuildingPerimeter.rightSide = buildingPerimeter.rightSide
+					newBuildingPerimeter.leftSide = buildingPerimeter.leftSide
 				case .top:
 					newBuildingPerimeter.top = buildingPerimeter.top + 1 + buildingPerimeter.bottom
 					newBuildingPerimeter.bottom = buildingPerimeter.top + 1 + buildingPerimeter.bottom
 					newBuildingPerimeter.rightSide = buildingPerimeter.rightSide - 1
 					newBuildingPerimeter.leftSide = buildingPerimeter.leftSide - 1
 				case .left:
-					break
+					newBuildingPerimeter.top = buildingPerimeter.top
+					newBuildingPerimeter.bottom = buildingPerimeter.bottom
+					newBuildingPerimeter.rightSide = buildingPerimeter.rightSide
+					newBuildingPerimeter.leftSide = buildingPerimeter.leftSide
 				case .bottom:
-					break
+					newBuildingPerimeter.top = buildingPerimeter.top + 1 + buildingPerimeter.bottom
+					newBuildingPerimeter.bottom = buildingPerimeter.top + 1 + buildingPerimeter.bottom
+					newBuildingPerimeter.rightSide = buildingPerimeter.rightSide - 1
+					newBuildingPerimeter.leftSide = buildingPerimeter.leftSide - 1
 			}
 
 			return newBuildingPerimeter
