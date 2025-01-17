@@ -1,3 +1,5 @@
+import Foundation
+
 enum CreateCustomMap {
 	static func checkDoor(tile: DoorTile, grid: [[MapTile]], x: Int, y: Int) throws(DoorPlaceError) -> (DoorPosition, BuildingPerimeter) {
 		guard y > 0, y < grid.count - 1, x > 0, x < grid[0].count - 1 else {
@@ -13,13 +15,12 @@ enum CreateCustomMap {
 		MessageBox.message("Check Buildings Nearby is done", speaker: .dev)
 
 		var createMap = CreateMap(grid: grid, x: x, y: y)
-		// let perimeter = switch doorPosition {
-		// 	case .bottom: createMap.bottom()
-		// 	case .left: createMap.leftSide()
-		// 	case .right: createMap.rightSide()
-		// 	case .top: createMap.top()
-		// }
-		let perimeter = BuildingPerimeter(rightSide: 10, leftSide: 10, top: 10, bottom: 10)
+		let perimeter = switch doorPosition {
+			case .bottom: createMap.bottom()
+			case .left: createMap.leftSide()
+			case .right: createMap.rightSide()
+			case .top: createMap.top()
+		}
 		MessageBox.message("Created perimeter; t\(perimeter.top), b\(perimeter.bottom), r\(perimeter.rightSide), l\(perimeter.leftSide)", speaker: .dev)
 		if (perimeter.top != perimeter.bottom) || (perimeter.leftSide != perimeter.rightSide) {
 			throw .notARectangle
@@ -28,13 +29,6 @@ enum CreateCustomMap {
 	}
 
 	private static func checkBuildingsNearby(grid: [[MapTile]], x: Int, y: Int) throws(DoorPlaceError) -> DoorPosition {
-		let nearbyTiles = [
-			(x, y - 1, DoorPosition.top),
-			(x, y + 1, DoorPosition.bottom),
-			(x - 1, y, DoorPosition.left),
-			(x + 1, y, DoorPosition.right),
-		]
-
 		var buildingsNearby = 0
 		var validDoorPosition: DoorPosition?
 
@@ -97,6 +91,16 @@ enum CreateCustomMap {
 		var grid: [[MapTile]]
 		var x: Int
 		var y: Int
+		let startX: Int
+		let startY: Int
+
+		init(grid: [[MapTile]], x: Int, y: Int) {
+			self.grid = grid
+			self.x = x
+			self.y = y
+			startX = x
+			startY = y
+		}
 
 		private enum CheckDoorDirection {
 			case up, down, left, right
@@ -119,48 +123,76 @@ enum CreateCustomMap {
 		}
 
 		private mutating func calculatePerimeter(startingDirection: CheckDoorDirection) -> BuildingPerimeter {
-			var hasReachedDoor = false
+			var hasReachedStart = false
 			var direction = startingDirection
 			var buildingPerimeter = BuildingPerimeter()
 
-			while !hasReachedDoor {
+			struct Position: Hashable {
+				var x: Int
+				var y: Int
+			}
+
+			var visited: Set<Position> = []
+			let startingPosition = Position(x: x, y: y)
+			visited.insert(startingPosition)
+
+			while !hasReachedStart {
+				// Move in the current direction
 				switch direction {
 					case .right:
 						x += 1
 						if isBuilding(at: x, y: y) {
 							buildingPerimeter.rightSide += 1
-						} else if isDoor(at: x + 1, y: y) {
-							hasReachedDoor = true
+						} else if isDoor(at: x, y: y) {
+							hasReachedStart = (x == startX && y == startY)
 						} else {
 							direction = .up
+							x -= 1 // Backtrack to original position
 						}
 					case .up:
 						y -= 1
 						if isBuilding(at: x, y: y) {
 							buildingPerimeter.top += 1
-						} else if isDoor(at: x, y: y - 1) {
-							hasReachedDoor = true
+						} else if isDoor(at: x, y: y) {
+							hasReachedStart = (x == startX && y == startY)
 						} else {
 							direction = .left
+							y += 1 // Backtrack to original position
 						}
 					case .left:
 						x -= 1
 						if isBuilding(at: x, y: y) {
 							buildingPerimeter.leftSide += 1
-						} else if isDoor(at: x - 1, y: y) {
-							hasReachedDoor = true
+						} else if isDoor(at: x, y: y) {
+							hasReachedStart = (x == startX && y == startY)
 						} else {
 							direction = .down
+							x += 1 // Backtrack to original position
 						}
 					case .down:
 						y += 1
 						if isBuilding(at: x, y: y) {
 							buildingPerimeter.bottom += 1
-						} else if isDoor(at: x, y: y + 1) {
-							hasReachedDoor = true
+						} else if isDoor(at: x, y: y) {
+							hasReachedStart = (x == startX && y == startY)
 						} else {
 							direction = .right
+							y -= 1 // Backtrack to original position
 						}
+				}
+
+				let currentPosition = Position(x: x, y: y)
+				// if visited.contains(currentPosition) {
+				// 	// Prevent infinite loops
+				// 	MessageBox.message("Detected a loop at \(x), \(y). Terminating.", speaker: .dev)
+				// 	break
+				// }
+				visited.insert(currentPosition)
+
+				// Check if we are back at the start
+				if currentPosition == startingPosition, visited.count > 1 {
+					hasReachedStart = true
+					MessageBox.message("Returned to starting point. Perimeter completed.", speaker: .dev)
 				}
 			}
 
