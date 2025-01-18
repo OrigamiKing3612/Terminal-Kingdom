@@ -1,5 +1,4 @@
 struct MapTile: Tile {
-	// TODO: make tileType
 	let type: MapTileType
 	let isWalkable: Bool
 	let event: MapTileEvent?
@@ -32,20 +31,24 @@ struct MapTile: Tile {
 	}
 }
 
-protocol Tile: Equatable, Codable {
-	associatedtype pTileType: TileType
-	associatedtype pTileEvent: TileEvent
+extension MapTile {
+	func encode(to encoder: any Encoder) throws {
+		var container = encoder.container(keyedBy: CodingKeys.self)
+		try container.encode(type, forKey: .tileType)
+		try container.encode(isWalkable, forKey: .isWalkable)
+		try container.encodeIfPresent(event, forKey: .event)
+	}
 
-	var type: pTileType { get }
-	var isWalkable: Bool { get }
-	var event: pTileEvent? { get }
-}
+	enum CodingKeys: CodingKey {
+		case tileType
+		case isWalkable
+		case event
+	}
 
-protocol TileType: Equatable, Codable {
-	//    func render() -> String
-	var name: String { get }
-}
-
-protocol TileEvent: Equatable, Codable {
-	var name: String { get }
+	init(from decoder: any Decoder) throws {
+		let container = try decoder.container(keyedBy: CodingKeys.self)
+		type = try container.decode(MapTileType.self, forKey: .tileType)
+		isWalkable = try container.decode(Bool.self, forKey: .isWalkable)
+		event = try container.decodeIfPresent(MapTileEvent.self, forKey: .event)
+	}
 }

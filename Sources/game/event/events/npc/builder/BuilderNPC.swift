@@ -140,7 +140,7 @@ enum BuilderNPC {
 			case .makeDoor:
 				MessageBox.message("You haven't made the door yet. It is marked as a \(StationTileType.workbench.render).", speaker: .builder)
 			case .returnToBuilder:
-				if Game.player.has(item: .door(tile: .init(tileType: .house)), count: 1) {
+				if Game.player.has(item: .door(tile: .init(type: .house)), count: 1) {
 					MessageBox.message("Great! You have made the door.", speaker: .builder)
 					if let ids = Game.stages.builder.stage3ItemsToMakeDoorUUIDsToRemove {
 						Game.player.removeItems(ids: ids)
@@ -195,7 +195,7 @@ enum BuilderNPC {
 				Game.stages.builder.stage5Stages = .buildHouse
 				Game.player.canBuild = true
 				let uuid1 = Game.player.collect(item: .init(type: .lumber, canBeSold: false), count: 5 * 24)
-				let uuid2 = Game.player.collect(item: .init(type: .door(tile: .init(tileType: .house)), canBeSold: false), count: 1)
+				let uuid2 = Game.player.collect(item: .init(type: .door(tile: .init(type: .house)), canBeSold: false), count: 1)
 				Game.stages.builder.stage5ItemsToBuildHouseUUIDsToRemove = uuid1 + uuid2
 				StatusBox.quest(.builder5)
 			case .buildHouse:

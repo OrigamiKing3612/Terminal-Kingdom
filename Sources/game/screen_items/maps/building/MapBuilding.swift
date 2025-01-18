@@ -60,12 +60,12 @@ enum MapBuilding {
 				if case let .door(tile: tile) = selectedItem.type {
 					do {
 						let (doorPosition, buildingPerimeter) = try CreateCustomMap.checkDoor(tile: tile, grid: grid, x: x, y: y)
-						let map = getDoorMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.tileType)
+						let map = getDoorMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.type)
 						do {
 							let customMap = try CustomMap(grid: map)
 							if let customMap {
 								Game.addMap(map: customMap)
-								grid[y][x] = MapTile(type: .door(tile: .init(tileType: .custom(mapID: customMap.id), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor(tile: .init(tileType: tile.tileType)))
+								grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor(tile: .init(type: tile.type)))
 								Game.player.removeItem(item: .door(tile: tile), count: 1)
 								if Game.stages.builder.stage5Stages == .buildHouse {
 									Game.stages.builder.stage5HasBuiltHouse = true
@@ -143,7 +143,7 @@ enum MapBuilding {
 				doorY = rightLength - 1
 		}
 
-		map[doorY][doorX] = .init(type: .door(tile: .init(tileType: doorType, isPlacedByPlayer: false)), isWalkable: true)
+		map[doorY][doorX] = .init(type: .door(tile: .init(type: doorType, isPlacedByPlayer: false)), isWalkable: true)
 
 		var startX, startY: Int
 		switch doorPosition {

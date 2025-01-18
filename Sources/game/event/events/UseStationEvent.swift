@@ -1,6 +1,6 @@
 enum UseStationEvent {
 	static func useStation(tile: StationTile) {
-		switch tile.tileType {
+		switch tile.type {
 			case .anvil:
 				UseAnvil.use()
 			case let .furnace(progress: progress): // TODO: use the progress or remove it
