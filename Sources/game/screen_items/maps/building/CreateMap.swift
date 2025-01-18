@@ -157,9 +157,6 @@ struct CreateMap {
 						}
 				}
 			}
-			// MessageBox.message("x: \(x), y: \(y), dir: \(direction), dp: \(doorPosition)", speaker: .dev)
-			// _ = TerminalInput.readKey()
-			// this = the door position
 
 			let currentPosition = Position(x: x, y: y)
 			visited.insert(currentPosition)

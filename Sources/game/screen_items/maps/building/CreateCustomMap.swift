@@ -19,7 +19,6 @@ enum CreateCustomMap {
 			case .right: createMap.rightSide()
 			case .top: createMap.top()
 		}
-		MessageBox.message("\(perimeter)", speaker: .dev)
 		if (perimeter.top != perimeter.bottom) || (perimeter.leftSide != perimeter.rightSide) {
 			throw .notARectangle
 		}
