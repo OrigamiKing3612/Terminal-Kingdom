@@ -37,6 +37,7 @@ enum Keys {
 			case .b:
 				// Only build in main map for now
 				if Game.player.canBuild, MapBox.mapType != .mining {
+					InventoryBox.resetSelectedBuildItemIndex
 					Game.isBuilding = true
 					MapBox.sides()
 					InventoryBox.inventoryBox()

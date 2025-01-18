@@ -32,7 +32,11 @@ struct BuilderStages: Codable {
 	var stage3Stages: BuilderStage3Stages = .notStarted
 	var stage4Stages: BuilderStage4Stages = .notStarted
 	var stage5Stages: BuilderStage5Stages = .notStarted
-	var stage6Stages: BuilderStage6Stages = .notStarted
+	#if DEBUG
+		var stage6Stages: BuilderStage6Stages = .done
+	#else
+		var stage6Stages: BuilderStage6Stages = .notStarted
+	#endif
 	var stage7Stages: BuilderStage7Stages = .notStarted
 	var stage8Stages: BuilderStage8Stages = .notStarted
 	var stage9Stages: BuilderStage9Stages = .notStarted

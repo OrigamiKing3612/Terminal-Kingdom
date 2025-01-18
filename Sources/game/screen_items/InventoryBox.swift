@@ -37,6 +37,10 @@ enum InventoryBox {
 		}
 	}
 
+	static var resetSelectedBuildItemIndex: Void {
+		selectedBuildItemIndex = 0
+	}
+
 	static func sides() {
 		Screen.print(x: startX + 2, y: startY - 1, String(repeating: Game.horizontalLine, count: width - 2).styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
 		for y in (startY - 1) ..< endY {

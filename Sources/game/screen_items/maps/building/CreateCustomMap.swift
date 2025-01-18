@@ -12,7 +12,6 @@ enum CreateCustomMap {
 			throw .noDoor
 		}
 		let doorPosition = try checkBuildingsNearby(grid: grid, x: x, y: y)
-		MessageBox.message("checkBuildingsNearby", speaker: .dev)
 		var createMap = CreateMap(grid: grid, x: x, y: y, doorPosition: doorPosition)
 		let perimeter = switch doorPosition {
 			case .bottom: createMap.bottom()
@@ -20,6 +19,7 @@ enum CreateCustomMap {
 			case .right: createMap.rightSide()
 			case .top: createMap.top()
 		}
+		MessageBox.message("\(perimeter)", speaker: .dev)
 		if (perimeter.top != perimeter.bottom) || (perimeter.leftSide != perimeter.rightSide) {
 			throw .notARectangle
 		}
