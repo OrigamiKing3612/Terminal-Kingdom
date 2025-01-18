@@ -1,7 +1,11 @@
 import Foundation
 
 struct BuilderStages: Codable {
-	private(set) var stageNumber = 0
+	#if DEBUG
+		private(set) var stageNumber = 5
+	#else
+		private(set) var stageNumber = 0
+	#endif
 	var isDone: Bool { stageNumber > 10 }
 	var stage1ItemsUUIDsToRemove: [UUID]?
 	var stage2LumberUUIDToRemove: [UUID]?
@@ -19,7 +23,8 @@ struct BuilderStages: Codable {
 	var stage5ItemsToBuildHouseUUIDsToRemove: [UUID]?
 	var stage6LumberUUIDToRemove: UUID?
 	var stage6AxeUUIDToRemove: UUID?
-	var stage7_UUIDsToRemove: [UUID]?
+	var stage7ItemsToBuildInsideUUIDsToRemove: [UUID]?
+	var stage7HasBuiltInside: Bool = false
 	var stage8_UUID: [UUID]?
 
 	var stage1Stages: BuilderStage1Stages = .notStarted
@@ -27,7 +32,11 @@ struct BuilderStages: Codable {
 	var stage3Stages: BuilderStage3Stages = .notStarted
 	var stage4Stages: BuilderStage4Stages = .notStarted
 	var stage5Stages: BuilderStage5Stages = .notStarted
-	var stage6Stages: BuilderStage6Stages = .notStarted
+	#if DEBUG
+		var stage6Stages: BuilderStage6Stages = .done
+	#else
+		var stage6Stages: BuilderStage6Stages = .notStarted
+	#endif
 	var stage7Stages: BuilderStage7Stages = .notStarted
 	var stage8Stages: BuilderStage8Stages = .notStarted
 	var stage9Stages: BuilderStage9Stages = .notStarted

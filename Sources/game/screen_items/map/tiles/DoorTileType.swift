@@ -1,3 +1,5 @@
+import Foundation
+
 enum DoorTileTypes: Codable, Equatable, Hashable {
 	case castle(side: CastleSide)
 	case blacksmith
@@ -13,6 +15,7 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
 	case carpenter
 	case restaurant
 	case potter
+	case custom(mapID: UUID)
 
 	var name: String {
 		switch self {
@@ -44,6 +47,8 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
 				"Restaurant"
 			case .potter:
 				"Potter"
+			case .custom:
+				"Custom"
 		}
 	}
 
@@ -100,6 +105,9 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
 				return (x: 1000, y: 1000)
 			case .potter:
 				print("potter coordinatesForStartingVillageBuildings not set")
+				return (x: 1000, y: 1000)
+			case .custom:
+				print("custom coordinatesForStartingVillageBuildings not set")
 				return (x: 1000, y: 1000)
 		}
 	}

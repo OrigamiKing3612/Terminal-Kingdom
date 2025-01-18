@@ -1,4 +1,5 @@
 struct MapTile: Tile {
+	// TODO: make tileType
 	let type: MapTileType
 	let isWalkable: Bool
 	let event: MapTileEvent?
@@ -6,7 +7,11 @@ struct MapTile: Tile {
 	init(type: MapTileType, isWalkable: Bool = true, event: MapTileEvent? = nil) {
 		self.type = type
 		self.isWalkable = isWalkable
-		self.event = event
+		if case let .door(tile: tile) = type {
+			self.event = .openDoor(tile: tile)
+		} else {
+			self.event = event
+		}
 	}
 
 	var isInteractable: Bool {

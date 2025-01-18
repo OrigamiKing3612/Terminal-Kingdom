@@ -1,8 +1,11 @@
+import Foundation
+
 struct DoorTile: Codable, Equatable, Hashable {
 	let tileType: DoorTileTypes
 	let isPartOfPlayerVillage: Bool
 	let isPlacedByPlayer: Bool
 	private(set) var level: Int
+	var hasCustomMap: Bool { isPlacedByPlayer }
 
 	init(tileType: DoorTileTypes, isPartOfPlayerVillage: Bool = false, isPlacedByPlayer: Bool = false) {
 		self.tileType = tileType

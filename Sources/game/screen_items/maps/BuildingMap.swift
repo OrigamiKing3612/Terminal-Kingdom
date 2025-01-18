@@ -1,5 +1,12 @@
 struct BuildingMap: MapBoxMap {
 	var grid: [[MapTile]]
+	// {
+	// didSet {
+	// 	if case let .custom(map: map) = mapType {
+	// 		map.updateGrid(grid)
+	// 	}
+	// }
+	// }
 
 	var player: Player = .init(x: 1, y: 1)
 
@@ -7,8 +14,15 @@ struct BuildingMap: MapBoxMap {
 		grid[player.y][player.x]
 	}
 
+	let mapType: MapType
+
 	init(_ mapType: MapType) {
-		grid = StaticMaps.buildingMap(for: StaticMaps.mapTypeToBuilding(mapType: mapType))
+		self.mapType = mapType
+		if case let .custom(mapID: mapID) = mapType {
+			grid = Game.customMaps.filter { $0.id == mapID }[0].grid
+		} else {
+			grid = StaticMaps.buildingMap(for: StaticMaps.mapTypeToBuilding(mapType: mapType))
+		}
 
 		// Coordinates for inside the building
 		if Game.player.position.x == 55, Game.player.position.y == 23 {
@@ -121,5 +135,13 @@ struct BuildingMap: MapBoxMap {
 
 	mutating func updateTile(newTile: MapTile) {
 		grid[player.y][player.x] = newTile
+	}
+
+	mutating func build() {
+		MapBuilding.build(grid: &grid, x: player.x, y: player.y)
+	}
+
+	mutating func destroy() {
+		MapBuilding.destory(grid: &grid, x: player.x, y: player.y)
 	}
 }

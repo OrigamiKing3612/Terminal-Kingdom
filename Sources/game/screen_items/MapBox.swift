@@ -1,3 +1,5 @@
+import Foundation
+
 enum MapBox {
 	nonisolated(unsafe) static var mainMap: MainMap = .init()
 	nonisolated(unsafe) static var miningMap: MineMap = .init()
@@ -102,14 +104,24 @@ enum MapBox {
 	}
 
 	static func destroy() {
-		if mapType == .mainMap {
-			mainMap.destory()
+		switch mapType {
+			case .mainMap:
+				mainMap.destroy()
+			case .mining:
+				break
+			default:
+				buildingMap.destroy()
 		}
 	}
 
 	static func build() {
-		if mapType == .mainMap {
-			mainMap.build()
+		switch mapType {
+			case .mainMap:
+				mainMap.build()
+			case .mining:
+				break
+			default:
+				buildingMap.build()
 		}
 	}
 
@@ -142,6 +154,7 @@ enum MapType: Codable, Equatable {
 	case carpenter
 	case restaurant
 	case potter
+	case custom(mapID: UUID)
 
 	var map: any MapBoxMap {
 		switch self {

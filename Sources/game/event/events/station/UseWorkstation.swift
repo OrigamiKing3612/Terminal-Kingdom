@@ -6,6 +6,11 @@ enum UseWorkstation {
 			if recipe.station != .workbench {
 				continue
 			}
+			if recipe.result[0].item == .door(tile: .init(tileType: .house)) {
+				if !(Game.stages.builder.stage3Stages == .makeDoor) {
+					continue
+				}
+			}
 			var canMake = true
 			for ingredient in recipe.ingredients {
 				if Game.player.has(item: ingredient.item, count: ingredient.count) {
@@ -15,7 +20,7 @@ enum UseWorkstation {
 					break
 				}
 			}
-			if canMake, Game.stages.builder.stage3Stages == .makeDoor {
+			if canMake {
 				options.append(.init(label: recipe.name, action: {
 					for ingredient in recipe.ingredients {
 						if Game.stages.builder.stage3Stages == .makeDoor {
