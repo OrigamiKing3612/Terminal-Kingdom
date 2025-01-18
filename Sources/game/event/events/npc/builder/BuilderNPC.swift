@@ -277,6 +277,7 @@ enum BuilderNPC {
 					if let ids = Game.stages.builder.stage7ItemsToBuildInsideUUIDsToRemove {
 						Game.player.removeItems(ids: ids)
 					}
+					Game.player.canBuild = false
 					fallthrough
 				} else {
 					MessageBox.message("You haven't decorated the inside of the house yet.", speaker: .builder)

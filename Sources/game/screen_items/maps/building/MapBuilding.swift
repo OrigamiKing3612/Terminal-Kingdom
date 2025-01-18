@@ -4,7 +4,9 @@ enum MapBuilding {
 			MessageBox.message("You can't build here.", speaker: .game)
 			return
 		}
-		if Game.player.has(item: .lumber, count: 5) {
+
+		let selectedItem = InventoryBox.buildableItems[InventoryBox.selectedBuildItemIndex]
+		if Game.player.has(item: selectedItem.type, count: selectedItem.type == .lumber ? 5 : 1) {
 			if Game.stages.builder.stage5Stages == .buildHouse {
 				BuildForBuilderStage5.build(grid: &grid, x: x, y: y)
 			} else if Game.stages.builder.stage7Stages == .buildInside, case .custom(mapID: _) = MapBox.mapType {
@@ -13,7 +15,7 @@ enum MapBuilding {
 				buildNormally(grid: &grid, x: x, y: y)
 			}
 		} else {
-			MessageBox.message("You need 5 lumber to build a building.", speaker: .game)
+			MessageBox.message("You don't have enough items to build", speaker: .game)
 		}
 	}
 
