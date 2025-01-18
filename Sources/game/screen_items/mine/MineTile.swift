@@ -45,3 +45,25 @@ struct MineTile: Tile {
 		return nil // Return nil if the tile is not found
 	}
 }
+
+extension MineTile {
+	func encode(to encoder: any Encoder) throws {
+		var container = encoder.container(keyedBy: CodingKeys.self)
+		try container.encode(type, forKey: .tileType)
+		try container.encode(isWalkable, forKey: .isWalkable)
+		try container.encodeIfPresent(event, forKey: .event)
+	}
+
+	enum CodingKeys: CodingKey {
+		case tileType
+		case isWalkable
+		case event
+	}
+
+	init(from decoder: any Decoder) throws {
+		let container = try decoder.container(keyedBy: CodingKeys.self)
+		type = try container.decode(MineTileType.self, forKey: .tileType)
+		isWalkable = try container.decode(Bool.self, forKey: .isWalkable)
+		event = try container.decodeIfPresent(MineTileEvent.self, forKey: .event)
+	}
+}

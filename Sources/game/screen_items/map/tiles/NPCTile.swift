@@ -1,15 +1,15 @@
 struct NPCTile: Codable, Equatable {
-	let tileType: NPCTileType
+	let type: NPCTileType
 
-	init(tileType: NPCTileType) {
-		self.tileType = tileType
+	init(type: NPCTileType) {
+		self.type = type
 	}
 
 	static func renderNPC(tile: NPCTile) -> String {
-		if !tile.tileType.hasTalkedToBefore {
+		if !tile.type.hasTalkedToBefore {
 			return "!".styled(with: [.bold, .red])
 		}
-		switch tile.tileType {
+		switch tile.type {
 			default:
 				// TODO: Not sure if this will stay
 				return (Game.config.useNerdFont ? "󰙍" : "N").styled(with: .bold)
@@ -17,7 +17,7 @@ struct NPCTile: Codable, Equatable {
 	}
 
 	func talk() {
-		switch tileType {
+		switch type {
 			case .blacksmith:
 				BlacksmithNPC.talk()
 			case .blacksmith_helper:
@@ -55,5 +55,21 @@ struct NPCTile: Codable, Equatable {
 			case .farmer_helper:
 				FarmerHelperNPC.talk()
 		}
+	}
+}
+
+extension NPCTile {
+	func encode(to encoder: any Encoder) throws {
+		var container = encoder.container(keyedBy: CodingKeys.self)
+		try container.encode(type, forKey: .tileType)
+	}
+
+	enum CodingKeys: CodingKey {
+		case tileType
+	}
+
+	init(from decoder: any Decoder) throws {
+		let container = try decoder.container(keyedBy: CodingKeys.self)
+		type = try container.decode(NPCTileType.self, forKey: .tileType)
 	}
 }

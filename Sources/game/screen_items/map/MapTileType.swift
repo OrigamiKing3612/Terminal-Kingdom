@@ -101,19 +101,19 @@ enum MapTileType: TileType {
 			case .path: "path"
 			case .building: "building"
 			case .player: "player"
-			case let .door(tile): tile.tileType.name
+			case let .door(tile): tile.type.name
 			case .TOBEGENERATED: "TOBEGENERATED"
 			case .playerStart: "playerStart"
-			case let .station(station: station): station.tileType.name
+			case let .station(station: station): station.type.name
 			case .startMining: "startMining"
 			case .fence: "fence"
 			case .gate: "gate"
 			case let .crop(crop):
-				crop.tileType.rawValue
+				crop.type.rawValue
 			case let .pot(tile):
-				tile.cropTile.tileType.rawValue
+				tile.cropTile.type.rawValue
 			case let .npc(tile):
-				tile.tileType.render
+				tile.type.render
 			case let .shopStandingArea(type):
 				type.rawValue
 			case let .biomeTOBEGENERATED(type: biome):

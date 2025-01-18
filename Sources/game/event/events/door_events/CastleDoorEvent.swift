@@ -12,7 +12,7 @@ enum CastleDoorEvent {
 	}
 
 	static func goInside(tile: DoorTile) {
-		if case let .castle(side: side) = tile.tileType {
+		if case let .castle(side: side) = tile.type {
 			MapBox.mapType = .castle(side: side)
 		}
 	}

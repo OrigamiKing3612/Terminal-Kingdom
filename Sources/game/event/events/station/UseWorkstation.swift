@@ -6,7 +6,7 @@ enum UseWorkstation {
 			if recipe.station != .workbench {
 				continue
 			}
-			if recipe.result[0].item == .door(tile: .init(tileType: .house)) {
+			if recipe.result[0].item == .door(tile: .init(type: .house)) {
 				if !(Game.stages.builder.stage3Stages == .makeDoor) {
 					continue
 				}

@@ -3,7 +3,7 @@ enum OpenDoorEvent {
 		if MapBox.mapType != .mainMap, MapBox.mapType != .mining {
 			leaveBuildingMap()
 		} else {
-			switch doorTile.tileType {
+			switch doorTile.type {
 				case .castle: CastleDoorEvent.open(tile: doorTile)
 				case .blacksmith: BlacksmithDoorEvent.open(tile: doorTile)
 				case .mine: MineDoorEvent.open(tile: doorTile)
@@ -30,7 +30,7 @@ enum OpenDoorEvent {
 			case let .farm(type: farmType):
 				if case let .door(playerDoorTile) = currentTile.type {
 					// enter, out
-					switch (farmType, playerDoorTile.tileType) {
+					switch (farmType, playerDoorTile.type) {
 						case (.main, .farm(type: .farm_area)):
 							MapBox.mainMap.setPlayerPosition(DoorTileTypes.farm(type: .main).coordinatesForStartingVillageBuildings)
 						case (.farm_area, .farm(type: .main)):
@@ -45,7 +45,7 @@ enum OpenDoorEvent {
 			case let .hospital(side: hospitalSide):
 				if case let .door(playerDoorTile) = currentTile.type {
 					// enter, out
-					switch (hospitalSide, playerDoorTile.tileType) {
+					switch (hospitalSide, playerDoorTile.type) {
 						case (.top, .hospital(side: .bottom)):
 							MapBox.mainMap.setPlayerPosition(DoorTileTypes.hospital(side: .bottom).coordinatesForStartingVillageBuildings)
 						case (.bottom, .hospital(side: .top)):
@@ -78,7 +78,7 @@ enum OpenDoorEvent {
 		}
 		if case let .door(playerDoorTile) = currentTile.type {
 			// enter, out
-			switch (castleSide, playerDoorTile.tileType) {
+			switch (castleSide, playerDoorTile.type) {
 				case (.top, .castle(side: .right)):
 					rightCoordinates
 				case (.top, .castle(side: .bottom)):
