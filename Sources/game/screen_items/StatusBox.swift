@@ -56,7 +56,7 @@ enum StatusBox {
 
 	static func position() {
 		if MapBox.mapType == .mainMap {
-			let text = "x: \(Game.player.position.x); y: \(Game.player.position.y)"
+			let text = "  x: \(Game.player.position.x); y: \(Game.player.position.y)"
 			Screen.print(x: playerInfoEndX - text.count, y: playerInfoStartY, text)
 		}
 	}

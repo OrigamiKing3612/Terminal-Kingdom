@@ -24,7 +24,7 @@ enum TitleScreen {
 				let y = middleY - (Screen.rows / 2)
 				Screen.print(x: x, y: y, text.styled(with: .bold))
 				let optionsX = middleX - (text.count / 4)
-				let icon = " >"
+				let icon = " \(Game.config.selectedIcon)"
 
 				for (index, option) in TitleScreenOptions.allCases.enumerated() {
 					let isSelected = selectedOptionIndex == index
@@ -157,6 +157,7 @@ enum TitleScreen {
 		yStart = printHelpMessage(x: x, y: y + yStart, "Press \(KeyboardKeys.W.render) and \(KeyboardKeys.S.render) to scroll up and down in the message box.")
 
 		yStart = printHelpMessage(x: x, y: y + yStart, "Press any key to quit.")
+		Screen.print(x: Screen.columns - 1 - Game.version.count, y: Screen.rows - 1, Game.version)
 	}
 
 	static func settings() {
@@ -200,7 +201,7 @@ enum TitleScreen {
 	private static func printSettingsOption(x: Int, y: Int, index: Int, text: String, configOption: String) -> Int {
 		let isSelected = selectedSettingOptionIndex == index
 		let configOptionToPrint = configOption == "" ? "" : ": \(configOption)"
-		Screen.print(x: x - (text.count / 2), y: y, "\(isSelected ? ">" : " ")\(text)\(configOptionToPrint)".styled(with: .bold, styledIf: isSelected))
+		Screen.print(x: x - (text.count / 2), y: y, "\(isSelected ? Game.config.selectedIcon : " ")\(text)\(configOptionToPrint)".styled(with: .bold, styledIf: isSelected))
 		return y + 1
 	}
 

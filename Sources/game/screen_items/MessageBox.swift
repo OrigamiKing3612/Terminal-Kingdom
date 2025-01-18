@@ -126,7 +126,7 @@ enum MessageBox {
 	private static func messageWithTyping(_ text: String, speaker: String) -> String {
 		MapBox.showMapBox = false
 		StatusBox.showStatusBox = false
-		let typingIcon = ">".styled(with: .bold)
+		let typingIcon = Game.config.selectedIcon
 		message(text, speaker: speaker)
 		message("   \(typingIcon)", speaker: .game)
 		Game.setIsTypingInMessageBox(true)
@@ -171,7 +171,7 @@ enum MessageBox {
 
 	private static func messageWithTypingNumbers(_ text: String, speaker: String) -> Int {
 		MapBox.showMapBox = false
-		let typingIcon = ">".styled(with: .bold)
+		let typingIcon = Game.config.selectedIcon
 		message(text, speaker: speaker)
 		message("   \(typingIcon)", speaker: .game)
 		Game.setIsTypingInMessageBox(true)
@@ -226,7 +226,7 @@ enum MessageBox {
 			Game.setIsTypingInMessageBox(false)
 		}
 
-		let typingIcon = ">".styled(with: .bold)
+		let typingIcon = Game.config.selectedIcon
 		var newText = text
 		if !Game.startingVillageChecks.hasUsedMessageWithOptions {
 			newText += " (Use your arrow keys to select an option)".styled(with: .bold)
@@ -292,7 +292,7 @@ enum MessageBox {
 			Game.setIsTypingInMessageBox(false)
 		}
 
-		let typingIcon = ">".styled(with: .bold)
+		let typingIcon = Game.config.selectedIcon
 		var newText = text
 		if !Game.startingVillageChecks.hasUsedMessageWithOptions {
 			newText += " (Use your arrow keys to select an option)".styled(with: .bold)

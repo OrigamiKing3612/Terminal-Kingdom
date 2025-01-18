@@ -1,6 +1,7 @@
 import Foundation
 
 struct Game: Codable {
+	static let version = "0.0.1-alpha_1"
 	nonisolated(unsafe) static var config: Config = .init()
 	private(set) nonisolated(unsafe) static var hasInited: Bool = false
 	private(set) nonisolated(unsafe) static var isTypingInMessageBox: Bool = false
