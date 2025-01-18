@@ -48,16 +48,16 @@ enum Quest: Codable, Equatable {
 				} else {
 					"Go get \(count) lumber"
 				}
-			case .blacksmith1: "Go get iron from the Mine and bring it to the blacksmith"
-			case .blacksmith2: "Go get 20 lumber and band bring it to the blacksmith"
-			case .blacksmith3: "Bring Lumber to the carpenter and bring it back to the blacksmith"
-			case .blacksmith4: "Get 5 coal from the miner"
-			case .blacksmith5: "Use the furnace to make steel"
+			case .blacksmith1: "Go get iron from the Mine and bring it to the Blacksmith"
+			case .blacksmith2: "Go collect 20 lumber and band bring it to the Blacksmith"
+			case .blacksmith3: "Bring lumber to the Carpenter and bring it back to the Blacksmith"
+			case .blacksmith4: "Get 5 coal from the Miner"
+			case .blacksmith5: "Use the furnace to craft steel"
 			case .blacksmith6: "Make a pickaxe on the anvil"
 			case .blacksmith7:
 				switch Game.stages.blacksmith.stage7Stages {
 					case .notStarted: "Blacksmith Stage 7 not started"
-					case .makeSword: "Make a sword on the anvil"
+					case .makeSword: "Make a sword at the anvil"
 					case .bringToHunter: "Bring the sword to the hunter"
 					case .comeBack: "Return to the Blacksmith"
 					case .done: "Blacksmith Stage 7 done"
@@ -71,14 +71,14 @@ enum Quest: Codable, Equatable {
 					case .done: "Blacksmith Stage 8 done"
 				}
 			case .blacksmith9: "Sell the steel in the shop"
-			case .blacksmith10: "Collect gift from the blacksmith"
+			case .blacksmith10: "Collect the Blacksmith's gift"
 			case .mine1: "Get a pickaxe from the blacksmith and bring it to the Miner"
 			case .mine2: "Mine 20 clay for the Miner"
-			case .mine3: "Mine 50 lumber for the Miner to upgrade the mine"
+			case .mine3: "Give 50 lumber to the Miner to upgrade the mine"
 			case .mine4:
 				switch Game.stages.mine.stage4Stages {
 					case .notStarted: "Mine Stage 4 not started"
-					case .collectPickaxe: "Get a pickaxe from the blacksmith"
+					case .collectPickaxe: "Get a pickaxe from the Blacksmith"
 					case .mine: "Mine 30 stone for the Miner"
 					case .done: "Mine Stage 4 done"
 				}
@@ -86,30 +86,30 @@ enum Quest: Codable, Equatable {
 			case .mine6:
 				switch Game.stages.mine.stage6Stages {
 					case .notStarted: "Mine Stage 6 not started"
-					case .goGetAxe: "Get an axe from the blacksmith"
+					case .goGetAxe: "Collect an axe from the Blacksmith"
 					case .collect: "Collect 100 lumber to upgrade the mine"
 					case .done: "Mine Stage 6 done"
 				}
 			case .mine7: "Upgrade the mine!"
-			case .mine8: "Collect a gift from the Blacksmith"
-			case .mine9: "Mine 5 gold for the miner"
+			case .mine8: "Collect the Blacksmith's gift"
+			case .mine9: "Mine 5 gold for the Miner"
 			case .mine10:
 				switch Game.stages.mine.stage10Stages {
 					case .notStarted: "Mine Stage 10 not started"
-					case .goToSalesman: "Bring the coins back to the miner"
-					case .comeBack: "Return to the miner"
+					case .goToSalesman: "Bring the coins back to the Miner"
+					case .comeBack: "Return to the Miner"
 					case .done: "Mine Stage 10 done"
 				}
-			case .builder1: "Get materials from the Miner"
-			case .builder2: "Collect 20 lumber for the builder"
-			case .builder3: "Make a door on the workbench"
+			case .builder1: "Collect materials from the Miner"
+			case .builder2: "Collect 20 lumber for the Builder"
+			case .builder3: "Make a door at the workbench"
 			case .builder4: "Go talk to the King"
-			case .builder5: "Build a house for the builder"
-			case .builder6: "Collect 30 lumber for the builder"
-			case .builder7: "Decorate the inside of the house"
-			case .builder8: "Talk to the builder"
-			case .builder9: "Build a house for the builder"
-			case .builder10: "Take the door and have fun!"
+			case .builder5: "Build a house for the Builder"
+			case .builder6: "Collect 30 lumber for the Builder"
+			case .builder7: "Decorate the inside of your house"
+			case .builder8: "Talk to the Builder"
+			case .builder9: "Build a house for the Builder"
+			case .builder10: "Take the door and have fun creating!"
 		}
 	}
 }
