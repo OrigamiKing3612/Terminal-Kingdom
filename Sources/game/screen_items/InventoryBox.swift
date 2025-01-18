@@ -11,12 +11,25 @@ enum InventoryBox {
 	}
 
 	static var inventoryItems: [Item] {
-		Array(Set(Game.player.items))
+		Game.player.items
+			.reduce(into: [Item]()) { result, item in
+				// Deduplicate based on `type` or any relevant property
+				if !result.contains(where: { $0.type == item.type }) {
+					result.append(item)
+				}
+			}
 			.sorted(by: { $0.type.inventoryName < $1.type.inventoryName })
 	}
 
 	static var buildableItems: [Item] {
-		Array(Set(Game.player.items.filter(\.type.isBuildable)))
+		Game.player.items
+			.filter(\.type.isBuildable)
+			.reduce(into: [Item]()) { result, item in
+				// Deduplicate based on `type` or any relevant property
+				if !result.contains(where: { $0.type == item.type }) {
+					result.append(item)
+				}
+			}
 			.sorted(by: sortBuildables)
 	}
 
