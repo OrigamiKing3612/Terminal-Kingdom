@@ -65,7 +65,7 @@ enum MapBuilding {
 							let customMap = try CustomMap(grid: map)
 							if let customMap {
 								Game.addMap(map: customMap)
-								grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor(tile: .init(type: tile.type)))
+								grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor)
 								Game.player.removeItem(item: .door(tile: tile), count: 1)
 								if Game.stages.builder.stage5Stages == .buildHouse {
 									Game.stages.builder.stage5HasBuiltHouse = true

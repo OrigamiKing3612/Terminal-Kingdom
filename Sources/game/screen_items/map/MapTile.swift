@@ -6,8 +6,8 @@ struct MapTile: Tile {
 	init(type: MapTileType, isWalkable: Bool = true, event: MapTileEvent? = nil) {
 		self.type = type
 		self.isWalkable = isWalkable
-		if case let .door(tile: tile) = type {
-			self.event = .openDoor(tile: tile)
+		if case .door = type {
+			self.event = .openDoor
 		} else {
 			self.event = event
 		}

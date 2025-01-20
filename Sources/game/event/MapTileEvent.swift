@@ -1,17 +1,17 @@
 enum MapTileEvent: TileEvent {
-	case openDoor(tile: DoorTile)
+	case openDoor
 	case chopTree
 	case startMining
-	case talkToNPC(tile: NPCTile)
+	case talkToNPC
 	case collectCrop
-	case useStation(station: StationTile)
+	case useStation
 	//    case collectItem(item: String)
 	//    case combat(enemy: String)
 
 	static func trigger(event: MapTileEvent) {
 		switch event {
-			case let .openDoor(tile: doorTile):
-				if MapBox.tilePlayerIsOn.type == .door(tile: doorTile) {
+			case .openDoor:
+				if case let .door(tile: doorTile) = MapBox.tilePlayerIsOn.type {
 					OpenDoorEvent.openDoor(doorTile: doorTile)
 				}
 			case .chopTree:
@@ -26,8 +26,12 @@ enum MapTileEvent: TileEvent {
 				} else {
 					MessageBox.message("You need a pickaxe to start mining", speaker: .miner)
 				}
-			case let .talkToNPC(tile: tile):
-				tile.talk()
+			case .talkToNPC:
+				if case let .npc(tile: tile) = MapBox.tilePlayerIsOn.type {
+					tile.talk()
+				} else if case .shopStandingArea = MapBox.tilePlayerIsOn.type {
+					SalesmanNPC.talk()
+				}
 			case .collectCrop:
 				let tile = MapBox.tilePlayerIsOn
 				if case let .crop(crop: crop) = tile.type {
@@ -47,25 +51,37 @@ enum MapTileEvent: TileEvent {
 						selectedOption.action()
 					}
 				}
-			case let .useStation(station: station):
-				UseStationEvent.useStation(tile: station)
+			case .useStation:
+				UseStationEvent.useStation()
 		}
 	}
 
 	var name: String {
 		switch self {
-			case let .openDoor(tile):
-				"openDoor(\(tile.type.name))"
+			case .openDoor:
+				if case let .door(tile: doorTile) = MapBox.tilePlayerIsOn.type {
+					"openDoor(\(doorTile.type.name))"
+				} else {
+					"openDoor on non door"
+				}
 			case .chopTree:
 				"chopTree"
 			case .startMining:
 				"startMining"
-			case let .talkToNPC(tile):
-				"talkToNPC(\(tile.type.render))"
+			case .talkToNPC:
+				if case let .npc(tile: tile) = MapBox.tilePlayerIsOn.type {
+					"talkToNPC(\(tile.type.render))"
+				} else {
+					"talkToNPC on non npc"
+				}
 			case .collectCrop:
 				"collectCrop"
-			case let .useStation(station: station):
-				"useStation(\(station.type.render))"
+			case .useStation:
+				if case let .station(station: station) = MapBox.tilePlayerIsOn.type {
+					"useStation(\(station.type.render))"
+				} else {
+					"useStation on non station"
+				}
 		}
 	}
 }
