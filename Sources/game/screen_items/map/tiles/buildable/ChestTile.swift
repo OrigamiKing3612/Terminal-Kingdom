@@ -1,4 +1,4 @@
-struct ChestTile: Codable, Equatable, Hashable {
+struct ChestTile: BuildableTile {
 	let items: [Item]
 	let isPlacedByPlayer: Bool
 

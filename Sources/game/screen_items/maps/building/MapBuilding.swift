@@ -29,30 +29,46 @@ enum MapBuilding {
 
 	static func removeNormally(grid: inout [[MapTile]], x: Int, y: Int) {
 		let tile = grid[y][x]
-		if case let .building(tile: buildingTile) = tile.type {
-			if buildingTile.isPlacedByPlayer {
-				grid[y][x] = MapTile(type: .plain)
-				_ = Game.player.collect(item: .init(type: .lumber), count: 4)
-			} else {
-				MessageBox.message("You can't remove this building.", speaker: .game)
-			}
-		} else if case let .door(tile: doorTile) = tile.type {
-			if doorTile.isPlacedByPlayer {
-				grid[y][x] = MapTile(type: .plain)
-				if case let .custom(mapID: id, doorType: doorType) = doorTile.type {
-					if let id {
-						Game.removeMap(mapID: id)
-					}
-					_ = Game.player.collect(item: .init(type: .door(tile: .init(type: .custom(mapID: nil, doorType: doorType)))), count: 1)
-
-				} else {
-					_ = Game.player.collect(item: .init(type: .door(tile: doorTile)), count: 1)
-				}
-			} else {
-				MessageBox.message("You can't remove this door.", speaker: .game)
-			}
-		} else {
+		guard tile.type.isBuildable else {
 			MessageBox.message("You can't remove this tile.", speaker: .game)
+			return
+		}
+		func placeTile(tile: some BuildableTile, count: Int = 1, name: String, item: () -> ItemType) {
+			if tile.isPlacedByPlayer {
+				grid[y][x] = MapTile(type: .plain)
+				let itemToCollect = item()
+				_ = Game.player.collect(item: .init(type: itemToCollect), count: count)
+			} else {
+				MessageBox.message("You can't remove this \(name).", speaker: .game)
+			}
+		}
+		switch tile.type {
+			case let .building(tile: buildingTile):
+				placeTile(tile: buildingTile, count: 4, name: "building", item: { .lumber })
+			case let .door(tile: doorTile):
+				placeTile(tile: doorTile, name: "\(doorTile.type.name) Door") {
+					if case let .custom(mapID: id, doorType: doorType) = doorTile.type {
+						if let id {
+							Game.removeMap(mapID: id)
+						}
+						return .door(tile: .init(type: .custom(mapID: nil, doorType: doorType)))
+					} else {
+						return .door(tile: doorTile)
+					}
+				}
+			case let .fence(tile: fenceTile):
+				placeTile(tile: fenceTile, name: "fence", item: { .fence })
+			case let .gate(tile: gateTile):
+				placeTile(tile: gateTile, name: "gate", item: { .gate })
+			case .chest:
+				// TODO: break chest
+				MessageBox.message("You can't remove this chest yet", speaker: .game)
+			case let .bed(tile: bedTile):
+				placeTile(tile: bedTile, name: "bed", item: { .bed })
+			case let .desk(tile: deskTile):
+				placeTile(tile: deskTile, name: "desk", item: { .desk })
+			default:
+				MessageBox.message("This is a not buildable tile", speaker: .game)
 		}
 	}
 
@@ -90,14 +106,15 @@ enum MapBuilding {
 	}
 
 	private static func itemTypeToMapTileType(_ itemType: ItemType) -> MapTileType? {
+		// only used in building
 		switch itemType {
 			case .door:
 				MessageBox.message("This shouldn't have happen", speaker: .game)
 				return nil
-			case .fence: return .fence
-			case .gate: return .gate
-			case .bed: return .bed
-			case .desk: return .desk
+			case .fence: return .fence(tile: .init(isPlacedByPlayer: true))
+			case .gate: return .gate(tile: .init(isPlacedByPlayer: true))
+			case .bed: return .bed(tile: .init(isPlacedByPlayer: true))
+			case .desk: return .desk(tile: .init(isPlacedByPlayer: true))
 			case .chest: return .chest
 			default: return nil
 		}

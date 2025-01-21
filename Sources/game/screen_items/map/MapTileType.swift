@@ -14,14 +14,22 @@ enum MapTileType: TileType {
 
 	case snow
 	case snow_tree
-	case ice // TODO: slips and skips to another tile!
+	case ice
 
 	// MARK: Other
 
-	case path
-	case building(tile: BuildingTile)
+	case path // TODO: Make buildable
 	case player
+
+	// MARK: Buildable
+
+	case building(tile: BuildingTile)
 	case door(tile: DoorTile)
+	case chest /* (tile: ChestTile) */
+	case bed(tile: BedTile)
+	case desk(tile: DeskTile)
+	case fence(tile: FenceTile)
+	case gate(tile: GateTile)
 
 	// MARK: Dont Generate
 
@@ -33,14 +41,9 @@ enum MapTileType: TileType {
 
 	case station(station: StationTile)
 	case startMining
-	case chest /* (tile: ChestTile) */
-	case bed
-	case desk
 
 	// MARK: Crops
 
-	case fence
-	case gate
 	// TODO: rename crop -> tile
 	case crop(crop: CropTile)
 	case pot(tile: PotTile)

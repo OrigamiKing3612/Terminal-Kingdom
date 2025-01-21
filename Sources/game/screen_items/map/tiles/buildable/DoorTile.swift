@@ -1,6 +1,6 @@
 import Foundation
 
-struct DoorTile: Codable, Equatable, Hashable {
+struct DoorTile: BuildableTile, Hashable {
 	let type: DoorTileTypes
 	let isPartOfPlayerVillage: Bool
 	let isPlacedByPlayer: Bool

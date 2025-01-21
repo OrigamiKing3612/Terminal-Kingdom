@@ -1,4 +1,4 @@
-struct BuildingTile: Codable, Equatable {
+struct BuildingTile: BuildableTile {
 	let isPlacedByPlayer: Bool
 
 	init(isPlacedByPlayer: Bool = false) {
