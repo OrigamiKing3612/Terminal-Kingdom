@@ -1,7 +1,11 @@
 import Foundation
 
 enum CustomDoorEvent {
-	static func open(tile: DoorTile, mapID: UUID) {
+	static func open(tile: DoorTile, mapID: UUID?, doorType _: DoorTileTypes) {
+		guard let mapID else {
+			MessageBox.message("This building doesn't have an inside. Try breaking and replacing the door.", speaker: .game)
+			return
+		}
 		var options: [MessageOption] = [
 			.init(label: "Go Inside", action: { goInside(tile: tile, mapID: mapID) }),
 		]

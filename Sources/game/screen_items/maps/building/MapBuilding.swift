@@ -39,7 +39,15 @@ enum MapBuilding {
 		} else if case let .door(tile: doorTile) = tile.type {
 			if doorTile.isPlacedByPlayer {
 				grid[y][x] = MapTile(type: .plain)
-				_ = Game.player.collect(item: .init(type: .door(tile: doorTile)), count: 1)
+				if case let .custom(mapID: id, doorType: doorType) = doorTile.type {
+					if let id {
+						Game.removeMap(mapID: id)
+					}
+					_ = Game.player.collect(item: .init(type: .door(tile: .init(type: .custom(mapID: nil, doorType: doorType)))), count: 1)
+
+				} else {
+					_ = Game.player.collect(item: .init(type: .door(tile: doorTile)), count: 1)
+				}
 			} else {
 				MessageBox.message("You can't remove this door.", speaker: .game)
 			}
@@ -60,12 +68,15 @@ enum MapBuilding {
 				if case let .door(tile: tile) = selectedItem.type {
 					do {
 						let (doorPosition, buildingPerimeter) = try CreateCustomMap.checkDoor(tile: tile, grid: grid, x: x, y: y)
+						#if DEBUG
+							MessageBox.message("Door position: \(doorPosition), Building perimeter: \(buildingPerimeter)", speaker: .dev)
+						#endif
 						let map = getDoorMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.type)
 						do {
 							let customMap = try CustomMap(grid: map)
 							if let customMap {
 								Game.addMap(map: customMap)
-								grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor)
+								grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor)
 								Game.player.removeItem(item: .door(tile: tile), count: 1)
 								if Game.stages.builder.stage5Stages == .buildHouse {
 									Game.stages.builder.stage5HasBuiltHouse = true
@@ -179,19 +190,19 @@ private enum BuildForBuilderStage5 {
 			MapBuilding.buildNormally(grid: &grid, x: x, y: y)
 			Game.stages.builder.stage5LastBuildingPlaced = .init(x: x, y: y)
 		} else {
-			let lastBuildingPlaced = Game.stages.builder.stage5LastBuildingPlaced
-			if let lastBuildingPlaced {
-				// if x.isWithInOneOf(lastBuildingPlaced.x), y.isWithInOneOf(lastBuildingPlaced.y) {
-				MapBuilding.buildNormally(grid: &grid, x: x, y: y)
-				Game.stages.builder.stage5LastBuildingPlaced = .init(x: x, y: y)
-				// } else {
-				// 	MessageBox.message("To build a house, you should only build next to the last building you placed.", speaker: .game)
-				// 	return
-				// }
-			} else {
-				MessageBox.message("You haven't placed a building?", speaker: .game)
-				return
-			}
+			// let lastBuildingPlaced = Game.stages.builder.stage5LastBuildingPlaced
+			// if let lastBuildingPlaced {
+			// if x.isWithInOneOf(lastBuildingPlaced.x), y.isWithInOneOf(lastBuildingPlaced.y) {
+			MapBuilding.buildNormally(grid: &grid, x: x, y: y)
+			Game.stages.builder.stage5LastBuildingPlaced = .init(x: x, y: y)
+			// } else {
+			// 	MessageBox.message("To build a house, you should only build next to the last building you placed.", speaker: .game)
+			// 	return
+			// }
+			// } else {
+			// 	MessageBox.message("You haven't placed a building?", speaker: .game)
+			// 	return
+			// }
 		}
 	}
 }

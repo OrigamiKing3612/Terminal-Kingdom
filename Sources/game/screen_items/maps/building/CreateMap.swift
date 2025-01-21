@@ -61,7 +61,7 @@ struct CreateMap {
 		visited.insert(startingPosition)
 
 		while !hasReachedStart {
-			// TODO: if moving the coordinates to 0,0 this might now work
+			// TODO: if moving the coordinates to 0,0 this might not work
 			if doorPosition == .top || doorPosition == .bottom {
 				switch direction {
 					case .right:
@@ -167,26 +167,16 @@ struct CreateMap {
 		}
 		var newBuildingPerimeter: BuildingPerimeter = .init()
 		switch doorPosition {
-			case .right:
+			case .right, .left:
 				newBuildingPerimeter.top = buildingPerimeter.top + 1
 				newBuildingPerimeter.bottom = buildingPerimeter.bottom + 1
 				newBuildingPerimeter.rightSide = buildingPerimeter.rightSide + 1
 				newBuildingPerimeter.leftSide = buildingPerimeter.leftSide + 1
-			case .left:
-				newBuildingPerimeter.top = buildingPerimeter.top + 1
-				newBuildingPerimeter.bottom = buildingPerimeter.bottom + 1
-				newBuildingPerimeter.rightSide = buildingPerimeter.rightSide + 1
-				newBuildingPerimeter.leftSide = buildingPerimeter.leftSide + 1
-			case .top:
+			case .top, .bottom:
 				newBuildingPerimeter.top = buildingPerimeter.top + 1 + buildingPerimeter.bottom
 				newBuildingPerimeter.bottom = buildingPerimeter.top + 1 + buildingPerimeter.bottom
 				newBuildingPerimeter.rightSide = buildingPerimeter.rightSide - 1
 				newBuildingPerimeter.leftSide = buildingPerimeter.leftSide - 1
-			case .bottom:
-				newBuildingPerimeter.top = buildingPerimeter.top - 1
-				newBuildingPerimeter.bottom = buildingPerimeter.bottom - 1
-				newBuildingPerimeter.rightSide = buildingPerimeter.rightSide + 1 + buildingPerimeter.leftSide
-				newBuildingPerimeter.leftSide = buildingPerimeter.leftSide + 1 + buildingPerimeter.rightSide
 		}
 
 		return newBuildingPerimeter

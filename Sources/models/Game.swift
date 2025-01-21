@@ -3,14 +3,14 @@ import Foundation
 struct Game: Codable {
 	static let version = "0.0.1-alpha_1"
 	nonisolated(unsafe) static var config: Config = .init()
-	private(set) nonisolated(unsafe) static var hasInited: Bool = false
-	private(set) nonisolated(unsafe) static var isTypingInMessageBox: Bool = false
 	nonisolated(unsafe) static var player = PlayerCharacter()
-	private(set) nonisolated(unsafe) static var map = MapGen.generateFullMap()
 	nonisolated(unsafe) static var startingVillageChecks: StartingVillageChecks = .init()
 	nonisolated(unsafe) static var stages: Stages = .init()
 	nonisolated(unsafe) static var messages: [String] = []
 	nonisolated(unsafe) static var mapGen: MapGenSave = .init(amplitude: MapGenSave.defaultAmplitude, frequency: MapGenSave.defaultFrequency, seed: .random(in: 2 ... 1_000_000_000))
+	private(set) nonisolated(unsafe) static var hasInited: Bool = false
+	private(set) nonisolated(unsafe) static var isTypingInMessageBox: Bool = false
+	private(set) nonisolated(unsafe) static var map = MapGen.generateFullMap()
 	private(set) nonisolated(unsafe) static var customMaps: [CustomMap] = []
 
 	// Don't save
@@ -48,6 +48,10 @@ struct Game: Codable {
 
 	static func removeMap(map: CustomMap) {
 		customMaps.removeAll(where: { $0.id == map.id })
+	}
+
+	static func removeMap(mapID: UUID) {
+		customMaps.removeAll(where: { $0.id == mapID })
 	}
 }
 

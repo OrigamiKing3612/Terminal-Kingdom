@@ -15,7 +15,7 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
 	case carpenter
 	case restaurant
 	case potter
-	case custom(mapID: UUID)
+	indirect case custom(mapID: UUID?, doorType: DoorTileTypes)
 
 	var name: String {
 		switch self {
@@ -47,8 +47,8 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
 				"Restaurant"
 			case .potter:
 				"Potter"
-			case .custom:
-				"Custom"
+			case let .custom(_, doorType: doorType):
+				doorType.name
 		}
 	}
 

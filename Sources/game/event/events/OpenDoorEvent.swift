@@ -18,7 +18,7 @@ enum OpenDoorEvent {
 				case .carpenter: CarpenterDoorEvent.open(tile: doorTile)
 				case .restaurant: RestaurantDoorEvent.open(tile: doorTile)
 				case .potter: PotterAreaDoorEvent.open(tile: doorTile)
-				case let .custom(mapID: mapID): CustomDoorEvent.open(tile: doorTile, mapID: mapID)
+				case let .custom(mapID: mapID, doorType: doorType): CustomDoorEvent.open(tile: doorTile, mapID: mapID, doorType: doorType)
 			}
 		}
 	}

@@ -11,7 +11,7 @@ enum CreateCustomMap {
 		if !Game.player.has(item: .door(tile: tile), count: 1) {
 			throw .noDoor
 		}
-		let doorPosition = try checkBuildingsNearby(grid: grid, x: x, y: y)
+		let doorPosition = try getDoorPosition(grid: grid, x: x, y: y)
 		var createMap = CreateMap(grid: grid, x: x, y: y, doorPosition: doorPosition)
 		let perimeter = switch doorPosition {
 			case .bottom: createMap.bottom()
@@ -25,7 +25,7 @@ enum CreateCustomMap {
 		return (doorPosition, perimeter)
 	}
 
-	private static func checkBuildingsNearby(grid: [[MapTile]], x: Int, y: Int) throws(DoorPlaceError) -> DoorPosition {
+	private static func getDoorPosition(grid: [[MapTile]], x: Int, y: Int) throws(DoorPlaceError) -> DoorPosition {
 		var buildingsNearby = 0
 		var validDoorPosition: DoorPosition?
 
