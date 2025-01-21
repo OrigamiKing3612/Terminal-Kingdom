@@ -68,22 +68,15 @@ enum MapBuilding {
 				if case let .door(tile: tile) = selectedItem.type {
 					do {
 						let (doorPosition, buildingPerimeter) = try CreateCustomMap.checkDoor(tile: tile, grid: grid, x: x, y: y)
-						#if DEBUG
-							MessageBox.message("Door position: \(doorPosition), Building perimeter: \(buildingPerimeter)", speaker: .dev)
-						#endif
-						let map = getDoorMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.type)
-						do {
-							let customMap = try CustomMap(grid: map)
-							if let customMap {
-								Game.addMap(map: customMap)
-								grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor)
-								Game.player.removeItem(item: .door(tile: tile), count: 1)
-								if Game.stages.builder.stage5Stages == .buildHouse {
-									Game.stages.builder.stage5HasBuiltHouse = true
-								}
+						let map = createCustomMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.type)
+						let customMap = try CustomMap(grid: map)
+						if let customMap {
+							Game.addMap(map: customMap)
+							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor)
+							Game.player.removeItem(item: .door(tile: tile), count: 1)
+							if Game.stages.builder.stage5Stages == .buildHouse {
+								Game.stages.builder.stage5HasBuiltHouse = true
 							}
-						} catch {
-							MessageBox.message(error.localizedDescription, speaker: .game)
 						}
 					} catch {
 						MessageBox.message(error.localizedDescription, speaker: .game)
@@ -110,7 +103,7 @@ enum MapBuilding {
 		}
 	}
 
-	private static func getDoorMap(buildingPerimeter: BuildingPerimeter, doorPosition: DoorPosition, doorType: DoorTileTypes) -> [[MapTile]] {
+	private static func createCustomMap(buildingPerimeter: BuildingPerimeter, doorPosition: DoorPosition, doorType: DoorTileTypes) -> [[MapTile]] {
 		let ratio = 4
 
 		let topLength = buildingPerimeter.top * ratio

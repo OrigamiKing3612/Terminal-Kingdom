@@ -70,8 +70,12 @@ enum CreateCustomMap {
 			validDoorPosition = .right
 		}
 
-		guard buildingsNearby == 3, let doorPosition = validDoorPosition else {
-			throw DoorPlaceError.notEnoughBuildingsNearby
+		guard let doorPosition = validDoorPosition else {
+			throw .invalidPosition
+		}
+
+		guard buildingsNearby == 3 else {
+			throw .notEnoughBuildingsNearby
 		}
 		return doorPosition
 	}
