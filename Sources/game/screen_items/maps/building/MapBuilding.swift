@@ -1,3 +1,5 @@
+import Foundation
+
 enum MapBuilding {
 	static func build(grid: inout [[MapTile]], x: Int, y: Int) {
 		if grid[y][x].type != .plain {
@@ -48,8 +50,10 @@ enum MapBuilding {
 			case let .door(tile: doorTile):
 				placeTile(tile: doorTile, name: "\(doorTile.type.name) Door") {
 					if case let .custom(mapID: id, doorType: doorType) = doorTile.type {
-						if let id {
-							Game.removeMap(mapID: id)
+						Task {
+							if let id {
+								await Game.removeMap(mapID: id)
+							}
 						}
 						return .door(tile: .init(type: .custom(mapID: nil, doorType: doorType)))
 					} else {
@@ -87,7 +91,9 @@ enum MapBuilding {
 						let map = createCustomMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.type)
 						let customMap = try CustomMap(grid: map)
 						if let customMap {
-							Game.addMap(map: customMap)
+							Task {
+								await Game.addMap(map: customMap)
+							}
 							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor)
 							Game.player.removeItem(item: .door(tile: tile), count: 1)
 							if Game.stages.builder.stage5Stages == .buildHouse {

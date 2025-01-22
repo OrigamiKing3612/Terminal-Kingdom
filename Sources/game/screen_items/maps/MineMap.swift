@@ -106,11 +106,11 @@ struct MineMap: MapBoxMap {
 		}
 	}
 
-	func interactWithTile() {
+	func interactWithTile() async {
 		let tile = grid[player.y][player.x]
 		if tile.isInteractable {
 			if let event = tile.event {
-				MineTileEvent.trigger(event: event)
+				await MineTileEvent.trigger(event: event)
 			}
 		} else {
 			MessageBox.message("There is nothing to do here.", speaker: .game)

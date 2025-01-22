@@ -1,12 +1,12 @@
 enum BuilderNPC {
-	static func talk() {
+	static func talk() async {
 		if Game.startingVillageChecks.firstTimes.hasTalkedToBuilder == false {
 			Game.startingVillageChecks.firstTimes.hasTalkedToBuilder = true
 		}
-		getStage()
+		await getStage()
 	}
 
-	static func getStage() {
+	static func getStage() async {
 		switch Game.stages.builder.stageNumber {
 			case 0:
 				if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
@@ -14,43 +14,43 @@ enum BuilderNPC {
 						.init(label: "Yes", action: {}),
 						.init(label: "No", action: {}),
 					]
-					let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to build?", speaker: .builder, options: options)
+					let selectedOption = await MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to build?", speaker: .builder, options: options)
 					if selectedOption.label == "Yes" {
-						stage0()
+						await stage0()
 					} else {
 						return
 					}
 				} else {
-					stage0()
+					await stage0()
 				}
 			case 1:
-				stage1()
+				await stage1()
 			case 2:
-				stage2()
+				await stage2()
 			case 3:
-				stage3()
+				await stage3()
 			case 4:
-				stage4()
+				await stage4()
 			case 5:
-				stage5()
+				await stage5()
 			case 6:
-				stage6()
+				await stage6()
 			case 7:
-				stage7()
+				await stage7()
 			default:
 				break
 		}
 	}
 
-	static func stage0() {
+	static func stage0() async {
 		if Game.startingVillageChecks.hasBeenTaughtToChopLumber != .yes {
 			if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
 				MessageBox.message("Before I can teach you how to build, you need to learn how to chop lumber.", speaker: .builder)
 			}
-			RandomEventStuff.teachToChopLumber(by: .builder)
+			await RandomEventStuff.teachToChopLumber(by: .builder)
 			if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .yes {
-				if RandomEventStuff.wantsToContinue(speaker: .builder) {
-					stage1()
+				if await RandomEventStuff.wantsToContinue(speaker: .builder) {
+					await stage1()
 				}
 			}
 		} else {
@@ -59,14 +59,14 @@ enum BuilderNPC {
 				.init(label: "Yes", action: {}),
 				.init(label: "No", action: {}),
 			]
-			let selectedOption = MessageBox.messageWithOptions("Would you like to learn how to build?", speaker: .builder, options: options)
+			let selectedOption = await MessageBox.messageWithOptions("Would you like to learn how to build?", speaker: .builder, options: options)
 			if selectedOption.label == "Yes" {
-				stage1()
+				await stage1()
 			}
 		}
 	}
 
-	static func stage1() {
+	static func stage1() async {
 		switch Game.stages.builder.stage1Stages {
 			case .notStarted:
 				MessageBox.message("Before we can start building, we need materials. Can you go collect 20 stone and 10 iron from the mine and bring it back to me?", speaker: .builder)
@@ -89,13 +89,13 @@ enum BuilderNPC {
 				}
 			case .done:
 				Game.stages.builder.next()
-				if RandomEventStuff.wantsToContinue(speaker: .builder) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .builder) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage2() {
+	static func stage2() async {
 		switch Game.stages.builder.stage2Stages {
 			case .notStarted:
 				MessageBox.message("Now, we need some lumber. Can you get 20 of it? Here is an axe.", speaker: .builder)
@@ -122,13 +122,13 @@ enum BuilderNPC {
 				}
 			case .done:
 				Game.stages.builder.next()
-				if RandomEventStuff.wantsToContinue(speaker: .builder) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .builder) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage3() {
+	static func stage3() async {
 		switch Game.stages.builder.stage3Stages {
 			case .notStarted:
 				MessageBox.message("Now that we have the materials, we can start building. Can you make a door at the workstation. It is marked as a \(StationTileType.workbench.render). Here are the materials you will need.", speaker: .builder)
@@ -157,13 +157,13 @@ enum BuilderNPC {
 				}
 			case .done:
 				Game.stages.builder.next()
-				if RandomEventStuff.wantsToContinue(speaker: .builder) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .builder) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage4() {
+	static func stage4() async {
 		switch Game.stages.builder.stage4Stages {
 			case .notStarted:
 				MessageBox.message("Now that we have the door, we can start building. Can you go talk to the king and ask him for permission to build a house?", speaker: .builder)
@@ -181,13 +181,13 @@ enum BuilderNPC {
 				fallthrough
 			case .done:
 				Game.stages.builder.next()
-				if RandomEventStuff.wantsToContinue(speaker: .builder) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .builder) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage5() {
+	static func stage5() async {
 		switch Game.stages.builder.stage5Stages {
 			case .notStarted:
 				MessageBox.message("Now that we have permission, we can start building immediately! Can you begin building the house?", speaker: .builder)
@@ -211,12 +211,12 @@ enum BuilderNPC {
 					fallthrough
 				} else {
 					MessageBox.message("You haven't built the house yet.", speaker: .builder)
-					MessageBox.messageWithOptions("Do you want to hear the instructions again?", speaker: .builder, options: [.init(label: "Yes", action: instructions), .init(label: "No", action: {})]).action()
+					await MessageBox.messageWithOptions("Do you want to hear the instructions again?", speaker: .builder, options: [.init(label: "Yes", action: instructions), .init(label: "No", action: {})]).action()
 				}
 			case .done:
 				Game.stages.builder.next()
-				if RandomEventStuff.wantsToContinue(speaker: .builder) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .builder) {
+					await getStage()
 				}
 		}
 		func instructions() {
@@ -224,7 +224,7 @@ enum BuilderNPC {
 		}
 	}
 
-	static func stage6() {
+	static func stage6() async {
 		switch Game.stages.builder.stage6Stages {
 			case .notStarted:
 				MessageBox.message("Now that we have a house, we need to decorate the interior. Can you collect 30 lumber and bring it back to me?", speaker: .builder)
@@ -251,13 +251,13 @@ enum BuilderNPC {
 				}
 			case .done:
 				Game.stages.builder.next()
-				if RandomEventStuff.wantsToContinue(speaker: .builder) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .builder) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage7() {
+	static func stage7() async {
 		switch Game.stages.builder.stage7Stages {
 			case .notStarted:
 				MessageBox.message("Can you take these decorations and organize them inside of the house? You can decorate it however you want!", speaker: .builder)
@@ -284,8 +284,8 @@ enum BuilderNPC {
 				}
 			case .done:
 				Game.stages.builder.next()
-				if RandomEventStuff.wantsToContinue(speaker: .builder) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .builder) {
+					await getStage()
 				}
 		}
 	}

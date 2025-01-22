@@ -1,24 +1,24 @@
 enum OpenDoorEvent {
-	static func openDoor(doorTile: DoorTile) {
+	static func openDoor(doorTile: DoorTile) async {
 		if MapBox.mapType != .mainMap, MapBox.mapType != .mining {
 			leaveBuildingMap()
 		} else {
 			switch doorTile.type {
-				case .castle: CastleDoorEvent.open(tile: doorTile)
-				case .blacksmith: BlacksmithDoorEvent.open(tile: doorTile)
-				case .mine: MineDoorEvent.open(tile: doorTile)
-				case .shop: ShopDoorEvent.open(tile: doorTile)
-				case .builder: BuilderDoorEvent.open(tile: doorTile)
-				case .hunting_area: HuntingAreaDoorEvent.open(tile: doorTile)
-				case .inventor: InventorDoorEvent.open(tile: doorTile)
-				case .house: HouseDoorEvent.open(tile: doorTile)
-				case .stable: StableDoorEvent.open(tile: doorTile)
-				case .farm: FarmDoorEvent.open(tile: doorTile)
-				case .hospital: HospitalDoorEvent.open(tile: doorTile)
-				case .carpenter: CarpenterDoorEvent.open(tile: doorTile)
-				case .restaurant: RestaurantDoorEvent.open(tile: doorTile)
-				case .potter: PotterAreaDoorEvent.open(tile: doorTile)
-				case let .custom(mapID: mapID, doorType: doorType): CustomDoorEvent.open(tile: doorTile, mapID: mapID, doorType: doorType)
+				case .castle: await CastleDoorEvent.open(tile: doorTile)
+				case .blacksmith: await BlacksmithDoorEvent.open(tile: doorTile)
+				case .mine: await MineDoorEvent.open(tile: doorTile)
+				case .shop: await ShopDoorEvent.open(tile: doorTile)
+				case .builder: await BuilderDoorEvent.open(tile: doorTile)
+				case .hunting_area: await HuntingAreaDoorEvent.open(tile: doorTile)
+				case .inventor: await InventorDoorEvent.open(tile: doorTile)
+				case .house: await HouseDoorEvent.open(tile: doorTile)
+				case .stable: await StableDoorEvent.open(tile: doorTile)
+				case .farm: await FarmDoorEvent.open(tile: doorTile)
+				case .hospital: await HospitalDoorEvent.open(tile: doorTile)
+				case .carpenter: await CarpenterDoorEvent.open(tile: doorTile)
+				case .restaurant: await RestaurantDoorEvent.open(tile: doorTile)
+				case .potter: await PotterAreaDoorEvent.open(tile: doorTile)
+				case let .custom(mapID: mapID, doorType: doorType): await CustomDoorEvent.open(tile: doorTile, mapID: mapID, doorType: doorType)
 			}
 		}
 	}

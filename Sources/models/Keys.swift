@@ -1,5 +1,5 @@
 enum Keys {
-	static func normal(key: KeyboardKeys) {
+	static func normal(key: KeyboardKeys) async {
 		switch key {
 			case .q:
 				endProgram()
@@ -12,7 +12,7 @@ enum Keys {
 			case .d where Game.config.wasdKeys, .right where Game.config.arrowKeys, .l where Game.config.vimKeys:
 				MapBox.movePlayer(.right)
 			case .space, .enter:
-				MapBox.interactWithTile()
+				await MapBox.interactWithTile()
 			case .L where MapBox.mapType == .mining:
 				MapBox.mapType = .mine
 				MapBox.buildingMap.player.x = 2
@@ -65,7 +65,7 @@ enum Keys {
 		}
 	}
 
-	static func building(key: KeyboardKeys) {
+	static func building(key: KeyboardKeys) async {
 		switch key {
 			case .b, .esc:
 				Game.isBuilding = false
@@ -99,7 +99,7 @@ enum Keys {
 		}
 	}
 
-	static func inventory(key: KeyboardKeys) {
+	static func inventory(key: KeyboardKeys) async {
 		switch key {
 			case .i, .esc:
 				InventoryBox.showHelp = false

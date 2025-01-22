@@ -115,21 +115,21 @@ enum MessageBox {
 		messageBox()
 	}
 
-	static func messageWithTyping(_ text: String, speaker: MessageSpeakers) -> String {
-		messageWithTyping(text, speaker: speaker.render)
+	static func messageWithTyping(_ text: String, speaker: MessageSpeakers) async -> String {
+		await messageWithTyping(text, speaker: speaker.render)
 	}
 
-	static func messageWithTyping(_ text: String, speaker: NPCTileType) -> String {
-		messageWithTyping(text, speaker: speaker.render)
+	static func messageWithTyping(_ text: String, speaker: NPCTileType) async -> String {
+		await messageWithTyping(text, speaker: speaker.render)
 	}
 
-	private static func messageWithTyping(_ text: String, speaker: String) -> String {
+	private static func messageWithTyping(_ text: String, speaker: String) async -> String {
 		MapBox.showMapBox = false
 		StatusBox.showStatusBox = false
 		let typingIcon = Game.config.selectedIcon
 		message(text, speaker: speaker)
 		message("   \(typingIcon)", speaker: .game)
-		Game.setIsTypingInMessageBox(true)
+		await Game.setIsTypingInMessageBox(true)
 		var input = "" {
 			didSet {
 				// Max char
@@ -156,25 +156,25 @@ enum MessageBox {
 				}
 			}
 		}
-		Game.setIsTypingInMessageBox(false)
+		await Game.setIsTypingInMessageBox(false)
 		MapBox.showMapBox = true
 		return input.trimmingCharacters(in: .whitespacesAndNewlines)
 	}
 
-	static func messageWithTypingNumbers(_ text: String, speaker: MessageSpeakers) -> Int {
-		messageWithTypingNumbers(text, speaker: speaker.render)
+	static func messageWithTypingNumbers(_ text: String, speaker: MessageSpeakers) async -> Int {
+		await messageWithTypingNumbers(text, speaker: speaker.render)
 	}
 
-	static func messageWithTypingNumbers(_ text: String, speaker: NPCTileType) -> Int {
-		messageWithTypingNumbers(text, speaker: speaker.render)
+	static func messageWithTypingNumbers(_ text: String, speaker: NPCTileType) async -> Int {
+		await messageWithTypingNumbers(text, speaker: speaker.render)
 	}
 
-	private static func messageWithTypingNumbers(_ text: String, speaker: String) -> Int {
+	private static func messageWithTypingNumbers(_ text: String, speaker: String) async -> Int {
 		MapBox.showMapBox = false
 		let typingIcon = Game.config.selectedIcon
 		message(text, speaker: speaker)
 		message("   \(typingIcon)", speaker: .game)
-		Game.setIsTypingInMessageBox(true)
+		await Game.setIsTypingInMessageBox(true)
 		var input = "" {
 			didSet {
 				// Max char
@@ -200,31 +200,26 @@ enum MessageBox {
 				}
 			}
 		}
-		Game.setIsTypingInMessageBox(false)
+		await Game.setIsTypingInMessageBox(false)
 		MapBox.showMapBox = true
 		return Int(input.trimmingCharacters(in: .whitespacesAndNewlines)) ?? 0
 	}
 
-	static func messageWithOptions(_ text: String, speaker: MessageSpeakers, options: [MessageOption], hideInventoryBox: Bool = true) -> MessageOption {
-		messageWithOptions(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox)
+	static func messageWithOptions(_ text: String, speaker: MessageSpeakers, options: [MessageOption], hideInventoryBox: Bool = true) async -> MessageOption {
+		await messageWithOptions(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox)
 	}
 
-	static func messageWithOptions(_ text: String, speaker: NPCTileType, options: [MessageOption], hideInventoryBox: Bool = true) -> MessageOption {
-		messageWithOptions(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox)
+	static func messageWithOptions(_ text: String, speaker: NPCTileType, options: [MessageOption], hideInventoryBox: Bool = true) async -> MessageOption {
+		await messageWithOptions(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox)
 	}
 
-	private static func messageWithOptions(_ text: String, speaker: String, options: [MessageOption], hideInventoryBox: Bool) -> MessageOption {
+	private static func messageWithOptions(_ text: String, speaker: String, options: [MessageOption], hideInventoryBox: Bool) async -> MessageOption {
 		guard !options.isEmpty else {
 			return MessageOption(label: "Why did you this?", action: {})
 		}
 
 		hideAllBoxes(inventoryBox: hideInventoryBox)
-		Game.setIsTypingInMessageBox(true)
-
-		defer {
-			showAllBoxes
-			Game.setIsTypingInMessageBox(false)
-		}
+		await Game.setIsTypingInMessageBox(true)
 
 		let typingIcon = Game.config.selectedIcon
 		var newText = text
@@ -264,6 +259,8 @@ enum MessageBox {
 				case .enter, .space:
 					removeLastMessage()
 					updateLastMessage(newMessage: "\(text) - \(options[selectedOptionIndex].label)", speaker: speaker)
+					showAllBoxes
+					await Game.setIsTypingInMessageBox(false)
 					return options[selectedOptionIndex]
 				default:
 					break
@@ -271,26 +268,21 @@ enum MessageBox {
 		}
 	}
 
-	static func messageWithOptionsWithLabel(_ text: String, speaker: MessageSpeakers, options: [MessageOption], hideInventoryBox: Bool = true, label: String) -> MessageOption {
-		messageWithOptionsWithLabel(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox, label: label)
+	static func messageWithOptionsWithLabel(_ text: String, speaker: MessageSpeakers, options: [MessageOption], hideInventoryBox: Bool = true, label: String) async -> MessageOption {
+		await messageWithOptionsWithLabel(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox, label: label)
 	}
 
-	static func messageWithOptionsWithLabel(_ text: String, speaker: NPCTileType, options: [MessageOption], hideInventoryBox: Bool = true, label: String) -> MessageOption {
-		messageWithOptionsWithLabel(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox, label: label)
+	static func messageWithOptionsWithLabel(_ text: String, speaker: NPCTileType, options: [MessageOption], hideInventoryBox: Bool = true, label: String) async -> MessageOption {
+		await messageWithOptionsWithLabel(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox, label: label)
 	}
 
-	private static func messageWithOptionsWithLabel(_ text: String, speaker: String, options: [MessageOption], hideInventoryBox: Bool, label: String) -> MessageOption {
+	private static func messageWithOptionsWithLabel(_ text: String, speaker: String, options: [MessageOption], hideInventoryBox: Bool, label: String) async -> MessageOption {
 		guard !options.isEmpty else {
 			return MessageOption(label: "Why did you this?", action: {})
 		}
 
 		hideAllBoxes(inventoryBox: hideInventoryBox)
-		Game.setIsTypingInMessageBox(true)
-
-		defer {
-			showAllBoxes
-			Game.setIsTypingInMessageBox(false)
-		}
+		await Game.setIsTypingInMessageBox(true)
 
 		let typingIcon = Game.config.selectedIcon
 		var newText = text
@@ -330,6 +322,8 @@ enum MessageBox {
 				case .enter, .space:
 					removeLastMessage()
 					updateLastMessage(newMessage: "\(text) - \(options[selectedOptionIndex].label)", speaker: speaker)
+					showAllBoxes
+					await Game.setIsTypingInMessageBox(false)
 					return options[selectedOptionIndex]
 				default:
 					break

@@ -1,5 +1,5 @@
 enum MinerNPC {
-	static func talk() {
+	static func talk() async {
 		if !Game.startingVillageChecks.firstTimes.hasTalkedToMiner {
 			Game.startingVillageChecks.firstTimes.hasTalkedToMiner = true
 		}
@@ -24,11 +24,11 @@ enum MinerNPC {
 			Game.stages.builder.stage1ItemsUUIDsToRemove = uuids1 + uuids2
 			Game.stages.builder.stage1Stages = .bringBack
 		} else {
-			getStage()
+			await getStage()
 		}
 	}
 
-	static func getStage() {
+	static func getStage() async {
 		if Game.stages.mine.isDone {
 			MessageBox.message("Thank you for helping me. You have completed all of the tasks I have for you.", speaker: .miner)
 		} else {
@@ -39,50 +39,50 @@ enum MinerNPC {
 							.init(label: "Yes", action: {}),
 							.init(label: "No", action: {}),
 						]
-						let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to mine?", speaker: .miner, options: options)
+						let selectedOption = await MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to mine?", speaker: .miner, options: options)
 						if selectedOption.label == "Yes" {
-							stage0()
+							await stage0()
 						} else {
 							return
 						}
 					} else {
-						stage0()
+						await stage0()
 					}
 				case 1:
-					stage1()
+					await stage1()
 				case 2:
-					stage2()
+					await stage2()
 				case 3:
-					stage3()
+					await stage3()
 				case 4:
-					stage4()
+					await stage4()
 				case 5:
-					stage5()
+					await stage5()
 				case 6:
-					stage6()
+					await stage6()
 				case 7:
-					stage7()
+					await stage7()
 				case 8:
-					stage8()
+					await stage8()
 				case 9:
-					stage9()
+					await stage9()
 				case 10:
-					stage10()
+					await stage10()
 				default:
 					break
 			}
 		}
 	}
 
-	static func stage0() {
+	static func stage0() async {
 		if Game.startingVillageChecks.hasBeenTaughtToChopLumber != .yes {
 			if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
 				MessageBox.message("Before I can teach you how to mine, you need to learn how to chop lumber.", speaker: .miner)
 			}
-			RandomEventStuff.teachToChopLumber(by: .miner)
+			await RandomEventStuff.teachToChopLumber(by: .miner)
 			if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .yes {
-				if RandomEventStuff.wantsToContinue(speaker: .miner) {
-					stage1()
+				if await RandomEventStuff.wantsToContinue(speaker: .miner) {
+					await stage1()
 				}
 			}
 		} else {
@@ -91,14 +91,14 @@ enum MinerNPC {
 				.init(label: "Yes", action: {}),
 				.init(label: "No", action: {}),
 			]
-			let selectedOption = MessageBox.messageWithOptions("Would you like to learn how to mine?", speaker: .miner, options: options)
+			let selectedOption = await MessageBox.messageWithOptions("Would you like to learn how to mine?", speaker: .miner, options: options)
 			if selectedOption.label == "Yes" {
-				stage1()
+				await stage1()
 			}
 		}
 	}
 
-	static func stage1() {
+	static func stage1() async {
 		switch Game.stages.mine.stage1Stages {
 			case .notStarted:
 				MessageBox.message("To mine, you need a pickaxe. Go get one from the \("Blacksmith".styled(with: .bold)), he will have one for you.", speaker: .miner)
@@ -116,13 +116,13 @@ enum MinerNPC {
 				fallthrough
 			case .done:
 				Game.stages.mine.next()
-				if RandomEventStuff.wantsToContinue(speaker: .miner) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .miner) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage2() {
+	static func stage2() async {
 		switch Game.stages.mine.stage2Stages {
 			case .notStarted:
 				// TODO: make the Mine ! (red bold) (this is already the first time so no check needed)
@@ -153,13 +153,13 @@ enum MinerNPC {
 				}
 			case .done:
 				Game.stages.mine.next()
-				if RandomEventStuff.wantsToContinue(speaker: .miner) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .miner) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage3() {
+	static func stage3() async {
 		switch Game.stages.mine.stage3Stages {
 			case .notStarted:
 				MessageBox.message("We need 50 lumber to upgrade the mine to be able to mine more stuff. Can you please go get 50 lumber and bring it back to me?", speaker: .miner)
@@ -183,13 +183,13 @@ enum MinerNPC {
 				}
 			case .done:
 				Game.stages.mine.next()
-				if RandomEventStuff.wantsToContinue(speaker: .miner) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .miner) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage4() {
+	static func stage4() async {
 		switch Game.stages.mine.stage4Stages {
 			case .notStarted:
 				MessageBox.message("Now that we have upgraded the mine, you can go to level 2! There you can find things like stone, coal, and iron.", speaker: .miner)
@@ -218,13 +218,13 @@ enum MinerNPC {
 				}
 			case .done:
 				Game.stages.mine.next()
-				if RandomEventStuff.wantsToContinue(speaker: .miner) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .miner) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage5() {
+	static func stage5() async {
 		switch Game.stages.mine.stage5Stages {
 			case .notStarted:
 				MessageBox.message("Here is another pickaxe. I need you to go get 20 iron for me.", speaker: .miner)
@@ -251,13 +251,13 @@ enum MinerNPC {
 				}
 			case .done:
 				Game.stages.mine.next()
-				if RandomEventStuff.wantsToContinue(speaker: .miner) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .miner) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage6() {
+	static func stage6() async {
 		switch Game.stages.mine.stage6Stages {
 			case .notStarted:
 				MessageBox.message("I haven't told you why you need to get all of this stuff yet. We are going to upgrade the mine again. Every time the items required to do so increase. So this time we need 100 lumber to upgrade. You are almost there to being a professional miner!", speaker: .miner)
@@ -286,13 +286,13 @@ enum MinerNPC {
 				}
 			case .done:
 				Game.stages.mine.next()
-				if RandomEventStuff.wantsToContinue(speaker: .miner) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .miner) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage7() {
+	static func stage7() async {
 		switch Game.stages.mine.stage7Stages {
 			case .notStarted:
 				MessageBox.message("Ok, now that we have the suppilies, we can upgrade the mine. This time I will let you do it! All you have to do is have the materials and go up to the door. There will be an option to upgrade, do that! Then come back to me.", speaker: .miner)
@@ -314,13 +314,13 @@ enum MinerNPC {
 				fallthrough
 			case .done:
 				Game.stages.mine.next()
-				if RandomEventStuff.wantsToContinue(speaker: .miner) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .miner) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage8() {
+	static func stage8() async {
 		switch Game.stages.mine.stage8Stages {
 			case .notStarted:
 				MessageBox.message("I asked the blacksmith to make a special gift for you. Go collect it from the blacksmith. Then come talk to me.", speaker: .miner)
@@ -341,13 +341,13 @@ enum MinerNPC {
 				}
 			case .done:
 				Game.stages.mine.next()
-				if RandomEventStuff.wantsToContinue(speaker: .miner) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .miner) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage9() {
+	static func stage9() async {
 		switch Game.stages.mine.stage9Stages {
 			case .notStarted:
 				MessageBox.message("I want to teach you one more thing, but to do that I need to go get 5 gold from level 3 of the mine", speaker: .miner)
@@ -373,13 +373,13 @@ enum MinerNPC {
 				}
 			case .done:
 				Game.stages.mine.next()
-				if RandomEventStuff.wantsToContinue(speaker: .miner) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .miner) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage10() {
+	static func stage10() async {
 		switch Game.stages.mine.stage10Stages {
 			case .notStarted:
 				MessageBox.message("I have one more thing for you to do. I need you to take this gold to the \("Salesman".styled(with: .bold)) and sell it for coins. Then come back to me.", speaker: .miner)

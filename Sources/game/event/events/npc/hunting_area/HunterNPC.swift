@@ -1,5 +1,5 @@
 enum HunterNPC {
-	static func talk() {
+	static func talk() async {
 		if Game.startingVillageChecks.firstTimes.hasTalkedToHunter == false {
 			Game.startingVillageChecks.firstTimes.hasTalkedToHunter = true
 		} else if Game.stages.blacksmith.stage7Stages == .bringToHunter {
@@ -9,22 +9,22 @@ enum HunterNPC {
 				Game.player.removeItem(id: id)
 			}
 		} else {
-			getStage()
+			await getStage()
 		}
 	}
 
-	static func getStage() {
+	static func getStage() async {
 		let options: [MessageOption] = [
 			.init(label: "Yes", action: {}),
 			.init(label: "No", action: {}),
 		]
-		let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to be a hunter?", speaker: .hunter, options: options)
+		let selectedOption = await MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to be a hunter?", speaker: .hunter, options: options)
 		if selectedOption.label == "Yes" {
-			stage1()
+			await stage1()
 		} else {
 			return
 		}
 	}
 
-	static func stage1() {}
+	static func stage1() async {}
 }

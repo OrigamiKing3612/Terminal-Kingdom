@@ -1,5 +1,5 @@
 enum BlacksmithNPC {
-	static func talk() {
+	static func talk() async {
 		if Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith == false {
 			Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith = true
 		}
@@ -19,48 +19,48 @@ enum BlacksmithNPC {
 			MessageBox.message("Here you are. Here is your gift.", speaker: .blacksmith)
 			Game.stages.mine.stage8PickaxeUUID = Game.player.collect(item: .init(type: .pickaxe(type: .init(durability: 1000)), canBeSold: true))
 		} else {
-			getStage()
+			await getStage()
 		}
 	}
 
-	static func getStage() {
+	static func getStage() async {
 		switch Game.stages.blacksmith.stageNumber {
 			case 0:
 				let options: [MessageOption] = [
 					.init(label: "Yes", action: {}),
 					.init(label: "No", action: {}),
 				]
-				let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to be a blacksmith?", speaker: .blacksmith, options: options)
+				let selectedOption = await MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to be a blacksmith?", speaker: .blacksmith, options: options)
 				if selectedOption.label == "Yes" {
 					Game.stages.blacksmith.next()
-					getStage()
+					await getStage()
 				} else {
 					return
 				}
 			case 1:
-				stage1()
+				await stage1()
 			case 2:
-				stage2()
+				await stage2()
 			case 3:
-				stage3()
+				await stage3()
 			case 4:
-				stage4()
+				await stage4()
 			case 5:
-				stage5()
+				await stage5()
 			case 6:
-				stage6()
+				await stage6()
 			case 7:
-				stage7()
+				await stage7()
 			case 8:
-				stage8()
+				await stage8()
 			case 9:
-				stage9()
+				await stage9()
 			default:
 				break
 		}
 	}
 
-	static func stage1() {
+	static func stage1() async {
 		switch Game.stages.blacksmith.stage1Stages {
 			case .notStarted, .goToMine:
 				Game.stages.blacksmith.stage1Stages = .goToMine
@@ -81,13 +81,13 @@ enum BlacksmithNPC {
 				}
 			case .done:
 				Game.stages.blacksmith.next()
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage2() {
+	static func stage2() async {
 		switch Game.stages.blacksmith.stage2Stages {
 			case .notStarted:
 				Game.stages.blacksmith.stage2Stages = .getLumber
@@ -114,13 +114,13 @@ enum BlacksmithNPC {
 				}
 			case .done:
 				Game.stages.blacksmith.next()
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage3() {
+	static func stage3() async {
 		switch Game.stages.blacksmith.stage3Stages {
 			case .notStarted:
 				MessageBox.message("Now I need you to give this lumber to the carpenter to get sticks.", speaker: .blacksmith)
@@ -142,13 +142,13 @@ enum BlacksmithNPC {
 				}
 			case .done:
 				Game.stages.blacksmith.next()
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage4() {
+	static func stage4() async {
 		switch Game.stages.blacksmith.stage4Stages {
 			case .notStarted:
 				MessageBox.message("I need you to get 5 coal from the miner. We need the iron, lumber and this coal, because I want to show you how to make a pickaxe.", speaker: .blacksmith)
@@ -169,13 +169,13 @@ enum BlacksmithNPC {
 				}
 			case .done:
 				Game.stages.blacksmith.next()
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage5() {
+	static func stage5() async {
 		switch Game.stages.blacksmith.stage5Stages {
 			case .notStarted:
 				MessageBox.message("Now you get to do the fun stuff. I need to you make some steel. Go over to the furnace (\(StationTileType.furnace(progress: .empty).render))", speaker: .blacksmith)
@@ -198,13 +198,13 @@ enum BlacksmithNPC {
 			case .done:
 				Game.stages.blacksmith.next()
 
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage6() {
+	static func stage6() async {
 		switch Game.stages.blacksmith.stage6Stages {
 			case .notStarted:
 				MessageBox.message("I need you to make a pickaxe. Go over to the anvil (\(StationTileType.anvil.render)) and make a pickaxe. Here is all of the things you will need.", speaker: .blacksmith)
@@ -233,13 +233,13 @@ enum BlacksmithNPC {
 				}
 			case .done:
 				Game.stages.blacksmith.next()
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage7() {
+	static func stage7() async {
 		switch Game.stages.blacksmith.stage7Stages {
 			case .notStarted:
 				MessageBox.message("The hunter asked me to make him a sword. Why don't you do that? Here is the stuff you need. Make a sword on the anvil and then bring it to the Hunter in the \(DoorTileTypes.hunting_area.name.styled(with: .bold)).", speaker: .blacksmith)
@@ -260,13 +260,13 @@ enum BlacksmithNPC {
 				fallthrough
 			case .done:
 				Game.stages.blacksmith.next()
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage8() {
+	static func stage8() async {
 		switch Game.stages.blacksmith.stage8Stages {
 			case .notStarted:
 				MessageBox.message("You are almost there to becoming a blacksmith! I need you to get some materials from the mine. Then I need you to make some steel. Then come back to me", speaker: .blacksmith)
@@ -287,13 +287,13 @@ enum BlacksmithNPC {
 				fallthrough
 			case .done:
 				Game.stages.blacksmith.next()
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage9() {
+	static func stage9() async {
 		switch Game.stages.blacksmith.stage9Stages {
 			case .notStarted:
 				MessageBox.message("Now I want you to sell this steel in the shop. The shop will be marked with an \"\("!".styled(with: [.bold, .red]))\"", speaker: .blacksmith)
@@ -310,8 +310,8 @@ enum BlacksmithNPC {
 				fallthrough
 			case .done:
 				Game.stages.blacksmith.next()
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}

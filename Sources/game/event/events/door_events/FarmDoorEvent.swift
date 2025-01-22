@@ -1,5 +1,5 @@
 enum FarmDoorEvent {
-	static func open(tile: DoorTile) {
+	static func open(tile: DoorTile) async {
 		var options: [MessageOption] = [
 			.init(label: "Go Inside", action: { goInside(tile: tile) }),
 		]
@@ -7,7 +7,7 @@ enum FarmDoorEvent {
 			options.append(.init(label: "Upgrade", action: { upgrade(tile: tile) }))
 		}
 		options.append(.init(label: "Quit", action: {}))
-		let selectedOption = MessageBox.messageWithOptions("What would you like to do?", speaker: .game, options: options)
+		let selectedOption = await MessageBox.messageWithOptions("What would you like to do?", speaker: .game, options: options)
 		selectedOption.action()
 	}
 

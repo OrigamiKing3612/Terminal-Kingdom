@@ -1,13 +1,13 @@
 enum UseStationEvent {
-	static func useStation() {
+	static func useStation() async {
 		if case let .station(station: tile) = MapBox.tilePlayerIsOn.type {
 			switch tile.type {
 				case .anvil:
-					UseAnvil.use()
+					await UseAnvil.use()
 				case let .furnace(progress: progress): // TODO: use the progress or remove it
-					UseFurnace.use(progress: progress)
+					await UseFurnace.use(progress: progress)
 				case .workbench:
-					UseWorkstation.use()
+					await UseWorkstation.use()
 			}
 		}
 	}

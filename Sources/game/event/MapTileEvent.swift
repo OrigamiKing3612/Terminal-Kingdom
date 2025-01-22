@@ -8,11 +8,11 @@ enum MapTileEvent: TileEvent {
 	//    case collectItem(item: String)
 	//    case combat(enemy: String)
 
-	static func trigger(event: MapTileEvent) {
+	static func trigger(event: MapTileEvent) async {
 		switch event {
 			case .openDoor:
 				if case let .door(tile: doorTile) = MapBox.tilePlayerIsOn.type {
-					OpenDoorEvent.openDoor(doorTile: doorTile)
+					await OpenDoorEvent.openDoor(doorTile: doorTile)
 				}
 			case .chopTree:
 				if Game.player.hasAxe() {
@@ -28,9 +28,9 @@ enum MapTileEvent: TileEvent {
 				}
 			case .talkToNPC:
 				if case let .npc(tile: tile) = MapBox.tilePlayerIsOn.type {
-					tile.talk()
+					await tile.talk()
 				} else if case .shopStandingArea = MapBox.tilePlayerIsOn.type {
-					SalesmanNPC.talk()
+					await SalesmanNPC.talk()
 				}
 			case .collectCrop:
 				let tile = MapBox.tilePlayerIsOn
@@ -47,12 +47,12 @@ enum MapTileEvent: TileEvent {
 						let options: [MessageOption] = [.init(label: "Quit", action: {}), .init(label: "Plant Seed", action: {
 							MapBox.updateTile(newTile: .init(type: .pot(tile: .init(cropTile: .init(type: .tree_seed)))))
 						})]
-						let selectedOption = MessageBox.messageWithOptions("Plant Seed", speaker: .game, options: options)
+						let selectedOption = await MessageBox.messageWithOptions("Plant Seed", speaker: .game, options: options)
 						selectedOption.action()
 					}
 				}
 			case .useStation:
-				UseStationEvent.useStation()
+				await UseStationEvent.useStation()
 		}
 	}
 

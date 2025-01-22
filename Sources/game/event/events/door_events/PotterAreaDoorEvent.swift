@@ -1,10 +1,10 @@
 enum PotterAreaDoorEvent {
-	static func open(tile: DoorTile) {
+	static func open(tile: DoorTile) async {
 		let options: [MessageOption] = [
 			.init(label: "Go Inside", action: { goInside(tile: tile) }),
 			.init(label: "Quit", action: {}),
 		]
-		let selectedOption = MessageBox.messageWithOptions("What would you like to do?", speaker: .game, options: options)
+		let selectedOption = await MessageBox.messageWithOptions("What would you like to do?", speaker: .game, options: options)
 		selectedOption.action()
 	}
 

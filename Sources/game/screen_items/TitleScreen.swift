@@ -73,18 +73,18 @@ enum TitleScreen {
 			}
 		}
 
-		var action: Void {
+		func action() async {
 			switch self {
 				case .newGameOption:
-					newGame()
+					await newGame()
 				case .loadGameOption:
-					if loadGame() {
+					if await loadGame() {
 						// Load game
 						MessageBox.message("Game can not be loaded at this time. Creating new game.", speaker: .game)
-						newGame()
+						await newGame()
 					} else {
 						MessageBox.message("No saved game found. Creating new game.", speaker: .game)
-						newGame()
+						await newGame()
 					}
 				case .helpOption:
 					TitleScreen.help()

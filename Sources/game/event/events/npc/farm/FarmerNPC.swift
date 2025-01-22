@@ -1,5 +1,5 @@
 enum FarmerNPC {
-	static func talk() {
+	static func talk() async {
 		if Game.startingVillageChecks.firstTimes.hasTalkedToFarmer == false {
 			Game.startingVillageChecks.firstTimes.hasTalkedToFarmer = true
 		}
@@ -7,13 +7,13 @@ enum FarmerNPC {
 			.init(label: "Yes", action: {}),
 			.init(label: "No", action: {}),
 		]
-		let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to be a farmer?", speaker: .farmer, options: options)
+		let selectedOption = await MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to be a farmer?", speaker: .farmer, options: options)
 		if selectedOption.label == "Yes" {
-			stage1()
+			await stage1()
 		} else {
 			return
 		}
 	}
 
-	static func stage1() {}
+	static func stage1() async {}
 }

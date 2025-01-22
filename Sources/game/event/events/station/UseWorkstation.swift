@@ -1,5 +1,5 @@
 enum UseWorkstation {
-	static func use() {
+	static func use() async {
 		var options: [MessageOption] = []
 		for Allrecipe in AllRecipes.allCases {
 			let recipe = Allrecipe.recipe
@@ -43,7 +43,7 @@ enum UseWorkstation {
 			}
 		}
 		options.append(.init(label: "Quit", action: {}))
-		let selectedOption = MessageBox.messageWithOptions("What would you like to make?", speaker: .game, options: options)
+		let selectedOption = await MessageBox.messageWithOptions("What would you like to make?", speaker: .game, options: options)
 		selectedOption.action()
 	}
 }

@@ -10,25 +10,26 @@ defer {
 }
 
 if Game.hasInited == false {
-	Game.initGame()
+	await Game.initGame()
 	Screen.initialize()
-	showTitleScreen()
-	mainGameLoop()
+	await showTitleScreen()
+	startTasks()
+	await mainGameLoop()
 }
 
-func showTitleScreen() {
+func showTitleScreen() async {
 	let option = TitleScreen.show()
 	Screen.clear()
 	if option == .helpOption {
-		option.action
+		await option.action()
 		_ = TerminalInput.readKey()
-		showTitleScreen()
+		await showTitleScreen()
 	} else if option == .settingsOption {
-		option.action
-		showTitleScreen()
+		await option.action()
+		await showTitleScreen()
 	} else {
 		Screen.initializeBoxes()
-		option.action
+		await option.action()
 	}
 }
 
@@ -50,7 +51,7 @@ func endProgram() {
 	exit(0)
 }
 
-func loadGame() -> Bool {
+func loadGame() async -> Bool {
 	let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
 
 	if let filePath {
@@ -58,7 +59,7 @@ func loadGame() -> Bool {
 		do {
 			let fileData = try Data(contentsOf: file)
 			let decodedGame = try JSONDecoder().decode(CodableGame.self, from: fileData)
-			Game.reloadGame(decodedGame: decodedGame)
+			await Game.reloadGame(decodedGame: decodedGame)
 			return true
 		} catch {
 			// print("Error reading or decoding the file: \(error)")
@@ -67,9 +68,9 @@ func loadGame() -> Bool {
 	return false
 }
 
-func newGame() {
+func newGame() async {
 	MessageBox.message("Welcome to Adventure!", speaker: .game)
-	let playerName = MessageBox.messageWithTyping("Let's create your character. What is your name?", speaker: .game)
+	let playerName = await MessageBox.messageWithTyping("Let's create your character. What is your name?", speaker: .game)
 	MessageBox.message("Welcome \(playerName)!", speaker: .game)
 	Game.player.setName(playerName)
 	StatusBox.statusBox()
@@ -98,8 +99,7 @@ func startTasks() {
 	}
 }
 
-func mainGameLoop() {
-	startTasks()
+func mainGameLoop() async {
 	while true {
 		if StatusBox.updateQuestBox {
 			StatusBox.questArea()
@@ -110,11 +110,11 @@ func mainGameLoop() {
 
 		let key = TerminalInput.readKey()
 		if Game.isInInventoryBox {
-			Keys.inventory(key: key)
+			await Keys.inventory(key: key)
 		} else if Game.isBuilding {
-			Keys.building(key: key)
+			await Keys.building(key: key)
 		} else {
-			Keys.normal(key: key)
+			await Keys.normal(key: key)
 		}
 	}
 }

@@ -1,5 +1,5 @@
 enum SalesmanNPC {
-	static func talk() {
+	static func talk() async {
 		if Game.stages.mine.stage10Stages == .goToSalesman {
 			MessageBox.message("Oooh 5 gold! Can buy that for 10 coins!", speaker: .salesman(type: .buy))
 			let options: [MessageOption] = [
@@ -15,7 +15,7 @@ enum SalesmanNPC {
 					MessageBox.message("Oh ok", speaker: .salesman(type: .buy))
 				}),
 			]
-			let selectedOption = MessageBox.messageWithOptions("Would you like to sell the 5 gold?", speaker: .salesman(type: .buy), options: options)
+			let selectedOption = await MessageBox.messageWithOptions("Would you like to sell the 5 gold?", speaker: .salesman(type: .buy), options: options)
 			selectedOption.action()
 		} else if Game.stages.blacksmith.stage9Stages == .goToSalesman {
 			let price = ItemType.steel.price! * 3
@@ -33,7 +33,7 @@ enum SalesmanNPC {
 					MessageBox.message("Oh ok", speaker: .salesman(type: .buy))
 				}),
 			]
-			let selectedOption = MessageBox.messageWithOptions("Would you like to sell the 3 steel?", speaker: .salesman(type: .buy), options: options)
+			let selectedOption = await MessageBox.messageWithOptions("Would you like to sell the 3 steel?", speaker: .salesman(type: .buy), options: options)
 			selectedOption.action()
 		} else {
 			let tile = MapBox.tilePlayerIsOn
@@ -43,12 +43,12 @@ enum SalesmanNPC {
 						if Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy == false {
 							Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy = true
 						}
-						buy()
+						await buy()
 					case .sell:
 						if Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell == false {
 							Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell = true
 						}
-						sell()
+						await sell()
 					case .help:
 						if Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp == false {
 							Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp = true
@@ -59,7 +59,7 @@ enum SalesmanNPC {
 		}
 	}
 
-	private static func buy() {
+	private static func buy() async {
 		var leaveShop = false
 		var options: [MessageOption] = [
 			.init(label: "Leave", action: { leaveShop = true }),
@@ -72,9 +72,9 @@ enum SalesmanNPC {
 			return
 		}
 		while !leaveShop {
-			let selectedOption = MessageBox.messageWithOptions("Would you like to buy?", speaker: .salesman(type: .buy), options: options, hideInventoryBox: false)
+			let selectedOption = await MessageBox.messageWithOptions("Would you like to buy?", speaker: .salesman(type: .buy), options: options, hideInventoryBox: false)
 			if selectedOption.label != "Leave" {
-				let amount = MessageBox.messageWithTypingNumbers("How many?", speaker: .salesman(type: .buy))
+				let amount = await MessageBox.messageWithTypingNumbers("How many?", speaker: .salesman(type: .buy))
 				for _ in 1 ... amount {
 					selectedOption.action()
 				}
@@ -84,7 +84,7 @@ enum SalesmanNPC {
 		}
 	}
 
-	private static func sell() {
+	private static func sell() async {
 		var leaveShop = false
 		var options: [MessageOption] = [
 			.init(label: "Leave", action: { leaveShop = true }),
@@ -93,9 +93,9 @@ enum SalesmanNPC {
 			sellOption(options: &options, item: item)
 		}
 		while !leaveShop {
-			let selectedOption = MessageBox.messageWithOptions("Would you like to sell?", speaker: .salesman(type: .sell), options: options, hideInventoryBox: false)
+			let selectedOption = await MessageBox.messageWithOptions("Would you like to sell?", speaker: .salesman(type: .sell), options: options, hideInventoryBox: false)
 			if selectedOption.label != "Leave" {
-				let amount = MessageBox.messageWithTypingNumbers("How many?", speaker: .salesman(type: .sell))
+				let amount = await MessageBox.messageWithTypingNumbers("How many?", speaker: .salesman(type: .sell))
 				for _ in 1 ... amount {
 					selectedOption.action()
 				}

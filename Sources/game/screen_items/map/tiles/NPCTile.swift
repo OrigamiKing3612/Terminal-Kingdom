@@ -16,14 +16,14 @@ struct NPCTile: Codable, Equatable {
 		}
 	}
 
-	func talk() {
+	func talk() async {
 		switch type {
 			case .blacksmith:
-				BlacksmithNPC.talk()
+				await BlacksmithNPC.talk()
 			case .blacksmith_helper:
 				BlacksmithHelperNPC.talk()
 			case .miner:
-				MinerNPC.talk()
+				await MinerNPC.talk()
 			case .mine_helper:
 				MineHelperNPC.talk()
 			case .carpenter:
@@ -33,19 +33,19 @@ struct NPCTile: Codable, Equatable {
 			case .king:
 				KingNPC.talk()
 			case .salesman:
-				SalesmanNPC.talk()
+				await SalesmanNPC.talk()
 			case .builder:
-				BuilderNPC.talk()
+				await BuilderNPC.talk()
 			case .builder_helper:
 				BuilderHelperNPC.talk()
 			case .hunter:
-				HunterNPC.talk()
+				await HunterNPC.talk()
 			case .inventor:
 				break
 			case .stable_master:
 				break
 			case .farmer:
-				FarmerNPC.talk()
+				await FarmerNPC.talk()
 			case .doctor:
 				break
 			case .chef:

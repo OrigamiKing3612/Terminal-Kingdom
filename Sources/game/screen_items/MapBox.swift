@@ -85,8 +85,8 @@ enum MapBox {
 		}
 	}
 
-	static func interactWithTile() {
-		mapType.map.interactWithTile()
+	static func interactWithTile() async {
+		await mapType.map.interactWithTile()
 	}
 
 	static func findTile(type: MapTileType, in grid: [[MapTile]]) -> (x: Int, y: Int)? {
@@ -181,7 +181,7 @@ protocol MapBoxMap {
 	var tilePlayerIsOn: pTile { get }
 	func isWalkable(x: Int, y: Int) -> Bool
 	func render(playerX: Int, playerY: Int, viewportWidth: Int, viewportHeight: Int)
-	func interactWithTile()
+	func interactWithTile() async
 
 	mutating func movePlayer(_ direction: PlayerDirection)
 	mutating func map()
