@@ -12,8 +12,8 @@ struct CreateMap {
 		self.grid = grid
 		self.x = x
 		self.y = y
-		startX = x
-		startY = y
+		self.startX = x
+		self.startY = y
 		self.doorPosition = doorPosition
 	}
 

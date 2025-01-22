@@ -70,6 +70,6 @@ extension NPCTile {
 
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
-		type = try container.decode(NPCTileType.self, forKey: .tileType)
+		self.type = try container.decode(NPCTileType.self, forKey: .tileType)
 	}
 }

@@ -9,7 +9,7 @@ struct MainMap: MapBoxMap {
 	private var hasFoundPlayerStart = false
 
 	init() {
-		grid = Game.map
+		self.grid = Game.map
 	}
 
 	var tilePlayerIsOn: MapTile {

@@ -75,10 +75,10 @@ extension Config {
 
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
-		useNerdFont = try container.decode(Bool.self, forKey: .useNerdFont)
-		vimKeys = try container.decode(Bool.self, forKey: .vimKeys)
-		arrowKeys = try container.decode(Bool.self, forKey: .arrowKeys)
-		wasdKeys = try container.decode(Bool.self, forKey: .wasdKeys)
-		_selectedIcon = try container.decode(String.self, forKey: .selectedIcon)
+		self.useNerdFont = try container.decode(Bool.self, forKey: .useNerdFont)
+		self.vimKeys = try container.decode(Bool.self, forKey: .vimKeys)
+		self.arrowKeys = try container.decode(Bool.self, forKey: .arrowKeys)
+		self.wasdKeys = try container.decode(Bool.self, forKey: .wasdKeys)
+		self._selectedIcon = try container.decode(String.self, forKey: .selectedIcon)
 	}
 }

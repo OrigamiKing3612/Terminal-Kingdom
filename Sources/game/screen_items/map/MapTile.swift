@@ -47,8 +47,8 @@ extension MapTile {
 
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
-		type = try container.decode(MapTileType.self, forKey: .tileType)
-		isWalkable = try container.decode(Bool.self, forKey: .isWalkable)
-		event = try container.decodeIfPresent(MapTileEvent.self, forKey: .event)
+		self.type = try container.decode(MapTileType.self, forKey: .tileType)
+		self.isWalkable = try container.decode(Bool.self, forKey: .isWalkable)
+		self.event = try container.decodeIfPresent(MapTileEvent.self, forKey: .event)
 	}
 }

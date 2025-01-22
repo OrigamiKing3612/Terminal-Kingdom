@@ -12,7 +12,7 @@ struct Building: Codable, Equatable {
 		self.id = id
 		self.type = type
 		self.isPartOfPlayerVillage = isPartOfPlayerVillage
-		level = 1
+		self.level = 1
 		self.insideMap = insideMap
 		self.buildingShape = buildingShape
 	}

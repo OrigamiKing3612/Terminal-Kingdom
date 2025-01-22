@@ -10,7 +10,7 @@ struct DoorTile: BuildableTile, Hashable {
 	init(type: DoorTileTypes, isPartOfPlayerVillage: Bool = false, isPlacedByPlayer: Bool = false) {
 		self.type = type
 		self.isPartOfPlayerVillage = isPartOfPlayerVillage
-		level = 1
+		self.level = 1
 		self.isPlacedByPlayer = isPlacedByPlayer
 	}
 
@@ -38,10 +38,10 @@ struct DoorTile: BuildableTile, Hashable {
 extension DoorTile {
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
-		type = try container.decode(DoorTileTypes.self, forKey: .tileType)
-		isPartOfPlayerVillage = try container.decode(Bool.self, forKey: .isPartOfPlayerVillage)
-		isPlacedByPlayer = try container.decode(Bool.self, forKey: .isPlacedByPlayer)
-		level = try container.decode(Int.self, forKey: .level)
+		self.type = try container.decode(DoorTileTypes.self, forKey: .tileType)
+		self.isPartOfPlayerVillage = try container.decode(Bool.self, forKey: .isPartOfPlayerVillage)
+		self.isPlacedByPlayer = try container.decode(Bool.self, forKey: .isPlacedByPlayer)
+		self.level = try container.decode(Int.self, forKey: .level)
 	}
 
 	enum CodingKeys: CodingKey {

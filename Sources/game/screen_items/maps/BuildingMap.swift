@@ -19,9 +19,9 @@ struct BuildingMap: MapBoxMap {
 	init(_ mapType: MapType) {
 		self.mapType = mapType
 		if case let .custom(mapID: mapID) = mapType {
-			grid = Game.customMaps.filter { $0.id == mapID }[0].grid
+			self.grid = Game.customMaps.filter { $0.id == mapID }[0].grid
 		} else {
-			grid = StaticMaps.buildingMap(for: StaticMaps.mapTypeToBuilding(mapType: mapType))
+			self.grid = StaticMaps.buildingMap(for: StaticMaps.mapTypeToBuilding(mapType: mapType))
 		}
 
 		// Coordinates for inside the building

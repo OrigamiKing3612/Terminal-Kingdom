@@ -31,7 +31,7 @@ extension CropTile {
 
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
-		type = try container.decode(CropTileType.self, forKey: .tileType)
+		self.type = try container.decode(CropTileType.self, forKey: .tileType)
 	}
 
 	enum CodingKeys: CodingKey {

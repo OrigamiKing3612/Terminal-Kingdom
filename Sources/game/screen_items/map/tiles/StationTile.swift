@@ -18,7 +18,7 @@ extension StationTile {
 
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
-		type = try container.decode(StationTileType.self, forKey: .tileType)
+		self.type = try container.decode(StationTileType.self, forKey: .tileType)
 	}
 
 	enum CodingKeys: CodingKey {

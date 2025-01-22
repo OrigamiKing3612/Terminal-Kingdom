@@ -8,7 +8,7 @@ struct MineMap: MapBoxMap {
 	}
 
 	init() {
-		grid = MineMap.createGrid()
+		self.grid = MineMap.createGrid()
 
 		let middleX = grid[0].count / 2
 		//        let middleY = self.grid.count / 2

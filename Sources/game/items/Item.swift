@@ -40,8 +40,8 @@ extension Item {
 
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
-		id = try container.decode(UUID.self, forKey: .id)
-		type = try container.decode(ItemType.self, forKey: .tileType)
-		canBeSold = try container.decode(Bool.self, forKey: .canBeSold)
+		self.id = try container.decode(UUID.self, forKey: .id)
+		self.type = try container.decode(ItemType.self, forKey: .tileType)
+		self.canBeSold = try container.decode(Bool.self, forKey: .canBeSold)
 	}
 }
