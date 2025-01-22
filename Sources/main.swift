@@ -75,7 +75,31 @@ func newGame() {
 	StatusBox.statusBox()
 }
 
+func startTasks() {
+	// TODO: update label
+	let cropQueue = DispatchQueue(label: "adventure.cropQueue", qos: .background, attributes: .concurrent)
+	let stationsQueue = DispatchQueue(label: "adventure.stationsQueue", qos: .background)
+
+	cropQueue.async {
+		// TODO: building maps
+		while true {
+			if Game.crops.count > 0 {
+				for position in Game.crops {
+					let tile = MapBox.mainMap.grid[position.y][position.x]
+					if case let .crop(crop) = tile.type {
+						var newCropTile = CropTile(type: crop.type, growthStage: crop.growthStage)
+						newCropTile.grow()
+						MapBox.mainMap.grid[position.y][position.x] = .init(type: .crop(crop: newCropTile), isWalkable: tile.isWalkable, event: tile.event)
+					}
+				}
+			}
+			sleep(1)
+		}
+	}
+}
+
 func mainGameLoop() {
+	startTasks()
 	while true {
 		if StatusBox.updateQuestBox {
 			StatusBox.questArea()

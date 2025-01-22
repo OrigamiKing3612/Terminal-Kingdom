@@ -18,6 +18,7 @@ struct Game: Codable {
 	nonisolated(unsafe) static var isBuilding: Bool = false
 	nonisolated(unsafe) static var horizontalLine: String { config.useNerdFont ? "─" : "=" }
 	nonisolated(unsafe) static var verticalLine: String { config.useNerdFont ? "│" : "|" }
+	nonisolated(unsafe) static var crops: Set<TilePosition> = []
 
 	//    nonisolated(unsafe) private(set) static var map = MapGen.generateFullMap()
 
@@ -65,4 +66,9 @@ struct CodableGame: Codable {
 	var stages: Stages
 	var messages: [String]
 	var mapGen: MapGenSave
+}
+
+struct TilePosition: Codable, Hashable {
+	var x: Int
+	var y: Int
 }

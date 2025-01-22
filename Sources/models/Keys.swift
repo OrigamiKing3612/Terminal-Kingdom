@@ -20,8 +20,13 @@ enum Keys {
 				MapBox.mapBox()
 			#if DEBUG
 				case .o:
-					let tile = MapBox.mapType.map.tilePlayerIsOn
+					let tile = MapBox.mapType.map.tilePlayerIsOn as! MapTile
 					if let event = tile.event {
+						if case let .crop(crop: cropTile) = tile.type {
+							MessageBox.message("tileType: \(tile.type.name), tileEvent: \(event.name), isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType), \(cropTile.growthStage)", speaker: .dev)
+						} else {
+							MessageBox.message("tileType: \(tile.type.name), tileEvent: \(event.name), isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType)", speaker: .dev)
+						}
 						MessageBox.message("tileType: \(tile.type.name), tileEvent: \(event.name), isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType)", speaker: .dev)
 					} else {
 						MessageBox.message("tileType: \(tile.type.name), tileEvent: nil, isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType)", speaker: .dev)
@@ -45,6 +50,12 @@ enum Keys {
 				MessageBox.lineUp()
 			case .S:
 				MessageBox.lineDown()
+			#if DEBUG
+				case .t:
+					MessageBox.message("t", speaker: .dev)
+					MapBox.mainMap.grid[MapBox.player.y][MapBox.player.x] = .init(type: .crop(crop: .init(type: .carrot)), isWalkable: true, event: .collectCrop)
+					Game.crops.insert(TilePosition(x: MapBox.player.x, y: MapBox.player.y))
+			#endif
 			default:
 				#if DEBUG
 					MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
