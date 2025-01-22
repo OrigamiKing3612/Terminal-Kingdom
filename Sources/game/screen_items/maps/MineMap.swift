@@ -63,7 +63,7 @@ struct MineMap: MapBoxMap {
 		}
 	}
 
-	mutating func movePlayer(_ direction: Direction) {
+	mutating func movePlayer(_ direction: PlayerDirection) {
 		let oldX = player.x
 		let oldY = player.y
 

@@ -74,7 +74,7 @@ enum MapBox {
 		}
 	}
 
-	static func movePlayer(_ direction: Direction) {
+	static func movePlayer(_ direction: PlayerDirection) {
 		switch mapType {
 			case .mainMap:
 				mainMap.movePlayer(direction)
@@ -168,10 +168,6 @@ enum MapType: Codable, Equatable {
 	}
 }
 
-enum Direction {
-	case up, down, left, right
-}
-
 struct Player: Codable {
 	var x: Int
 	var y: Int
@@ -187,6 +183,6 @@ protocol MapBoxMap {
 	func render(playerX: Int, playerY: Int, viewportWidth: Int, viewportHeight: Int)
 	func interactWithTile()
 
-	mutating func movePlayer(_ direction: Direction)
+	mutating func movePlayer(_ direction: PlayerDirection)
 	mutating func map()
 }

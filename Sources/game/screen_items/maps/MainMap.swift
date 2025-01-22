@@ -47,9 +47,11 @@ struct MainMap: MapBoxMap {
 		}
 	}
 
-	mutating func movePlayer(_ direction: Direction) {
+	mutating func movePlayer(_ direction: PlayerDirection) {
 		let oldX = player.x
 		let oldY = player.y
+
+		Game.player.direction = direction
 
 		switch direction {
 			case .up where isWalkable(x: player.x, y: player.y - 1):

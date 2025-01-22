@@ -8,6 +8,7 @@ struct PlayerCharacter: Codable {
 	#else
 		private(set) var position: Player = .init(x: 55, y: 23)
 	#endif
+	var direction: PlayerDirection = .down
 	private(set) var quests: [Quest] = []
 	#if DEBUG
 		private(set) var mapType: MapType = .mainMap
@@ -16,11 +17,7 @@ struct PlayerCharacter: Codable {
 	#endif
 
 	var stats: Stats = .init()
-	#if DEBUG
-		var canBuild: Bool = true
-	#else
-		var canBuild: Bool = false
-	#endif
+	var canBuild: Bool = false
 
 	mutating func setName(_ name: String) {
 		self.name = name
@@ -196,5 +193,18 @@ struct PlayerCharacter: Codable {
 
 	mutating func setMapType(_ newMapType: MapType) {
 		mapType = newMapType
+	}
+}
+
+enum PlayerDirection: String, Codable {
+	case up, down, left, right
+
+	var render: String {
+		switch self {
+			case .up: Game.config.useNerdFont ? "↑" : "^"
+			case .down: Game.config.useNerdFont ? "↓" : "v"
+			case .left: Game.config.useNerdFont ? "←" : "<"
+			case .right: Game.config.useNerdFont ? "→" : ">"
+		}
 	}
 }

@@ -127,7 +127,7 @@ enum MapTileType: TileType {
 		}
 	}
 
-	func specialAction(direction: Direction, player: inout Player, grid: [[MapTile]]) {
+	func specialAction(direction: PlayerDirection, player: inout Player, grid: [[MapTile]]) {
 		func isWalkable(x: Int, y: Int) -> Bool {
 			guard x >= 0, y >= 0, y < grid.count, x < grid[y].count else { return false }
 			return grid[y][x].isWalkable
