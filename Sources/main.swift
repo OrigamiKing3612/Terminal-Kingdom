@@ -69,9 +69,9 @@ func loadGame() async -> Bool {
 }
 
 func newGame() async {
-	MessageBox.message("Welcome to Adventure!", speaker: .game)
+	await MessageBox.message("Welcome to Adventure!", speaker: .game)
 	let playerName = await MessageBox.messageWithTyping("Let's create your character. What is your name?", speaker: .game)
-	MessageBox.message("Welcome \(playerName)!", speaker: .game)
+	await MessageBox.message("Welcome \(playerName)!", speaker: .game)
 	await Game.shared.player.setName(playerName)
 	StatusBox.statusBox()
 }
@@ -106,7 +106,7 @@ func mainGameLoop() async {
 		if StatusBox.updateQuestBox {
 			StatusBox.questArea()
 		}
-		InventoryBox.inventoryBox()
+		await InventoryBox.inventoryBox()
 
 		guard await !(Game.shared.isTypingInMessageBox) else { continue }
 

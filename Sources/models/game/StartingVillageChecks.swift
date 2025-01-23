@@ -1,7 +1,15 @@
 struct StartingVillageChecks: Codable {
-	var hasBeenTaughtToChopLumber: StartingVillageChecksStages = .no
-	var hasUsedMessageWithOptions: Bool = false
+	private(set) var hasBeenTaughtToChopLumber: StartingVillageChecksStages = .no
+	private(set) var hasUsedMessageWithOptions: Bool = false
 	var firstTimes: FirstTimes = .init()
+
+	mutating func setHasBeenTaughtToChopLumber(_ newHasBeenTaughtToChopLumber: StartingVillageChecksStages) {
+		hasBeenTaughtToChopLumber = newHasBeenTaughtToChopLumber
+	}
+
+	mutating func setHasUsedMessageWithOptions(_ newHasUsedMessageWithOptions: Bool) {
+		hasUsedMessageWithOptions = newHasUsedMessageWithOptions
+	}
 }
 
 struct FirstTimes: Codable {

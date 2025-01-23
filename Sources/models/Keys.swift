@@ -4,17 +4,17 @@ enum Keys {
 			case .q:
 				endProgram()
 			case .w where await Game.shared.config.wasdKeys, .up where await Game.shared.config.arrowKeys, .k where await Game.shared.config.vimKeys:
-				MapBox.movePlayer(.up)
+				await MapBox.movePlayer(.up)
 			case .a where await Game.shared.config.wasdKeys, .left where await Game.shared.config.arrowKeys, .h where await Game.shared.config.vimKeys:
-				MapBox.movePlayer(.left)
+				await MapBox.movePlayer(.left)
 			case .s where await Game.shared.config.wasdKeys, .down where await Game.shared.config.arrowKeys, .j where await Game.shared.config.vimKeys:
-				MapBox.movePlayer(.down)
+				await MapBox.movePlayer(.down)
 			case .d where await Game.shared.config.wasdKeys, .right where await Game.shared.config.arrowKeys, .l where await Game.shared.config.vimKeys:
-				MapBox.movePlayer(.right)
+				await MapBox.movePlayer(.right)
 			case .space, .enter:
 				await MapBox.interactWithTile()
-			case .L where MapBox.mapType == .mining:
-				MapBox.mapType = .mine
+			case .L where await MapBox.mapType == .mining:
+				await MapBox.setMapType(.mine)
 				MapBox.buildingMap.player.x = 2
 				MapBox.buildingMap.player.y = 2
 				MapBox.mapBox()
@@ -70,20 +70,20 @@ enum Keys {
 			case .b, .esc:
 				await Game.shared.setIsBuilding(false)
 				InventoryBox.showBuildHelp = false
-				MapBox.mapBox()
-				InventoryBox.inventoryBox()
+				await MapBox.mapBox()
+				await InventoryBox.inventoryBox()
 			case .w where await Game.shared.config.wasdKeys, .up where await Game.shared.config.arrowKeys, .k where await Game.shared.config.vimKeys:
-				MapBox.movePlayer(.up)
+				await MapBox.movePlayer(.up)
 			case .a where await Game.shared.config.wasdKeys, .left where await Game.shared.config.arrowKeys, .h where await Game.shared.config.vimKeys:
-				MapBox.movePlayer(.left)
+				await MapBox.movePlayer(.left)
 			case .s where await Game.shared.config.wasdKeys, .down where await Game.shared.config.arrowKeys, .j where await Game.shared.config.vimKeys:
-				MapBox.movePlayer(.down)
+				await MapBox.movePlayer(.down)
 			case .d where await Game.shared.config.wasdKeys, .right where await Game.shared.config.arrowKeys, .l where await Game.shared.config.vimKeys:
-				MapBox.movePlayer(.right)
+				await MapBox.movePlayer(.right)
 			case .space, .enter:
-				MapBox.build()
+				await MapBox.build()
 			case .e:
-				MapBox.destroy()
+				await MapBox.destroy()
 			case .tab:
 				InventoryBox.nextBuildItem()
 			case .back_tab:
@@ -92,7 +92,7 @@ enum Keys {
 				InventoryBox.showBuildHelp.toggle()
 			default:
 				#if DEBUG
-					MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
+					await MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
 				#else
 					break
 				#endif
@@ -104,7 +104,7 @@ enum Keys {
 			case .i, .esc:
 				InventoryBox.showHelp = false
 				await Game.shared.setIsInInventoryBox(false)
-				InventoryBox.inventoryBox()
+				await InventoryBox.inventoryBox()
 			case .up, .back_tab:
 				InventoryBox.previousInventoryItem()
 			case .down, .tab:
@@ -112,10 +112,10 @@ enum Keys {
 			case .questionMark:
 				InventoryBox.showHelp.toggle()
 			case .d:
-				InventoryBox.destroyItem()
+				await InventoryBox.destroyItem()
 			default:
 				#if DEBUG
-					MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
+					await MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
 				#else
 					break
 				#endif

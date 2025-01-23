@@ -8,13 +8,14 @@ actor Game {
 	//! TODO: remove nonisolated
 	nonisolated(unsafe) var player = PlayerCharacter()
 	var startingVillageChecks: StartingVillageChecks = .init()
-	var stages: Stages = .init()
+	//! TODO: remove nonisolated
+	nonisolated(unsafe) var stages: Stages = .init()
 	var mapGen: MapGenSave = .init(amplitude: MapGenSave.defaultAmplitude, frequency: MapGenSave.defaultFrequency, seed: .random(in: 2 ... 1_000_000_000))
 	private(set) var messages: [String] = []
 	private(set) var crops: Set<TilePosition> = []
 	private(set) var hasInited: Bool = false
 	private(set) var isTypingInMessageBox: Bool = false
-	private(set) var map = MapGen.generateFullMap()
+	private(set) var map: [[MapTile]] = []
 	private(set) var customMaps: [CustomMap] = []
 
 	// Don't save
@@ -29,6 +30,7 @@ actor Game {
 
 	func initGame() async {
 		hasInited = true
+		map = await MapGen.generateFullMap()
 		MapBox.mainMap = MainMap()
 		config = Config.load()
 	}
@@ -83,13 +85,26 @@ actor Game {
 	func removeMap(mapID: UUID) async {
 		customMaps.removeAll(where: { $0.id == mapID })
 	}
+
+	@discardableResult
+	func messagesRemoveLast() async -> String {
+		messages.removeLast()
+	}
+
+	func setHasBeenTaughtToChopLumber(_ newHasBeenTaughtToChopLumber: StartingVillageChecksStages) {
+		startingVillageChecks.setHasBeenTaughtToChopLumber(newHasBeenTaughtToChopLumber)
+	}
+
+	func setHasUsedMessageWithOptions(_ newHasUsedMessageWithOptions: Bool) {
+		startingVillageChecks.setHasUsedMessageWithOptions(newHasUsedMessageWithOptions)
+	}
 }
 
 // TODO: update because Game is not codable
 struct CodableGame: Codable {
 	var hasInited: Bool
 	var isTypingInMessageBox: Bool
-	var player: PlayerCharacter
+	var player: PlayerCharacterCodable
 	var map: [[MapTile]]
 	var startingVillageChecks: StartingVillageChecks
 	var stages: Stages

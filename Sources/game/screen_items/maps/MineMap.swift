@@ -119,7 +119,7 @@ struct MineMap: MapBoxMap {
 				await MineTileEvent.trigger(event: event)
 			}
 		} else {
-			MessageBox.message("There is nothing to do here.", speaker: .game)
+			await MessageBox.message("There is nothing to do here.", speaker: .game)
 		}
 	}
 

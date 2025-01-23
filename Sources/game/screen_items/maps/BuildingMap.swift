@@ -129,7 +129,7 @@ struct BuildingMap: MapBoxMap {
 				await MapTileEvent.trigger(event: event)
 			}
 		} else {
-			MessageBox.message("There is nothing to do here.", speaker: .game)
+			await MessageBox.message("There is nothing to do here.", speaker: .game)
 		}
 	}
 

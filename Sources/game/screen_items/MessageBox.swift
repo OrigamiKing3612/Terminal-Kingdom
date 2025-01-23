@@ -1,7 +1,6 @@
 enum MessageBox {
 	private nonisolated(unsafe) static var messages: [String] {
-		get { await Game.shared.messages }
-		set { await Game.shared.messages = newValue }
+		get async { await Game.shared.messages }
 	}
 
 	private nonisolated(unsafe) static var scrollOffset = 0
@@ -10,14 +9,14 @@ enum MessageBox {
 		lastMessageCount > 1
 	}
 
-	static func messageBox() {
-		sides()
+	static func messageBox() async {
+		await sides()
 		clear()
 		let maxVisibleLines = height - 2
 		var renderedLines: [String] = []
 
-		for message in messages {
-			if message == messages.last, showXCounter {
+		for message in await messages {
+			if await message == messages.last, showXCounter {
 				renderedLines.append(contentsOf: "\(message) (x\(lastMessageCount))".wrappedWithStyles(toWidth: width - 2))
 			} else {
 				renderedLines.append(contentsOf: message.wrappedWithStyles(toWidth: width - 2))
@@ -42,7 +41,7 @@ enum MessageBox {
 		}
 	}
 
-	static func sides() {
+	static func sides() async {
 		await Screen.print(x: startX + 1, y: startY, String(repeating: Game.shared.horizontalLine, count: width - 1))
 		for y in (startY + 1) ..< endY {
 			await Screen.print(x: startX, y: y, Game.shared.verticalLine)
@@ -59,60 +58,60 @@ enum MessageBox {
 		}
 	}
 
-	static func lineUp() {
+	static func lineUp() async {
 		// Scroll up by increasing the scrollOffset
 		scrollOffset += 1
-		messageBox()
+		await messageBox()
 	}
 
-	static func lineDown() {
+	static func lineDown() async {
 		// Scroll down by decreasing the scrollOffset
 		if scrollOffset > 0 {
 			scrollOffset -= 1
-			messageBox()
+			await messageBox()
 		}
 	}
 
-	static func message(_ text: String, speaker: MessageSpeakers) {
-		message(text, speaker: speaker.render)
+	static func message(_ text: String, speaker: MessageSpeakers) async {
+		await message(text, speaker: speaker.render)
 	}
 
-	static func message(_ text: String, speaker: NPCTileType) {
-		message(text, speaker: speaker.render)
+	static func message(_ text: String, speaker: NPCTileType) async {
+		await message(text, speaker: speaker.render)
 	}
 
-	private static func message(_ text: String, speaker: String) {
+	private static func message(_ text: String, speaker: String) async {
 		// clear()
-		if text == messages.last {
+		if await text == messages.last {
 			lastMessageCount += 1
 		} else {
 			lastMessageCount = 1
-			if speaker == MessageSpeakers.game.render {
-				messages.append(text)
+			if await speaker == MessageSpeakers.game.render {
+				await Game.shared.addMessage(text)
 			} else {
-				messages.append("\(speaker.styled(with: .bold)): \(text)")
+				await Game.shared.addMessage("\(speaker.styled(with: .bold)): \(text)")
 			}
 		}
-		messageBox()
+		await messageBox()
 	}
 
 	@discardableResult
-	static func removeLastMessage() -> String {
-		messages.removeLast()
+	static func removeLastMessage() async -> String {
+		await Game.shared.messagesRemoveLast()
 	}
 
-	static func updateLastMessage(newMessage: String, speaker: MessageSpeakers) {
-		updateLastMessage(newMessage: newMessage, speaker: speaker.render)
+	static func updateLastMessage(newMessage: String, speaker: MessageSpeakers) async {
+		await updateLastMessage(newMessage: newMessage, speaker: speaker.render)
 	}
 
-	static func updateLastMessage(newMessage: String, speaker: NPCTileType) {
-		updateLastMessage(newMessage: newMessage, speaker: speaker.render)
+	static func updateLastMessage(newMessage: String, speaker: NPCTileType) async {
+		await updateLastMessage(newMessage: newMessage, speaker: speaker.render)
 	}
 
-	private static func updateLastMessage(newMessage: String, speaker: String) {
-		messages.removeLast()
-		message(newMessage, speaker: speaker)
-		messageBox()
+	private static func updateLastMessage(newMessage: String, speaker: String) async {
+		await Game.shared.messagesRemoveLast()
+		await message(newMessage, speaker: speaker)
+		await messageBox()
 	}
 
 	static func messageWithTyping(_ text: String, speaker: MessageSpeakers) async -> String {
@@ -124,11 +123,11 @@ enum MessageBox {
 	}
 
 	private static func messageWithTyping(_ text: String, speaker: String) async -> String {
-		MapBox.showMapBox = false
+		await MapBox.hideMapBox()
 		StatusBox.showStatusBox = false
 		let typingIcon = await Game.shared.config.selectedIcon
-		message(text, speaker: speaker)
-		message("   \(typingIcon)", speaker: .game)
+		await message(text, speaker: speaker)
+		await message("   \(typingIcon)", speaker: .game)
 		await Game.shared.setIsTypingInMessageBox(true)
 		var input = "" {
 			didSet {
@@ -136,7 +135,11 @@ enum MessageBox {
 				if input.count > 20 {
 					input.removeLast()
 				}
-				updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: .game)
+				//! TODO: This might not work
+
+				Task {
+					await updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: .game)
+				}
 			}
 		}
 		while true {
@@ -148,7 +151,7 @@ enum MessageBox {
 			} else if key == .backspace {
 				if !input.isEmpty {
 					input.removeLast()
-					updateLastMessage(newMessage: "   \(typingIcon)" + input + " ", speaker: .game)
+					await updateLastMessage(newMessage: "   \(typingIcon)" + input + " ", speaker: .game)
 				}
 			} else if key == .enter {
 				if !input.isEmpty {
@@ -157,7 +160,7 @@ enum MessageBox {
 			}
 		}
 		await Game.shared.setIsTypingInMessageBox(false)
-		MapBox.showMapBox = true
+		await MapBox.showMapBox()
 		return input.trimmingCharacters(in: .whitespacesAndNewlines)
 	}
 
@@ -170,10 +173,10 @@ enum MessageBox {
 	}
 
 	private static func messageWithTypingNumbers(_ text: String, speaker: String) async -> Int {
-		MapBox.showMapBox = false
+		await MapBox.hideMapBox()
 		let typingIcon = await Game.shared.config.selectedIcon
-		message(text, speaker: speaker)
-		message("   \(typingIcon)", speaker: .game)
+		await message(text, speaker: speaker)
+		await message("   \(typingIcon)", speaker: .game)
 		await Game.shared.setIsTypingInMessageBox(true)
 		var input = "" {
 			didSet {
@@ -181,8 +184,10 @@ enum MessageBox {
 				if input.count > 20 {
 					input.removeLast()
 				}
-
-				updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: .game)
+				//! This might not work
+				Task {
+					await updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: .game)
+				}
 			}
 		}
 		while true {
@@ -192,7 +197,7 @@ enum MessageBox {
 			} else if key == .backspace {
 				if !input.isEmpty {
 					input.removeLast()
-					updateLastMessage(newMessage: "   \(typingIcon)" + input + " ", speaker: .game)
+					await updateLastMessage(newMessage: "   \(typingIcon)" + input + " ", speaker: .game)
 				}
 			} else if key == .enter {
 				if !input.isEmpty {
@@ -201,7 +206,7 @@ enum MessageBox {
 			}
 		}
 		await Game.shared.setIsTypingInMessageBox(false)
-		MapBox.showMapBox = true
+		await MapBox.showMapBox()
 		return Int(input.trimmingCharacters(in: .whitespacesAndNewlines)) ?? 0
 	}
 
@@ -218,16 +223,16 @@ enum MessageBox {
 			return MessageOption(label: "Why did you this?", action: {})
 		}
 
-		hideAllBoxes(inventoryBox: hideInventoryBox)
+		await hideAllBoxes(inventoryBox: hideInventoryBox)
 		await Game.shared.setIsTypingInMessageBox(true)
 
 		let typingIcon = await Game.shared.config.selectedIcon
 		var newText = text
-		if ! await Game.shared.startingVillageChecks.hasUsedMessageWithOptions {
+		if await !Game.shared.startingVillageChecks.hasUsedMessageWithOptions {
 			newText += " (Use your arrow keys to select an option)".styled(with: .bold)
-			await Game.shared.startingVillageChecks.hasUsedMessageWithOptions = true
+			await Game.shared.setHasUsedMessageWithOptions(true)
 		}
-		message(newText, speaker: speaker)
+		await message(newText, speaker: speaker)
 
 		var selectedOptionIndex = 0
 
@@ -236,7 +241,7 @@ enum MessageBox {
 			let selected = (index == selectedOptionIndex) ? typingIcon : " "
 			messageToPrint += "   \(selected)\(index + 1). \(option.label)"
 		}
-		message(messageToPrint, speaker: .game)
+		await message(messageToPrint, speaker: .game)
 		while true {
 			var messageToPrint = ""
 			for (index, option) in options.enumerated() {
@@ -244,7 +249,7 @@ enum MessageBox {
 				messageToPrint += "   \(selected)\(index + 1). \(option.label)"
 			}
 
-			updateLastMessage(newMessage: messageToPrint, speaker: .game)
+			await updateLastMessage(newMessage: messageToPrint, speaker: .game)
 
 			let key = TerminalInput.readKey()
 			switch key {
@@ -257,9 +262,9 @@ enum MessageBox {
 						selectedOptionIndex += 1
 					}
 				case .enter, .space:
-					removeLastMessage()
-					updateLastMessage(newMessage: "\(text) - \(options[selectedOptionIndex].label)", speaker: speaker)
-					showAllBoxes
+					await removeLastMessage()
+					await updateLastMessage(newMessage: "\(text) - \(options[selectedOptionIndex].label)", speaker: speaker)
+					await showAllBoxes
 					await Game.shared.setIsTypingInMessageBox(false)
 					return options[selectedOptionIndex]
 				default:
@@ -281,16 +286,16 @@ enum MessageBox {
 			return MessageOption(label: "Why did you this?", action: {})
 		}
 
-		hideAllBoxes(inventoryBox: hideInventoryBox)
+		await hideAllBoxes(inventoryBox: hideInventoryBox)
 		await Game.shared.setIsTypingInMessageBox(true)
 
 		let typingIcon = await Game.shared.config.selectedIcon
 		var newText = text
-		if ! await Game.shared.startingVillageChecks.hasUsedMessageWithOptions {
+		if await !Game.shared.startingVillageChecks.hasUsedMessageWithOptions {
 			newText += " (Use your arrow keys to select an option)".styled(with: .bold)
-			await Game.shared.startingVillageChecks.hasUsedMessageWithOptions = true
+			await Game.shared.setHasUsedMessageWithOptions(true)
 		}
-		message(newText, speaker: speaker)
+		await message(newText, speaker: speaker)
 
 		var selectedOptionIndex = 0
 
@@ -299,7 +304,7 @@ enum MessageBox {
 			let selected = (index == selectedOptionIndex) ? typingIcon : " "
 			messageToPrint += "   \(selected)\(index + 1). \(option.label)"
 		}
-		message(messageToPrint, speaker: .game)
+		await message(messageToPrint, speaker: .game)
 		while true {
 			var messageToPrint = ""
 			for (index, option) in options.enumerated() {
@@ -307,7 +312,7 @@ enum MessageBox {
 				messageToPrint += "   \(selected)\(index + 1). \(label) \(option.label)"
 			}
 
-			updateLastMessage(newMessage: messageToPrint, speaker: .game)
+			await updateLastMessage(newMessage: messageToPrint, speaker: .game)
 
 			let key = TerminalInput.readKey()
 			switch key {
@@ -320,9 +325,9 @@ enum MessageBox {
 						selectedOptionIndex += 1
 					}
 				case .enter, .space:
-					removeLastMessage()
-					updateLastMessage(newMessage: "\(text) - \(options[selectedOptionIndex].label)", speaker: speaker)
-					showAllBoxes
+					await removeLastMessage()
+					await updateLastMessage(newMessage: "\(text) - \(options[selectedOptionIndex].label)", speaker: speaker)
+					await showAllBoxes
 					await Game.shared.setIsTypingInMessageBox(false)
 					return options[selectedOptionIndex]
 				default:
@@ -332,14 +337,16 @@ enum MessageBox {
 	}
 
 	static var showAllBoxes: Void {
-		MapBox.showMapBox = true
-		InventoryBox.showInventoryBox = true
-		StatusBox.showStatusBox = true
+		get async {
+			await MapBox.showMapBox()
+			InventoryBox.showInventoryBox = true
+			StatusBox.showStatusBox = true
+		}
 	}
 
-	static func hideAllBoxes(mapBox: Bool = true, inventoryBox: Bool = true, statusBox: Bool = true) {
+	static func hideAllBoxes(mapBox: Bool = true, inventoryBox: Bool = true, statusBox: Bool = true) async {
 		if mapBox {
-			MapBox.showMapBox = false
+			await MapBox.hideMapBox()
 		}
 		if inventoryBox {
 			InventoryBox.showInventoryBox = false
@@ -352,10 +359,10 @@ enum MessageBox {
 
 struct MessageOption: Equatable {
 	let label: String
-	let action: () -> Void
+	let action: () async -> Void
 	let id: Int
 
-	init(label: String, action: @escaping () -> Void, id: Int = 1) {
+	init(label: String, action: @escaping () async -> Void, id: Int = 1) {
 		self.label = label
 		self.action = action
 		self.id = id

@@ -1,19 +1,19 @@
 enum FarmDoorEvent {
 	static func open(tile: DoorTile) async {
 		var options: [MessageOption] = [
-			.init(label: "Go Inside", action: { goInside(tile: tile) }),
+			.init(label: "Go Inside", action: { await goInside(tile: tile) }),
 		]
 		if tile.isPartOfPlayerVillage {
 			options.append(.init(label: "Upgrade", action: { upgrade(tile: tile) }))
 		}
 		options.append(.init(label: "Quit", action: {}))
 		let selectedOption = await MessageBox.messageWithOptions("What would you like to do?", speaker: .game, options: options)
-		selectedOption.action()
+		await selectedOption.action()
 	}
 
-	static func goInside(tile: DoorTile) {
+	static func goInside(tile: DoorTile) async {
 		if case let .farm(type: type) = tile.type {
-			MapBox.mapType = .farm(type: type)
+			await MapBox.setMapType(.farm(type: type))
 		}
 	}
 

@@ -225,11 +225,21 @@ enum PlayerDirection: String, Codable {
 	var render: String {
 		get async {
 			switch self {
-				case .up: await Game.shared.shared.config.useNerdFont ? "↑" : "^"
-				case .down: await Game.shared.shared.config.useNerdFont ? "↓" : "v"
-				case .left: await Game.shared.shared.config.useNerdFont ? "←" : "<"
-				case .right: await Game.shared.shared.config.useNerdFont ? "→" : ">"
+				case .up: await Game.shared.config.useNerdFont ? "↑" : "^"
+				case .down: await Game.shared.config.useNerdFont ? "↓" : "v"
+				case .left: await Game.shared.config.useNerdFont ? "←" : "<"
+				case .right: await Game.shared.config.useNerdFont ? "→" : ">"
 			}
 		}
 	}
+}
+
+struct PlayerCharacterCodable: Codable {
+	var name: String
+	var items: [Item]
+	var position: Player
+	var direction: PlayerDirection
+	var quests: [Quest]
+	var stats: Stats
+	var canBuild: Bool
 }

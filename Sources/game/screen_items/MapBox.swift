@@ -98,6 +98,14 @@ actor MapBoxActor {
 	func miningMap() async {
 		await miningMap.map()
 	}
+
+	func showMapBox() async {
+		showMapBox = true
+	}
+
+	func hideMapBox() async {
+		showMapBox = false
+	}
 }
 
 enum MapBox {
@@ -232,6 +240,18 @@ enum MapBox {
 				await MapBoxActor.shared.resetBuildingMap(mapType)
 		}
 		await mapBox()
+	}
+
+	static func showMapBox() async {
+		await MapBoxActor.shared.showMapBox()
+	}
+
+	static func hideMapBox() async {
+		await MapBoxActor.shared.hideMapBox()
+	}
+
+	static func setGridTile(x: Int, y: Int, tile: MapTile) async {
+		await MapBoxActor.shared.updateMainMapTile(at: x, y: y, with: tile)
 	}
 }
 
