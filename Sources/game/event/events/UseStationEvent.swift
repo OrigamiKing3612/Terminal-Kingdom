@@ -1,6 +1,6 @@
 enum UseStationEvent {
 	static func useStation() async {
-		if case let .station(station: tile) = MapBox.tilePlayerIsOn.type {
+		if case let .station(station: tile) = await MapBox.tilePlayerIsOn.type {
 			switch tile.type {
 				case .anvil:
 					await UseAnvil.use()

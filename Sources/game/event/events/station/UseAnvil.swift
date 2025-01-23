@@ -48,6 +48,6 @@ enum UseAnvil {
 		}
 		options.append(.init(label: "Quit", action: {}))
 		let selectedOption = await MessageBox.messageWithOptions("What would you like to make?", speaker: .game, options: options)
-		selectedOption.action()
+		await selectedOption.action()
 	}
 }

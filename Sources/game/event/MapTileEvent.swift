@@ -16,13 +16,13 @@ enum MapTileEvent: TileEvent {
 				}
 			case .chopTree:
 				if await Game.shared.player.hasAxe() {
-					ChopTreeEvent.chopTree()
+					await ChopTreeEvent.chopTree()
 				} else {
 					await MessageBox.message("Ouch!", speaker: .game)
 				}
 			case .startMining:
 				if await Game.shared.player.hasPickaxe() {
-					StartMiningEvent.startMining()
+					await StartMiningEvent.startMining()
 				} else {
 					await MessageBox.message("You need a pickaxe to start mining", speaker: .miner)
 				}
@@ -35,10 +35,10 @@ enum MapTileEvent: TileEvent {
 			case .collectCrop:
 				let tile = await MapBox.tilePlayerIsOn
 				if case let .crop(crop: crop) = tile.type {
-					CollectCropEvent.collectCrop(cropTile: crop, isInPot: false)
+					await CollectCropEvent.collectCrop(cropTile: crop, isInPot: false)
 				} else if case let .pot(tile: tile) = tile.type {
 					if tile.cropTile.type != .none {
-						CollectCropEvent.collectCrop(cropTile: tile.cropTile, isInPot: true)
+						await CollectCropEvent.collectCrop(cropTile: tile.cropTile, isInPot: true)
 					} else {
 						if await !Game.shared.player.has(item: .tree_seed) {
 							await MessageBox.message("There is no crop here", speaker: .game)

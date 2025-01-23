@@ -21,23 +21,23 @@ struct NPCTile: Codable, Equatable {
 			case .blacksmith:
 				await BlacksmithNPC.talk()
 			case .blacksmith_helper:
-				BlacksmithHelperNPC.talk()
+				await BlacksmithHelperNPC.talk()
 			case .miner:
 				await MinerNPC.talk()
 			case .mine_helper:
-				MineHelperNPC.talk()
+				await MineHelperNPC.talk()
 			case .carpenter:
-				CarpenterNPC.talk()
+				await CarpenterNPC.talk()
 			case .carpenter_helper:
-				CarpenterHelperNPC.talk()
+				await CarpenterHelperNPC.talk()
 			case .king:
-				KingNPC.talk()
+				await KingNPC.talk()
 			case .salesman:
 				await SalesmanNPC.talk()
 			case .builder:
 				await BuilderNPC.talk()
 			case .builder_helper:
-				BuilderHelperNPC.talk()
+				await BuilderHelperNPC.talk()
 			case .hunter:
 				await HunterNPC.talk()
 			case .inventor:
@@ -53,7 +53,7 @@ struct NPCTile: Codable, Equatable {
 			case .potter:
 				break
 			case .farmer_helper:
-				FarmerHelperNPC.talk()
+				await FarmerHelperNPC.talk()
 		}
 	}
 }

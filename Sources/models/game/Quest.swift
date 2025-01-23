@@ -41,6 +41,7 @@ enum Quest: Codable, Equatable {
 	case builder10
 
 	var label: String {
+		// get async {
 		switch self {
 			case let .chopLumber(count, `for`):
 				if let `for` {
@@ -55,7 +56,7 @@ enum Quest: Codable, Equatable {
 			case .blacksmith5: "Use the furnace to craft steel"
 			case .blacksmith6: "Make a pickaxe on the anvil"
 			case .blacksmith7:
-				switch await Game.shared.stages.blacksmith.stage7Stages {
+				switch Game.shared.stages.blacksmith.stage7Stages {
 					case .notStarted: "Blacksmith Stage 7 not started"
 					case .makeSword: "Make a sword at the anvil"
 					case .bringToHunter: "Bring the sword to the hunter"
@@ -63,7 +64,7 @@ enum Quest: Codable, Equatable {
 					case .done: "Blacksmith Stage 7 done"
 				}
 			case .blacksmith8:
-				switch await Game.shared.stages.blacksmith.stage8Stages {
+				switch Game.shared.stages.blacksmith.stage8Stages {
 					case .notStarted: "Blacksmith Stage 8 not started"
 					case .getMaterials: "Get materials from the Miner"
 					case .makeSteel: "Make steel on the anvil"
@@ -76,7 +77,7 @@ enum Quest: Codable, Equatable {
 			case .mine2: "Mine 20 clay for the Miner"
 			case .mine3: "Give 50 lumber to the Miner to upgrade the mine"
 			case .mine4:
-				switch await Game.shared.stages.mine.stage4Stages {
+				switch Game.shared.stages.mine.stage4Stages {
 					case .notStarted: "Mine Stage 4 not started"
 					case .collectPickaxe: "Get a pickaxe from the Blacksmith"
 					case .mine: "Mine 30 stone for the Miner"
@@ -84,7 +85,7 @@ enum Quest: Codable, Equatable {
 				}
 			case .mine5: "Mine 20 iron for the Miner"
 			case .mine6:
-				switch await Game.shared.stages.mine.stage6Stages {
+				switch Game.shared.stages.mine.stage6Stages {
 					case .notStarted: "Mine Stage 6 not started"
 					case .goGetAxe: "Collect an axe from the Blacksmith"
 					case .collect: "Collect 100 lumber to upgrade the mine"
@@ -94,7 +95,7 @@ enum Quest: Codable, Equatable {
 			case .mine8: "Collect the Blacksmith's gift"
 			case .mine9: "Mine 5 gold for the Miner"
 			case .mine10:
-				switch await Game.shared.stages.mine.stage10Stages {
+				switch Game.shared.stages.mine.stage10Stages {
 					case .notStarted: "Mine Stage 10 not started"
 					case .goToSalesman: "Bring the coins back to the Miner"
 					case .comeBack: "Return to the Miner"
@@ -110,6 +111,7 @@ enum Quest: Codable, Equatable {
 			case .builder8: "Talk to the Builder"
 			case .builder9: "Build a house for the Builder"
 			case .builder10: "Take the door and have fun creating!"
+				// }
 		}
 	}
 }

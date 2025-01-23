@@ -1,10 +1,11 @@
 import Foundation
 
+//! TODO: could this be better?
 actor MapBoxActor {
-	static let shared = MapBoxActor()
-	var mainMap: MainMap
-	private(set) var miningMap: MineMap
-	private(set) var buildingMap: BuildingMap
+	nonisolated(unsafe) static var shared = MapBoxActor()
+	var mainMap: MainMap?
+	private(set) var miningMap: MineMap?
+	private(set) var buildingMap: BuildingMap?
 	private(set) var showMapBox = true {
 		//! TODO: figure out something better
 		// private(set) and a set func that does this?
@@ -19,7 +20,11 @@ actor MapBoxActor {
 		}
 	}
 
-	private init() {}
+	private init() {
+		self.mainMap = nil
+		self.miningMap = nil
+		self.buildingMap = nil
+	}
 
 	init() async {
 		self.mainMap = await MainMap()
@@ -28,27 +33,23 @@ actor MapBoxActor {
 	}
 
 	func updateMainMapTile(at x: Int, y: Int, with tile: MapTile) async {
-		mainMap.grid[y][x] = tile
+		mainMap!.grid[y][x] = tile
 	}
 
 	func updateMiningMapTile(at x: Int, y: Int, with tile: MineTile) async {
-		miningMap.grid[y][x] = tile
+		miningMap!.grid[y][x] = tile
 	}
 
 	func updateBuildingMapTile(at x: Int, y: Int, with tile: MapTile) async {
-		buildingMap.grid[y][x] = tile
+		buildingMap!.grid[y][x] = tile
 	}
 
 	func updateMainMapTile(newTile: MapTile) async {
-		mainMap.updateTile(newTile: newTile)
+		mainMap!.updateTile(newTile: newTile)
 	}
 
-	// func updateMineMapTile(newTile: MineTile) async {
-	// 	miningMap.updateTile(newTile: newTile)
-	// }
-
 	func updateBuildingMapTile(newTile: MapTile) async {
-		buildingMap.updateTile(newTile: newTile)
+		buildingMap!.updateTile(newTile: newTile)
 	}
 
 	func resetMiningMap() async {
@@ -60,43 +61,63 @@ actor MapBoxActor {
 	}
 
 	func mainMapBuild() async {
-		await mainMap.build()
+		var map = mainMap
+		await map!.build()
+		mainMap = map
 	}
 
 	func mainMapDestroy() async {
-		await mainMap.destroy()
+		var map = mainMap
+		await map!.destroy()
+		mainMap = map
 	}
 
 	func buildingMapBuild() async {
-		buildingMap.build()
+		var map = buildingMap
+		await map!.build()
+		buildingMap = map
 	}
 
 	func buildingMapDestroy() async {
-		buildingMap.destroy()
+		var map = buildingMap
+		await map!.destroy()
+		buildingMap = map
 	}
 
 	func mainMapMovePlayer(_ direction: PlayerDirection) async {
-		await mainMap.movePlayer(direction)
+		var map = mainMap
+		await map!.movePlayer(direction)
+		mainMap = map
 	}
 
 	func mineMapMovePlayer(_ direction: PlayerDirection) async {
-		await miningMap.movePlayer(direction)
+		var map = miningMap
+		await map!.movePlayer(direction)
+		miningMap = map
 	}
 
 	func buildingMapMovePlayer(_ direction: PlayerDirection) async {
-		await buildingMap.movePlayer(direction)
+		var map = buildingMap
+		await map!.movePlayer(direction)
+		buildingMap = map
 	}
 
 	func mainMap() async {
-		await mainMap.map()
+		var map = mainMap
+		await map!.map()
+		mainMap = map
 	}
 
 	func buildingMap() async {
-		await buildingMap.map()
+		var map = buildingMap
+		await map!.map()
+		buildingMap = map
 	}
 
 	func miningMap() async {
-		await miningMap.map()
+		var map = miningMap
+		await map!.map()
+		miningMap = map
 	}
 
 	func showMapBox() async {
@@ -106,19 +127,31 @@ actor MapBoxActor {
 	func hideMapBox() async {
 		showMapBox = false
 	}
+
+	func setBuildingMapPlayer(x: Int, y: Int) async {
+		var map = buildingMap
+		await map!.setPlayer(x: x, y: y)
+		buildingMap = map
+	}
+
+	func setMainMapPlayerPosition(_ position: (x: Int, y: Int)) async {
+		var map = mainMap
+		await map!.setPlayerPosition(position)
+		mainMap = map
+	}
 }
 
 enum MapBox {
 	static var mainMap: MainMap {
-		get async { await MapBoxActor.shared.mainMap }
+		get async { await MapBoxActor.shared.mainMap! }
 	}
 
 	static var miningMap: MineMap {
-		get async { await MapBoxActor.shared.miningMap }
+		get async { await MapBoxActor.shared.miningMap! }
 	}
 
 	static var buildingMap: BuildingMap {
-		get async { await MapBoxActor.shared.buildingMap }
+		get async { await MapBoxActor.shared.buildingMap! }
 	}
 
 	static var showMapBox: Bool {
@@ -250,8 +283,28 @@ enum MapBox {
 		await MapBoxActor.shared.hideMapBox()
 	}
 
-	static func setGridTile(x: Int, y: Int, tile: MapTile) async {
+	static func setMainMapGridTile(x: Int, y: Int, tile: MapTile) async {
 		await MapBoxActor.shared.updateMainMapTile(at: x, y: y, with: tile)
+	}
+
+	static func setMainMapGridTile(tile: MapTile) async {
+		await MapBoxActor.shared.updateMainMapTile(at: MapBox.player.x, y: MapBox.player.y, with: tile)
+	}
+
+	static func resetMiningMap() async {
+		await MapBoxActor.shared.resetMiningMap()
+	}
+
+	static func resetBuildingMap(_ mapType: MapType) async {
+		await MapBoxActor.shared.resetBuildingMap(mapType)
+	}
+
+	static func setBuildingMapPlayer(x: Int, y: Int) async {
+		await MapBoxActor.shared.setBuildingMapPlayer(x: x, y: y)
+	}
+
+	static func setMainMapPlayerPosition(_ position: (x: Int, y: Int)) async {
+		await MapBoxActor.shared.setMainMapPlayerPosition(position)
 	}
 }
 
@@ -278,11 +331,11 @@ enum MapType: Codable, Equatable {
 		get async {
 			switch self {
 				case .mainMap:
-					await MapBoxActor.shared.mainMap
+					await MapBoxActor.shared.mainMap!
 				case .mining:
-					await MapBoxActor.shared.miningMap
+					await MapBoxActor.shared.miningMap!
 				default:
-					await MapBoxActor.shared.buildingMap
+					await MapBoxActor.shared.buildingMap!
 			}
 		}
 	}

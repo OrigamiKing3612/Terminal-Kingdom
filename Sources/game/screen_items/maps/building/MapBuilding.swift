@@ -3,21 +3,21 @@ import Foundation
 enum MapBuilding {
 	static func build(grid: inout [[MapTile]], x: Int, y: Int) async {
 		if grid[y][x].type != .plain {
-			MessageBox.message("You can't build here.", speaker: .game)
+			await MessageBox.message("You can't build here.", speaker: .game)
 			return
 		}
 
-		let selectedItem = InventoryBox.buildableItems[InventoryBox.selectedBuildItemIndex]
+		let selectedItem = await InventoryBox.buildableItems[InventoryBox.selectedBuildItemIndex]
 		if await Game.shared.player.has(item: selectedItem.type, count: selectedItem.type == .lumber ? 5 : 1) {
 			if await Game.shared.stages.builder.stage5Stages == .buildHouse {
 				await BuildForBuilderStage5.build(grid: &grid, x: x, y: y)
-			} else if await Game.shared.stages.builder.stage7Stages == .buildInside, case .custom(mapID: _) = MapBox.mapType {
+			} else if await Game.shared.stages.builder.stage7Stages == .buildInside, case .custom(mapID: _) = await MapBox.mapType {
 				await BuildForBuilderStage7.build(grid: &grid, x: x, y: y)
 			} else {
 				await buildNormally(grid: &grid, x: x, y: y)
 			}
 		} else {
-			MessageBox.message("You don't have enough items to build", speaker: .game)
+			await MessageBox.message("You don't have enough items to build", speaker: .game)
 		}
 	}
 
@@ -26,14 +26,14 @@ enum MapBuilding {
 		if grid[y][x].type.isBuildable {
 			await removeNormally(grid: &grid, x: x, y: y)
 		} else {
-			MessageBox.message("You can't remove this tile.", speaker: .game)
+			await MessageBox.message("You can't remove this tile.", speaker: .game)
 		}
 	}
 
 	static func removeNormally(grid: inout [[MapTile]], x: Int, y: Int) async {
 		let tile = grid[y][x]
 		guard tile.type.isBuildable else {
-			MessageBox.message("You can't remove this tile.", speaker: .game)
+			await MessageBox.message("You can't remove this tile.", speaker: .game)
 			return
 		}
 		func placeTile(tile: some BuildableTile, count: Int = 1, name: String, item: () -> ItemType) async {
@@ -42,7 +42,7 @@ enum MapBuilding {
 				let itemToCollect = item()
 				_ = await Game.shared.player.collect(item: .init(type: itemToCollect), count: count)
 			} else {
-				MessageBox.message("You can't remove this \(name).", speaker: .game)
+				await MessageBox.message("You can't remove this \(name).", speaker: .game)
 			}
 		}
 		switch tile.type {
@@ -67,18 +67,18 @@ enum MapBuilding {
 				await placeTile(tile: gateTile, name: "gate", item: { .gate })
 			case .chest:
 				// TODO: break chest
-				MessageBox.message("You can't remove this chest yet", speaker: .game)
+				await MessageBox.message("You can't remove this chest yet", speaker: .game)
 			case let .bed(tile: bedTile):
 				await placeTile(tile: bedTile, name: "bed", item: { .bed })
 			case let .desk(tile: deskTile):
 				await placeTile(tile: deskTile, name: "desk", item: { .desk })
 			default:
-				MessageBox.message("This is a not buildable tile", speaker: .game)
+				await MessageBox.message("This is a not buildable tile", speaker: .game)
 		}
 	}
 
 	static func buildNormally(grid: inout [[MapTile]], x: Int, y: Int) async {
-		let selectedItem = InventoryBox.buildableItems[InventoryBox.selectedBuildItemIndex]
+		let selectedItem = await InventoryBox.buildableItems[InventoryBox.selectedBuildItemIndex]
 		if selectedItem.type == .lumber {
 			if await Game.shared.player.has(item: .lumber, count: 5) {
 				grid[y][x] = MapTile(type: .building(tile: .init(isPlacedByPlayer: true)))
@@ -88,7 +88,7 @@ enum MapBuilding {
 			if await Game.shared.player.has(item: selectedItem.type, count: 1) {
 				if case let .door(tile: tile) = selectedItem.type {
 					do {
-						let (doorPosition, buildingPerimeter) = try CreateCustomMap.checkDoor(tile: tile, grid: grid, x: x, y: y)
+						let (doorPosition, buildingPerimeter) = try await CreateCustomMap.checkDoor(tile: tile, grid: grid, x: x, y: y)
 						let map = createCustomMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.type)
 						let customMap = try CustomMap(grid: map)
 						if let customMap {
@@ -100,7 +100,7 @@ enum MapBuilding {
 							}
 						}
 					} catch {
-						MessageBox.message(error.localizedDescription, speaker: .game)
+						await MessageBox.message(error.localizedDescription, speaker: .game)
 					}
 				} else {
 					grid[y][x] = MapTile(type: itemTypeToMapTileType(selectedItem.type)!)
@@ -114,7 +114,9 @@ enum MapBuilding {
 		// only used in building
 		switch itemType {
 			case .door:
-				MessageBox.message("This shouldn't have happen", speaker: .game)
+				Task {
+					await MessageBox.message("This shouldn't have happen", speaker: .game)
+				}
 				return nil
 			case .fence: return .fence(tile: .init(isPlacedByPlayer: true))
 			case .gate: return .gate(tile: .init(isPlacedByPlayer: true))
@@ -200,22 +202,22 @@ extension Int {
 
 private enum BuildForBuilderStage5 {
 	static func build(grid: inout [[MapTile]], x: Int, y: Int) async {
-		var buildingsPlaced: Int { await Game.shared.stages.builder.stage5BuildingsPlaced }
-		if buildingsPlaced == 0 {
-			MapBuilding.buildNormally(grid: &grid, x: x, y: y)
+		var buildingsPlaced: Int { get async { await Game.shared.stages.builder.stage5BuildingsPlaced } }
+		if await buildingsPlaced == 0 {
+			await MapBuilding.buildNormally(grid: &grid, x: x, y: y)
 			await Game.shared.stages.builder.stage5LastBuildingPlaced = .init(x: x, y: y)
 		} else {
 			// let lastBuildingPlaced = await Game.shared.stages.builder.stage5LastBuildingPlaced
 			// if let lastBuildingPlaced {
 			// if x.isWithInOneOf(lastBuildingPlaced.x), y.isWithInOneOf(lastBuildingPlaced.y) {
-			MapBuilding.buildNormally(grid: &grid, x: x, y: y)
+			await MapBuilding.buildNormally(grid: &grid, x: x, y: y)
 			await Game.shared.stages.builder.stage5LastBuildingPlaced = .init(x: x, y: y)
 			// } else {
-			// 	MessageBox.message("To build a house, you should only build next to the last building you placed.", speaker: .game)
+			// 	await MessageBox.message("To build a house, you should only build next to the last building you placed.", speaker: .game)
 			// 	return
 			// }
 			// } else {
-			// 	MessageBox.message("You haven't placed a building?", speaker: .game)
+			// 	await MessageBox.message("You haven't placed a building?", speaker: .game)
 			// 	return
 			// }
 		}
@@ -225,7 +227,7 @@ private enum BuildForBuilderStage5 {
 private enum BuildForBuilderStage7 {
 	static func build(grid: inout [[MapTile]], x: Int, y: Int) async {
 		// This will only be called inside of a house.
-		MapBuilding.buildNormally(grid: &grid, x: x, y: y)
+		await MapBuilding.buildNormally(grid: &grid, x: x, y: y)
 		await Game.shared.stages.builder.stage7HasBuiltInside = true
 	}
 }

@@ -7,7 +7,8 @@ actor Game {
 	var config: Config = .init()
 	//! TODO: remove nonisolated
 	nonisolated(unsafe) var player = PlayerCharacter()
-	var startingVillageChecks: StartingVillageChecks = .init()
+	//! TODO: remove nonisolated
+	nonisolated(unsafe) var startingVillageChecks: StartingVillageChecks = .init()
 	//! TODO: remove nonisolated
 	nonisolated(unsafe) var stages: Stages = .init()
 	var mapGen: MapGenSave = .init(amplitude: MapGenSave.defaultAmplitude, frequency: MapGenSave.defaultFrequency, seed: .random(in: 2 ... 1_000_000_000))
@@ -31,7 +32,8 @@ actor Game {
 	func initGame() async {
 		hasInited = true
 		map = await MapGen.generateFullMap()
-		MapBox.mainMap = MainMap()
+		//! TODO: this might break something
+		// MapBox.mainMap = MainMap()
 		config = Config.load()
 	}
 
@@ -42,7 +44,7 @@ actor Game {
 	func reloadGame(decodedGame: CodableGame) async {
 		hasInited = decodedGame.hasInited
 		isTypingInMessageBox = decodedGame.isTypingInMessageBox
-		player = decodedGame.player
+		// player = decodedGame.player
 		map = decodedGame.map
 		startingVillageChecks = decodedGame.startingVillageChecks
 		stages = decodedGame.stages
@@ -97,6 +99,10 @@ actor Game {
 
 	func setHasUsedMessageWithOptions(_ newHasUsedMessageWithOptions: Bool) {
 		startingVillageChecks.setHasUsedMessageWithOptions(newHasUsedMessageWithOptions)
+	}
+
+	func loadConfig() async {
+		config = Config.load()
 	}
 }
 

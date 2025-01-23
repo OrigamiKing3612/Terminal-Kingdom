@@ -4,32 +4,35 @@ actor PlayerCharacter {
 	private(set) var name: String = ""
 	private(set) var items: [Item] = []
 	#if DEBUG
-		private(set) var position: Player = .init(x: 5, y: 5)
+		private(set) nonisolated(unsafe) var position: Player = .init(x: 5, y: 5)
 	#else
-		private(set) var position: Player = .init(x: 55, y: 23)
+		private(set) nonisolated(unsafe) var position: Player = .init(x: 55, y: 23)
 	#endif
 	private(set) var direction: PlayerDirection = .down
 	private(set) var quests: [Quest] = []
 	#if DEBUG
 		private(set) var mapType: MapType = .mainMap {
 			didSet {
-				await Game.shared.shared.player.setMapType(mapType)
-				switch mapType {
-					case .mainMap:
-						break
-					case .mining:
-						MapBox.miningMap = .init()
-					default:
-						MapBox.buildingMap = .init(mapType)
+				//! TODO: this might not work
+				Task {
+					await Game.shared.player.setMapType(mapType)
+					switch mapType {
+						case .mainMap:
+							break
+						case .mining:
+							await MapBox.resetMiningMap()
+						default:
+							await MapBox.resetBuildingMap(mapType)
+					}
+					await MapBox.mapBox()
 				}
-				MapBox.mapBox()
 			}
 		}
 	#else
 		private(set) var mapType: MapType = .castle(side: .left)
 	#endif
-
-	var stats: Stats = .init()
+	//! TODO: remove nonisolated(unsafe)
+	nonisolated(unsafe) var stats: Stats = .init()
 	var canBuild: Bool = false
 
 	func setName(_ name: String) {

@@ -2,7 +2,7 @@ protocol MapBoxMap {
 	associatedtype pTile: Tile
 	var grid: [[pTile]] { get set }
 
-	var player: Player { get }
+	var player: Player { get async }
 	var tilePlayerIsOn: pTile { get }
 	func isWalkable(x: Int, y: Int) async -> Bool
 	func render(playerX: Int, playerY: Int, viewportWidth: Int, viewportHeight: Int) async

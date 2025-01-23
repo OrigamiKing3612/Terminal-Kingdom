@@ -15,50 +15,49 @@ enum Keys {
 				await MapBox.interactWithTile()
 			case .L where await MapBox.mapType == .mining:
 				await MapBox.setMapType(.mine)
-				MapBox.buildingMap.player.x = 2
-				MapBox.buildingMap.player.y = 2
-				MapBox.mapBox()
+				await MapBox.setBuildingMapPlayer(x: 2, y: 2)
+				await MapBox.mapBox()
 			#if DEBUG
 				case .o:
-					let tile = MapBox.mapType.map.tilePlayerIsOn as! MapTile
+					let tile = await MapBox.mapType.map.tilePlayerIsOn as! MapTile
 					if let event = tile.event {
 						if case let .crop(crop: cropTile) = tile.type {
-							MessageBox.message("tileType: \(tile.type.name), tileEvent: \(event.name), isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType), \(cropTile.growthStage)", speaker: .dev)
+							await MessageBox.message("tileType: \(tile.type.name), tileEvent: \(event.name), isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType), \(cropTile.growthStage)", speaker: .dev)
 						} else {
-							MessageBox.message("tileType: \(tile.type.name), tileEvent: \(event.name), isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType)", speaker: .dev)
+							await MessageBox.message("tileType: \(tile.type.name), tileEvent: \(event.name), isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType)", speaker: .dev)
 						}
-						MessageBox.message("tileType: \(tile.type.name), tileEvent: \(event.name), isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType)", speaker: .dev)
+						await MessageBox.message("tileType: \(tile.type.name), tileEvent: \(event.name), isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType)", speaker: .dev)
 					} else {
-						MessageBox.message("tileType: \(tile.type.name), tileEvent: nil, isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType)", speaker: .dev)
+						await MessageBox.message("tileType: \(tile.type.name), tileEvent: nil, isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType)", speaker: .dev)
 					}
 			#endif
 			case .zero:
 				Screen.clear()
 				Screen.initialize()
-				Screen.initializeBoxes()
+				await Screen.initializeBoxes()
 			case .i:
 				await Game.shared.setIsInInventoryBox(true)
-				InventoryBox.sides()
+				await InventoryBox.sides()
 			case .b:
-				if await Game.shared.player.canBuild, MapBox.mapType != .mining {
+				if await Game.shared.player.canBuild, await MapBox.mapType != .mining {
 					InventoryBox.resetSelectedBuildItemIndex
 					await Game.shared.setIsBuilding(true)
-					MapBox.sides()
-					InventoryBox.inventoryBox()
+					await MapBox.sides()
+					await InventoryBox.inventoryBox()
 				}
 			case .W:
-				MessageBox.lineUp()
+				await MessageBox.lineUp()
 			case .S:
-				MessageBox.lineDown()
+				await MessageBox.lineDown()
 			#if DEBUG
 				case .t:
-					MessageBox.message("t", speaker: .dev)
-					MapBox.mainMap.grid[MapBox.player.y][MapBox.player.x] = .init(type: .crop(crop: .init(type: .carrot)), isWalkable: true, event: .collectCrop)
+					await MessageBox.message("t", speaker: .dev)
+					await MapBox.setMainMapGridTile(tile: .init(type: .crop(crop: .init(type: .carrot)), isWalkable: true, event: .collectCrop))
 					await Game.shared.addCrop(TilePosition(x: MapBox.player.x, y: MapBox.player.y))
 			#endif
 			default:
 				#if DEBUG
-					MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
+					await MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
 				#else
 					break
 				#endif
@@ -92,7 +91,7 @@ enum Keys {
 				InventoryBox.showBuildHelp.toggle()
 			default:
 				#if DEBUG
-					await MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
+					await await MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
 				#else
 					break
 				#endif
@@ -115,7 +114,7 @@ enum Keys {
 				await InventoryBox.destroyItem()
 			default:
 				#if DEBUG
-					await MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
+					await await MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
 				#else
 					break
 				#endif

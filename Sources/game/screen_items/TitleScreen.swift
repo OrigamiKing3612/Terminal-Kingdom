@@ -80,16 +80,16 @@ enum TitleScreen {
 				case .loadGameOption:
 					if await loadGame() {
 						// Load game
-						MessageBox.message("await Game.shared can not be loaded at this time. Creating new game.", speaker: .game)
+						await MessageBox.message("await Game.shared can not be loaded at this time. Creating new game.", speaker: .game)
 						await newGame()
 					} else {
-						MessageBox.message("No saved game found. Creating new game.", speaker: .game)
+						await MessageBox.message("No saved game found. Creating new game.", speaker: .game)
 						await newGame()
 					}
 				case .helpOption:
-					TitleScreen.help()
+					await TitleScreen.help()
 				case .settingsOption:
-					TitleScreen.settings()
+					await TitleScreen.settings()
 				case .quitOption:
 					endProgram()
 			}
@@ -157,10 +157,11 @@ enum TitleScreen {
 		yStart = printHelpMessage(x: x, y: y + yStart, "Press \(KeyboardKeys.W.render) and \(KeyboardKeys.S.render) to scroll up and down in the message box.")
 
 		yStart = printHelpMessage(x: x, y: y + yStart, "Press any key to quit.")
-		await Screen.print(x: Screen.columns - 1 - Game.shared.version.count, y: Screen.rows - 1, Game.shared.version)
+		Screen.print(x: Screen.columns - 1 - Game.version.count, y: Screen.rows - 1, Game.version)
 	}
 
-	static func settings() {
+	static func settings() async {
+		//! TODO: reload config after saving so this isn't async
 		config = Config.load()
 		let text = "Settings"
 		let x = middleX
@@ -171,11 +172,11 @@ enum TitleScreen {
 			var lastIndex = SettingsScreenOptions.allCases.count - 1
 			var yStart = 3
 			for (index, option) in SettingsScreenOptions.allCases.enumerated() {
-				yStart = printSettingsOption(x: x, y: y + yStart, index: index, text: option.label, configOption: option.configOption())
+				yStart = await printSettingsOption(x: x, y: y + yStart, index: index, text: option.label, configOption: option.configOption())
 				lastIndex = index
 			}
-			yStart = printSettingsOption(x: x, y: yStart + 1, index: lastIndex + 2, text: "Save and Quit", configOption: "")
-			yStart = printSettingsOption(x: x, y: yStart, index: lastIndex + 3, text: "Quit", configOption: "")
+			yStart = await printSettingsOption(x: x, y: yStart + 1, index: lastIndex + 2, text: "Save and Quit", configOption: "")
+			yStart = await printSettingsOption(x: x, y: yStart, index: lastIndex + 3, text: "Quit", configOption: "")
 			let key = TerminalInput.readKey()
 			switch key {
 				case .up, .w, .k, .back_tab:
@@ -185,7 +186,7 @@ enum TitleScreen {
 				case .enter:
 					if selectedSettingOptionIndex == lastIndex + 2 {
 						config.write()
-						await Game.shared.config = Config.load()
+						await Game.shared.loadConfig()
 						return
 					} else if selectedSettingOptionIndex == lastIndex + 3 {
 						return
@@ -198,7 +199,7 @@ enum TitleScreen {
 		}
 	}
 
-	private static func printSettingsOption(x: Int, y: Int, index: Int, text: String, configOption: String) -> Int {
+	private static func printSettingsOption(x: Int, y: Int, index: Int, text: String, configOption: String) async -> Int {
 		let isSelected = selectedSettingOptionIndex == index
 		let configOptionToPrint = configOption == "" ? "" : ": \(configOption)"
 		await Screen.print(x: x - (text.count / 2), y: y, "\(isSelected ? Game.shared.config.selectedIcon : " ")\(text)\(configOptionToPrint)".styled(with: .bold, styledIf: isSelected))

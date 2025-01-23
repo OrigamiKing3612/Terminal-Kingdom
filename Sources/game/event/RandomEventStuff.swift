@@ -6,26 +6,26 @@ enum RandomEventStuff {
 		}
 		switch await Game.shared.startingVillageChecks.hasBeenTaughtToChopLumber {
 			case .no:
-				MessageBox.message("Here is what you need to do, take this axe and walk up to a tree and press the \(KeyboardKeys.space.render), or the \(KeyboardKeys.enter.render) key to chop it down. Please go get 10 lumber and bring it to me to show me you can do it.", speaker: speaker)
+				await MessageBox.message("Here is what you need to do, take this axe and walk up to a tree and press the \(KeyboardKeys.space.render), or the \(KeyboardKeys.enter.render) key to chop it down. Please go get 10 lumber and bring it to me to show me you can do it.", speaker: speaker)
 				await Game.shared.stages.random.chopTreeAxeUUIDToRemove = await Game.shared.player.collectIfNotPresent(item: .init(type: .axe(type: .init()), canBeSold: false))
 				StatusBox.quest(.chopLumber(for: choppingLumberTeachingDoorTypes.name))
-				await Game.shared.startingVillageChecks.hasBeenTaughtToChopLumber = .inProgress(by: choppingLumberTeachingDoorTypes)
+				await Game.shared.startingVillageChecks.setHasBeenTaughtToChopLumber(.inProgress(by: choppingLumberTeachingDoorTypes))
 			case .inProgress(by: choppingLumberTeachingDoorTypes):
 				if await Game.shared.player.has(item: .lumber, count: 10) {
-					MessageBox.message("Nice! 10 lumber! Now we can continue.", speaker: speaker)
+					await MessageBox.message("Nice! 10 lumber! Now we can continue.", speaker: speaker)
 					await Game.shared.player.removeItem(item: .lumber, count: 10)
 
 					if let id = await Game.shared.stages.random.chopTreeAxeUUIDToRemove {
 						await Game.shared.player.removeItem(id: id)
 					}
-					await Game.shared.startingVillageChecks.hasBeenTaughtToChopLumber = .yes
+					await Game.shared.startingVillageChecks.setHasBeenTaughtToChopLumber(.yes)
 					StatusBox.removeQuest(quest: .chopLumber(for: choppingLumberTeachingDoorTypes.name))
 				} else {
-					await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .lumber) - 10)) lumber.", speaker: speaker)
+					await await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .lumber) - 10)) lumber.", speaker: speaker)
 				}
 			default:
 				if case let .inProgress(otherDoorType) = await Game.shared.startingVillageChecks.hasBeenTaughtToChopLumber {
-					MessageBox.message("Please finish \(otherDoorType.name)'s quest first, then come back here.", speaker: speaker)
+					await MessageBox.message("Please finish \(otherDoorType.name)'s quest first, then come back here.", speaker: speaker)
 				}
 		}
 	}

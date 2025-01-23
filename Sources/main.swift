@@ -10,6 +10,7 @@ defer {
 }
 
 if await Game.shared.hasInited == false {
+	MapBoxActor.shared = await MapBoxActor()
 	await Game.shared.initGame()
 	Screen.initialize()
 	await showTitleScreen()
@@ -28,7 +29,7 @@ func showTitleScreen() async {
 		await option.action()
 		await showTitleScreen()
 	} else {
-		Screen.initializeBoxes()
+		await Screen.initializeBoxes()
 		await option.action()
 	}
 }
@@ -73,7 +74,7 @@ func newGame() async {
 	let playerName = await MessageBox.messageWithTyping("Let's create your character. What is your name?", speaker: .game)
 	await MessageBox.message("Welcome \(playerName)!", speaker: .game)
 	await Game.shared.player.setName(playerName)
-	StatusBox.statusBox()
+	await StatusBox.statusBox()
 }
 
 func startTasks() async {
@@ -87,11 +88,11 @@ func startTasks() async {
 			while true {
 				if await Game.shared.crops.count > 0 {
 					for position in await Game.shared.crops {
-						let tile = MapBox.mainMap.grid[position.y][position.x]
+						let tile = await MapBox.mainMap.grid[position.y][position.x]
 						if case let .crop(crop) = tile.type {
 							var newCropTile = CropTile(type: crop.type, growthStage: crop.growthStage)
 							newCropTile.grow()
-							MapBox.mainMap.grid[position.y][position.x] = .init(type: .crop(crop: newCropTile), isWalkable: tile.isWalkable, event: tile.event)
+							await MapBox.setMainMapGridTile(x: position.x, y: position.y, tile: .init(type: .crop(crop: newCropTile), isWalkable: tile.isWalkable, event: tile.event))
 						}
 					}
 				}
@@ -104,7 +105,7 @@ func startTasks() async {
 func mainGameLoop() async {
 	while true {
 		if StatusBox.updateQuestBox {
-			StatusBox.questArea()
+			await StatusBox.questArea()
 		}
 		await InventoryBox.inventoryBox()
 

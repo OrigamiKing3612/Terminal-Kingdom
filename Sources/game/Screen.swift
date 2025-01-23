@@ -26,12 +26,11 @@ enum Screen {
 		}
 	}
 
-	static func initializeBoxes() {
-		MapBoxActor.shared.initialize()
-		MessageBox.messageBox()
-		MapBox.mapBox()
-		InventoryBox.inventoryBox()
-		StatusBox.statusBox()
+	static func initializeBoxes() async {
+		await MessageBox.messageBox()
+		await MapBox.mapBox()
+		await InventoryBox.inventoryBox()
+		await StatusBox.statusBox()
 	}
 
 	private struct TerminalSize {

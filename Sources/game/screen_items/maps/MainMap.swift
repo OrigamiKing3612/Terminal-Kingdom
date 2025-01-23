@@ -2,8 +2,8 @@ struct MainMap: MapBoxMap {
 	var grid: [[MapTile]]
 
 	var player: Player {
-		get { Game.shared.player.position }
-		set { Game.shared.player.setPlayerPosition(x: newValue.x, y: newValue.y) }
+		get async { await Game.shared.player.position }
+		// set { Game.shared.player.setPlayerPosition(x: newValue.x, y: newValue.y) }
 	}
 
 	private var hasFoundPlayerStart = false
@@ -13,7 +13,9 @@ struct MainMap: MapBoxMap {
 	}
 
 	var tilePlayerIsOn: MapTile {
-		grid[player.y][player.x]
+		get async {
+			await grid[player.y][player.x]
+		}
 	}
 
 	func isWalkable(x: Int, y: Int) async -> Bool {
@@ -48,20 +50,20 @@ struct MainMap: MapBoxMap {
 	}
 
 	mutating func movePlayer(_ direction: PlayerDirection) async {
-		let oldX = player.x
-		let oldY = player.y
+		let oldX = await player.x
+		let oldY = await player.y
 
 		await Game.shared.player.setDirection(direction)
 
 		switch direction {
 			case .up where await isWalkable(x: player.x, y: player.y - 1):
-				player.y -= 1
+				await Game.shared.player.setPlayerPosition(x: player.x, y: player.y - 1)
 			case .down where await isWalkable(x: player.x, y: player.y + 1):
-				player.y += 1
+				await Game.shared.player.setPlayerPosition(x: player.x, y: player.y + 1)
 			case .left where await isWalkable(x: player.x - 1, y: player.y):
-				player.x -= 1
+				await Game.shared.player.setPlayerPosition(x: player.x - 1, y: player.y)
 			case .right where await isWalkable(x: player.x + 1, y: player.y):
-				player.x += 1
+				await Game.shared.player.setPlayerPosition(x: player.x + 1, y: player.y)
 			default:
 				break
 		}

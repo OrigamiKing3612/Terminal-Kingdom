@@ -5,11 +5,11 @@ struct PotTile: Codable, Equatable {
 		self.cropTile = cropTile
 	}
 
-	static func renderCropInPot(tile: PotTile) -> String {
+	static func renderCropInPot(tile: PotTile) async -> String {
 		if tile.cropTile.type == .none {
-			Game.config.useNerdFont ? "󰋥" : "p"
+			await Game.shared.config.useNerdFont ? "󰋥" : "p"
 		} else {
-			CropTile.renderCrop(tile: tile.cropTile)
+			await CropTile.renderCrop(tile: tile.cropTile)
 		}
 	}
 }

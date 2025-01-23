@@ -1,13 +1,18 @@
 enum StatusBox {
 	private(set) nonisolated(unsafe) static var updateQuestBox = false
 	static var quests: [Quest] {
-		await Game.shared.player.quests
+		get async {
+			await Game.shared.player.quests
+		}
 	}
 
+	//! TODO: this will probably break stuff
 	nonisolated(unsafe) static var showStatusBox = true {
 		didSet {
 			if showStatusBox {
-				statusBox()
+				Task {
+					await statusBox()
+				}
 			} else {
 				clear()
 			}
@@ -25,16 +30,16 @@ enum StatusBox {
 		updateQuestBox = true
 	}
 
-	static func statusBox() {
+	static func statusBox() async {
 		updateQuestBox = false
-		clear()
-		sides()
-		playerInfoArea()
-		questArea()
-		inventoryArea()
+		await clear()
+		await sides()
+		await playerInfoArea()
+		await questArea()
+		await inventoryArea()
 	}
 
-	static func playerInfoArea() {
+	static func playerInfoArea() async {
 		if await !(Game.shared.player.name == "") {
 			await Screen.print(x: playerInfoStartX, y: playerInfoStartY, "\(Game.shared.player.name):".styled(with: .bold))
 		}
@@ -54,18 +59,18 @@ enum StatusBox {
 		questAreaStartY = yValueToPrint + 1
 	}
 
-	static func position() {
-		if MapBox.mapType == .mainMap {
+	static func position() async {
+		if await MapBox.mapType == .mainMap {
 			let text = await " \(Game.shared.player.direction.render) x: \(Game.shared.player.position.x); y: \(Game.shared.player.position.y)"
 			Screen.print(x: playerInfoEndX - text.count, y: playerInfoStartY, text)
 		}
 	}
 
-	static func questArea() {
+	static func questArea() async {
 		Screen.print(x: questAreaStartX, y: questAreaStartY, "Quests:".styled(with: .bold))
 		let maxVisibleLines = height - 2
 		var renderedLines: [String] = []
-		for (index, quest) in quests.enumerated() {
+		for (index, quest) in await quests.enumerated() {
 			let number = "\(index + 1)".styled(with: .bold)
 			let text = "\(number). \(quest.label)"
 			renderedLines.append(contentsOf: text.wrappedWithStyles(toWidth: width - 2))
@@ -84,7 +89,7 @@ enum StatusBox {
 
 	static func inventoryArea() {}
 
-	static func sides() {
+	static func sides() async {
 		await Screen.print(x: startX, y: startY, String(repeating: Game.shared.horizontalLine, count: width + 1))
 		for y in (startY + 1) ..< endY {
 			await Screen.print(x: startX, y: y, Game.shared.verticalLine)
@@ -100,31 +105,31 @@ enum StatusBox {
 		}
 	}
 
-	static func quest(_ quest: Quest) {
+	static func quest(_ quest: Quest) async {
 		clear()
 		await Game.shared.player.addQuest(quest)
-		statusBox()
+		await statusBox()
 	}
 
-	static func removeQuest(quest: Quest) {
+	static func removeQuest(quest: Quest) async {
 		clear()
 		await Game.shared.player.removeQuest(quest: quest)
-		statusBox()
+		await statusBox()
 	}
 
-	static func removeQuest(index: Int) {
+	static func removeQuest(index: Int) async {
 		clear()
 		await Game.shared.player.removeQuest(index: index)
-		statusBox()
+		await statusBox()
 	}
 
 	@discardableResult
-	static func removeLastQuest() -> Quest {
+	static func removeLastQuest() async -> Quest {
 		await Game.shared.player.removeLastQuest()
 	}
 
-	static func updateLastQuest(newQuest: Quest) {
+	static func updateLastQuest(newQuest: Quest) async {
 		await Game.shared.player.updateLastQuest(newQuest: newQuest)
-		statusBox()
+		await statusBox()
 	}
 }

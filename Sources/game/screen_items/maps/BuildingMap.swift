@@ -144,4 +144,9 @@ struct BuildingMap: MapBoxMap {
 	mutating func destroy() async {
 		await MapBuilding.destory(grid: &grid, x: player.x, y: player.y)
 	}
+
+	mutating func setPlayer(x: Int, y: Int) {
+		player.x = x
+		player.y = y
+	}
 }
