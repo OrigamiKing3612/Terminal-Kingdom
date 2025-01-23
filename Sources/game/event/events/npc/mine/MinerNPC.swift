@@ -135,7 +135,7 @@ enum MinerNPC {
 			case .mine:
 				if await Game.shared.player.has(item: .clay, count: 20) {
 					await MessageBox.message("Yay thank you! You have collected enough clay.", speaker: .miner)
-					await Game.shared.player.stats.miningSkillLevel = .one
+					await Game.shared.player.setMiningSkillLevel(.one)
 					await Game.shared.player.removeItem(item: .clay, count: 20)
 					await StatusBox.removeQuest(quest: .mine1)
 					await Game.shared.stages.mine.stage2Stages = .done
@@ -173,9 +173,8 @@ enum MinerNPC {
 					if let id = await Game.shared.stages.mine.stage3AxeUUIDToRemove {
 						await Game.shared.player.removeItem(id: id)
 					}
-					await Game.shared.player.stats.mineLevel = .two
+					await Game.shared.player.setMineLevel(.two)
 					await Game.shared.stages.mine.stage3Stages = .done
-					await Game.shared.player.stats.miningSkillLevel = .two
 					await StatusBox.removeQuest(quest: .mine3)
 					fallthrough
 				} else {
@@ -206,7 +205,7 @@ enum MinerNPC {
 						await Game.shared.player.removeItem(id: id)
 					}
 					await Game.shared.stages.mine.stage4Stages = .done
-					await Game.shared.player.stats.miningSkillLevel = .three
+					await Game.shared.player.setMiningSkillLevel(.three)
 					await StatusBox.removeQuest(quest: .mine4)
 					fallthrough
 				} else {
@@ -239,7 +238,7 @@ enum MinerNPC {
 						await Game.shared.player.removeItem(id: id)
 					}
 					await Game.shared.stages.mine.stage5Stages = .done
-					await Game.shared.player.stats.miningSkillLevel = .four
+					await Game.shared.player.setMiningSkillLevel(.four)
 					await StatusBox.removeQuest(quest: .mine5)
 					fallthrough
 				} else {
@@ -274,7 +273,7 @@ enum MinerNPC {
 						await Game.shared.player.removeItem(id: id)
 					}
 					await Game.shared.stages.mine.stage6Stages = .done
-					await Game.shared.player.stats.miningSkillLevel = .five
+					await Game.shared.player.setMiningSkillLevel(.five)
 					await StatusBox.removeQuest(quest: .mine6)
 					fallthrough
 				} else {
@@ -308,8 +307,8 @@ enum MinerNPC {
 			case .upgraded:
 				await MessageBox.message("Now that you have upgraded the mine, you can go to level 3! There you can find gold.", speaker: .miner)
 				await Game.shared.stages.mine.stage7Stages = .done
-				await Game.shared.player.stats.miningSkillLevel = .seven
-				await Game.shared.player.stats.mineLevel = .three
+				await Game.shared.player.setMiningSkillLevel(.seven)
+				await Game.shared.player.setMineLevel(.three)
 				await StatusBox.removeQuest(quest: .mine7)
 				fallthrough
 			case .done:
@@ -358,7 +357,7 @@ enum MinerNPC {
 					await MessageBox.message("Thank you for getting the gold!", speaker: .miner)
 					await Game.shared.player.removeItem(item: .gold, count: 5)
 					await Game.shared.stages.mine.stage9Stages = .done
-					await Game.shared.player.stats.miningSkillLevel = .nine
+					await Game.shared.player.setMiningSkillLevel(.nine)
 					if let id = await Game.shared.stages.mine.stage9PickaxeUUIDToRemove {
 						await Game.shared.player.removeItem(id: id)
 					}
@@ -391,7 +390,7 @@ enum MinerNPC {
 			case .comeBack:
 				await MessageBox.message("Thank you for selling the gold to the \("Salesman".styled(with: .bold)). I want you to keep the coins! Thank you for being a good junior miner!", speaker: .miner)
 				await Game.shared.stages.mine.stage10Stages = .done
-				await Game.shared.player.stats.miningSkillLevel = .ten
+				await Game.shared.player.setMiningSkillLevel(.ten)
 				await StatusBox.removeQuest(quest: .mine10)
 				fallthrough
 			case .done:

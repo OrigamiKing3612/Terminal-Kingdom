@@ -137,7 +137,7 @@ extension SalesmanNPC {
 		if await Game.shared.startingVillageChecks.hasBeenTaughtToChopLumber == .yes {
 			await buyOption(options: &options, item: .lumber)
 		}
-		switch (skillLevel, skillLevel.stat) {
+		switch await (skillLevel, skillLevel.stat) {
 			case (.miningSkillLevel, .one):
 				await buyOption(options: &options, item: .pickaxe(type: .init()))
 				await buyOption(options: &options, item: .stone)

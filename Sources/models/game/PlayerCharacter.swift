@@ -16,7 +16,7 @@ actor PlayerCharacter {
 		private(set) var mapType: MapType = .castle(side: .left)
 	#endif
 	//! TODO: remove nonisolated(unsafe)
-	nonisolated(unsafe) var stats: Stats = .init()
+	var stats: Stats = .init()
 	nonisolated(unsafe) var canBuild: Bool = false
 
 	func setName(_ name: String) {

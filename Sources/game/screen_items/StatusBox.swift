@@ -46,9 +46,10 @@ enum StatusBox {
 		var yValueToPrint = playerInfoStartY + 1
 		let longestSkillName = AllSkillLevels.allCases.map(\.name.count).max() ?? 0
 		for skillLevel in AllSkillLevels.allCases {
-			if skillLevel.stat.rawValue > 0 {
+			if await skillLevel.stat.rawValue > 0 {
 				var count = ""
-				for _ in 0 ..< skillLevel.stat.rawValue {
+				let statRawValue = await skillLevel.stat.rawValue
+				for _ in 0 ..< statRawValue {
 					count += "#"
 				}
 				let spaces = String(repeating: " ", count: longestSkillName - skillLevel.name.count)
