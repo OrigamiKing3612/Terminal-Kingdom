@@ -32,8 +32,6 @@ actor Game {
 	func initGame() async {
 		hasInited = true
 		map = await MapGen.generateFullMap()
-		//! TODO: this might break something
-		// MapBox.mainMap = MainMap()
 		config = await Config.load()
 	}
 

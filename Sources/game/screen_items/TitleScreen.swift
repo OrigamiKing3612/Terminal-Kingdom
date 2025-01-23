@@ -1,17 +1,17 @@
-enum TitleScreen {
-	nonisolated(unsafe) static var startX: Int { 0 }
-	nonisolated(unsafe) static var middleX: Int { Screen.columns / 2 }
-	nonisolated(unsafe) static var endX: Int { Screen.columns }
+struct TitleScreen {
+	private nonisolated(unsafe) var startX: Int { 0 }
+	private nonisolated(unsafe) var middleX: Int { Screen.columns / 2 }
+	private nonisolated(unsafe) var endX: Int { Screen.columns }
 
-	nonisolated(unsafe) static var startY: Int { 0 }
-	nonisolated(unsafe) static var middleY: Int { Screen.rows / 2 }
-	nonisolated(unsafe) static var endY: Int { Screen.rows }
+	private nonisolated(unsafe) var startY: Int { 0 }
+	private nonisolated(unsafe) var middleY: Int { Screen.rows / 2 }
+	private nonisolated(unsafe) var endY: Int { Screen.rows }
 
-	nonisolated(unsafe) static var selectedOptionIndex = 0
-	nonisolated(unsafe) static var selectedSettingOptionIndex = 0
-	nonisolated(unsafe) static var config = Config()
+	private nonisolated(unsafe) var selectedOptionIndex = 0
+	private nonisolated(unsafe) var selectedSettingOptionIndex = 0
+	private nonisolated(unsafe) var config = Config()
 
-	static func show() async -> TitleScreenOptions {
+	mutating func show() async -> TitleScreenOptions {
 		// Quickly start a new game in debug mode
 		#if DEBUG
 			return TitleScreenOptions.newGameOption
@@ -73,7 +73,7 @@ enum TitleScreen {
 			}
 		}
 
-		func action() async {
+		func action(screen: inout TitleScreen) async {
 			switch self {
 				case .newGameOption:
 					await newGame()
@@ -87,9 +87,9 @@ enum TitleScreen {
 						await newGame()
 					}
 				case .helpOption:
-					await TitleScreen.help()
+					await screen.help()
 				case .settingsOption:
-					await TitleScreen.settings()
+					await screen.settings()
 				case .quitOption:
 					endProgram()
 			}
@@ -128,7 +128,7 @@ enum TitleScreen {
 			}
 		}
 
-		func configOption() -> String {
+		func configOption(_ config: Config) -> String {
 			switch self {
 				case .useNerdFontOption:
 					config.useNerdFont ? "On" : "Off"
@@ -142,7 +142,7 @@ enum TitleScreen {
 		}
 	}
 
-	static func help() {
+	func help() {
 		let text = "Help"
 		let x = middleX
 		let y = middleY - (Screen.rows / 2)
@@ -160,7 +160,7 @@ enum TitleScreen {
 		Screen.print(x: Screen.columns - 1 - Game.version.count, y: Screen.rows - 1, Game.version)
 	}
 
-	static func settings() async {
+	mutating func settings() async {
 		//! TODO: reload config after saving so this isn't async
 		config = await Config.load()
 		let text = "Settings"
@@ -172,7 +172,7 @@ enum TitleScreen {
 			var lastIndex = SettingsScreenOptions.allCases.count - 1
 			var yStart = 3
 			for (index, option) in SettingsScreenOptions.allCases.enumerated() {
-				yStart = await printSettingsOption(x: x, y: y + yStart, index: index, text: option.label, configOption: option.configOption())
+				yStart = await printSettingsOption(x: x, y: y + yStart, index: index, text: option.label, configOption: option.configOption(config))
 				lastIndex = index
 			}
 			yStart = await printSettingsOption(x: x, y: yStart + 1, index: lastIndex + 2, text: "Save and Quit", configOption: "")
@@ -199,14 +199,14 @@ enum TitleScreen {
 		}
 	}
 
-	private static func printSettingsOption(x: Int, y: Int, index: Int, text: String, configOption: String) async -> Int {
+	private func printSettingsOption(x: Int, y: Int, index: Int, text: String, configOption: String) async -> Int {
 		let isSelected = selectedSettingOptionIndex == index
 		let configOptionToPrint = configOption == "" ? "" : ": \(configOption)"
 		await Screen.print(x: x - (text.count / 2), y: y, "\(isSelected ? Game.shared.config.selectedIcon : " ")\(text)\(configOptionToPrint)".styled(with: .bold, styledIf: isSelected))
 		return y + 1
 	}
 
-	private static func printHelpMessage(x: Int, y: Int, _ text: String) -> Int {
+	private func printHelpMessage(x: Int, y: Int, _ text: String) -> Int {
 		Screen.print(x: x - (text.withoutStyles.count / 2), y: y, text)
 		return y + 1
 	}

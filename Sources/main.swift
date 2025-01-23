@@ -19,18 +19,19 @@ if await Game.shared.hasInited == false {
 }
 
 func showTitleScreen() async {
-	let option = await TitleScreen.show()
+	var screen = TitleScreen()
+	let option = await screen.show()
 	Screen.clear()
 	if option == .helpOption {
-		await option.action()
+		await option.action(screen: &screen)
 		_ = TerminalInput.readKey()
 		await showTitleScreen()
 	} else if option == .settingsOption {
-		await option.action()
+		await option.action(screen: &screen)
 		await showTitleScreen()
 	} else {
 		await Screen.initializeBoxes()
-		await option.action()
+		await option.action(screen: &screen)
 	}
 }
 

@@ -135,16 +135,16 @@ enum MessageBox {
 				if input.count > 20 {
 					input.removeLast()
 				}
-				//! TODO: This might not work
-				// await updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: .game)
 			}
 		}
 		while true {
 			let key = TerminalInput.readKey()
 			if key.isLetter {
 				input += key.rawValue
+				await updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: .game)
 			} else if key == .space {
 				input += " "
+				await updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: .game)
 			} else if key == .backspace {
 				if !input.isEmpty {
 					input.removeLast()
@@ -181,14 +181,13 @@ enum MessageBox {
 				if input.count > 20 {
 					input.removeLast()
 				}
-				//! This might not work
-				// 	await updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: .game)
 			}
 		}
 		while true {
 			let key = TerminalInput.readKey()
 			if key.isNumber {
 				input += key.rawValue
+				await updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: .game)
 			} else if key == .backspace {
 				if !input.isEmpty {
 					input.removeLast()
