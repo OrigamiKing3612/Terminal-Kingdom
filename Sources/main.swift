@@ -10,16 +10,16 @@ defer {
 }
 
 if await Game.shared.hasInited == false {
-	MapBoxActor.shared = await MapBoxActor()
-	await Game.shared.initGame()
 	Screen.initialize()
+	await Game.shared.initGame()
+	MapBoxActor.shared = await MapBoxActor()
 	await showTitleScreen()
 	await startTasks()
 	await mainGameLoop()
 }
 
 func showTitleScreen() async {
-	let option = TitleScreen.show()
+	let option = await TitleScreen.show()
 	Screen.clear()
 	if option == .helpOption {
 		await option.action()

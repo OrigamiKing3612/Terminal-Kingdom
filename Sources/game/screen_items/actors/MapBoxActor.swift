@@ -28,8 +28,11 @@ actor MapBoxActor {
 
 	init() async {
 		self.mainMap = await MainMap()
+		print("mainMap")
 		self.miningMap = await MineMap()
+		print("miningMap")
 		self.buildingMap = await BuildingMap(.castle(side: .left))
+		print("buildingMap")
 	}
 
 	func updateMainMapTile(at x: Int, y: Int, with tile: MapTile) async {

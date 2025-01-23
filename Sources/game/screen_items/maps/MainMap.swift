@@ -7,6 +7,11 @@ struct MainMap: MapBoxMap {
 
 	private var hasFoundPlayerStart = false
 
+	private init() {
+		self.grid = []
+		print("This shouldn't be used")
+	}
+
 	init() async {
 		self.grid = await Game.shared.map
 	}

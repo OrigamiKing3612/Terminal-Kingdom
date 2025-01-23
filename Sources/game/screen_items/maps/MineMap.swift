@@ -11,14 +11,11 @@ struct MineMap: MapBoxMap {
 
 	init() async {
 		self.grid = await MineMap.createGrid()
-
 		let middleX = grid[0].count / 2
 		//        let middleY = self.grid.count / 2
-
 		grid[0][middleX] = MineTile(type: .playerStart, isWalkable: true)
 		grid[0][middleX + 1] = MineTile(type: .plain, isWalkable: true)
 		grid[0][middleX - 1] = MineTile(type: .plain, isWalkable: true)
-
 		if let (startX, startY) = MineTile.findTilePosition(of: .playerStart, in: grid) {
 			player.x = startX
 			player.y = startY

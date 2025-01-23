@@ -11,7 +11,7 @@ enum TitleScreen {
 	nonisolated(unsafe) static var selectedSettingOptionIndex = 0
 	nonisolated(unsafe) static var config = Config()
 
-	static func show() -> TitleScreenOptions {
+	static func show() async -> TitleScreenOptions {
 		// Quickly start a new game in debug mode
 		#if DEBUG
 			return TitleScreenOptions.newGameOption
@@ -61,9 +61,9 @@ enum TitleScreen {
 		var label: String {
 			switch self {
 				case .newGameOption:
-					"New await Game.shared"
+					"New Game"
 				case .loadGameOption:
-					"Load await Game.shared"
+					"Load Game"
 				case .helpOption:
 					"Help"
 				case .settingsOption:
@@ -80,7 +80,7 @@ enum TitleScreen {
 				case .loadGameOption:
 					if await loadGame() {
 						// Load game
-						await MessageBox.message("await Game.shared can not be loaded at this time. Creating new game.", speaker: .game)
+						await MessageBox.message("Game can not be loaded at this time. Creating new game.", speaker: .game)
 						await newGame()
 					} else {
 						await MessageBox.message("No saved game found. Creating new game.", speaker: .game)
