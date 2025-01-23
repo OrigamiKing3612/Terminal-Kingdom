@@ -24,7 +24,7 @@ struct DoorTile: BuildableTile, Hashable {
 			(.shop, Game.shared.stages.blacksmith.stage9Stages == .goToSalesman),
 			(.mine, Game.shared.stages.builder.stage1Stages == .collect),
 		]
-		if MapBox.mapType == .mainMap {
+		if await MapBox.mapType == .mainMap {
 			for (doorType, condition) in conditions {
 				if tile.type == doorType, condition {
 					return "!".styled(with: [.bold, .red])

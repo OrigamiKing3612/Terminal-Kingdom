@@ -136,10 +136,7 @@ enum MessageBox {
 					input.removeLast()
 				}
 				//! TODO: This might not work
-
-				Task {
-					await updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: .game)
-				}
+				// await updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: .game)
 			}
 		}
 		while true {
@@ -185,9 +182,7 @@ enum MessageBox {
 					input.removeLast()
 				}
 				//! This might not work
-				Task {
-					await updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: .game)
-				}
+				// 	await updateLastMessage(newMessage: "   \(typingIcon)" + input, speaker: .game)
 			}
 		}
 		while true {

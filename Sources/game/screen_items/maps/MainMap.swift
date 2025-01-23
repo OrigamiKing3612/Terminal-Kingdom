@@ -3,7 +3,6 @@ struct MainMap: MapBoxMap {
 
 	var player: Player {
 		get async { await Game.shared.player.position }
-		// set { Game.shared.player.setPlayerPosition(x: newValue.x, y: newValue.y) }
 	}
 
 	private var hasFoundPlayerStart = false
@@ -52,27 +51,29 @@ struct MainMap: MapBoxMap {
 	mutating func movePlayer(_ direction: PlayerDirection) async {
 		let oldX = await player.x
 		let oldY = await player.y
+		let x = await player.x
+		let y = await player.y
 
 		await Game.shared.player.setDirection(direction)
 
 		switch direction {
-			case .up where await isWalkable(x: player.x, y: player.y - 1):
+			case .up where await isWalkable(x: x, y: y - 1):
 				await Game.shared.player.setPlayerPosition(x: player.x, y: player.y - 1)
-			case .down where await isWalkable(x: player.x, y: player.y + 1):
+			case .down where await isWalkable(x: x, y: y + 1):
 				await Game.shared.player.setPlayerPosition(x: player.x, y: player.y + 1)
-			case .left where await isWalkable(x: player.x - 1, y: player.y):
+			case .left where await isWalkable(x: x - 1, y: y):
 				await Game.shared.player.setPlayerPosition(x: player.x - 1, y: player.y)
-			case .right where await isWalkable(x: player.x + 1, y: player.y):
+			case .right where await isWalkable(x: x + 1, y: y):
 				await Game.shared.player.setPlayerPosition(x: player.x + 1, y: player.y)
 			default:
 				break
 		}
 
-		tilePlayerIsOn.type.specialAction(direction: direction, player: &player, grid: grid)
+		await tilePlayerIsOn.type.specialAction(direction: direction, grid: grid)
 
-		if oldX != player.x || oldY != player.y {
+		if oldX != x || oldY != y {
 			await map()
-			StatusBox.position()
+			await StatusBox.position()
 		}
 	}
 
@@ -80,8 +81,7 @@ struct MainMap: MapBoxMap {
 		// TODO: could fix #2
 		if !hasFoundPlayerStart {
 			if let (startX, startY) = MapTile.findTilePosition(of: .playerStart, in: grid) {
-				player.x = startX
-				player.y = startY
+				await Game.shared.player.setPlayerPosition(x: startX, y: startY)
 			} else {
 				print("Error: Could not find playerStart tile in the grid.")
 			}
@@ -93,13 +93,8 @@ struct MainMap: MapBoxMap {
 		await render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
 	}
 
-	mutating func setPlayerPosition(_ position: (x: Int, y: Int)) {
-		player.x = position.x
-		player.y = position.y
-	}
-
 	func interactWithTile() async {
-		let tile = grid[player.y][player.x]
+		let tile = await grid[player.y][player.x]
 		if tile.isInteractable {
 			if let event = tile.event {
 				await MapTileEvent.trigger(event: event)
@@ -109,8 +104,8 @@ struct MainMap: MapBoxMap {
 		}
 	}
 
-	mutating func updateTile(newTile: MapTile) {
-		grid[player.y][player.x] = newTile
+	mutating func updateTile(newTile: MapTile) async {
+		await grid[player.y][player.x] = newTile
 	}
 
 	mutating func build() async {

@@ -79,8 +79,8 @@ enum MapTileType: TileType {
 			case .fence: await (Game.shared.config.useNerdFont ? "f" : "f").styled(with: .brown)
 			case .gate: "g"
 			case let .crop(crop: cropTile): await CropTile.renderCrop(tile: cropTile)
-			case let .pot(tile: potTile): PotTile.renderCropInPot(tile: potTile)
-			case let .station(station: station): StationTile.render(tile: station)
+			case let .pot(tile: potTile): await PotTile.renderCropInPot(tile: potTile)
+			case let .station(station: station): await StationTile.render(tile: station)
 			case .startMining: "M"
 			case let .npc(tile: tile): await NPCTile.renderNPC(tile: tile)
 			case .shopStandingArea(type: _): "."
@@ -127,7 +127,8 @@ enum MapTileType: TileType {
 		}
 	}
 
-	func specialAction(direction: PlayerDirection, player: inout Player, grid: [[MapTile]]) {
+	func specialAction(direction: PlayerDirection, grid: [[MapTile]]) async {
+		let player = await Game.shared.player.position
 		func isWalkable(x: Int, y: Int) -> Bool {
 			guard x >= 0, y >= 0, y < grid.count, x < grid[y].count else { return false }
 			return grid[y][x].isWalkable
@@ -136,13 +137,13 @@ enum MapTileType: TileType {
 			case .ice:
 				switch direction {
 					case .up where isWalkable(x: player.x, y: player.y - 1):
-						player.y -= 1
+						await Game.shared.player.setPlayerPosition(addY: -1)
 					case .down where isWalkable(x: player.x, y: player.y + 1):
-						player.y += 1
+						await Game.shared.player.setPlayerPosition(addY: 1)
 					case .left where isWalkable(x: player.x - 1, y: player.y):
-						player.x -= 1
+						await Game.shared.player.setPlayerPosition(addX: -1)
 					case .right where isWalkable(x: player.x + 1, y: player.y):
-						player.x += 1
+						await Game.shared.player.setPlayerPosition(addX: 1)
 					default:
 						break
 				}

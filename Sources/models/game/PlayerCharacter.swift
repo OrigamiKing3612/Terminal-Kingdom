@@ -33,7 +33,7 @@ actor PlayerCharacter {
 	#endif
 	//! TODO: remove nonisolated(unsafe)
 	nonisolated(unsafe) var stats: Stats = .init()
-	var canBuild: Bool = false
+	nonisolated(unsafe) var canBuild: Bool = false
 
 	func setName(_ name: String) {
 		self.name = name
@@ -187,6 +187,14 @@ actor PlayerCharacter {
 	func setPlayerPosition(x: Int, y: Int) {
 		position.x = x
 		position.y = y
+	}
+
+	func setPlayerPosition(addX: Int) {
+		position.x += addX
+	}
+
+	func setPlayerPosition(addY: Int) {
+		position.y += addY
 	}
 
 	func addQuest(_ quest: Quest) {

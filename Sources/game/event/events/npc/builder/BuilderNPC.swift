@@ -111,10 +111,10 @@ enum BuilderNPC {
 					await Game.shared.player.removeItem(item: .lumber, count: 20)
 					await Game.shared.player.stats.builderSkillLevel = .two
 					await Game.shared.stages.builder.stage2Stages = .done
-					StatusBox.removeQuest(quest: .builder2)
+					await StatusBox.removeQuest(quest: .builder2)
 					fallthrough
 				} else {
-					if let id = await Game.shared.stages.builder.stage2AxeUUIDToRemove, ! await Game.shared.player.has(id: id) {
+					if let id = await Game.shared.stages.builder.stage2AxeUUIDToRemove, await !Game.shared.player.has(id: id) {
 						await MessageBox.message("Uh oh, looks like you lost your axe. Here is a new one.", speaker: .builder)
 						await Game.shared.stages.builder.stage2AxeUUIDToRemove = await Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
 					}
@@ -150,7 +150,7 @@ enum BuilderNPC {
 					}
 					await Game.shared.stages.builder.stage3Stages = .done
 					await Game.shared.player.stats.builderSkillLevel = .three
-					StatusBox.removeQuest(quest: .builder3)
+					await StatusBox.removeQuest(quest: .builder3)
 					fallthrough
 				} else {
 					await MessageBox.message("You still need to make the door. It is marked with a \(StationTileType.workbench.render).", speaker: .builder)
@@ -177,7 +177,7 @@ enum BuilderNPC {
 				await MessageBox.message("Nice! Lets get started right away!", speaker: .builder)
 				await Game.shared.stages.builder.stage4Stages = .done
 				await Game.shared.player.stats.builderSkillLevel = .four
-				StatusBox.removeQuest(quest: .builder4)
+				await StatusBox.removeQuest(quest: .builder4)
 				fallthrough
 			case .done:
 				await Game.shared.stages.builder.next()
@@ -191,7 +191,7 @@ enum BuilderNPC {
 		switch await Game.shared.stages.builder.stage5Stages {
 			case .notStarted:
 				await MessageBox.message("Now that we have permission, we can start building immediately! Can you begin building the house?", speaker: .builder)
-				instructions()
+				await instructions()
 				await Game.shared.stages.builder.stage5Stages = .buildHouse
 				await Game.shared.player.canBuild = true
 				let uuid1 = await Game.shared.player.collect(item: .init(type: .lumber, canBeSold: false), count: 5 * 24)
@@ -203,7 +203,7 @@ enum BuilderNPC {
 					await MessageBox.message("Nice, you have built the house!", speaker: .builder)
 					await Game.shared.stages.builder.stage5Stages = .done
 					await Game.shared.player.stats.builderSkillLevel = .five
-					StatusBox.removeQuest(quest: .builder5)
+					await StatusBox.removeQuest(quest: .builder5)
 					if let ids = await Game.shared.stages.builder.stage5ItemsToBuildHouseUUIDsToRemove {
 						await Game.shared.player.removeItems(ids: ids)
 					}
@@ -219,7 +219,7 @@ enum BuilderNPC {
 					await getStage()
 				}
 		}
-		func instructions() {
+		func instructions() async {
 			await MessageBox.message("This is what you need to do: Go pick an area and press \(KeyboardKeys.b.render). This will put you in \("build mode".styled(with: .bold)). Then press \(KeyboardKeys.enter.render), as long as you have 5 lumber you will build a building tile. Place the buildings next to each other. Then place the door in a small area. If you are unsure, look at the other buildings in this village. If you want to see all the controls press \(KeyboardKeys.questionMark.render) in build mode.", speaker: .builder)
 		}
 	}
@@ -240,10 +240,10 @@ enum BuilderNPC {
 					await Game.shared.player.removeItem(item: .lumber, count: 30)
 					await Game.shared.player.stats.builderSkillLevel = .six
 					await Game.shared.stages.builder.stage6Stages = .done
-					StatusBox.removeQuest(quest: .builder6)
+					await StatusBox.removeQuest(quest: .builder6)
 					fallthrough
 				} else {
-					if let id = await Game.shared.stages.builder.stage6AxeUUIDToRemove, ! await Game.shared.player.has(id: id) {
+					if let id = await Game.shared.stages.builder.stage6AxeUUIDToRemove, await !Game.shared.player.has(id: id) {
 						await MessageBox.message("Uh oh, looks like you lost your axe, here is a new one.", speaker: .builder)
 						await Game.shared.stages.builder.stage6AxeUUIDToRemove = await Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
 					}
@@ -273,7 +273,7 @@ enum BuilderNPC {
 					await MessageBox.message("Looks like you are done!", speaker: .builder)
 					await Game.shared.stages.builder.stage7Stages = .done
 					await Game.shared.player.stats.builderSkillLevel = .seven
-					StatusBox.removeQuest(quest: .builder7)
+					await StatusBox.removeQuest(quest: .builder7)
 					if let ids = await Game.shared.stages.builder.stage7ItemsToBuildInsideUUIDsToRemove {
 						await Game.shared.player.removeItems(ids: ids)
 					}

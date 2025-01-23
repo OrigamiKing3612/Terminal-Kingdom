@@ -11,7 +11,9 @@ struct BuildingMap: MapBoxMap {
 	var player: Player = .init(x: 1, y: 1)
 
 	var tilePlayerIsOn: MapTile {
-		grid[player.y][player.x]
+		get async {
+			grid[player.y][player.x]
+		}
 	}
 
 	let mapType: MapType

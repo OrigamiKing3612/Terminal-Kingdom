@@ -8,7 +8,7 @@ enum RandomEventStuff {
 			case .no:
 				await MessageBox.message("Here is what you need to do, take this axe and walk up to a tree and press the \(KeyboardKeys.space.render), or the \(KeyboardKeys.enter.render) key to chop it down. Please go get 10 lumber and bring it to me to show me you can do it.", speaker: speaker)
 				await Game.shared.stages.random.chopTreeAxeUUIDToRemove = await Game.shared.player.collectIfNotPresent(item: .init(type: .axe(type: .init()), canBeSold: false))
-				StatusBox.quest(.chopLumber(for: choppingLumberTeachingDoorTypes.name))
+				await StatusBox.quest(.chopLumber(for: choppingLumberTeachingDoorTypes.name))
 				await Game.shared.startingVillageChecks.setHasBeenTaughtToChopLumber(.inProgress(by: choppingLumberTeachingDoorTypes))
 			case .inProgress(by: choppingLumberTeachingDoorTypes):
 				if await Game.shared.player.has(item: .lumber, count: 10) {
@@ -19,7 +19,7 @@ enum RandomEventStuff {
 						await Game.shared.player.removeItem(id: id)
 					}
 					await Game.shared.startingVillageChecks.setHasBeenTaughtToChopLumber(.yes)
-					StatusBox.removeQuest(quest: .chopLumber(for: choppingLumberTeachingDoorTypes.name))
+					await StatusBox.removeQuest(quest: .chopLumber(for: choppingLumberTeachingDoorTypes.name))
 				} else {
 					await await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .lumber) - 10)) lumber.", speaker: speaker)
 				}

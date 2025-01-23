@@ -101,12 +101,12 @@ enum BlacksmithNPC {
 						await Game.shared.player.removeItem(id: id)
 					}
 					await Game.shared.player.removeItem(item: .lumber, count: 20)
-					StatusBox.removeQuest(quest: .blacksmith2)
+					await StatusBox.removeQuest(quest: .blacksmith2)
 					await Game.shared.player.stats.blacksmithSkillLevel = .two
 					await Game.shared.stages.blacksmith.stage2Stages = .done
 					fallthrough
 				} else {
-					if let stage2AxeUUIDToRemove = await Game.shared.stages.blacksmith.stage2AxeUUIDToRemove, ! await Game.shared.player.has(id: stage2AxeUUIDToRemove) {
+					if let stage2AxeUUIDToRemove = await Game.shared.stages.blacksmith.stage2AxeUUIDToRemove, await !Game.shared.player.has(id: stage2AxeUUIDToRemove) {
 						await MessageBox.message("Uh oh, looks like you lost your axe, here is a new one.", speaker: .blacksmith)
 						await Game.shared.stages.blacksmith.stage2AxeUUIDToRemove = await Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
 					}

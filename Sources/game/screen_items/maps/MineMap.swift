@@ -4,7 +4,9 @@ struct MineMap: MapBoxMap {
 	var player: Player = .init(x: 1, y: 1)
 
 	var tilePlayerIsOn: MineTile {
-		grid[player.y][player.x]
+		get async {
+			grid[player.y][player.x]
+		}
 	}
 
 	init() async {
