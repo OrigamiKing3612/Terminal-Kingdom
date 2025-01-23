@@ -11,23 +11,7 @@ actor PlayerCharacter {
 	private(set) var direction: PlayerDirection = .down
 	private(set) var quests: [Quest] = []
 	#if DEBUG
-		private(set) var mapType: MapType = .mainMap {
-			didSet {
-				//! TODO: this might not work
-				Task {
-					await Game.shared.player.setMapType(mapType)
-					switch mapType {
-						case .mainMap:
-							break
-						case .mining:
-							await MapBox.resetMiningMap()
-						default:
-							await MapBox.resetBuildingMap(mapType)
-					}
-					await MapBox.mapBox()
-				}
-			}
-		}
+		private(set) var mapType: MapType = .mainMap
 	#else
 		private(set) var mapType: MapType = .castle(side: .left)
 	#endif
@@ -221,8 +205,17 @@ actor PlayerCharacter {
 		quests.append(newQuest)
 	}
 
-	func setMapType(_ newMapType: MapType) {
+	func setMapType(_ newMapType: MapType) async {
 		mapType = newMapType
+		switch mapType {
+			case .mainMap:
+				break
+			case .mining:
+				await MapBox.resetMiningMap()
+			default:
+				await MapBox.resetBuildingMap(mapType)
+		}
+		await MapBox.mapBox()
 	}
 
 	func setDirection(_ newDirection: PlayerDirection) {

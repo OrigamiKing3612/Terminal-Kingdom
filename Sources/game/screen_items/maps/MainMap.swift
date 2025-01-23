@@ -56,8 +56,8 @@ struct MainMap: MapBoxMap {
 	mutating func movePlayer(_ direction: PlayerDirection) async {
 		let oldX = await player.x
 		let oldY = await player.y
-		let x = await player.x
-		let y = await player.y
+		var x: Int { get async { await player.x } }
+		var y: Int { get async { await player.y } }
 
 		await Game.shared.player.setDirection(direction)
 
@@ -75,8 +75,9 @@ struct MainMap: MapBoxMap {
 		}
 
 		await tilePlayerIsOn.type.specialAction(direction: direction, grid: grid)
-
-		if oldX != x || oldY != y {
+		let a = await oldX != x
+		let b = await oldY != y
+		if a || b {
 			await map()
 			await StatusBox.position()
 		}

@@ -162,7 +162,7 @@ enum TitleScreen {
 
 	static func settings() async {
 		//! TODO: reload config after saving so this isn't async
-		config = Config.load()
+		config = await Config.load()
 		let text = "Settings"
 		let x = middleX
 		let y = middleY - (Screen.rows / 2)

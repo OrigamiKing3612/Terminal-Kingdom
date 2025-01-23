@@ -34,7 +34,7 @@ actor Game {
 		map = await MapGen.generateFullMap()
 		//! TODO: this might break something
 		// MapBox.mainMap = MainMap()
-		config = Config.load()
+		config = await Config.load()
 	}
 
 	func setIsTypingInMessageBox(_ newIsTypingInMessageBox: Bool) async {
@@ -102,7 +102,7 @@ actor Game {
 	}
 
 	func loadConfig() async {
-		config = Config.load()
+		config = await Config.load()
 	}
 }
 

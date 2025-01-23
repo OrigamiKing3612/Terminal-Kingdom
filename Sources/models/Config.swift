@@ -1,5 +1,6 @@
 import Foundation
 
+//! TODO: async load and save
 struct Config: Codable {
 	static let configFile: String = "adventure-config.json"
 	var useNerdFont: Bool = false {
@@ -25,7 +26,7 @@ struct Config: Codable {
 		return (filePath, directory, file)
 	}
 
-	static func load() -> Config {
+	static func load() async -> Config {
 		let (_, directory, file) = locations()
 		do {
 			if !FileManager.default.fileExists(atPath: directory.path) {
