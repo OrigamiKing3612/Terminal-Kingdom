@@ -5,45 +5,55 @@ enum InventoryBox {
 	nonisolated(unsafe) static var showBuildHelp: Bool = false
 	private(set) nonisolated(unsafe) static var selectedInventoryIndex: Int = 0 {
 		didSet {
-			selectedInventoryIndex = max(0, min(selectedInventoryIndex, inventoryItems.count - 1))
-			printInventory()
+			Task {
+				selectedInventoryIndex = await max(0, min(selectedInventoryIndex, inventoryItems.count - 1))
+				await printInventory()
+			}
 		}
 	}
 
 	static var inventoryItems: [Item] {
-		Game.player.items
-			.reduce(into: [Item]()) { result, item in
-				// Deduplicate based on `type` or any relevant property
-				if !result.contains(where: { $0.type == item.type }) {
-					result.append(item)
+		get async {
+			await Game.shared.player.items
+				.reduce(into: [Item]()) { result, item in
+					// Deduplicate based on `type` or any relevant property
+					if !result.contains(where: { $0.type == item.type }) {
+						result.append(item)
+					}
 				}
-			}
-			.sorted(by: { $0.type.inventoryName < $1.type.inventoryName })
+				.sorted(by: { $0.type.inventoryName < $1.type.inventoryName })
+		}
 	}
 
 	static var buildableItems: [Item] {
-		Game.player.items
-			.filter(\.type.isBuildable)
-			.reduce(into: [Item]()) { result, item in
-				// Deduplicate based on `type` or any relevant property
-				if !result.contains(where: { $0.type == item.type }) {
-					result.append(item)
+		get async {
+			await Game.shared.player.items
+				.filter(\.type.isBuildable)
+				.reduce(into: [Item]()) { result, item in
+					// Deduplicate based on `type` or any relevant property
+					if !result.contains(where: { $0.type == item.type }) {
+						result.append(item)
+					}
 				}
-			}
-			.sorted(by: sortBuildables)
+				.sorted(by: sortBuildables)
+		}
 	}
 
 	private(set) nonisolated(unsafe) static var selectedBuildItemIndex: Int = 0 {
 		didSet {
-			selectedBuildItemIndex = max(0, min(selectedBuildItemIndex, buildableItems.count - 1))
-			printInventory()
+			Task {
+				selectedBuildItemIndex = await max(0, min(selectedBuildItemIndex, buildableItems.count - 1))
+				await printInventory()
+			}
 		}
 	}
 
 	nonisolated(unsafe) static var showInventoryBox = true {
 		didSet {
 			if showInventoryBox {
-				inventoryBox()
+				Task {
+					await inventoryBox()
+				}
 			} else {
 				clear()
 			}
@@ -54,22 +64,22 @@ enum InventoryBox {
 		selectedBuildItemIndex = 0
 	}
 
-	static func sides() {
-		Screen.print(x: startX + 2, y: startY - 1, String(repeating: Game.horizontalLine, count: width - 2).styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+	static func sides() async {
+		await Screen.print(x: startX + 2, y: startY - 1, String(repeating: Game.shared.horizontalLine, count: width - 2).styled(with: [.bold, .yellow], styledIf: Game.shared.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
 		for y in (startY - 1) ..< endY {
-			Screen.print(x: startX, y: y, Game.verticalLine.styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
-			Screen.print(x: endX, y: y, Game.verticalLine.styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+			await Screen.print(x: startX, y: y, Game.shared.verticalLine.styled(with: [.bold, .yellow], styledIf: Game.shared.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
+			await Screen.print(x: endX, y: y, Game.shared.verticalLine.styled(with: [.bold, .yellow], styledIf: Game.shared.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
 		}
-		Screen.print(x: startX, y: endY, String(repeating: Game.horizontalLine, count: width).styled(with: [.bold, .yellow], styledIf: Game.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+		await Screen.print(x: startX, y: endY, String(repeating: Game.shared.horizontalLine, count: width).styled(with: [.bold, .yellow], styledIf: Game.shared.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
 	}
 
-	static func inventoryBox() {
+	static func inventoryBox() async {
 		clear()
-		sides()
-		printInventory()
+		await sides()
+		await printInventory()
 	}
 
-	static func printInventory() {
+	static func printInventory() async {
 		clear()
 		if showHelp {
 			Screen.print(x: startX + 2, y: startY, "Press '\(KeyboardKeys.i.render)' to toggle inventory")
@@ -79,36 +89,39 @@ enum InventoryBox {
 			Screen.print(x: startX + 2, y: startY + 1, "Press '\(KeyboardKeys.enter.render)' or '\(KeyboardKeys.space.render)' to build")
 			Screen.print(x: startX + 2, y: startY + 2, "Press '\(KeyboardKeys.e.render)' to destroy")
 			Screen.print(x: startX + 2, y: startY + 3, "Press '\(KeyboardKeys.tab.render)' and '\(KeyboardKeys.back_tab.render)' to cycle items")
-		} else if Game.isBuilding {
+		} else if await Game.shared.isBuilding {
 			var alreadyPrinted: [ItemType] = []
-			for (index, item) in buildableItems.enumerated() {
+			for (index, item) in await buildableItems.enumerated() {
 				if !alreadyPrinted.contains(where: { $0 == item.type }) {
 					var icon = ""
-					if index == selectedBuildItemIndex, Game.isBuilding {
+					if index == selectedBuildItemIndex, await Game.shared.isBuilding {
 						icon = "> ".styled(with: .bold)
-					} else if index != selectedBuildItemIndex, Game.isBuilding {
+					} else if index != selectedBuildItemIndex, await Game.shared.isBuilding {
 						icon = "  "
 					}
-					Screen.print(x: startX + 2, y: startY + alreadyPrinted.count, "\(icon)\(item.inventoryName): \(Game.player.getCount(of: item.type))")
+					await Screen.print(x: startX + 2, y: startY + alreadyPrinted.count, "\(icon)\(item.inventoryName): \(Game.shared.player.getCount(of: item.type))")
 					alreadyPrinted.append(item.type)
 				}
 			}
 		} else {
 			var alreadyPrinted: [ItemType] = []
-			for (index, item) in inventoryItems.enumerated() {
+			for (index, item) in await inventoryItems.enumerated() {
 				if !alreadyPrinted.contains(where: { $0 == item.type }) {
 					var icon = ""
-					if index == selectedInventoryIndex, Game.isInInventoryBox {
+					if index == selectedInventoryIndex, await Game.shared.isInInventoryBox {
 						icon = "> ".styled(with: .bold)
-					} else if index != selectedInventoryIndex, Game.isInInventoryBox {
+					} else if index != selectedInventoryIndex, await Game.shared.isInInventoryBox {
 						icon = "  "
 					}
-					Screen.print(x: startX + 2, y: startY + alreadyPrinted.count, "\(icon)\(item.inventoryName): \(Game.player.getCount(of: item.type))")
+					await Screen.print(x: startX + 3, y: startY + alreadyPrinted.count, "\(icon)\(item.inventoryName): \(Game.shared.player.getCount(of: item.type))")
 					alreadyPrinted.append(item.type)
 				}
 			}
 		}
-		if Game.isInInventoryBox || Game.isBuilding {
+		let isInInventoryBox = await Game.shared.isInInventoryBox
+		let isBuilding = await Game.shared.isBuilding
+
+		if isInInventoryBox || isBuilding { // error here fixed
 			if !showHelp {
 				Screen.print(x: startX + 2, y: endY - 1, "Press '\(KeyboardKeys.questionMark.render)' for controls")
 			} else {
@@ -128,12 +141,12 @@ enum InventoryBox {
 		return lhs.type.inventoryName < rhs.type.inventoryName
 	}
 
-	static func destroyItem() {
-		if inventoryItems.isEmpty {
+	static func destroyItem() async {
+		if await inventoryItems.isEmpty {
 			return
 		}
-		let uuid = inventoryItems[selectedInventoryIndex].id
-		Game.player.destroyItem(id: uuid)
+		let uuid = await inventoryItems[selectedInventoryIndex].id
+		await Game.shared.player.destroyItem(id: uuid)
 	}
 
 	static func clear() {

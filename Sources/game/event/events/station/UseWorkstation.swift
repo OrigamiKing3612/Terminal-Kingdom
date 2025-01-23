@@ -7,13 +7,13 @@ enum UseWorkstation {
 				continue
 			}
 			if recipe.result[0].item == .door(tile: .init(type: .house)) {
-				if !(Game.stages.builder.stage3Stages == .makeDoor) {
+				if await !(Game.shared.stages.builder.stage3Stages == .makeDoor) {
 					continue
 				}
 			}
 			var canMake = true
 			for ingredient in recipe.ingredients {
-				if Game.player.has(item: ingredient.item, count: ingredient.count) {
+				if await Game.shared.player.has(item: ingredient.item, count: ingredient.count) {
 					continue
 				} else {
 					canMake = false
@@ -23,20 +23,20 @@ enum UseWorkstation {
 			if canMake {
 				options.append(.init(label: recipe.name, action: {
 					for ingredient in recipe.ingredients {
-						if Game.stages.builder.stage3Stages == .makeDoor {
-							if let ids = Game.stages.builder.stage3ItemsToMakeDoorUUIDsToRemove {
-								Game.player.removeItems(ids: ids)
+						if await Game.shared.stages.builder.stage3Stages == .makeDoor {
+							if let ids = await Game.shared.stages.builder.stage3ItemsToMakeDoorUUIDsToRemove {
+								await Game.shared.player.removeItems(ids: ids)
 							}
 						} else {
-							Game.player.removeItem(item: ingredient.item, count: ingredient.count)
+							await Game.shared.player.removeItem(item: ingredient.item, count: ingredient.count)
 						}
 					}
 					for result in recipe.result {
-						if Game.stages.builder.stage3Stages == .makeDoor {
-							Game.stages.builder.stage3Stages = .returnToBuilder
-							Game.stages.builder.stage3DoorUUIDToRemove = Game.player.collect(item: .init(type: result.item, canBeSold: false))
+						if await Game.shared.stages.builder.stage3Stages == .makeDoor {
+							await Game.shared.stages.builder.stage3Stages = .returnToBuilder
+							await Game.shared.stages.builder.stage3DoorUUIDToRemove = await Game.shared.player.collect(item: .init(type: result.item, canBeSold: false))
 						} else {
-							_ = Game.player.collect(item: .init(type: result.item, canBeSold: true))
+							_ = await Game.shared.player.collect(item: .init(type: result.item, canBeSold: true))
 						}
 					}
 				}))

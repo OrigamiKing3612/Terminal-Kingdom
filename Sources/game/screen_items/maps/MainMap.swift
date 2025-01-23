@@ -2,29 +2,29 @@ struct MainMap: MapBoxMap {
 	var grid: [[MapTile]]
 
 	var player: Player {
-		get { Game.player.position }
-		set { Game.player.updatePlayerPositionToSave(x: newValue.x, y: newValue.y) }
+		get { Game.shared.player.position }
+		set { Game.shared.player.setPlayerPosition(x: newValue.x, y: newValue.y) }
 	}
 
 	private var hasFoundPlayerStart = false
 
-	init() {
-		self.grid = Game.map
+	init() async {
+		self.grid = await Game.shared.map
 	}
 
 	var tilePlayerIsOn: MapTile {
 		grid[player.y][player.x]
 	}
 
-	func isWalkable(x: Int, y: Int) -> Bool {
+	func isWalkable(x: Int, y: Int) async -> Bool {
 		guard x >= 0, y >= 0, y < grid.count, x < grid[y].count else { return false }
 		if grid[y][x].type == .building(tile: .init(isPlacedByPlayer: true)) {
-			return Game.isBuilding
+			return await Game.shared.isBuilding
 		}
 		return grid[y][x].isWalkable
 	}
 
-	func render(playerX: Int, playerY: Int, viewportWidth: Int, viewportHeight: Int) {
+	func render(playerX: Int, playerY: Int, viewportWidth: Int, viewportHeight: Int) async {
 		let halfViewportWidth = viewportWidth / 2
 		let halfViewportHeight = viewportHeight / 2
 
@@ -38,29 +38,29 @@ struct MainMap: MapBoxMap {
 			var rowString = ""
 			for mapX in startX ..< endX {
 				if mapX == playerX, mapY == playerY {
-					rowString += MapTileType.player.render()
+					await rowString += MapTileType.player.render()
 				} else {
-					rowString += grid[mapY][mapX].type.render()
+					await rowString += grid[mapY][mapX].type.render()
 				}
 			}
 			Screen.print(x: MapBox.startX, y: MapBox.startY + screenY, rowString)
 		}
 	}
 
-	mutating func movePlayer(_ direction: PlayerDirection) {
+	mutating func movePlayer(_ direction: PlayerDirection) async {
 		let oldX = player.x
 		let oldY = player.y
 
-		Game.player.direction = direction
+		await Game.shared.player.setDirection(direction)
 
 		switch direction {
-			case .up where isWalkable(x: player.x, y: player.y - 1):
+			case .up where await isWalkable(x: player.x, y: player.y - 1):
 				player.y -= 1
-			case .down where isWalkable(x: player.x, y: player.y + 1):
+			case .down where await isWalkable(x: player.x, y: player.y + 1):
 				player.y += 1
-			case .left where isWalkable(x: player.x - 1, y: player.y):
+			case .left where await isWalkable(x: player.x - 1, y: player.y):
 				player.x -= 1
-			case .right where isWalkable(x: player.x + 1, y: player.y):
+			case .right where await isWalkable(x: player.x + 1, y: player.y):
 				player.x += 1
 			default:
 				break
@@ -69,12 +69,12 @@ struct MainMap: MapBoxMap {
 		tilePlayerIsOn.type.specialAction(direction: direction, player: &player, grid: grid)
 
 		if oldX != player.x || oldY != player.y {
-			map()
+			await map()
 			StatusBox.position()
 		}
 	}
 
-	mutating func map() {
+	mutating func map() async {
 		// TODO: could fix #2
 		if !hasFoundPlayerStart {
 			if let (startX, startY) = MapTile.findTilePosition(of: .playerStart, in: grid) {
@@ -88,7 +88,7 @@ struct MainMap: MapBoxMap {
 
 		let viewportWidth = MapBox.width
 		let viewportHeight = MapBox.height
-		render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
+		await render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
 	}
 
 	mutating func setPlayerPosition(_ position: (x: Int, y: Int)) {
@@ -111,11 +111,11 @@ struct MainMap: MapBoxMap {
 		grid[player.y][player.x] = newTile
 	}
 
-	mutating func build() {
-		MapBuilding.build(grid: &grid, x: player.x, y: player.y)
+	mutating func build() async {
+		await MapBuilding.build(grid: &grid, x: player.x, y: player.y)
 	}
 
-	mutating func destroy() {
-		MapBuilding.destory(grid: &grid, x: player.x, y: player.y)
+	mutating func destroy() async {
+		await MapBuilding.destory(grid: &grid, x: player.x, y: player.y)
 	}
 }

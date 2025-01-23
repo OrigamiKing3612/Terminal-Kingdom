@@ -2,38 +2,42 @@ import Foundation
 
 // TODO: remove static because that undoes the point of the actor
 actor Game {
+	static var shared = Game()
 	nonisolated static let version = "0.0.1-alpha_1"
-	static var config: Config = .init()
-	static var player = PlayerCharacter()
-	static var startingVillageChecks: StartingVillageChecks = .init()
-	static var stages: Stages = .init()
-	static var messages: [String] = []
-	static var mapGen: MapGenSave = .init(amplitude: MapGenSave.defaultAmplitude, frequency: MapGenSave.defaultFrequency, seed: .random(in: 2 ... 1_000_000_000))
-	static var crops: Set<TilePosition> = []
-	private(set) static var hasInited: Bool = false
-	private(set) static var isTypingInMessageBox: Bool = false
-	private(set) static var map = MapGen.generateFullMap()
-	private(set) static var customMaps: [CustomMap] = []
+	var config: Config = .init()
+	//! TODO: remove nonisolated
+	nonisolated(unsafe) var player = PlayerCharacter()
+	var startingVillageChecks: StartingVillageChecks = .init()
+	var stages: Stages = .init()
+	var mapGen: MapGenSave = .init(amplitude: MapGenSave.defaultAmplitude, frequency: MapGenSave.defaultFrequency, seed: .random(in: 2 ... 1_000_000_000))
+	private(set) var messages: [String] = []
+	private(set) var crops: Set<TilePosition> = []
+	private(set) var hasInited: Bool = false
+	private(set) var isTypingInMessageBox: Bool = false
+	private(set) var map = MapGen.generateFullMap()
+	private(set) var customMaps: [CustomMap] = []
 
 	// Don't save
-	static var isInInventoryBox: Bool = false
-	static var isBuilding: Bool = false
-	static var horizontalLine: String { config.useNerdFont ? "─" : "=" }
-	static var verticalLine: String { config.useNerdFont ? "│" : "|" }
+	private(set) var isInInventoryBox: Bool = false
+	private(set) var isBuilding: Bool = false
+	var horizontalLine: String { config.useNerdFont ? "─" : "=" }
+	var verticalLine: String { config.useNerdFont ? "│" : "|" }
 
-	//     private(set) static var map = MapGen.generateFullMap()
+	//     private(set) var map = MapGen.generateFullMap()
 
-	static func initGame() async {
+	private init() {}
+
+	func initGame() async {
 		hasInited = true
 		MapBox.mainMap = MainMap()
 		config = Config.load()
 	}
 
-	static func setIsTypingInMessageBox(_ newIsTypingInMessageBox: Bool) async {
+	func setIsTypingInMessageBox(_ newIsTypingInMessageBox: Bool) async {
 		isTypingInMessageBox = newIsTypingInMessageBox
 	}
 
-	static func reloadGame(decodedGame: CodableGame) async {
+	func reloadGame(decodedGame: CodableGame) async {
 		hasInited = decodedGame.hasInited
 		isTypingInMessageBox = decodedGame.isTypingInMessageBox
 		player = decodedGame.player
@@ -44,15 +48,39 @@ actor Game {
 		mapGen = decodedGame.mapGen
 	}
 
-	static func addMap(map: CustomMap) async {
+	func addMessage(_ message: String) async {
+		messages.append(message)
+	}
+
+	func removeMessage(at index: Int) async {
+		messages.remove(at: index)
+	}
+
+	func addCrop(_ position: TilePosition) async {
+		crops.insert(position)
+	}
+
+	func removeCrop(_ position: TilePosition) async {
+		crops.remove(position)
+	}
+
+	func setIsInInventoryBox(_ newIsInInventoryBox: Bool) async {
+		isInInventoryBox = newIsInInventoryBox
+	}
+
+	func setIsBuilding(_ newIsBuilding: Bool) async {
+		isBuilding = newIsBuilding
+	}
+
+	func addMap(map: CustomMap) async {
 		customMaps.append(map)
 	}
 
-	static func removeMap(map: CustomMap) async {
+	func removeMap(map: CustomMap) async {
 		customMaps.removeAll(where: { $0.id == map.id })
 	}
 
-	static func removeMap(mapID: UUID) async {
+	func removeMap(mapID: UUID) async {
 		customMaps.removeAll(where: { $0.id == mapID })
 	}
 }

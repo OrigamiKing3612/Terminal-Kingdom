@@ -15,13 +15,13 @@ enum MapTileEvent: TileEvent {
 					await OpenDoorEvent.openDoor(doorTile: doorTile)
 				}
 			case .chopTree:
-				if Game.player.hasAxe() {
+				if await Game.shared.player.hasAxe() {
 					ChopTreeEvent.chopTree()
 				} else {
 					MessageBox.message("Ouch!", speaker: .game)
 				}
 			case .startMining:
-				if Game.player.hasPickaxe() {
+				if await Game.shared.player.hasPickaxe() {
 					StartMiningEvent.startMining()
 				} else {
 					MessageBox.message("You need a pickaxe to start mining", speaker: .miner)
@@ -40,7 +40,7 @@ enum MapTileEvent: TileEvent {
 					if tile.cropTile.type != .none {
 						CollectCropEvent.collectCrop(cropTile: tile.cropTile, isInPot: true)
 					} else {
-						if !Game.player.has(item: .tree_seed) {
+						if ! await Game.shared.player.has(item: .tree_seed) {
 							MessageBox.message("There is no crop here", speaker: .game)
 							return
 						}

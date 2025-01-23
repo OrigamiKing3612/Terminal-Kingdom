@@ -14,15 +14,15 @@ struct DoorTile: BuildableTile, Hashable {
 		self.isPlacedByPlayer = isPlacedByPlayer
 	}
 
-	static func renderDoor(tile: DoorTile) -> String {
-		let conditions: [(DoorTileTypes, Bool)] = [
-			(.mine, Game.stages.blacksmith.stage1Stages == .goToMine),
-			(.blacksmith, Game.stages.mine.stage1Stages == .collect),
-			(.shop, Game.stages.mine.stage10Stages == .goToSalesman),
-			(.carpenter, Game.stages.blacksmith.stage3Stages == .goToCarpenter),
-			(.hunting_area, Game.stages.blacksmith.stage7Stages == .bringToHunter),
-			(.shop, Game.stages.blacksmith.stage9Stages == .goToSalesman),
-			(.mine, Game.stages.builder.stage1Stages == .collect),
+	static func renderDoor(tile: DoorTile) async -> String {
+		let conditions: [(DoorTileTypes, Bool)] = await [
+			(.mine, Game.shared.stages.blacksmith.stage1Stages == .goToMine),
+			(.blacksmith, Game.shared.stages.mine.stage1Stages == .collect),
+			(.shop, Game.shared.stages.mine.stage10Stages == .goToSalesman),
+			(.carpenter, Game.shared.stages.blacksmith.stage3Stages == .goToCarpenter),
+			(.hunting_area, Game.shared.stages.blacksmith.stage7Stages == .bringToHunter),
+			(.shop, Game.shared.stages.blacksmith.stage9Stages == .goToSalesman),
+			(.mine, Game.shared.stages.builder.stage1Stages == .collect),
 		]
 		if MapBox.mapType == .mainMap {
 			for (doorType, condition) in conditions {

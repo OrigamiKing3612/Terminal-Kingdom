@@ -2,7 +2,12 @@ import Foundation
 
 struct Config: Codable {
 	static let configFile: String = "adventure-config.json"
-	var useNerdFont: Bool = false
+	var useNerdFont: Bool = false {
+		didSet {
+			// Screen.initializeBoxes()
+		}
+	}
+
 	var vimKeys: Bool = false
 	var arrowKeys: Bool = false
 	var wasdKeys: Bool = true

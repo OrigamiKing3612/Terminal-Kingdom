@@ -1,7 +1,7 @@
 enum StatusBox {
 	private(set) nonisolated(unsafe) static var updateQuestBox = false
 	static var quests: [Quest] {
-		Game.player.quests
+		await Game.shared.player.quests
 	}
 
 	nonisolated(unsafe) static var showStatusBox = true {
@@ -35,8 +35,8 @@ enum StatusBox {
 	}
 
 	static func playerInfoArea() {
-		if !(Game.player.name == "") {
-			Screen.print(x: playerInfoStartX, y: playerInfoStartY, "\(Game.player.name):".styled(with: .bold))
+		if await !(Game.shared.player.name == "") {
+			await Screen.print(x: playerInfoStartX, y: playerInfoStartY, "\(Game.shared.player.name):".styled(with: .bold))
 		}
 		var yValueToPrint = playerInfoStartY + 1
 		let longestSkillName = AllSkillLevels.allCases.map(\.name.count).max() ?? 0
@@ -56,7 +56,7 @@ enum StatusBox {
 
 	static func position() {
 		if MapBox.mapType == .mainMap {
-			let text = " \(Game.player.direction.render) x: \(Game.player.position.x); y: \(Game.player.position.y)"
+			let text = await " \(Game.shared.player.direction.render) x: \(Game.shared.player.position.x); y: \(Game.shared.player.position.y)"
 			Screen.print(x: playerInfoEndX - text.count, y: playerInfoStartY, text)
 		}
 	}
@@ -85,12 +85,12 @@ enum StatusBox {
 	static func inventoryArea() {}
 
 	static func sides() {
-		Screen.print(x: startX, y: startY, String(repeating: Game.horizontalLine, count: width + 1))
+		await Screen.print(x: startX, y: startY, String(repeating: Game.shared.horizontalLine, count: width + 1))
 		for y in (startY + 1) ..< endY {
-			Screen.print(x: startX, y: y, Game.verticalLine)
-			Screen.print(x: endX, y: y, Game.verticalLine)
+			await Screen.print(x: startX, y: y, Game.shared.verticalLine)
+			await Screen.print(x: endX, y: y, Game.shared.verticalLine)
 		}
-		Screen.print(x: startX + 2, y: endY, String(repeating: Game.horizontalLine, count: width - 2))
+		await Screen.print(x: startX + 2, y: endY, String(repeating: Game.shared.horizontalLine, count: width - 2))
 	}
 
 	static func clear() {
@@ -102,29 +102,29 @@ enum StatusBox {
 
 	static func quest(_ quest: Quest) {
 		clear()
-		Game.player.addQuest(quest)
+		await Game.shared.player.addQuest(quest)
 		statusBox()
 	}
 
 	static func removeQuest(quest: Quest) {
 		clear()
-		Game.player.removeQuest(quest: quest)
+		await Game.shared.player.removeQuest(quest: quest)
 		statusBox()
 	}
 
 	static func removeQuest(index: Int) {
 		clear()
-		Game.player.removeQuest(index: index)
+		await Game.shared.player.removeQuest(index: index)
 		statusBox()
 	}
 
 	@discardableResult
 	static func removeLastQuest() -> Quest {
-		Game.player.removeLastQuest()
+		await Game.shared.player.removeLastQuest()
 	}
 
 	static func updateLastQuest(newQuest: Quest) {
-		Game.player.updateLastQuest(newQuest: newQuest)
+		await Game.shared.player.updateLastQuest(newQuest: newQuest)
 		statusBox()
 	}
 }

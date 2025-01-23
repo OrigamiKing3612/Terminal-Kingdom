@@ -1,12 +1,12 @@
 enum KingNPC {
 	static func talk() {
-		if Game.stages.builder.stage4Stages == .talkToKing {
+		if await Game.shared.stages.builder.stage4Stages == .talkToKing {
 			MessageBox.message("Hello \(NPCTileType.king.render), I am the builders apprentice, we were wondering if we could build a new house in the village?", speaker: .player)
-			MessageBox.message("Hello \(Game.player.name)! Yes that is a good idea.", speaker: .king)
+			await MessageBox.message("Hello \(Game.shared.player.name)! Yes that is a good idea.", speaker: .king)
 			MessageBox.message("Ok! Thank you! I'll go let him know", speaker: .player)
-			Game.stages.builder.stage4Stages = .comeBack
-		} else if Game.startingVillageChecks.firstTimes.hasTalkedToKing == false {
-			Game.startingVillageChecks.firstTimes.hasTalkedToKing = true
+			await Game.shared.stages.builder.stage4Stages = .comeBack
+		} else if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToKing == false {
+			await Game.shared.startingVillageChecks.firstTimes.hasTalkedToKing = true
 			firstDialogue()
 		} else {
 			help()
@@ -18,7 +18,7 @@ enum KingNPC {
 	}
 
 	static func firstDialogue() {
-		MessageBox.message("Welcome to the village, \(Game.player.name).", speaker: .king)
+		await MessageBox.message("Welcome to the village, \(Game.shared.player.name).", speaker: .king)
 		MessageBox.message("I am the king of this village. I have heard of your arrival and I am glad you are here.", speaker: .king)
 		MessageBox.message("I am here to help you navigate this village.", speaker: .king)
 		MessageBox.message("Seems like you figured out how to walk. Your goal is to learn how to create your own village and go make your own kingdom! You can learn different skills by talking to different people in the buildings.", speaker: .king)

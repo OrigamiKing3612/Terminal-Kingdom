@@ -27,6 +27,7 @@ enum Screen {
 	}
 
 	static func initializeBoxes() {
+		MapBoxActor.shared.initialize()
 		MessageBox.messageBox()
 		MapBox.mapBox()
 		InventoryBox.inventoryBox()

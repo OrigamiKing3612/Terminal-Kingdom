@@ -7,15 +7,15 @@ struct MineMap: MapBoxMap {
 		grid[player.y][player.x]
 	}
 
-	init() {
-		self.grid = MineMap.createGrid()
+	init() async {
+		self.grid = await MineMap.createGrid()
 
 		let middleX = grid[0].count / 2
 		//        let middleY = self.grid.count / 2
 
-		grid[0][middleX] = .init(type: .playerStart, isWalkable: true)
-		grid[0][middleX + 1] = .init(type: .plain, isWalkable: true)
-		grid[0][middleX - 1] = .init(type: .plain, isWalkable: true)
+		grid[0][middleX] = MineTile(type: .playerStart, isWalkable: true)
+		grid[0][middleX + 1] = MineTile(type: .plain, isWalkable: true)
+		grid[0][middleX - 1] = MineTile(type: .plain, isWalkable: true)
 
 		if let (startX, startY) = MineTile.findTilePosition(of: .playerStart, in: grid) {
 			player.x = startX
@@ -25,22 +25,22 @@ struct MineMap: MapBoxMap {
 		}
 	}
 
-	mutating func map() {
+	mutating func map() async {
 		let viewportWidth = MapBox.width + 1
 		let viewportHeight = MapBox.height
-		render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
+		await render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
 	}
 
-	func isWalkable(x: Int, y: Int) -> Bool {
+	func isWalkable(x: Int, y: Int) async -> Bool {
 		guard x >= 0, y >= 0, y < grid.count, x < grid[y].count else { return false }
 		return grid[y][x].isWalkable
 	}
 
-	func isInBounds(x: Int, y: Int) -> Bool {
+	func isInBounds(x: Int, y: Int) async -> Bool {
 		x >= 0 && y >= 0 && y < grid.count && x < grid[y].count
 	}
 
-	func render(playerX: Int, playerY: Int, viewportWidth: Int, viewportHeight: Int) {
+	func render(playerX: Int, playerY: Int, viewportWidth: Int, viewportHeight: Int) async {
 		let halfViewportWidth = viewportWidth / 2
 		let halfViewportHeight = viewportHeight / 2
 
@@ -63,46 +63,52 @@ struct MineMap: MapBoxMap {
 		}
 	}
 
-	mutating func movePlayer(_ direction: PlayerDirection) {
+	mutating func movePlayer(_ direction: PlayerDirection) async {
 		let oldX = player.x
 		let oldY = player.y
 
 		switch direction {
-			case .up where isWalkable(x: player.x, y: player.y - 1):
+			case .up where await isWalkable(x: player.x, y: player.y - 1):
 				player.y -= 1
-			case .down where isWalkable(x: player.x, y: player.y + 1):
+			case .down where await isWalkable(x: player.x, y: player.y + 1):
 				player.y += 1
-			case .left where isWalkable(x: player.x - 1, y: player.y):
+			case .left where await isWalkable(x: player.x - 1, y: player.y):
 				player.x -= 1
-			case .right where isWalkable(x: player.x + 1, y: player.y):
+			case .right where await isWalkable(x: player.x + 1, y: player.y):
 				player.x += 1
 			// mine
-			case .up where Game.player.hasPickaxe() && isInBounds(x: player.x, y: player.y - 1):
-				MineMap.givePlayerTile(tile: grid[player.y - 1][player.x])
-				grid[player.y - 1][player.x] = .init(type: .plain, isWalkable: true)
-				Game.player.removeDurability(of: .pickaxe)
-				player.y -= 1
-			case .down where Game.player.hasPickaxe() && isInBounds(x: player.x, y: player.y + 1):
-				MineMap.givePlayerTile(tile: grid[player.y + 1][player.x])
-				grid[player.y + 1][player.x] = .init(type: .plain, isWalkable: true)
-				Game.player.removeDurability(of: .pickaxe)
-				player.y += 1
-			case .left where Game.player.hasPickaxe() && isInBounds(x: player.x - 1, y: player.y):
-				MineMap.givePlayerTile(tile: grid[player.y][player.x - 1])
-				grid[player.y][player.x - 1] = .init(type: .plain, isWalkable: true)
-				Game.player.removeDurability(of: .pickaxe)
-				player.x -= 1
-			case .right where Game.player.hasPickaxe() && isInBounds(x: player.x + 1, y: player.y):
-				MineMap.givePlayerTile(tile: grid[player.y][player.x + 1])
-				grid[player.y][player.x + 1] = .init(type: .plain, isWalkable: true)
-				Game.player.removeDurability(of: .pickaxe)
-				player.x += 1
-			default:
-				break
+			case .up:
+				if await Game.shared.player.hasPickaxe(), await isInBounds(x: player.x, y: player.y - 1) {
+					await MineMap.givePlayerTile(tile: grid[player.y - 1][player.x])
+					grid[player.y - 1][player.x] = .init(type: .plain, isWalkable: true)
+					await Game.shared.player.removeDurability(of: .pickaxe)
+					player.y -= 1
+				}
+			case .down:
+				if await Game.shared.player.hasPickaxe(), await isInBounds(x: player.x, y: player.y + 1) {
+					await MineMap.givePlayerTile(tile: grid[player.y + 1][player.x])
+					grid[player.y + 1][player.x] = .init(type: .plain, isWalkable: true)
+					await Game.shared.player.removeDurability(of: .pickaxe)
+					player.y += 1
+				}
+			case .left:
+				if await Game.shared.player.hasPickaxe(), await isInBounds(x: player.x - 1, y: player.y) {
+					await MineMap.givePlayerTile(tile: grid[player.y][player.x - 1])
+					grid[player.y][player.x - 1] = .init(type: .plain, isWalkable: true)
+					await Game.shared.player.removeDurability(of: .pickaxe)
+					player.x -= 1
+				}
+			case .right:
+				if await Game.shared.player.hasPickaxe(), await isInBounds(x: player.x + 1, y: player.y) {
+					await MineMap.givePlayerTile(tile: grid[player.y][player.x + 1])
+					grid[player.y][player.x + 1] = .init(type: .plain, isWalkable: true)
+					await Game.shared.player.removeDurability(of: .pickaxe)
+					player.x += 1
+				}
 		}
 
 		if oldX != player.x || oldY != player.y {
-			map()
+			await map()
 		}
 	}
 
@@ -117,7 +123,7 @@ struct MineMap: MapBoxMap {
 		}
 	}
 
-	static func givePlayerTile(tile: MineTile) {
+	static func givePlayerTile(tile: MineTile) async {
 		var itemTypeToGive: ItemType?
 		switch tile.type {
 			case .coal: itemTypeToGive = .coal
@@ -128,12 +134,12 @@ struct MineMap: MapBoxMap {
 			default: break
 		}
 		if let itemTypeToGive {
-			_ = Game.player.collect(item: .init(type: itemTypeToGive))
+			_ = await Game.shared.player.collect(item: .init(type: itemTypeToGive))
 		}
 	}
 
-	static func createGrid() -> [[MineTile]] {
-		switch Game.player.stats.mineLevel {
+	static func createGrid() async -> [[MineTile]] {
+		switch await Game.shared.player.stats.mineLevel {
 			case .one:
 				MineMapLevelGrids.createGridLevel1()
 			case .two:

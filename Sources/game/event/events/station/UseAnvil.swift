@@ -8,7 +8,7 @@ enum UseAnvil {
 			}
 			var canMake = true
 			for ingredient in recipe.ingredients {
-				if Game.player.has(item: ingredient.item, count: ingredient.count) {
+				if await Game.shared.player.has(item: ingredient.item, count: ingredient.count) {
 					continue
 				} else {
 					canMake = false
@@ -19,28 +19,28 @@ enum UseAnvil {
 				options.append(.init(label: recipe.name, action: {
 					// TODO: only allow the player to make what they need for a quest
 					for ingredient in recipe.ingredients {
-						if Game.stages.blacksmith.stage6Stages == .makePickaxe {
-							if let ids = Game.stages.blacksmith.stage6ItemsToMakePickaxeUUIDs {
-								Game.player.removeItems(ids: ids)
+						if await Game.shared.stages.blacksmith.stage6Stages == .makePickaxe {
+							if let ids = await Game.shared.stages.blacksmith.stage6ItemsToMakePickaxeUUIDs {
+								await Game.shared.player.removeItems(ids: ids)
 							}
-						} else if Game.stages.blacksmith.stage7Stages == .makeSword {
-							if let ids = Game.stages.blacksmith.stage7ItemsToMakeSwordUUIDs {
-								Game.player.removeItems(ids: ids)
+						} else if await Game.shared.stages.blacksmith.stage7Stages == .makeSword {
+							if let ids = await Game.shared.stages.blacksmith.stage7ItemsToMakeSwordUUIDs {
+								await Game.shared.player.removeItems(ids: ids)
 							}
 						} else {
-							Game.player.removeItem(item: ingredient.item, count: ingredient.count)
+							await Game.shared.player.removeItem(item: ingredient.item, count: ingredient.count)
 						}
-						Game.player.removeItem(item: ingredient.item, count: ingredient.count)
+						await Game.shared.player.removeItem(item: ingredient.item, count: ingredient.count)
 					}
 					for result in recipe.result {
-						if Game.stages.blacksmith.stage6Stages == .makePickaxe {
-							Game.stages.blacksmith.stage6Stages = .done
-							Game.stages.blacksmith.stage6PickaxeUUIDToRemove = Game.player.collect(item: .init(type: result.item, canBeSold: false))
-						} else if Game.stages.blacksmith.stage7Stages == .makeSword {
-							Game.stages.blacksmith.stage7Stages = .bringToHunter
-							Game.stages.blacksmith.stage7SwordUUIDToRemove = Game.player.collect(item: .init(type: result.item, canBeSold: false))
+						if await Game.shared.stages.blacksmith.stage6Stages == .makePickaxe {
+							await Game.shared.stages.blacksmith.stage6Stages = .done
+							await Game.shared.stages.blacksmith.stage6PickaxeUUIDToRemove = await Game.shared.player.collect(item: .init(type: result.item, canBeSold: false))
+						} else if await Game.shared.stages.blacksmith.stage7Stages == .makeSword {
+							await Game.shared.stages.blacksmith.stage7Stages = .bringToHunter
+							await Game.shared.stages.blacksmith.stage7SwordUUIDToRemove = await Game.shared.player.collect(item: .init(type: result.item, canBeSold: false))
 						} else {
-							_ = Game.player.collect(item: .init(type: result.item, canBeSold: true))
+							_ = await Game.shared.player.collect(item: .init(type: result.item, canBeSold: true))
 						}
 					}
 				}))

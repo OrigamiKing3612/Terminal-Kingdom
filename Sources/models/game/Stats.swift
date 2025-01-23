@@ -32,23 +32,23 @@ enum AllSkillLevels: CaseIterable {
 	var stat: SkillLevels {
 		switch self {
 			case .blacksmithSkillLevel:
-				Game.player.stats.blacksmithSkillLevel
+				await Game.shared.player.stats.blacksmithSkillLevel
 			case .miningSkillLevel:
-				Game.player.stats.miningSkillLevel
+				await Game.shared.player.stats.miningSkillLevel
 			case .builderSkillLevel:
-				Game.player.stats.builderSkillLevel
+				await Game.shared.player.stats.builderSkillLevel
 			case .huntingSkillLevel:
-				Game.player.stats.huntingSkillLevel
+				await Game.shared.player.stats.huntingSkillLevel
 			case .inventorSkillLevel:
-				Game.player.stats.inventorSkillLevel
+				await Game.shared.player.stats.inventorSkillLevel
 			case .stableSkillLevel:
-				Game.player.stats.stableSkillLevel
+				await Game.shared.player.stats.stableSkillLevel
 			case .farmingSkillLevel:
-				Game.player.stats.farmingSkillLevel
+				await Game.shared.player.stats.farmingSkillLevel
 			case .medicalSkillLevel:
-				Game.player.stats.medicalSkillLevel
+				await Game.shared.player.stats.medicalSkillLevel
 			case .carpentrySkillLevel:
-				Game.player.stats.carpentrySkillLevel
+				await Game.shared.player.stats.carpentrySkillLevel
 		}
 	}
 

@@ -22,9 +22,9 @@ enum MapGen {
 	static let mapWidth = (500 * 2) / 2
 	static let mapHeight = 500 / 2
 
-	static func generateFullMap() -> [[MapTile]] {
+	static func generateFullMap() async -> [[MapTile]] {
 		// amplitude = common parts more common, frequency is size of biome.
-		let noise = GradientNoise2D(amplitude: Game.mapGen.amplitude, frequency: Game.mapGen.frequency, seed: Game.mapGen.seed)
+		let noise = await GradientNoise2D(amplitude: Game.shared.mapGen.amplitude, frequency: Game.shared.mapGen.frequency, seed: Game.shared.mapGen.seed)
 
 		var map: [[MapTile]] = Array(repeating: Array(repeating: MapTile(type: .TOBEGENERATED), count: mapWidth), count: mapHeight)
 

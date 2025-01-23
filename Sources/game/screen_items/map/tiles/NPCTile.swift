@@ -5,14 +5,14 @@ struct NPCTile: Codable, Equatable {
 		self.type = type
 	}
 
-	static func renderNPC(tile: NPCTile) -> String {
-		if !tile.type.hasTalkedToBefore {
+	static func renderNPC(tile: NPCTile) async -> String {
+		if await !tile.type.hasTalkedToBefore {
 			return "!".styled(with: [.bold, .red])
 		}
 		switch tile.type {
 			default:
 				// TODO: Not sure if this will stay
-				return (Game.config.useNerdFont ? "󰙍" : "N").styled(with: .bold)
+				return await (Game.shared.config.useNerdFont ? "󰙍" : "N").styled(with: .bold)
 		}
 	}
 

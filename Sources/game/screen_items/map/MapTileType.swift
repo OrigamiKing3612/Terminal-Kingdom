@@ -60,34 +60,34 @@ enum MapTileType: TileType {
 		}
 	}
 
-	func render() -> String {
+	func render() async -> String {
 		switch self {
 			case .plain: " "
 			case .water: "W".styled(with: .brightBlue)
 			case .path: "P"
-			case .tree: (Game.config.useNerdFont ? "󰐅" : "T").styled(with: .green)
-			case let .building(tile: buildingTile): "#".styled(with: .dim, styledIf: Game.isBuilding && buildingTile.isPlacedByPlayer)
+			case .tree: await (Game.shared.config.useNerdFont ? "󰐅" : "T").styled(with: .green)
+			case let .building(tile: buildingTile): await "#".styled(with: .dim, styledIf: Game.shared.isBuilding && buildingTile.isPlacedByPlayer)
 			case .player: "@".styled(with: [.blue, .bold])
 			case .sand: "S".styled(with: .yellow)
-			case let .door(doorTile): DoorTile.renderDoor(tile: doorTile)
+			case let .door(doorTile): await DoorTile.renderDoor(tile: doorTile)
 			case .TOBEGENERATED: "."
 			case .playerStart: " "
 			case .snow: "S".styled(with: .bold)
-			case .snow_tree: (Game.config.useNerdFont ? "󰐅" : "T").styled(with: .bold)
-			case .cactus: (Game.config.useNerdFont ? "󰶵" : "C").styled(with: .brightGreen)
+			case .snow_tree: await (Game.shared.config.useNerdFont ? "󰐅" : "T").styled(with: .bold)
+			case .cactus: await (Game.shared.config.useNerdFont ? "󰶵" : "C").styled(with: .brightGreen)
 			case .ice: "I".styled(with: .brightCyan)
-			case .fence: (Game.config.useNerdFont ? "f" : "f").styled(with: .brown)
+			case .fence: await (Game.shared.config.useNerdFont ? "f" : "f").styled(with: .brown)
 			case .gate: "g"
-			case let .crop(crop: cropTile): CropTile.renderCrop(tile: cropTile)
+			case let .crop(crop: cropTile): await CropTile.renderCrop(tile: cropTile)
 			case let .pot(tile: potTile): PotTile.renderCropInPot(tile: potTile)
 			case let .station(station: station): StationTile.render(tile: station)
 			case .startMining: "M"
-			case let .npc(tile: tile): NPCTile.renderNPC(tile: tile)
+			case let .npc(tile: tile): await NPCTile.renderNPC(tile: tile)
 			case .shopStandingArea(type: _): "."
 			case .biomeTOBEGENERATED(type: _): "/"
-			case .chest /* (tile: _) */: (Game.config.useNerdFont ? "󰜦" : "C").styled(with: .yellow)
-			case .bed: Game.config.useNerdFont ? "" : "B"
-			case .desk: Game.config.useNerdFont ? "󱈹" : "D"
+			case .chest /* (tile: _) */: await (Game.shared.config.useNerdFont ? "󰜦" : "C").styled(with: .yellow)
+			case .bed: await Game.shared.config.useNerdFont ? "" : "B"
+			case .desk: await Game.shared.config.useNerdFont ? "󱈹" : "D"
 		}
 	}
 

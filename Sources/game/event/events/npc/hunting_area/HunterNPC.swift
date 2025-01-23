@@ -1,12 +1,12 @@
 enum HunterNPC {
 	static func talk() async {
-		if Game.startingVillageChecks.firstTimes.hasTalkedToHunter == false {
-			Game.startingVillageChecks.firstTimes.hasTalkedToHunter = true
-		} else if Game.stages.blacksmith.stage7Stages == .bringToHunter {
-			Game.stages.blacksmith.stage7Stages = .comeBack
-			MessageBox.message("Hello \(Game.player.name)! Thank you for this sword!!", speaker: .hunter)
-			if let id = Game.stages.blacksmith.stage7SwordUUIDToRemove {
-				Game.player.removeItem(id: id)
+		if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToHunter == false {
+			await Game.shared.startingVillageChecks.firstTimes.hasTalkedToHunter = true
+		} else if await Game.shared.stages.blacksmith.stage7Stages == .bringToHunter {
+			await Game.shared.stages.blacksmith.stage7Stages = .comeBack
+			await MessageBox.message("Hello \(Game.shared.player.name)! Thank you for this sword!!", speaker: .hunter)
+			if let id = await Game.shared.stages.blacksmith.stage7SwordUUIDToRemove {
+				await Game.shared.player.removeItem(id: id)
 			}
 		} else {
 			await getStage()
@@ -18,7 +18,7 @@ enum HunterNPC {
 			.init(label: "Yes", action: {}),
 			.init(label: "No", action: {}),
 		]
-		let selectedOption = await MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to be a hunter?", speaker: .hunter, options: options)
+		let selectedOption = await MessageBox.messageWithOptions("Hello \(Game.shared.player.name)! Would you like to learn how to be a hunter?", speaker: .hunter, options: options)
 		if selectedOption.label == "Yes" {
 			await stage1()
 		} else {

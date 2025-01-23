@@ -1,14 +1,14 @@
 enum SalesmanNPC {
 	static func talk() async {
-		if Game.stages.mine.stage10Stages == .goToSalesman {
+		if await Game.shared.stages.mine.stage10Stages == .goToSalesman {
 			MessageBox.message("Oooh 5 gold! Can buy that for 10 coins!", speaker: .salesman(type: .buy))
 			let options: [MessageOption] = [
 				.init(label: "Yes", action: {
-					if let ids = Game.stages.mine.stage10GoldUUIDsToRemove {
-						Game.player.removeItems(ids: ids)
-						_ = Game.player.collect(item: .init(type: .coin), count: 10)
+					if let ids = await Game.shared.stages.mine.stage10GoldUUIDsToRemove {
+						await Game.shared.player.removeItems(ids: ids)
+						_ = await Game.shared.player.collect(item: .init(type: .coin), count: 10)
 						MessageBox.message("Thank you!", speaker: .salesman(type: .buy))
-						Game.stages.mine.stage10Stages = .comeBack
+						await Game.shared.stages.mine.stage10Stages = .comeBack
 					}
 				}),
 				.init(label: "No", action: {
@@ -17,16 +17,16 @@ enum SalesmanNPC {
 			]
 			let selectedOption = await MessageBox.messageWithOptions("Would you like to sell the 5 gold?", speaker: .salesman(type: .buy), options: options)
 			selectedOption.action()
-		} else if Game.stages.blacksmith.stage9Stages == .goToSalesman {
+		} else if await Game.shared.stages.blacksmith.stage9Stages == .goToSalesman {
 			let price = ItemType.steel.price! * 3
 			MessageBox.message("Oooh 3 steel! Can buy that for \(price) coins!", speaker: .salesman(type: .buy))
 			let options: [MessageOption] = [
 				.init(label: "Yes", action: {
-					if let ids = Game.stages.blacksmith.stage9SteelUUIDToRemove {
-						Game.player.removeItems(ids: ids)
-						_ = Game.player.collect(item: .init(type: .coin), count: price)
+					if let ids = await Game.shared.stages.blacksmith.stage9SteelUUIDToRemove {
+						await Game.shared.player.removeItems(ids: ids)
+						_ = await Game.shared.player.collect(item: .init(type: .coin), count: price)
 						MessageBox.message("Thank you!", speaker: .salesman(type: .buy))
-						Game.stages.blacksmith.stage9Stages = .comeBack
+						await Game.shared.stages.blacksmith.stage9Stages = .comeBack
 					}
 				}),
 				.init(label: "No", action: {
@@ -40,18 +40,18 @@ enum SalesmanNPC {
 			if case let .shopStandingArea(type: type) = tile.type {
 				switch type {
 					case .buy:
-						if Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy == false {
-							Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy = true
+						if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy == false {
+							await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy = true
 						}
 						await buy()
 					case .sell:
-						if Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell == false {
-							Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell = true
+						if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell == false {
+							await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell = true
 						}
 						await sell()
 					case .help:
-						if Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp == false {
-							Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp = true
+						if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp == false {
+							await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp = true
 						}
 						help()
 				}
@@ -89,7 +89,7 @@ enum SalesmanNPC {
 		var options: [MessageOption] = [
 			.init(label: "Leave", action: { leaveShop = true }),
 		]
-		for item in Array(Set(Game.player.items)) {
+		for item in await Array(Set(Game.shared.player.items)) {
 			sellOption(options: &options, item: item)
 		}
 		while !leaveShop {
@@ -107,34 +107,34 @@ enum SalesmanNPC {
 	}
 
 	private static func help() {
-		MessageBox.message("Welcome to the shop \(Game.player.name)!", speaker: .salesman(type: .help))
+		await MessageBox.message("Welcome to the shop \(Game.shared.player.name)!", speaker: .salesman(type: .help))
 		MessageBox.message("If you want to buy, talk to the guy with the \("!".styled(with: [.green, .blue])). Or if you want to sell talk to the guy with the \("!".styled(with: [.bold, .blue])).", speaker: .salesman(type: .help))
-		Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy = false
-		Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell = false
+		await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy = false
+		await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell = false
 	}
 }
 
 extension SalesmanNPC {
 	private static func buyItem(item: ItemType, count: Int, price: Int) {
-		if Game.player.has(item: .coin, count: price) {
-			_ = Game.player.collect(item: .init(type: item), count: count)
-			Game.player.removeItem(item: .coin, count: price * count)
+		if await Game.shared.player.has(item: .coin, count: price) {
+			_ = await Game.shared.player.collect(item: .init(type: item), count: count)
+			await Game.shared.player.removeItem(item: .coin, count: price * count)
 		} else {
 			MessageBox.message("You don't have enough coins!", speaker: .salesman(type: .buy))
 		}
 	}
 
 	private static func sellItem(item: Item, count: Int, price: Int) {
-		if Game.player.has(item: item, count: count) {
-			Game.player.removeItem(item: item.type, count: count)
-			_ = Game.player.collect(item: .init(type: .coin), count: price * count)
+		if await Game.shared.player.has(item: item, count: count) {
+			await Game.shared.player.removeItem(item: item.type, count: count)
+			_ = await Game.shared.player.collect(item: .init(type: .coin), count: price * count)
 		} else {
 			MessageBox.message("You don't have that much!", speaker: .salesman(type: .sell))
 		}
 	}
 
 	private static func addOptionsForSkill(options: inout [MessageOption], skillLevel: AllSkillLevels) {
-		if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .yes {
+		if await Game.shared.startingVillageChecks.hasBeenTaughtToChopLumber == .yes {
 			buyOption(options: &options, item: .lumber)
 		}
 		switch (skillLevel, skillLevel.stat) {

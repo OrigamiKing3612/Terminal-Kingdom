@@ -1,70 +1,155 @@
 import Foundation
 
-enum MapBox {
-	nonisolated(unsafe) static var mainMap: MainMap = .init()
-	nonisolated(unsafe) static var miningMap: MineMap = .init()
-	nonisolated(unsafe) static var buildingMap: BuildingMap = .init(.castle(side: .left))
-	nonisolated(unsafe) static var showMapBox = true {
+actor MapBoxActor {
+	static let shared = MapBoxActor()
+	var mainMap: MainMap
+	private(set) var miningMap: MineMap
+	private(set) var buildingMap: BuildingMap
+	private(set) var showMapBox = true {
+		//! TODO: figure out something better
+		// private(set) and a set func that does this?
 		didSet {
 			if showMapBox {
-				mapBox()
+				Task {
+					await MapBox.mapBox()
+				}
 			} else {
-				clear()
+				MapBox.clear()
 			}
 		}
 	}
 
-	nonisolated(unsafe) static var mapType: MapType {
-		get {
-			Game.player.mapType
-		}
-		set {
-			Game.player.setMapType(newValue)
-			// }
-			// didSet {
-			// 	Game.mapType = mapType
-			switch mapType {
-				case .mainMap:
-					break
-				case .mining:
-					miningMap = .init()
-				default:
-					buildingMap = .init(mapType)
-			}
-			mapBox()
-		}
+	private init() {}
+
+	init() async {
+		self.mainMap = await MainMap()
+		self.miningMap = await MineMap()
+		self.buildingMap = await BuildingMap(.castle(side: .left))
+	}
+
+	func updateMainMapTile(at x: Int, y: Int, with tile: MapTile) async {
+		mainMap.grid[y][x] = tile
+	}
+
+	func updateMiningMapTile(at x: Int, y: Int, with tile: MineTile) async {
+		miningMap.grid[y][x] = tile
+	}
+
+	func updateBuildingMapTile(at x: Int, y: Int, with tile: MapTile) async {
+		buildingMap.grid[y][x] = tile
+	}
+
+	func updateMainMapTile(newTile: MapTile) async {
+		mainMap.updateTile(newTile: newTile)
+	}
+
+	// func updateMineMapTile(newTile: MineTile) async {
+	// 	miningMap.updateTile(newTile: newTile)
+	// }
+
+	func updateBuildingMapTile(newTile: MapTile) async {
+		buildingMap.updateTile(newTile: newTile)
+	}
+
+	func resetMiningMap() async {
+		miningMap = await .init()
+	}
+
+	func resetBuildingMap(_ mapType: MapType) async {
+		buildingMap = await .init(mapType)
+	}
+
+	func mainMapBuild() async {
+		await mainMap.build()
+	}
+
+	func mainMapDestroy() async {
+		await mainMap.destroy()
+	}
+
+	func buildingMapBuild() async {
+		buildingMap.build()
+	}
+
+	func buildingMapDestroy() async {
+		buildingMap.destroy()
+	}
+
+	func mainMapMovePlayer(_ direction: PlayerDirection) async {
+		await mainMap.movePlayer(direction)
+	}
+
+	func mineMapMovePlayer(_ direction: PlayerDirection) async {
+		await miningMap.movePlayer(direction)
+	}
+
+	func buildingMapMovePlayer(_ direction: PlayerDirection) async {
+		await buildingMap.movePlayer(direction)
+	}
+
+	func mainMap() async {
+		await mainMap.map()
+	}
+
+	func buildingMap() async {
+		await buildingMap.map()
+	}
+
+	func miningMap() async {
+		await miningMap.map()
+	}
+}
+
+enum MapBox {
+	static var mainMap: MainMap {
+		get async { await MapBoxActor.shared.mainMap }
+	}
+
+	static var miningMap: MineMap {
+		get async { await MapBoxActor.shared.miningMap }
+	}
+
+	static var buildingMap: BuildingMap {
+		get async { await MapBoxActor.shared.buildingMap }
+	}
+
+	static var showMapBox: Bool {
+		get async { await MapBoxActor.shared.showMapBox }
+	}
+
+	static var mapType: MapType {
+		get async { await Game.shared.player.mapType }
 	}
 
 	static var player: Player {
-		mapType.map.player
+		get async { await mapType.map.player }
 	}
 
 	static var tilePlayerIsOn: MapTile {
-		mapType.map.tilePlayerIsOn as! MapTile
+		get async { await mapType.map.tilePlayerIsOn as! MapTile }
 	}
 
-	static func mapBox() {
+	static func mapBox() async {
 		clear()
+		await sides()
 
-		sides()
-
-		switch mapType {
+		switch await mapType {
 			case .mainMap:
-				mainMap.map()
+				await MapBoxActor.shared.mainMap()
 			case .mining:
-				miningMap.map()
+				await MapBoxActor.shared.miningMap()
 			default:
-				buildingMap.map()
+				await MapBoxActor.shared.buildingMap()
 		}
 	}
 
-	static func sides() {
-		Screen.print(x: startX, y: startY - 1, String(repeating: Game.horizontalLine, count: width + 1).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+	static func sides() async {
+		await Screen.print(x: startX, y: startY - 1, String(repeating: Game.shared.horizontalLine, count: width + 1).styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
 		for y in startY ..< (endY + 1) {
-			Screen.print(x: startX - 1, y: y, Game.verticalLine.styled(with: [.bold, .blue], styledIf: Game.isBuilding))
-			Screen.print(x: endX, y: y, Game.verticalLine.styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+			await Screen.print(x: startX - 1, y: y, Game.shared.verticalLine.styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
+			await Screen.print(x: endX, y: y, Game.shared.verticalLine.styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
 		}
-		Screen.print(x: startX, y: endY, String(repeating: Game.horizontalLine, count: width).styled(with: [.bold, .blue], styledIf: Game.isBuilding))
+		await Screen.print(x: startX, y: endY, String(repeating: Game.shared.horizontalLine, count: width).styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
 	}
 
 	static func clear() {
@@ -74,14 +159,14 @@ enum MapBox {
 		}
 	}
 
-	static func movePlayer(_ direction: PlayerDirection) {
-		switch mapType {
+	static func movePlayer(_ direction: PlayerDirection) async {
+		switch await mapType {
 			case .mainMap:
-				mainMap.movePlayer(direction)
+				await MapBoxActor.shared.mainMapMovePlayer(direction)
 			case .mining:
-				miningMap.movePlayer(direction)
+				await MapBoxActor.shared.mineMapMovePlayer(direction)
 			default:
-				buildingMap.movePlayer(direction)
+				await MapBoxActor.shared.buildingMapMovePlayer(direction)
 		}
 	}
 
@@ -103,37 +188,50 @@ enum MapBox {
 		return nil
 	}
 
-	static func destroy() {
-		switch mapType {
+	static func destroy() async {
+		switch await mapType {
 			case .mainMap:
-				mainMap.destroy()
+				await MapBoxActor.shared.mainMapDestroy()
 			case .mining:
 				break
 			default:
-				buildingMap.destroy()
+				await MapBoxActor.shared.buildingMapDestroy()
 		}
 	}
 
-	static func build() {
-		switch mapType {
+	static func build() async {
+		switch await mapType {
 			case .mainMap:
-				mainMap.build()
+				await MapBoxActor.shared.mainMapBuild()
 			case .mining:
 				break
 			default:
-				buildingMap.build()
+				await MapBoxActor.shared.buildingMapBuild()
 		}
 	}
 
-	static func updateTile(newTile: MapTile) {
-		switch mapType {
+	static func updateTile(newTile: MapTile) async {
+		switch await mapType {
 			case .mainMap:
-				mainMap.updateTile(newTile: newTile)
+				await MapBoxActor.shared.updateMainMapTile(newTile: newTile)
 			case .mining:
 				break
 			default:
-				buildingMap.updateTile(newTile: newTile)
+				await MapBoxActor.shared.updateBuildingMapTile(newTile: newTile)
 		}
+	}
+
+	static func setMapType(_ mapType: MapType) async {
+		await Game.shared.player.setMapType(mapType)
+		switch mapType {
+			case .mainMap:
+				break
+			case .mining:
+				await MapBoxActor.shared.resetMiningMap()
+			default:
+				await MapBoxActor.shared.resetBuildingMap(mapType)
+		}
+		await mapBox()
 	}
 }
 
@@ -157,13 +255,15 @@ enum MapType: Codable, Equatable {
 	case custom(mapID: UUID)
 
 	var map: any MapBoxMap {
-		switch self {
-			case .mainMap:
-				MapBox.mainMap
-			case .mining:
-				MapBox.miningMap
-			default:
-				MapBox.buildingMap
+		get async {
+			switch self {
+				case .mainMap:
+					await MapBoxActor.shared.mainMap
+				case .mining:
+					await MapBoxActor.shared.miningMap
+				default:
+					await MapBoxActor.shared.buildingMap
+			}
 		}
 	}
 }
@@ -171,18 +271,4 @@ enum MapType: Codable, Equatable {
 struct Player: Codable {
 	var x: Int
 	var y: Int
-}
-
-protocol MapBoxMap {
-	associatedtype pTile: Tile
-	var grid: [[pTile]] { get set }
-
-	var player: Player { get }
-	var tilePlayerIsOn: pTile { get }
-	func isWalkable(x: Int, y: Int) -> Bool
-	func render(playerX: Int, playerY: Int, viewportWidth: Int, viewportHeight: Int)
-	func interactWithTile() async
-
-	mutating func movePlayer(_ direction: PlayerDirection)
-	mutating func map()
 }

@@ -3,7 +3,7 @@ enum MineDoorEvent {
 		var options: [MessageOption] = [
 			.init(label: "Go Inside", action: { goInside(tile: tile) }),
 		]
-		if Game.player.has(item: .lumber, count: 100), Game.player.has(item: .iron, count: 20), Game.player.has(item: .stone, count: 30), Game.stages.mine.stage7Stages == .upgrade {
+		if await Game.shared.player.has(item: .lumber, count: 100), await Game.shared.player.has(item: .iron, count: 20), await Game.shared.player.has(item: .stone, count: 30), await Game.shared.stages.mine.stage7Stages == .upgrade {
 			options.append(.init(label: "Upgrade", action: { upgrade(tile: tile) }))
 		}
 		options.append(.init(label: "Quit", action: {}))
@@ -16,9 +16,9 @@ enum MineDoorEvent {
 	}
 
 	static func upgrade(tile: DoorTile) {
-		if let ids = Game.stages.mine.stage7ItemUUIDsToRemove {
-			Game.stages.mine.stage7Stages = .upgraded
-			Game.player.removeItems(ids: ids)
+		if let ids = await Game.shared.stages.mine.stage7ItemUUIDsToRemove {
+			await Game.shared.stages.mine.stage7Stages = .upgraded
+			await Game.shared.player.removeItems(ids: ids)
 			goInside(tile: tile)
 		}
 	}

@@ -1,6 +1,6 @@
 import Foundation
 
-struct PlayerCharacter: Codable {
+actor PlayerCharacter {
 	private(set) var name: String = ""
 	private(set) var items: [Item] = []
 	#if DEBUG
@@ -8,10 +8,23 @@ struct PlayerCharacter: Codable {
 	#else
 		private(set) var position: Player = .init(x: 55, y: 23)
 	#endif
-	var direction: PlayerDirection = .down
+	private(set) var direction: PlayerDirection = .down
 	private(set) var quests: [Quest] = []
 	#if DEBUG
-		private(set) var mapType: MapType = .mainMap
+		private(set) var mapType: MapType = .mainMap {
+			didSet {
+				await Game.shared.shared.player.setMapType(mapType)
+				switch mapType {
+					case .mainMap:
+						break
+					case .mining:
+						MapBox.miningMap = .init()
+					default:
+						MapBox.buildingMap = .init(mapType)
+				}
+				MapBox.mapBox()
+			}
+		}
 	#else
 		private(set) var mapType: MapType = .castle(side: .left)
 	#endif
@@ -19,7 +32,7 @@ struct PlayerCharacter: Codable {
 	var stats: Stats = .init()
 	var canBuild: Bool = false
 
-	mutating func setName(_ name: String) {
+	func setName(_ name: String) {
 		self.name = name
 	}
 
@@ -65,7 +78,7 @@ struct PlayerCharacter: Codable {
 		case pickaxe, axe
 	}
 
-	mutating func removeDurability(of itemType: RemoveDurabilityTypes, count _: Int = 1, amount: Int = 1) {
+	func removeDurability(of itemType: RemoveDurabilityTypes, count _: Int = 1, amount: Int = 1) {
 		for (index, item) in items.enumerated() {
 			switch (itemType, item.type) {
 				case let (.pickaxe, .pickaxe(type)) where type.durability > amount:
@@ -84,12 +97,12 @@ struct PlayerCharacter: Codable {
 		}
 	}
 
-	mutating func collect(item: Item) -> UUID {
+	func collect(item: Item) -> UUID {
 		items.append(item)
 		return item.id
 	}
 
-	mutating func collect(item: Item, count: Int) -> [UUID] {
+	func collect(item: Item, count: Int) -> [UUID] {
 		var ids: [UUID] = []
 		for _ in 0 ..< count {
 			items.append(item)
@@ -98,7 +111,7 @@ struct PlayerCharacter: Codable {
 		return ids
 	}
 
-	mutating func destroyItem(id: UUID) {
+	func destroyItem(id: UUID) {
 		if items.isEmpty {
 			return
 		}
@@ -108,7 +121,7 @@ struct PlayerCharacter: Codable {
 		}
 	}
 
-	mutating func removeItem(id: UUID) {
+	func removeItem(id: UUID) {
 		if items.isEmpty {
 			return
 		}
@@ -118,7 +131,7 @@ struct PlayerCharacter: Codable {
 		}
 	}
 
-	mutating func removeItems(ids: [UUID]) {
+	func removeItems(ids: [UUID]) {
 		if items.isEmpty {
 			return
 		}
@@ -127,21 +140,21 @@ struct PlayerCharacter: Codable {
 		}
 	}
 
-	mutating func removeItem(at index: Int) {
+	func removeItem(at index: Int) {
 		if items.isEmpty {
 			return
 		}
 		items.remove(at: index)
 	}
 
-	mutating func updateItem(at index: Int, _ newValue: Item) {
+	func updateItem(at index: Int, _ newValue: Item) {
 		if items.isEmpty {
 			return
 		}
 		items[index] = newValue
 	}
 
-	mutating func removeItem(item: ItemType, count: Int = 1) {
+	func removeItem(item: ItemType, count: Int = 1) {
 		if items.isEmpty {
 			return
 		}
@@ -155,44 +168,54 @@ struct PlayerCharacter: Codable {
 		}
 	}
 
-	mutating func collectIfNotPresent(item: Item) -> UUID {
+	func collectIfNotPresent(item: Item) -> UUID {
 		if !has(item: item.type) {
 			return collect(item: item)
 		}
 		return item.id
 	}
 
-	mutating func updatePlayerPositionToSave(x: Int, y: Int) {
+	@available(*, deprecated, message: "Use `setPlayerPosition(x:y:)` instead")
+	func updatePlayerPositionToSave(x: Int, y: Int) {
 		position.x = x
 		position.y = y
 	}
 
-	mutating func addQuest(_ quest: Quest) {
+	func setPlayerPosition(x: Int, y: Int) {
+		position.x = x
+		position.y = y
+	}
+
+	func addQuest(_ quest: Quest) {
 		if !quests.contains(quest) {
 			quests.append(quest)
 		}
 	}
 
-	mutating func removeQuest(quest: Quest) {
+	func removeQuest(quest: Quest) {
 		quests.removeAll(where: { $0 == quest })
 	}
 
-	mutating func removeQuest(index: Int) {
+	func removeQuest(index: Int) {
 		quests.remove(at: index)
 	}
 
 	@discardableResult
-	mutating func removeLastQuest() -> Quest {
+	func removeLastQuest() -> Quest {
 		quests.removeLast()
 	}
 
-	mutating func updateLastQuest(newQuest: Quest) {
+	func updateLastQuest(newQuest: Quest) {
 		quests.removeLast()
 		quests.append(newQuest)
 	}
 
-	mutating func setMapType(_ newMapType: MapType) {
+	func setMapType(_ newMapType: MapType) {
 		mapType = newMapType
+	}
+
+	func setDirection(_ newDirection: PlayerDirection) {
+		direction = newDirection
 	}
 }
 
@@ -200,11 +223,13 @@ enum PlayerDirection: String, Codable {
 	case up, down, left, right
 
 	var render: String {
-		switch self {
-			case .up: Game.config.useNerdFont ? "↑" : "^"
-			case .down: Game.config.useNerdFont ? "↓" : "v"
-			case .left: Game.config.useNerdFont ? "←" : "<"
-			case .right: Game.config.useNerdFont ? "→" : ">"
+		get async {
+			switch self {
+				case .up: await Game.shared.shared.config.useNerdFont ? "↑" : "^"
+				case .down: await Game.shared.shared.config.useNerdFont ? "↓" : "v"
+				case .left: await Game.shared.shared.config.useNerdFont ? "←" : "<"
+				case .right: await Game.shared.shared.config.useNerdFont ? "→" : ">"
+			}
 		}
 	}
 }

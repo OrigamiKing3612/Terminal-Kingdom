@@ -24,7 +24,7 @@ enum TitleScreen {
 				let y = middleY - (Screen.rows / 2)
 				Screen.print(x: x, y: y, text.styled(with: .bold))
 				let optionsX = middleX - (text.count / 4)
-				let icon = " \(Game.config.selectedIcon)"
+				let icon = await " \(Game.shared.config.selectedIcon)"
 
 				for (index, option) in TitleScreenOptions.allCases.enumerated() {
 					let isSelected = selectedOptionIndex == index
@@ -61,9 +61,9 @@ enum TitleScreen {
 		var label: String {
 			switch self {
 				case .newGameOption:
-					"New Game"
+					"New await Game.shared"
 				case .loadGameOption:
-					"Load Game"
+					"Load await Game.shared"
 				case .helpOption:
 					"Help"
 				case .settingsOption:
@@ -80,7 +80,7 @@ enum TitleScreen {
 				case .loadGameOption:
 					if await loadGame() {
 						// Load game
-						MessageBox.message("Game can not be loaded at this time. Creating new game.", speaker: .game)
+						MessageBox.message("await Game.shared can not be loaded at this time. Creating new game.", speaker: .game)
 						await newGame()
 					} else {
 						MessageBox.message("No saved game found. Creating new game.", speaker: .game)
@@ -157,7 +157,7 @@ enum TitleScreen {
 		yStart = printHelpMessage(x: x, y: y + yStart, "Press \(KeyboardKeys.W.render) and \(KeyboardKeys.S.render) to scroll up and down in the message box.")
 
 		yStart = printHelpMessage(x: x, y: y + yStart, "Press any key to quit.")
-		Screen.print(x: Screen.columns - 1 - Game.version.count, y: Screen.rows - 1, Game.version)
+		await Screen.print(x: Screen.columns - 1 - Game.shared.version.count, y: Screen.rows - 1, Game.shared.version)
 	}
 
 	static func settings() {
@@ -185,7 +185,7 @@ enum TitleScreen {
 				case .enter:
 					if selectedSettingOptionIndex == lastIndex + 2 {
 						config.write()
-						Game.config = Config.load()
+						await Game.shared.config = Config.load()
 						return
 					} else if selectedSettingOptionIndex == lastIndex + 3 {
 						return
@@ -201,7 +201,7 @@ enum TitleScreen {
 	private static func printSettingsOption(x: Int, y: Int, index: Int, text: String, configOption: String) -> Int {
 		let isSelected = selectedSettingOptionIndex == index
 		let configOptionToPrint = configOption == "" ? "" : ": \(configOption)"
-		Screen.print(x: x - (text.count / 2), y: y, "\(isSelected ? Game.config.selectedIcon : " ")\(text)\(configOptionToPrint)".styled(with: .bold, styledIf: isSelected))
+		await Screen.print(x: x - (text.count / 2), y: y, "\(isSelected ? Game.shared.config.selectedIcon : " ")\(text)\(configOptionToPrint)".styled(with: .bold, styledIf: isSelected))
 		return y + 1
 	}
 

@@ -3,13 +3,13 @@ enum Keys {
 		switch key {
 			case .q:
 				endProgram()
-			case .w where Game.config.wasdKeys, .up where Game.config.arrowKeys, .k where Game.config.vimKeys:
+			case .w where await Game.shared.config.wasdKeys, .up where await Game.shared.config.arrowKeys, .k where await Game.shared.config.vimKeys:
 				MapBox.movePlayer(.up)
-			case .a where Game.config.wasdKeys, .left where Game.config.arrowKeys, .h where Game.config.vimKeys:
+			case .a where await Game.shared.config.wasdKeys, .left where await Game.shared.config.arrowKeys, .h where await Game.shared.config.vimKeys:
 				MapBox.movePlayer(.left)
-			case .s where Game.config.wasdKeys, .down where Game.config.arrowKeys, .j where Game.config.vimKeys:
+			case .s where await Game.shared.config.wasdKeys, .down where await Game.shared.config.arrowKeys, .j where await Game.shared.config.vimKeys:
 				MapBox.movePlayer(.down)
-			case .d where Game.config.wasdKeys, .right where Game.config.arrowKeys, .l where Game.config.vimKeys:
+			case .d where await Game.shared.config.wasdKeys, .right where await Game.shared.config.arrowKeys, .l where await Game.shared.config.vimKeys:
 				MapBox.movePlayer(.right)
 			case .space, .enter:
 				await MapBox.interactWithTile()
@@ -37,12 +37,12 @@ enum Keys {
 				Screen.initialize()
 				Screen.initializeBoxes()
 			case .i:
-				Game.isInInventoryBox = true
+				await Game.shared.setIsInInventoryBox(true)
 				InventoryBox.sides()
 			case .b:
-				if Game.player.canBuild, MapBox.mapType != .mining {
+				if await Game.shared.player.canBuild, MapBox.mapType != .mining {
 					InventoryBox.resetSelectedBuildItemIndex
-					Game.isBuilding = true
+					await Game.shared.setIsBuilding(true)
 					MapBox.sides()
 					InventoryBox.inventoryBox()
 				}
@@ -54,7 +54,7 @@ enum Keys {
 				case .t:
 					MessageBox.message("t", speaker: .dev)
 					MapBox.mainMap.grid[MapBox.player.y][MapBox.player.x] = .init(type: .crop(crop: .init(type: .carrot)), isWalkable: true, event: .collectCrop)
-					Game.crops.insert(TilePosition(x: MapBox.player.x, y: MapBox.player.y))
+					await Game.shared.addCrop(TilePosition(x: MapBox.player.x, y: MapBox.player.y))
 			#endif
 			default:
 				#if DEBUG
@@ -68,17 +68,17 @@ enum Keys {
 	static func building(key: KeyboardKeys) async {
 		switch key {
 			case .b, .esc:
-				Game.isBuilding = false
+				await Game.shared.setIsBuilding(false)
 				InventoryBox.showBuildHelp = false
 				MapBox.mapBox()
 				InventoryBox.inventoryBox()
-			case .w where Game.config.wasdKeys, .up where Game.config.arrowKeys, .k where Game.config.vimKeys:
+			case .w where await Game.shared.config.wasdKeys, .up where await Game.shared.config.arrowKeys, .k where await Game.shared.config.vimKeys:
 				MapBox.movePlayer(.up)
-			case .a where Game.config.wasdKeys, .left where Game.config.arrowKeys, .h where Game.config.vimKeys:
+			case .a where await Game.shared.config.wasdKeys, .left where await Game.shared.config.arrowKeys, .h where await Game.shared.config.vimKeys:
 				MapBox.movePlayer(.left)
-			case .s where Game.config.wasdKeys, .down where Game.config.arrowKeys, .j where Game.config.vimKeys:
+			case .s where await Game.shared.config.wasdKeys, .down where await Game.shared.config.arrowKeys, .j where await Game.shared.config.vimKeys:
 				MapBox.movePlayer(.down)
-			case .d where Game.config.wasdKeys, .right where Game.config.arrowKeys, .l where Game.config.vimKeys:
+			case .d where await Game.shared.config.wasdKeys, .right where await Game.shared.config.arrowKeys, .l where await Game.shared.config.vimKeys:
 				MapBox.movePlayer(.right)
 			case .space, .enter:
 				MapBox.build()
@@ -103,7 +103,7 @@ enum Keys {
 		switch key {
 			case .i, .esc:
 				InventoryBox.showHelp = false
-				Game.isInInventoryBox = false
+				await Game.shared.setIsInInventoryBox(false)
 				InventoryBox.inventoryBox()
 			case .up, .back_tab:
 				InventoryBox.previousInventoryItem()

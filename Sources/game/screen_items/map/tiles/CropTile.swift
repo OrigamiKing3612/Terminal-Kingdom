@@ -31,12 +31,12 @@ struct CropTile: Codable, Equatable {
 		growthStage += 1
 	}
 
-	static func renderCrop(tile: CropTile) -> String {
+	static func renderCrop(tile: CropTile) async -> String {
 		switch tile.type {
 			case .none:
 				"."
 			case .tree_seed:
-				Game.config.useNerdFont ? "" : "t"
+				await Game.shared.config.useNerdFont ? "" : "t"
 			case .carrot:
 				switch tile.stage {
 					case .seed:
@@ -44,7 +44,7 @@ struct CropTile: Codable, Equatable {
 					case .sprout:
 						"p"
 					case .mature:
-						Game.config.useNerdFont ? "" : "c"
+						await Game.shared.config.useNerdFont ? "" : "c"
 				}
 			case .potato:
 				"p"

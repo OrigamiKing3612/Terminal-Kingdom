@@ -1,20 +1,20 @@
 enum BuilderNPC {
 	static func talk() async {
-		if Game.startingVillageChecks.firstTimes.hasTalkedToBuilder == false {
-			Game.startingVillageChecks.firstTimes.hasTalkedToBuilder = true
+		if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToBuilder == false {
+			await Game.shared.startingVillageChecks.firstTimes.hasTalkedToBuilder = true
 		}
 		await getStage()
 	}
 
 	static func getStage() async {
-		switch Game.stages.builder.stageNumber {
+		switch await Game.shared.stages.builder.stageNumber {
 			case 0:
-				if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
+				if await Game.shared.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
 					let options: [MessageOption] = [
 						.init(label: "Yes", action: {}),
 						.init(label: "No", action: {}),
 					]
-					let selectedOption = await MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to build?", speaker: .builder, options: options)
+					let selectedOption = await MessageBox.messageWithOptions("Hello \(Game.shared.player.name)! Would you like to learn how to build?", speaker: .builder, options: options)
 					if selectedOption.label == "Yes" {
 						await stage0()
 					} else {
@@ -43,18 +43,18 @@ enum BuilderNPC {
 	}
 
 	static func stage0() async {
-		if Game.startingVillageChecks.hasBeenTaughtToChopLumber != .yes {
-			if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
+		if await Game.shared.startingVillageChecks.hasBeenTaughtToChopLumber != .yes {
+			if await Game.shared.startingVillageChecks.hasBeenTaughtToChopLumber == .no {
 				MessageBox.message("Before I can teach you how to build, you need to learn how to chop lumber.", speaker: .builder)
 			}
 			await RandomEventStuff.teachToChopLumber(by: .builder)
-			if Game.startingVillageChecks.hasBeenTaughtToChopLumber == .yes {
+			if await Game.shared.startingVillageChecks.hasBeenTaughtToChopLumber == .yes {
 				if await RandomEventStuff.wantsToContinue(speaker: .builder) {
 					await stage1()
 				}
 			}
 		} else {
-			MessageBox.message("Hello \(Game.player.name)! Looks like you already know how to chop lumber.", speaker: .builder)
+			await MessageBox.message("Hello \(Game.shared.player.name)! Looks like you already know how to chop lumber.", speaker: .builder)
 			let options: [MessageOption] = [
 				.init(label: "Yes", action: {}),
 				.init(label: "No", action: {}),
@@ -67,28 +67,28 @@ enum BuilderNPC {
 	}
 
 	static func stage1() async {
-		switch Game.stages.builder.stage1Stages {
+		switch await Game.shared.stages.builder.stage1Stages {
 			case .notStarted:
 				MessageBox.message("Before we can start building, we need materials. Can you go collect 20 stone and 10 iron from the mine and bring it back to me?", speaker: .builder)
-				Game.stages.builder.stage1Stages = .collect
+				await Game.shared.stages.builder.stage1Stages = .collect
 				StatusBox.quest(.builder1)
 			case .collect:
 				MessageBox.message("You haven't gone to the mine yet. It will be marked with an \("!".styled(with: .bold)) on the map.", speaker: .builder)
 			case .bringBack:
-				if Game.player.has(item: .stone, count: 20), Game.player.has(item: .iron, count: 10) {
+				if await Game.shared.player.has(item: .stone, count: 20), await Game.shared.player.has(item: .iron, count: 10) {
 					MessageBox.message("Great, You have collected the materials!", speaker: .builder)
-					if let ids = Game.stages.builder.stage1ItemsUUIDsToRemove {
-						Game.player.removeItems(ids: ids)
+					if let ids = await Game.shared.stages.builder.stage1ItemsUUIDsToRemove {
+						await Game.shared.player.removeItems(ids: ids)
 					}
-					Game.stages.builder.stage1Stages = .done
-					Game.player.stats.builderSkillLevel = .one
+					await Game.shared.stages.builder.stage1Stages = .done
+					await Game.shared.player.stats.builderSkillLevel = .one
 					StatusBox.removeQuest(quest: .builder1)
 					fallthrough
 				} else {
 					MessageBox.message("You still need to collect the materials. It will be marked with an \("!".styled(with: .bold)) on the map.", speaker: .builder)
 				}
 			case .done:
-				Game.stages.builder.next()
+				await Game.shared.stages.builder.next()
 				if await RandomEventStuff.wantsToContinue(speaker: .builder) {
 					await getStage()
 				}
@@ -96,32 +96,32 @@ enum BuilderNPC {
 	}
 
 	static func stage2() async {
-		switch Game.stages.builder.stage2Stages {
+		switch await Game.shared.stages.builder.stage2Stages {
 			case .notStarted:
 				MessageBox.message("Now, we need some lumber. Can you get 20 of it? Here is an axe.", speaker: .builder)
-				Game.stages.builder.stage2Stages = .collect
+				await Game.shared.stages.builder.stage2Stages = .collect
 				StatusBox.quest(.builder2)
-				Game.stages.builder.stage2AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
+				await Game.shared.stages.builder.stage2AxeUUIDToRemove = await Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
 			case .collect:
-				if Game.player.has(item: .lumber, count: 20) {
+				if await Game.shared.player.has(item: .lumber, count: 20) {
 					MessageBox.message("Great, You have collected the lumber! Now we can start building.", speaker: .builder)
-					if let id = Game.stages.builder.stage2AxeUUIDToRemove {
-						Game.player.removeItem(id: id)
+					if let id = await Game.shared.stages.builder.stage2AxeUUIDToRemove {
+						await Game.shared.player.removeItem(id: id)
 					}
-					Game.player.removeItem(item: .lumber, count: 20)
-					Game.player.stats.builderSkillLevel = .two
-					Game.stages.builder.stage2Stages = .done
+					await Game.shared.player.removeItem(item: .lumber, count: 20)
+					await Game.shared.player.stats.builderSkillLevel = .two
+					await Game.shared.stages.builder.stage2Stages = .done
 					StatusBox.removeQuest(quest: .builder2)
 					fallthrough
 				} else {
-					if let id = Game.stages.builder.stage2AxeUUIDToRemove, !Game.player.has(id: id) {
+					if let id = await Game.shared.stages.builder.stage2AxeUUIDToRemove, ! await Game.shared.player.has(id: id) {
 						MessageBox.message("Uh oh, looks like you lost your axe. Here is a new one.", speaker: .builder)
-						Game.stages.builder.stage2AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
+						await Game.shared.stages.builder.stage2AxeUUIDToRemove = await Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
 					}
-					MessageBox.message("You are almost there, but you still need to get \(abs(Game.player.getCount(of: .lumber) - 20)) lumber.", speaker: .builder)
+					await MessageBox.message("You are almost there, but you still need to get \(abs(Game.shared.player.getCount(of: .lumber) - 20)) lumber.", speaker: .builder)
 				}
 			case .done:
-				Game.stages.builder.next()
+				await Game.shared.stages.builder.next()
 				if await RandomEventStuff.wantsToContinue(speaker: .builder) {
 					await getStage()
 				}
@@ -129,34 +129,34 @@ enum BuilderNPC {
 	}
 
 	static func stage3() async {
-		switch Game.stages.builder.stage3Stages {
+		switch await Game.shared.stages.builder.stage3Stages {
 			case .notStarted:
 				MessageBox.message("Now that we have the materials, we can start building. Can you make a door at the workstation. It is marked as a \(StationTileType.workbench.render). Here are the materials you will need.", speaker: .builder)
-				Game.stages.builder.stage3Stages = .makeDoor
+				await Game.shared.stages.builder.stage3Stages = .makeDoor
 				StatusBox.quest(.builder3)
-				let uuid1 = Game.player.collect(item: .init(type: .lumber, canBeSold: false), count: 4)
-				let uuid2 = Game.player.collect(item: .init(type: .iron, canBeSold: false), count: 1)
-				Game.stages.builder.stage3ItemsToMakeDoorUUIDsToRemove = uuid1 + uuid2
+				let uuid1 = await Game.shared.player.collect(item: .init(type: .lumber, canBeSold: false), count: 4)
+				let uuid2 = await Game.shared.player.collect(item: .init(type: .iron, canBeSold: false), count: 1)
+				await Game.shared.stages.builder.stage3ItemsToMakeDoorUUIDsToRemove = uuid1 + uuid2
 			case .makeDoor:
 				MessageBox.message("You haven't made the door yet. It is marked with a \(StationTileType.workbench.render).", speaker: .builder)
 			case .returnToBuilder:
-				if Game.player.has(item: .door(tile: .init(type: .house)), count: 1) {
+				if await Game.shared.player.has(item: .door(tile: .init(type: .house)), count: 1) {
 					MessageBox.message("Great, You have made the door!", speaker: .builder)
-					if let ids = Game.stages.builder.stage3ItemsToMakeDoorUUIDsToRemove {
-						Game.player.removeItems(ids: ids)
+					if let ids = await Game.shared.stages.builder.stage3ItemsToMakeDoorUUIDsToRemove {
+						await Game.shared.player.removeItems(ids: ids)
 					}
-					if let id = Game.stages.builder.stage3DoorUUIDToRemove {
-						Game.player.removeItem(id: id)
+					if let id = await Game.shared.stages.builder.stage3DoorUUIDToRemove {
+						await Game.shared.player.removeItem(id: id)
 					}
-					Game.stages.builder.stage3Stages = .done
-					Game.player.stats.builderSkillLevel = .three
+					await Game.shared.stages.builder.stage3Stages = .done
+					await Game.shared.player.stats.builderSkillLevel = .three
 					StatusBox.removeQuest(quest: .builder3)
 					fallthrough
 				} else {
 					MessageBox.message("You still need to make the door. It is marked with a \(StationTileType.workbench.render).", speaker: .builder)
 				}
 			case .done:
-				Game.stages.builder.next()
+				await Game.shared.stages.builder.next()
 				if await RandomEventStuff.wantsToContinue(speaker: .builder) {
 					await getStage()
 				}
@@ -164,10 +164,10 @@ enum BuilderNPC {
 	}
 
 	static func stage4() async {
-		switch Game.stages.builder.stage4Stages {
+		switch await Game.shared.stages.builder.stage4Stages {
 			case .notStarted:
 				MessageBox.message("Now that we have the door, we can start building. Can you go talk to the king and ask him for permission to build a house?", speaker: .builder)
-				Game.stages.builder.stage4Stages = .talkToKing
+				await Game.shared.stages.builder.stage4Stages = .talkToKing
 				StatusBox.quest(.builder4)
 			case .talkToKing:
 				MessageBox.message("You haven't talked to the king yet.", speaker: .builder)
@@ -175,12 +175,12 @@ enum BuilderNPC {
 				MessageBox.message("I see that you've talked to the king. What did he say?", speaker: .builder)
 				MessageBox.message("He said we can build a new house!", speaker: .player)
 				MessageBox.message("Nice! Lets get started right away!", speaker: .builder)
-				Game.stages.builder.stage4Stages = .done
-				Game.player.stats.builderSkillLevel = .four
+				await Game.shared.stages.builder.stage4Stages = .done
+				await Game.shared.player.stats.builderSkillLevel = .four
 				StatusBox.removeQuest(quest: .builder4)
 				fallthrough
 			case .done:
-				Game.stages.builder.next()
+				await Game.shared.stages.builder.next()
 				if await RandomEventStuff.wantsToContinue(speaker: .builder) {
 					await getStage()
 				}
@@ -188,33 +188,33 @@ enum BuilderNPC {
 	}
 
 	static func stage5() async {
-		switch Game.stages.builder.stage5Stages {
+		switch await Game.shared.stages.builder.stage5Stages {
 			case .notStarted:
 				MessageBox.message("Now that we have permission, we can start building immediately! Can you begin building the house?", speaker: .builder)
 				instructions()
-				Game.stages.builder.stage5Stages = .buildHouse
-				Game.player.canBuild = true
-				let uuid1 = Game.player.collect(item: .init(type: .lumber, canBeSold: false), count: 5 * 24)
-				let uuid2 = Game.player.collect(item: .init(type: .door(tile: .init(type: .house)), canBeSold: false), count: 1)
-				Game.stages.builder.stage5ItemsToBuildHouseUUIDsToRemove = uuid1 + uuid2
+				await Game.shared.stages.builder.stage5Stages = .buildHouse
+				await Game.shared.player.canBuild = true
+				let uuid1 = await Game.shared.player.collect(item: .init(type: .lumber, canBeSold: false), count: 5 * 24)
+				let uuid2 = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .house)), canBeSold: false), count: 1)
+				await Game.shared.stages.builder.stage5ItemsToBuildHouseUUIDsToRemove = uuid1 + uuid2
 				StatusBox.quest(.builder5)
 			case .buildHouse:
-				if Game.stages.builder.stage5HasBuiltHouse {
+				if await Game.shared.stages.builder.stage5HasBuiltHouse {
 					MessageBox.message("Nice, you have built the house!", speaker: .builder)
-					Game.stages.builder.stage5Stages = .done
-					Game.player.stats.builderSkillLevel = .five
+					await Game.shared.stages.builder.stage5Stages = .done
+					await Game.shared.player.stats.builderSkillLevel = .five
 					StatusBox.removeQuest(quest: .builder5)
-					if let ids = Game.stages.builder.stage5ItemsToBuildHouseUUIDsToRemove {
-						Game.player.removeItems(ids: ids)
+					if let ids = await Game.shared.stages.builder.stage5ItemsToBuildHouseUUIDsToRemove {
+						await Game.shared.player.removeItems(ids: ids)
 					}
-					Game.player.canBuild = false
+					await Game.shared.player.canBuild = false
 					fallthrough
 				} else {
 					MessageBox.message("You haven't built the house yet.", speaker: .builder)
 					await MessageBox.messageWithOptions("Do you want to hear the instructions again?", speaker: .builder, options: [.init(label: "Yes", action: instructions), .init(label: "No", action: {})]).action()
 				}
 			case .done:
-				Game.stages.builder.next()
+				await Game.shared.stages.builder.next()
 				if await RandomEventStuff.wantsToContinue(speaker: .builder) {
 					await getStage()
 				}
@@ -225,32 +225,32 @@ enum BuilderNPC {
 	}
 
 	static func stage6() async {
-		switch Game.stages.builder.stage6Stages {
+		switch await Game.shared.stages.builder.stage6Stages {
 			case .notStarted:
 				MessageBox.message("Now that we have a house, we need to decorate the interior. Can you collect 30 lumber and bring it back to me?", speaker: .builder)
-				Game.stages.builder.stage6Stages = .collect
+				await Game.shared.stages.builder.stage6Stages = .collect
 				StatusBox.quest(.builder6)
-				Game.stages.builder.stage6AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
+				await Game.shared.stages.builder.stage6AxeUUIDToRemove = await Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
 			case .collect:
-				if Game.player.has(item: .lumber, count: 30) {
+				if await Game.shared.player.has(item: .lumber, count: 30) {
 					MessageBox.message("Great! You have collected the lumber! Now we can start decorating the inside.", speaker: .builder)
-					if let id = Game.stages.builder.stage6AxeUUIDToRemove {
-						Game.player.removeItem(id: id)
+					if let id = await Game.shared.stages.builder.stage6AxeUUIDToRemove {
+						await Game.shared.player.removeItem(id: id)
 					}
-					Game.player.removeItem(item: .lumber, count: 30)
-					Game.player.stats.builderSkillLevel = .six
-					Game.stages.builder.stage6Stages = .done
+					await Game.shared.player.removeItem(item: .lumber, count: 30)
+					await Game.shared.player.stats.builderSkillLevel = .six
+					await Game.shared.stages.builder.stage6Stages = .done
 					StatusBox.removeQuest(quest: .builder6)
 					fallthrough
 				} else {
-					if let id = Game.stages.builder.stage6AxeUUIDToRemove, !Game.player.has(id: id) {
+					if let id = await Game.shared.stages.builder.stage6AxeUUIDToRemove, ! await Game.shared.player.has(id: id) {
 						MessageBox.message("Uh oh, looks like you lost your axe, here is a new one.", speaker: .builder)
-						Game.stages.builder.stage6AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
+						await Game.shared.stages.builder.stage6AxeUUIDToRemove = await Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
 					}
-					MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .lumber) - 30)) lumber.", speaker: .builder)
+					await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .lumber) - 30)) lumber.", speaker: .builder)
 				}
 			case .done:
-				Game.stages.builder.next()
+				await Game.shared.stages.builder.next()
 				if await RandomEventStuff.wantsToContinue(speaker: .builder) {
 					await getStage()
 				}
@@ -258,32 +258,32 @@ enum BuilderNPC {
 	}
 
 	static func stage7() async {
-		switch Game.stages.builder.stage7Stages {
+		switch await Game.shared.stages.builder.stage7Stages {
 			case .notStarted:
 				MessageBox.message("Can you take these decorations and organize them inside of the house? You can decorate it however you want!", speaker: .builder)
-				Game.stages.builder.stage7Stages = .buildInside
+				await Game.shared.stages.builder.stage7Stages = .buildInside
 				StatusBox.quest(.builder7)
-				let uuid1 = Game.player.collect(item: .init(type: .bed, canBeSold: false), count: 1)
-				let uuid2 = Game.player.collect(item: .init(type: .chest, canBeSold: false), count: 2)
-				let uuid3 = Game.player.collect(item: .init(type: .desk, canBeSold: false), count: 1)
-				Game.stages.builder.stage7ItemsToBuildInsideUUIDsToRemove = uuid1 + uuid2 + uuid3
-				Game.player.canBuild = true
+				let uuid1 = await Game.shared.player.collect(item: .init(type: .bed, canBeSold: false), count: 1)
+				let uuid2 = await Game.shared.player.collect(item: .init(type: .chest, canBeSold: false), count: 2)
+				let uuid3 = await Game.shared.player.collect(item: .init(type: .desk, canBeSold: false), count: 1)
+				await Game.shared.stages.builder.stage7ItemsToBuildInsideUUIDsToRemove = uuid1 + uuid2 + uuid3
+				await Game.shared.player.canBuild = true
 			case .buildInside:
-				if Game.stages.builder.stage7HasBuiltInside {
+				if await Game.shared.stages.builder.stage7HasBuiltInside {
 					MessageBox.message("Looks like you are done!", speaker: .builder)
-					Game.stages.builder.stage7Stages = .done
-					Game.player.stats.builderSkillLevel = .seven
+					await Game.shared.stages.builder.stage7Stages = .done
+					await Game.shared.player.stats.builderSkillLevel = .seven
 					StatusBox.removeQuest(quest: .builder7)
-					if let ids = Game.stages.builder.stage7ItemsToBuildInsideUUIDsToRemove {
-						Game.player.removeItems(ids: ids)
+					if let ids = await Game.shared.stages.builder.stage7ItemsToBuildInsideUUIDsToRemove {
+						await Game.shared.player.removeItems(ids: ids)
 					}
-					Game.player.canBuild = false
+					await Game.shared.player.canBuild = false
 					fallthrough
 				} else {
 					MessageBox.message("You haven't decorated the interior of your house yet.", speaker: .builder)
 				}
 			case .done:
-				Game.stages.builder.next()
+				await Game.shared.stages.builder.next()
 				if await RandomEventStuff.wantsToContinue(speaker: .builder) {
 					await getStage()
 				}

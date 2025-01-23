@@ -1,7 +1,7 @@
 enum MessageBox {
 	private nonisolated(unsafe) static var messages: [String] {
-		get { Game.messages }
-		set { Game.messages = newValue }
+		get { await Game.shared.messages }
+		set { await Game.shared.messages = newValue }
 	}
 
 	private nonisolated(unsafe) static var scrollOffset = 0
@@ -43,12 +43,12 @@ enum MessageBox {
 	}
 
 	static func sides() {
-		Screen.print(x: startX + 1, y: startY, String(repeating: Game.horizontalLine, count: width - 1))
+		await Screen.print(x: startX + 1, y: startY, String(repeating: Game.shared.horizontalLine, count: width - 1))
 		for y in (startY + 1) ..< endY {
-			Screen.print(x: startX, y: y, Game.verticalLine)
-			Screen.print(x: endX, y: y, Game.verticalLine)
+			await Screen.print(x: startX, y: y, Game.shared.verticalLine)
+			await Screen.print(x: endX, y: y, Game.shared.verticalLine)
 		}
-		Screen.print(x: startX, y: endY, String(repeating: Game.horizontalLine, count: width + 1))
+		await Screen.print(x: startX, y: endY, String(repeating: Game.shared.horizontalLine, count: width + 1))
 	}
 
 	static func clear() {
@@ -126,10 +126,10 @@ enum MessageBox {
 	private static func messageWithTyping(_ text: String, speaker: String) async -> String {
 		MapBox.showMapBox = false
 		StatusBox.showStatusBox = false
-		let typingIcon = Game.config.selectedIcon
+		let typingIcon = await Game.shared.config.selectedIcon
 		message(text, speaker: speaker)
 		message("   \(typingIcon)", speaker: .game)
-		await Game.setIsTypingInMessageBox(true)
+		await Game.shared.setIsTypingInMessageBox(true)
 		var input = "" {
 			didSet {
 				// Max char
@@ -156,7 +156,7 @@ enum MessageBox {
 				}
 			}
 		}
-		await Game.setIsTypingInMessageBox(false)
+		await Game.shared.setIsTypingInMessageBox(false)
 		MapBox.showMapBox = true
 		return input.trimmingCharacters(in: .whitespacesAndNewlines)
 	}
@@ -171,10 +171,10 @@ enum MessageBox {
 
 	private static func messageWithTypingNumbers(_ text: String, speaker: String) async -> Int {
 		MapBox.showMapBox = false
-		let typingIcon = Game.config.selectedIcon
+		let typingIcon = await Game.shared.config.selectedIcon
 		message(text, speaker: speaker)
 		message("   \(typingIcon)", speaker: .game)
-		await Game.setIsTypingInMessageBox(true)
+		await Game.shared.setIsTypingInMessageBox(true)
 		var input = "" {
 			didSet {
 				// Max char
@@ -200,7 +200,7 @@ enum MessageBox {
 				}
 			}
 		}
-		await Game.setIsTypingInMessageBox(false)
+		await Game.shared.setIsTypingInMessageBox(false)
 		MapBox.showMapBox = true
 		return Int(input.trimmingCharacters(in: .whitespacesAndNewlines)) ?? 0
 	}
@@ -219,13 +219,13 @@ enum MessageBox {
 		}
 
 		hideAllBoxes(inventoryBox: hideInventoryBox)
-		await Game.setIsTypingInMessageBox(true)
+		await Game.shared.setIsTypingInMessageBox(true)
 
-		let typingIcon = Game.config.selectedIcon
+		let typingIcon = await Game.shared.config.selectedIcon
 		var newText = text
-		if !Game.startingVillageChecks.hasUsedMessageWithOptions {
+		if ! await Game.shared.startingVillageChecks.hasUsedMessageWithOptions {
 			newText += " (Use your arrow keys to select an option)".styled(with: .bold)
-			Game.startingVillageChecks.hasUsedMessageWithOptions = true
+			await Game.shared.startingVillageChecks.hasUsedMessageWithOptions = true
 		}
 		message(newText, speaker: speaker)
 
@@ -260,7 +260,7 @@ enum MessageBox {
 					removeLastMessage()
 					updateLastMessage(newMessage: "\(text) - \(options[selectedOptionIndex].label)", speaker: speaker)
 					showAllBoxes
-					await Game.setIsTypingInMessageBox(false)
+					await Game.shared.setIsTypingInMessageBox(false)
 					return options[selectedOptionIndex]
 				default:
 					break
@@ -282,13 +282,13 @@ enum MessageBox {
 		}
 
 		hideAllBoxes(inventoryBox: hideInventoryBox)
-		await Game.setIsTypingInMessageBox(true)
+		await Game.shared.setIsTypingInMessageBox(true)
 
-		let typingIcon = Game.config.selectedIcon
+		let typingIcon = await Game.shared.config.selectedIcon
 		var newText = text
-		if !Game.startingVillageChecks.hasUsedMessageWithOptions {
+		if ! await Game.shared.startingVillageChecks.hasUsedMessageWithOptions {
 			newText += " (Use your arrow keys to select an option)".styled(with: .bold)
-			Game.startingVillageChecks.hasUsedMessageWithOptions = true
+			await Game.shared.startingVillageChecks.hasUsedMessageWithOptions = true
 		}
 		message(newText, speaker: speaker)
 
@@ -323,7 +323,7 @@ enum MessageBox {
 					removeLastMessage()
 					updateLastMessage(newMessage: "\(text) - \(options[selectedOptionIndex].label)", speaker: speaker)
 					showAllBoxes
-					await Game.setIsTypingInMessageBox(false)
+					await Game.shared.setIsTypingInMessageBox(false)
 					return options[selectedOptionIndex]
 				default:
 					break

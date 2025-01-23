@@ -8,7 +8,7 @@ enum UseFurnace {
 			}
 			var canMake = true
 			for ingredient in recipe.ingredients {
-				if Game.player.has(item: ingredient.item, count: ingredient.count) {
+				if await Game.shared.player.has(item: ingredient.item, count: ingredient.count) {
 					continue
 				} else {
 					canMake = false
@@ -18,27 +18,27 @@ enum UseFurnace {
 			if canMake {
 				options.append(.init(label: recipe.name, action: {
 					for ingredient in recipe.ingredients {
-						if Game.stages.blacksmith.stage5Stages == .makeSteel {
-							if let ids = Game.stages.blacksmith.stage5ItemsToMakeSteelUUIDs {
-								Game.player.removeItems(ids: ids)
+						if await Game.shared.stages.blacksmith.stage5Stages == .makeSteel {
+							if let ids = await Game.shared.stages.blacksmith.stage5ItemsToMakeSteelUUIDs {
+								await Game.shared.player.removeItems(ids: ids)
 							}
-						} else if Game.stages.blacksmith.stage8Stages == .makeSteel {
-							if let ids = Game.stages.blacksmith.stage8MaterialsToRemove {
-								Game.player.removeItems(ids: ids)
+						} else if await Game.shared.stages.blacksmith.stage8Stages == .makeSteel {
+							if let ids = await Game.shared.stages.blacksmith.stage8MaterialsToRemove {
+								await Game.shared.player.removeItems(ids: ids)
 							}
 						} else {
-							Game.player.removeItem(item: ingredient.item, count: ingredient.count)
+							await Game.shared.player.removeItem(item: ingredient.item, count: ingredient.count)
 						}
 					}
 					for result in recipe.result {
-						if Game.stages.blacksmith.stage5Stages == .makeSteel {
-							Game.stages.blacksmith.stage5Stages = .done
-							Game.stages.blacksmith.stage5SteelUUIDsToRemove = Game.player.collect(item: .init(type: result.item, canBeSold: false), count: 5)
-						} else if Game.stages.blacksmith.stage8Stages == .makeSteel {
-							Game.stages.blacksmith.stage8Stages = .comeBack
-							Game.stages.blacksmith.stage8MaterialsToRemove = Game.player.collect(item: .init(type: result.item, canBeSold: false), count: 3)
+						if await Game.shared.stages.blacksmith.stage5Stages == .makeSteel {
+							await Game.shared.stages.blacksmith.stage5Stages = .done
+							await Game.shared.stages.blacksmith.stage5SteelUUIDsToRemove = await Game.shared.player.collect(item: .init(type: result.item, canBeSold: false), count: 5)
+						} else if await Game.shared.stages.blacksmith.stage8Stages == .makeSteel {
+							await Game.shared.stages.blacksmith.stage8Stages = .comeBack
+							await Game.shared.stages.blacksmith.stage8MaterialsToRemove = await Game.shared.player.collect(item: .init(type: result.item, canBeSold: false), count: 3)
 						} else {
-							_ = Game.player.collect(item: .init(type: result.item, canBeSold: true))
+							_ = await Game.shared.player.collect(item: .init(type: result.item, canBeSold: true))
 						}
 					}
 				}))
