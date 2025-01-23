@@ -1,6 +1,7 @@
 import Foundation
 
 enum InventoryBox {
+	private(set) nonisolated(unsafe) static var updateInventoryBox = false
 	nonisolated(unsafe) static var showHelp: Bool = false
 	nonisolated(unsafe) static var showBuildHelp: Bool = false
 	private(set) nonisolated(unsafe) static var selectedInventoryIndex: Int = 0 {
@@ -74,9 +75,13 @@ enum InventoryBox {
 	}
 
 	static func inventoryBox() async {
+		if await !Game.shared.isBuilding {
+			updateInventoryBox = false
+		}
 		clear()
 		await sides()
 		await printInventory()
+		_ = await TerminalInput.readKey()
 	}
 
 	static func printInventory() async {
@@ -91,13 +96,16 @@ enum InventoryBox {
 			Screen.print(x: startX + 2, y: startY + 3, "Press '\(KeyboardKeys.tab.render)' and '\(KeyboardKeys.back_tab.render)' to cycle items")
 		} else if await Game.shared.isBuilding {
 			var alreadyPrinted: [ItemType] = []
-			for (index, item) in await buildableItems.enumerated() {
+			let buildableItems = await buildableItems.enumerated()
+			for (index, item) in buildableItems {
+				_ = await TerminalInput.readKey()
 				if !alreadyPrinted.contains(where: { $0 == item.type }) {
 					var icon = ""
 					if index == selectedBuildItemIndex, await Game.shared.isBuilding {
 						icon = "> ".styled(with: .bold)
 					} else if index != selectedBuildItemIndex, await Game.shared.isBuilding {
-						icon = "  "
+						// icon = "  "
+						icon = " "
 					}
 					await Screen.print(x: startX + 2, y: startY + alreadyPrinted.count, "\(icon)\(item.inventoryName): \(Game.shared.player.getCount(of: item.type))")
 					alreadyPrinted.append(item.type)
@@ -105,7 +113,8 @@ enum InventoryBox {
 			}
 		} else {
 			var alreadyPrinted: [ItemType] = []
-			for (index, item) in await inventoryItems.enumerated() {
+			let inventoryItems = await inventoryItems.enumerated()
+			for (index, item) in inventoryItems {
 				if !alreadyPrinted.contains(where: { $0 == item.type }) {
 					var icon = ""
 					if index == selectedInventoryIndex, await Game.shared.isInInventoryBox {
@@ -121,7 +130,7 @@ enum InventoryBox {
 		let isInInventoryBox = await Game.shared.isInInventoryBox
 		let isBuilding = await Game.shared.isBuilding
 
-		if isInInventoryBox || isBuilding { // error here fixed
+		if isInInventoryBox || isBuilding {
 			if !showHelp {
 				Screen.print(x: startX + 2, y: endY - 1, "Press '\(KeyboardKeys.questionMark.render)' for controls")
 			} else {
@@ -170,5 +179,9 @@ enum InventoryBox {
 
 	static func previousInventoryItem() {
 		selectedInventoryIndex -= 1
+	}
+
+	static func setUpdateInventoryBox() {
+		updateInventoryBox = true
 	}
 }

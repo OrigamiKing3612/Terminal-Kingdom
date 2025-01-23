@@ -2,7 +2,12 @@ import Foundation
 
 actor PlayerCharacter {
 	private(set) var name: String = ""
-	private(set) var items: [Item] = []
+	private(set) var items: [Item] = [] {
+		didSet {
+			InventoryBox.setUpdateInventoryBox()
+		}
+	}
+
 	#if DEBUG
 		private(set) nonisolated(unsafe) var position: Player = .init(x: 5, y: 5)
 	#else

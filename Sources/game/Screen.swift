@@ -71,6 +71,8 @@ enum Screen {
 	}
 
 	static func print(x: Int, y: Int, _ text: String) {
+		// let x = max(1, min(x, columns))
+		// let y = max(1, min(y, rows))
 		Screen.print(x: .int(x), y: .int(y), text)
 	}
 

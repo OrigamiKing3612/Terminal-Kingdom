@@ -77,6 +77,7 @@ enum TerminalInput {
 	}
 
 	// Read a single key press
+	//! TODO: make this async so the program "pauses" until a key is pressed
 	static func readKey() -> KeyboardKeys {
 		var buffer = [UInt8](repeating: 0, count: 3)
 		read(STDIN_FILENO, &buffer, 3)
