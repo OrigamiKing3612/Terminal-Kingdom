@@ -8,7 +8,7 @@ actor Game {
 	//! TODO: remove nonisolated
 	nonisolated(unsafe) var player = PlayerCharacter()
 	//! TODO: remove nonisolated
-	nonisolated(unsafe) var startingVillageChecks: StartingVillageChecks = .init()
+	var startingVillageChecks: StartingVillageChecks = .init()
 	var stages: Stages = .init()
 	private(set) var mapGen: MapGenSave = .init(amplitude: MapGenSave.defaultAmplitude, frequency: MapGenSave.defaultFrequency, seed: .random(in: 2 ... 1_000_000_000))
 	private(set) var messages: [String] = []
@@ -90,12 +90,12 @@ actor Game {
 		messages.removeLast()
 	}
 
-	func setHasBeenTaughtToChopLumber(_ newHasBeenTaughtToChopLumber: StartingVillageChecksStages) {
-		startingVillageChecks.setHasBeenTaughtToChopLumber(newHasBeenTaughtToChopLumber)
+	func setHasBeenTaughtToChopLumber(_ newHasBeenTaughtToChopLumber: StartingVillageChecksStages) async {
+		await startingVillageChecks.setHasBeenTaughtToChopLumber(newHasBeenTaughtToChopLumber)
 	}
 
-	func setHasUsedMessageWithOptions(_ newHasUsedMessageWithOptions: Bool) {
-		startingVillageChecks.setHasUsedMessageWithOptions(newHasUsedMessageWithOptions)
+	func setHasUsedMessageWithOptions(_ newHasUsedMessageWithOptions: Bool) async {
+		await startingVillageChecks.setHasUsedMessageWithOptions(newHasUsedMessageWithOptions)
 	}
 
 	func loadConfig() async {

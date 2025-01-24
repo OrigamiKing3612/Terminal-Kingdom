@@ -6,7 +6,7 @@ enum KingNPC {
 			await MessageBox.message("Ok! Thank you! I'll go let him know", speaker: .player)
 			await Game.shared.stages.builder.setStage4Stages(.comeBack)
 		} else if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToKing == false {
-			await Game.shared.startingVillageChecks.firstTimes.hasTalkedToKing = true
+			await Game.shared.startingVillageChecks.setHasTalkedToKing()
 			await firstDialogue()
 		} else {
 			await help()

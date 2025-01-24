@@ -1,7 +1,7 @@
 enum FarmerNPC {
 	static func talk() async {
 		if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToFarmer == false {
-			await Game.shared.startingVillageChecks.firstTimes.hasTalkedToFarmer = true
+			await Game.shared.startingVillageChecks.setHasTalkedToFarmer()
 		}
 		let options: [MessageOption] = [
 			.init(label: "Yes", action: {}),

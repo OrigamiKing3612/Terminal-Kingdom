@@ -9,9 +9,9 @@ actor PlayerCharacter {
 	}
 
 	#if DEBUG
-		private(set) nonisolated(unsafe) var position: Player = .init(x: 5, y: 5)
+		private(set) var position: Player = .init(x: 5, y: 5)
 	#else
-		private(set) nonisolated(unsafe) var position: Player = .init(x: 55, y: 23)
+		private(set) var position: Player = .init(x: 55, y: 23)
 	#endif
 	private(set) var direction: PlayerDirection = .down
 	private(set) var quests: [Quest] = []

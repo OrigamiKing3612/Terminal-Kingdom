@@ -1,14 +1,70 @@
-struct StartingVillageChecks: Codable {
+actor StartingVillageChecks {
 	private(set) var hasBeenTaughtToChopLumber: StartingVillageChecksStages = .no
 	private(set) var hasUsedMessageWithOptions: Bool = false
-	var firstTimes: FirstTimes = .init()
+	private(set) var firstTimes: FirstTimes = .init()
 
-	mutating func setHasBeenTaughtToChopLumber(_ newHasBeenTaughtToChopLumber: StartingVillageChecksStages) {
+	func setHasBeenTaughtToChopLumber(_ newHasBeenTaughtToChopLumber: StartingVillageChecksStages) {
 		hasBeenTaughtToChopLumber = newHasBeenTaughtToChopLumber
 	}
 
-	mutating func setHasUsedMessageWithOptions(_ newHasUsedMessageWithOptions: Bool) {
+	func setHasUsedMessageWithOptions(_ newHasUsedMessageWithOptions: Bool) {
 		hasUsedMessageWithOptions = newHasUsedMessageWithOptions
+	}
+
+	func setHasTalkedToKing() {
+		firstTimes.hasTalkedToKing = true
+	}
+
+	func setHasTalkedToBlacksmith() {
+		firstTimes.hasTalkedToBlacksmith = true
+	}
+
+	func setHasTalkedToMiner() {
+		firstTimes.hasTalkedToMiner = true
+	}
+
+	func setHasTalkedToSalesmanBuy(_ bool: Bool = true) {
+		firstTimes.hasTalkedToSalesmanBuy = bool
+	}
+
+	func setHasTalkedToSalesmanSell(_ bool: Bool = true) {
+		firstTimes.hasTalkedToSalesmanSell = bool
+	}
+
+	func setHasTalkedToSalesmanHelp() {
+		firstTimes.hasTalkedToSalesmanHelp = true
+	}
+
+	func setHasTalkedToBuilder() {
+		firstTimes.hasTalkedToBuilder = true
+	}
+
+	func setHasTalkedToHunter() {
+		firstTimes.hasTalkedToHunter = true
+	}
+
+	func setHasTalkedToInventor() {
+		firstTimes.hasTalkedToInventor = true
+	}
+
+	func setHasTalkedToStableMaster() {
+		firstTimes.hasTalkedToStableMaster = true
+	}
+
+	func setHasTalkedToFarmer() {
+		firstTimes.hasTalkedToFarmer = true
+	}
+
+	func setHasTalkedToDoctor() {
+		firstTimes.hasTalkedToDoctor = true
+	}
+
+	func setHasTalkedToChef() {
+		firstTimes.hasTalkedToChef = true
+	}
+
+	func setHasTalkedToPotter() {
+		firstTimes.hasTalkedToPotter = true
 	}
 }
 

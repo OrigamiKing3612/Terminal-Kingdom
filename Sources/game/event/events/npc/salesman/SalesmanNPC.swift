@@ -41,17 +41,17 @@ enum SalesmanNPC {
 				switch type {
 					case .buy:
 						if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy == false {
-							await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy = true
+							await Game.shared.startingVillageChecks.setHasTalkedToSalesmanBuy()
 						}
 						await buy()
 					case .sell:
 						if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell == false {
-							await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell = true
+							await Game.shared.startingVillageChecks.setHasTalkedToSalesmanSell()
 						}
 						await sell()
 					case .help:
 						if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp == false {
-							await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp = true
+							await Game.shared.startingVillageChecks.setHasTalkedToSalesmanHelp()
 						}
 						await help()
 				}
@@ -97,7 +97,7 @@ enum SalesmanNPC {
 			if selectedOption.label != "Leave" {
 				let amount = await MessageBox.messageWithTypingNumbers("How many?", speaker: .salesman(type: .sell))
 				for _ in 1 ... amount {
-					await await selectedOption.action()
+					await selectedOption.action()
 				}
 				await InventoryBox.printInventory()
 			} else {
@@ -109,8 +109,8 @@ enum SalesmanNPC {
 	private static func help() async {
 		await MessageBox.message("Welcome to the shop \(Game.shared.player.name)!", speaker: .salesman(type: .help))
 		await MessageBox.message("If you want to buy, talk to the guy with the \("!".styled(with: [.green, .blue])). Or if you want to sell talk to the guy with the \("!".styled(with: [.bold, .blue])).", speaker: .salesman(type: .help))
-		await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy = false
-		await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell = false
+		await Game.shared.startingVillageChecks.setHasTalkedToSalesmanBuy(false)
+		await Game.shared.startingVillageChecks.setHasTalkedToSalesmanSell(false)
 	}
 }
 

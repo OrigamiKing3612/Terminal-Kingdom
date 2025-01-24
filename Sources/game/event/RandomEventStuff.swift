@@ -21,7 +21,7 @@ enum RandomEventStuff {
 					await Game.shared.startingVillageChecks.setHasBeenTaughtToChopLumber(.yes)
 					await StatusBox.removeQuest(quest: .chopLumber(for: choppingLumberTeachingDoorTypes.name))
 				} else {
-					await await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .lumber) - 10)) lumber.", speaker: speaker)
+					await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .lumber) - 10)) lumber.", speaker: speaker)
 				}
 			default:
 				if case let .inProgress(otherDoorType) = await Game.shared.startingVillageChecks.hasBeenTaughtToChopLumber {

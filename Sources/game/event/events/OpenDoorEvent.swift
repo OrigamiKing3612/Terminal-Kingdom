@@ -1,6 +1,6 @@
 enum OpenDoorEvent {
 	static func openDoor(doorTile: DoorTile) async {
-		if await await MapBox.mapType != .mainMap, await await MapBox.mapType != .mining {
+		if await MapBox.mapType != .mainMap, await MapBox.mapType != .mining {
 			await leaveBuildingMap()
 		} else {
 			switch doorTile.type {
@@ -24,9 +24,9 @@ enum OpenDoorEvent {
 	}
 
 	private static func leaveBuildingMap() async {
-		let currentTile = await await MapBox.tilePlayerIsOn
+		let currentTile = await MapBox.tilePlayerIsOn
 
-		switch await await MapBox.mapType {
+		switch await MapBox.mapType {
 			case let .farm(type: farmType):
 				if case let .door(playerDoorTile) = currentTile.type {
 					// enter, out

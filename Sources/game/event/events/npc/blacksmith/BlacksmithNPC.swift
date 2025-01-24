@@ -1,7 +1,7 @@
 enum BlacksmithNPC {
 	static func talk() async {
 		if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToBlacksmith == false {
-			await Game.shared.startingVillageChecks.firstTimes.hasTalkedToBlacksmith = true
+			await Game.shared.startingVillageChecks.setHasTalkedToBlacksmith()
 		}
 		if await Game.shared.stages.mine.stage1Stages == .collect {
 			await MessageBox.message("Ah, here you are. Here is your pickaxe.", speaker: .blacksmith)
@@ -110,7 +110,7 @@ enum BlacksmithNPC {
 						await MessageBox.message("Uh oh, looks like you lost your axe, here is a new one.", speaker: .blacksmith)
 						await Game.shared.stages.blacksmith.setStage2AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false)))
 					}
-					await await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .clay) - 20)) clay.", speaker: .blacksmith)
+					await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .clay) - 20)) clay.", speaker: .blacksmith)
 				}
 			case .done:
 				await Game.shared.stages.blacksmith.next()

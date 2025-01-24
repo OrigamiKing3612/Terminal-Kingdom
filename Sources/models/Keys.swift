@@ -91,7 +91,7 @@ enum Keys {
 				InventoryBox.showBuildHelp.toggle()
 			default:
 				#if DEBUG
-					await await MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
+					await MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
 				#else
 					break
 				#endif
@@ -114,7 +114,7 @@ enum Keys {
 				await InventoryBox.destroyItem()
 			default:
 				#if DEBUG
-					await await MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
+					await MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
 				#else
 					break
 				#endif

@@ -1,7 +1,7 @@
 enum BuilderNPC {
 	static func talk() async {
 		if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToBuilder == false {
-			await Game.shared.startingVillageChecks.firstTimes.hasTalkedToBuilder = true
+			await Game.shared.startingVillageChecks.setHasTalkedToBuilder()
 		}
 		await getStage()
 	}
@@ -54,7 +54,7 @@ enum BuilderNPC {
 				}
 			}
 		} else {
-			await await MessageBox.message("Hello \(Game.shared.player.name)! Looks like you already know how to chop lumber.", speaker: .builder)
+			await MessageBox.message("Hello \(Game.shared.player.name)! Looks like you already know how to chop lumber.", speaker: .builder)
 			let options: [MessageOption] = [
 				.init(label: "Yes", action: {}),
 				.init(label: "No", action: {}),
@@ -118,7 +118,7 @@ enum BuilderNPC {
 						await MessageBox.message("Uh oh, looks like you lost your axe. Here is a new one.", speaker: .builder)
 						await Game.shared.stages.builder.setStage2AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false)))
 					}
-					await await MessageBox.message("You are almost there, but you still need to get \(abs(Game.shared.player.getCount(of: .lumber) - 20)) lumber.", speaker: .builder)
+					await MessageBox.message("You are almost there, but you still need to get \(abs(Game.shared.player.getCount(of: .lumber) - 20)) lumber.", speaker: .builder)
 				}
 			case .done:
 				await Game.shared.stages.builder.next()
@@ -247,7 +247,7 @@ enum BuilderNPC {
 						await MessageBox.message("Uh oh, looks like you lost your axe, here is a new one.", speaker: .builder)
 						await Game.shared.stages.builder.setStage6AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false)))
 					}
-					await await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .lumber) - 30)) lumber.", speaker: .builder)
+					await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .lumber) - 30)) lumber.", speaker: .builder)
 				}
 			case .done:
 				await Game.shared.stages.builder.next()
