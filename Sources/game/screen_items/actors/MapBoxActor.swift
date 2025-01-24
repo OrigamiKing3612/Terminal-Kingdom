@@ -6,19 +6,7 @@ actor MapBoxActor {
 	var mainMap: MainMap?
 	private(set) var miningMap: MineMap?
 	private(set) var buildingMap: BuildingMap?
-	private(set) var showMapBox = true {
-		//! TODO: figure out something better
-		// private(set) and a set func that does this?
-		didSet {
-			if showMapBox {
-				Task {
-					await MapBox.mapBox()
-				}
-			} else {
-				MapBox.clear()
-			}
-		}
-	}
+	private(set) var showMapBox = true
 
 	private init() {
 		self.mainMap = nil
@@ -124,10 +112,12 @@ actor MapBoxActor {
 
 	func showMapBox() async {
 		showMapBox = true
+		await MapBox.mapBox()
 	}
 
 	func hideMapBox() async {
 		showMapBox = false
+		MapBox.clear()
 	}
 
 	func setBuildingMapPlayer(x: Int, y: Int) async {
