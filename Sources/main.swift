@@ -54,20 +54,20 @@ func endProgram() {
 }
 
 func loadGame() async -> Bool {
-	let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-
-	if let filePath {
-		let file = filePath.appendingPathComponent("adventure.game.json")
-		do {
-			let fileData = try Data(contentsOf: file)
-			let decodedGame = try JSONDecoder().decode(CodableGame.self, from: fileData)
-			await Game.shared.reloadGame(decodedGame: decodedGame)
-			return true
-		} catch {
-			// print("Error reading or decoding the file: \(error)")
-		}
-	}
-	return false
+	// let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+	//
+	// if let filePath {
+	// 	let file = filePath.appendingPathComponent("adventure.game.json")
+	// 	do {
+	// 		let fileData = try Data(contentsOf: file)
+	// 		let decodedGame = try JSONDecoder().decode(CodableGame.self, from: fileData)
+	// 		await Game.shared.reloadGame(decodedGame: decodedGame)
+	// 		return true
+	// 	} catch {
+	// 		// print("Error reading or decoding the file: \(error)")
+	// 	}
+	// }
+	false
 }
 
 func newGame() async {

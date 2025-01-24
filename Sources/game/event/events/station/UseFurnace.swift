@@ -32,11 +32,11 @@ enum UseFurnace {
 					}
 					for result in recipe.result {
 						if await Game.shared.stages.blacksmith.stage5Stages == .makeSteel {
-							await Game.shared.stages.blacksmith.stage5Stages = .done
-							await Game.shared.stages.blacksmith.stage5SteelUUIDsToRemove = await Game.shared.player.collect(item: .init(type: result.item, canBeSold: false), count: 5)
+							await Game.shared.stages.blacksmith.setStage5Stages(.done)
+							await Game.shared.stages.blacksmith.setStage5SteelUUIDsToRemove(Game.shared.player.collect(item: .init(type: result.item, canBeSold: false), count: 5))
 						} else if await Game.shared.stages.blacksmith.stage8Stages == .makeSteel {
-							await Game.shared.stages.blacksmith.stage8Stages = .comeBack
-							await Game.shared.stages.blacksmith.stage8MaterialsToRemove = await Game.shared.player.collect(item: .init(type: result.item, canBeSold: false), count: 3)
+							await Game.shared.stages.blacksmith.setStage8Stages(.comeBack)
+							await Game.shared.stages.blacksmith.setStage8MaterialsToRemove(Game.shared.player.collect(item: .init(type: result.item, canBeSold: false), count: 3))
 						} else {
 							_ = await Game.shared.player.collect(item: .init(type: result.item, canBeSold: true))
 						}

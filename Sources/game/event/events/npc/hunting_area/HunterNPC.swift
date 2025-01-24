@@ -3,7 +3,7 @@ enum HunterNPC {
 		if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToHunter == false {
 			await Game.shared.startingVillageChecks.firstTimes.hasTalkedToHunter = true
 		} else if await Game.shared.stages.blacksmith.stage7Stages == .bringToHunter {
-			await Game.shared.stages.blacksmith.stage7Stages = .comeBack
+			await Game.shared.stages.blacksmith.setStage7Stages(.comeBack)
 			await MessageBox.message("Hello \(Game.shared.player.name)! Thank you for this sword!!", speaker: .hunter)
 			if let id = await Game.shared.stages.blacksmith.stage7SwordUUIDToRemove {
 				await Game.shared.player.removeItem(id: id)

@@ -33,8 +33,8 @@ enum UseWorkstation {
 					}
 					for result in recipe.result {
 						if await Game.shared.stages.builder.stage3Stages == .makeDoor {
-							await Game.shared.stages.builder.stage3Stages = .returnToBuilder
-							await Game.shared.stages.builder.stage3DoorUUIDToRemove = await Game.shared.player.collect(item: .init(type: result.item, canBeSold: false))
+							await Game.shared.stages.builder.setStage3Stages(.returnToBuilder)
+							await Game.shared.stages.builder.setStage3DoorUUIDToRemove(Game.shared.player.collect(item: .init(type: result.item, canBeSold: false)))
 						} else {
 							_ = await Game.shared.player.collect(item: .init(type: result.item, canBeSold: true))
 						}

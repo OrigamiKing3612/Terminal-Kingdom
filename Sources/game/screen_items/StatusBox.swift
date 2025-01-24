@@ -73,7 +73,7 @@ enum StatusBox {
 		var renderedLines: [String] = []
 		for (index, quest) in await quests.enumerated() {
 			let number = "\(index + 1)".styled(with: .bold)
-			let text = "\(number). \(quest.label)"
+			let text = await "\(number). \(quest.label)"
 			renderedLines.append(contentsOf: text.wrappedWithStyles(toWidth: width - 2))
 		}
 

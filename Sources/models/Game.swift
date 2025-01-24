@@ -9,9 +9,8 @@ actor Game {
 	nonisolated(unsafe) var player = PlayerCharacter()
 	//! TODO: remove nonisolated
 	nonisolated(unsafe) var startingVillageChecks: StartingVillageChecks = .init()
-	//! TODO: remove nonisolated
-	nonisolated(unsafe) var stages: Stages = .init()
-	var mapGen: MapGenSave = .init(amplitude: MapGenSave.defaultAmplitude, frequency: MapGenSave.defaultFrequency, seed: .random(in: 2 ... 1_000_000_000))
+	var stages: Stages = .init()
+	private(set) var mapGen: MapGenSave = .init(amplitude: MapGenSave.defaultAmplitude, frequency: MapGenSave.defaultFrequency, seed: .random(in: 2 ... 1_000_000_000))
 	private(set) var messages: [String] = []
 	private(set) var crops: Set<TilePosition> = []
 	private(set) var hasInited: Bool = false
@@ -39,16 +38,16 @@ actor Game {
 		isTypingInMessageBox = newIsTypingInMessageBox
 	}
 
-	func reloadGame(decodedGame: CodableGame) async {
-		hasInited = decodedGame.hasInited
-		isTypingInMessageBox = decodedGame.isTypingInMessageBox
-		// player = decodedGame.player
-		map = decodedGame.map
-		startingVillageChecks = decodedGame.startingVillageChecks
-		stages = decodedGame.stages
-		messages = decodedGame.messages
-		mapGen = decodedGame.mapGen
-	}
+	// func reloadGame(decodedGame: CodableGame) async {
+	// 	hasInited = decodedGame.hasInited
+	// 	isTypingInMessageBox = decodedGame.isTypingInMessageBox
+	// 	// player = decodedGame.player
+	// 	map = decodedGame.map
+	// 	startingVillageChecks = decodedGame.startingVillageChecks
+	// 	stages = decodedGame.stages
+	// 	messages = decodedGame.messages
+	// 	mapGen = decodedGame.mapGen
+	// }
 
 	func addMessage(_ message: String) async {
 		messages.append(message)
@@ -105,16 +104,16 @@ actor Game {
 }
 
 // TODO: update because Game is not codable
-struct CodableGame: Codable {
-	var hasInited: Bool
-	var isTypingInMessageBox: Bool
-	var player: PlayerCharacterCodable
-	var map: [[MapTile]]
-	var startingVillageChecks: StartingVillageChecks
-	var stages: Stages
-	var messages: [String]
-	var mapGen: MapGenSave
-}
+// struct CodableGame: Codable {
+// 	var hasInited: Bool
+// 	var isTypingInMessageBox: Bool
+// 	var player: PlayerCharacterCodable
+// 	var map: [[MapTile]]
+// 	var startingVillageChecks: StartingVillageChecks
+// 	var stages: Stages
+// 	var messages: [String]
+// 	var mapGen: MapGenSave
+// }
 
 struct TilePosition: Codable, Hashable {
 	var x: Int

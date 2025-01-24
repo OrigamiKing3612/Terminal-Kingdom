@@ -8,7 +8,7 @@ enum SalesmanNPC {
 						await Game.shared.player.removeItems(ids: ids)
 						_ = await Game.shared.player.collect(item: .init(type: .coin), count: 10)
 						await MessageBox.message("Thank you!", speaker: .salesman(type: .buy))
-						await Game.shared.stages.mine.stage10Stages = .comeBack
+						await Game.shared.stages.mine.setStage10Stages(.comeBack)
 					}
 				}),
 				.init(label: "No", action: {
@@ -26,7 +26,7 @@ enum SalesmanNPC {
 						await Game.shared.player.removeItems(ids: ids)
 						_ = await Game.shared.player.collect(item: .init(type: .coin), count: price)
 						await MessageBox.message("Thank you!", speaker: .salesman(type: .buy))
-						await Game.shared.stages.blacksmith.stage9Stages = .comeBack
+						await Game.shared.stages.blacksmith.setStage9Stages(.comeBack)
 					}
 				}),
 				.init(label: "No", action: {

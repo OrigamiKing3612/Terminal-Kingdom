@@ -81,6 +81,7 @@ enum InventoryBox {
 		clear()
 		await sides()
 		await printInventory()
+		await MessageBox.message("inventoryBox", speaker: .dev)
 		_ = await TerminalInput.readKey()
 	}
 
@@ -95,6 +96,7 @@ enum InventoryBox {
 			Screen.print(x: startX + 2, y: startY + 2, "Press '\(KeyboardKeys.e.render)' to destroy")
 			Screen.print(x: startX + 2, y: startY + 3, "Press '\(KeyboardKeys.tab.render)' and '\(KeyboardKeys.back_tab.render)' to cycle items")
 		} else if await Game.shared.isBuilding {
+			await MessageBox.message("isBuilding", speaker: .dev)
 			var alreadyPrinted: [ItemType] = []
 			let buildableItems = await buildableItems.enumerated()
 			for (index, item) in buildableItems {
@@ -109,6 +111,8 @@ enum InventoryBox {
 					}
 					await Screen.print(x: startX + 2, y: startY + alreadyPrinted.count, "\(icon)\(item.inventoryName): \(Game.shared.player.getCount(of: item.type))")
 					alreadyPrinted.append(item.type)
+				} else {
+					await MessageBox.message("Already printed", speaker: .dev)
 				}
 			}
 		} else {

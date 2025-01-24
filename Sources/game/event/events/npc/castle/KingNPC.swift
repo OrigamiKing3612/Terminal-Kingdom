@@ -4,7 +4,7 @@ enum KingNPC {
 			await MessageBox.message("Hello \(NPCTileType.king.render), I am the builders apprentice, we were wondering if we could build a new house in the village?", speaker: .player)
 			await MessageBox.message("Hello \(Game.shared.player.name)! Yes that is a good idea.", speaker: .king)
 			await MessageBox.message("Ok! Thank you! I'll go let him know", speaker: .player)
-			await Game.shared.stages.builder.stage4Stages = .comeBack
+			await Game.shared.stages.builder.setStage4Stages(.comeBack)
 		} else if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToKing == false {
 			await Game.shared.startingVillageChecks.firstTimes.hasTalkedToKing = true
 			await firstDialogue()

@@ -34,11 +34,11 @@ enum UseAnvil {
 					}
 					for result in recipe.result {
 						if await Game.shared.stages.blacksmith.stage6Stages == .makePickaxe {
-							await Game.shared.stages.blacksmith.stage6Stages = .done
-							await Game.shared.stages.blacksmith.stage6PickaxeUUIDToRemove = await Game.shared.player.collect(item: .init(type: result.item, canBeSold: false))
+							await Game.shared.stages.blacksmith.setStage6Stages(.done)
+							await Game.shared.stages.blacksmith.setStage6PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: result.item, canBeSold: false)))
 						} else if await Game.shared.stages.blacksmith.stage7Stages == .makeSword {
-							await Game.shared.stages.blacksmith.stage7Stages = .bringToHunter
-							await Game.shared.stages.blacksmith.stage7SwordUUIDToRemove = await Game.shared.player.collect(item: .init(type: result.item, canBeSold: false))
+							await Game.shared.stages.blacksmith.setStage7Stages(.bringToHunter)
+							await Game.shared.stages.blacksmith.setStage7SwordUUIDToRemove(Game.shared.player.collect(item: .init(type: result.item, canBeSold: false)))
 						} else {
 							_ = await Game.shared.player.collect(item: .init(type: result.item, canBeSold: true))
 						}

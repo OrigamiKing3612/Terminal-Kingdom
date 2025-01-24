@@ -96,7 +96,7 @@ enum MapBuilding {
 							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor)
 							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
 							if await Game.shared.stages.builder.stage5Stages == .buildHouse {
-								await Game.shared.stages.builder.stage5HasBuiltHouse = true
+								await Game.shared.stages.builder.setStage5HasBuiltHouse(true)
 							}
 						}
 					} catch {
@@ -205,13 +205,13 @@ private enum BuildForBuilderStage5 {
 		var buildingsPlaced: Int { get async { await Game.shared.stages.builder.stage5BuildingsPlaced } }
 		if await buildingsPlaced == 0 {
 			await MapBuilding.buildNormally(grid: &grid, x: x, y: y)
-			await Game.shared.stages.builder.stage5LastBuildingPlaced = .init(x: x, y: y)
+			await Game.shared.stages.builder.setStage5LastBuildingPlaced(.init(x: x, y: y))
 		} else {
 			// let lastBuildingPlaced = await Game.shared.stages.builder.stage5LastBuildingPlaced
 			// if let lastBuildingPlaced {
 			// if x.isWithInOneOf(lastBuildingPlaced.x), y.isWithInOneOf(lastBuildingPlaced.y) {
 			await MapBuilding.buildNormally(grid: &grid, x: x, y: y)
-			await Game.shared.stages.builder.stage5LastBuildingPlaced = .init(x: x, y: y)
+			await Game.shared.stages.builder.setStage5LastBuildingPlaced(.init(x: x, y: y))
 			// } else {
 			// 	await MessageBox.message("To build a house, you should only build next to the last building you placed.", speaker: .game)
 			// 	return
@@ -228,6 +228,6 @@ private enum BuildForBuilderStage7 {
 	static func build(grid: inout [[MapTile]], x: Int, y: Int) async {
 		// This will only be called inside of a house.
 		await MapBuilding.buildNormally(grid: &grid, x: x, y: y)
-		await Game.shared.stages.builder.stage7HasBuiltInside = true
+		await Game.shared.stages.builder.setStage7HasBuiltInside(true)
 	}
 }
