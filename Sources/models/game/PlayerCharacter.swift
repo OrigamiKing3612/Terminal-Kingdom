@@ -20,9 +20,8 @@ actor PlayerCharacter {
 	#else
 		private(set) var mapType: MapType = .castle(side: .left)
 	#endif
-	//! TODO: remove nonisolated(unsafe)
+	private(set) var canBuild: Bool = false
 	var stats: Stats = .init()
-	nonisolated(unsafe) var canBuild: Bool = false
 
 	func setName(_ name: String) {
 		self.name = name
@@ -225,6 +224,10 @@ actor PlayerCharacter {
 
 	func setDirection(_ newDirection: PlayerDirection) {
 		direction = newDirection
+	}
+
+	func setCanBuild(_ newCanBuild: Bool) {
+		canBuild = newCanBuild
 	}
 }
 

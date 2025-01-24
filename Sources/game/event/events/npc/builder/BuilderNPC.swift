@@ -193,7 +193,7 @@ enum BuilderNPC {
 				await MessageBox.message("Now that we have permission, we can start building immediately! Can you begin building the house?", speaker: .builder)
 				await instructions()
 				await Game.shared.stages.builder.setStage5Stages(.buildHouse)
-				await Game.shared.player.canBuild = true
+				await Game.shared.player.setCanBuild(true)
 				let uuid1 = await Game.shared.player.collect(item: .init(type: .lumber, canBeSold: false), count: 5 * 24)
 				let uuid2 = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .house)), canBeSold: false), count: 1)
 				await Game.shared.stages.builder.setStage5ItemsToBuildHouseUUIDsToRemove(uuid1 + uuid2)
@@ -207,7 +207,7 @@ enum BuilderNPC {
 					if let ids = await Game.shared.stages.builder.stage5ItemsToBuildHouseUUIDsToRemove {
 						await Game.shared.player.removeItems(ids: ids)
 					}
-					await Game.shared.player.canBuild = false
+					await Game.shared.player.setCanBuild(false)
 					fallthrough
 				} else {
 					await MessageBox.message("You haven't built the house yet.", speaker: .builder)
@@ -267,7 +267,7 @@ enum BuilderNPC {
 				let uuid2 = await Game.shared.player.collect(item: .init(type: .chest, canBeSold: false), count: 2)
 				let uuid3 = await Game.shared.player.collect(item: .init(type: .desk, canBeSold: false), count: 1)
 				await Game.shared.stages.builder.setStage7ItemsToBuildInsideUUIDsToRemove(uuid1 + uuid2 + uuid3)
-				await Game.shared.player.canBuild = true
+				await Game.shared.player.setCanBuild(true)
 			case .buildInside:
 				if await Game.shared.stages.builder.stage7HasBuiltInside {
 					await MessageBox.message("Looks like you are done!", speaker: .builder)
@@ -277,7 +277,7 @@ enum BuilderNPC {
 					if let ids = await Game.shared.stages.builder.stage7ItemsToBuildInsideUUIDsToRemove {
 						await Game.shared.player.removeItems(ids: ids)
 					}
-					await Game.shared.player.canBuild = false
+					await Game.shared.player.setCanBuild(false)
 					fallthrough
 				} else {
 					await MessageBox.message("You haven't decorated the interior of your house yet.", speaker: .builder)
