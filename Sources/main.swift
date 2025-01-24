@@ -111,6 +111,9 @@ func mainGameLoop() async {
 		if InventoryBox.updateInventoryBox {
 			await InventoryBox.inventoryBox()
 		}
+		if InventoryBox.updateInventory {
+			await InventoryBox.printInventory()
+		}
 
 		guard await !(Game.shared.isTypingInMessageBox) else { continue }
 

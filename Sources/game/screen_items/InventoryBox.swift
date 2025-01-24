@@ -2,16 +2,9 @@ import Foundation
 
 enum InventoryBox {
 	private(set) nonisolated(unsafe) static var updateInventoryBox = false
+	private(set) nonisolated(unsafe) static var updateInventory = false
 	nonisolated(unsafe) static var showHelp: Bool = false
 	nonisolated(unsafe) static var showBuildHelp: Bool = false
-	private(set) nonisolated(unsafe) static var selectedInventoryIndex: Int = 0 {
-		didSet {
-			Task {
-				selectedInventoryIndex = await max(0, min(selectedInventoryIndex, inventoryItems.count - 1))
-				await printInventory()
-			}
-		}
-	}
 
 	static var inventoryItems: [Item] {
 		get async {
@@ -40,15 +33,7 @@ enum InventoryBox {
 		}
 	}
 
-	private(set) nonisolated(unsafe) static var selectedBuildItemIndex: Int = 0 {
-		didSet {
-			Task {
-				selectedBuildItemIndex = await max(0, min(selectedBuildItemIndex, buildableItems.count - 1))
-				await printInventory()
-			}
-		}
-	}
-
+	//! TODO: change this probably will cause bugs
 	nonisolated(unsafe) static var showInventoryBox = true {
 		didSet {
 			if showInventoryBox {
@@ -61,10 +46,6 @@ enum InventoryBox {
 		}
 	}
 
-	static var resetSelectedBuildItemIndex: Void {
-		selectedBuildItemIndex = 0
-	}
-
 	static func sides() async {
 		await Screen.print(x: startX + 2, y: startY - 1, String(repeating: Game.shared.horizontalLine, count: width - 2).styled(with: [.bold, .yellow], styledIf: Game.shared.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
 		for y in (startY - 1) ..< endY {
@@ -75,15 +56,16 @@ enum InventoryBox {
 	}
 
 	static func inventoryBox() async {
-		if await !Game.shared.isBuilding {
-			updateInventoryBox = false
-		}
+		updateInventoryBox = false
 		clear()
 		await sides()
 		await printInventory()
 	}
 
 	static func printInventory() async {
+		if updateInventory {
+			updateInventory = false
+		}
 		clear()
 		if showHelp {
 			Screen.print(x: startX + 2, y: startY, "Press '\(KeyboardKeys.i.render)' to toggle inventory")
@@ -93,6 +75,7 @@ enum InventoryBox {
 			Screen.print(x: startX + 2, y: startY + 1, "Press '\(KeyboardKeys.enter.render)' or '\(KeyboardKeys.space.render)' to build")
 			Screen.print(x: startX + 2, y: startY + 2, "Press '\(KeyboardKeys.e.render)' to destroy")
 			Screen.print(x: startX + 2, y: startY + 3, "Press '\(KeyboardKeys.tab.render)' and '\(KeyboardKeys.back_tab.render)' to cycle items")
+			await Screen.print(x: startX + 2, y: startY + 2, "\(buildableItems.count) buildable items, \(inventoryItems.count) total items, \(selectedBuildItemIndex) selected")
 		} else if await Game.shared.isBuilding {
 			var alreadyPrinted: [ItemType] = []
 			let buildableItems = await buildableItems.enumerated()
@@ -163,23 +146,55 @@ enum InventoryBox {
 		}
 	}
 
-	static func nextBuildItem() {
-		selectedBuildItemIndex += 1
+	static func nextBuildItem() async {
+		await addToSelectedBuildItemIndex(1)
 	}
 
-	static func previousBuildItem() {
-		selectedBuildItemIndex -= 1
+	static func previousBuildItem() async {
+		await addToSelectedBuildItemIndex(-1)
 	}
 
-	static func nextInventoryItem() {
-		selectedInventoryIndex += 1
+	static func nextInventoryItem() async {
+		await addToSelectedInventoryIndex(1)
 	}
 
-	static func previousInventoryItem() {
-		selectedInventoryIndex -= 1
+	static func previousInventoryItem() async {
+		await addToSelectedInventoryIndex(-1)
 	}
 
 	static func setUpdateInventoryBox() {
 		updateInventoryBox = true
+	}
+}
+
+extension InventoryBox {
+	private nonisolated(unsafe) static var _selectedBuildItemIndex: Int = 0 { didSet { updateInventory = true } }
+	nonisolated(unsafe) static var selectedBuildItemIndex: Int {
+		_selectedBuildItemIndex
+	}
+
+	static func setSelectedBuildItemIndex(_ newIndex: Int) async {
+		let clampedIndex = await max(0, min(newIndex, buildableItems.count - 1))
+		_selectedBuildItemIndex = clampedIndex
+	}
+
+	static func addToSelectedBuildItemIndex(_ amount: Int) async {
+		await setSelectedBuildItemIndex(selectedBuildItemIndex + amount)
+	}
+}
+
+extension InventoryBox {
+	private nonisolated(unsafe) static var _selectedInventoryIndex: Int = 0 { didSet { updateInventory = true } }
+	nonisolated(unsafe) static var selectedInventoryIndex: Int {
+		_selectedInventoryIndex
+	}
+
+	static func setSelectedInventoryIndex(_ newIndex: Int) async {
+		let clampedIndex = await max(0, min(newIndex, inventoryItems.count - 1))
+		_selectedInventoryIndex = clampedIndex
+	}
+
+	static func addToSelectedInventoryIndex(_ amount: Int) async {
+		await setSelectedInventoryIndex(selectedInventoryIndex + amount)
 	}
 }

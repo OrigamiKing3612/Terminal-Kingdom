@@ -40,7 +40,7 @@ enum Keys {
 				await InventoryBox.sides()
 			case .b:
 				if await Game.shared.player.canBuild, await MapBox.mapType != .mining {
-					InventoryBox.resetSelectedBuildItemIndex
+					await InventoryBox.setSelectedBuildItemIndex(0)
 					await Game.shared.setIsBuilding(true)
 					await MapBox.sides()
 					await InventoryBox.inventoryBox()
@@ -84,9 +84,9 @@ enum Keys {
 			case .e:
 				await MapBox.destroy()
 			case .tab:
-				InventoryBox.nextBuildItem()
+				await InventoryBox.nextBuildItem()
 			case .back_tab:
-				InventoryBox.previousBuildItem()
+				await InventoryBox.previousBuildItem()
 			case .questionMark:
 				InventoryBox.showBuildHelp.toggle()
 			default:
@@ -105,9 +105,9 @@ enum Keys {
 				await Game.shared.setIsInInventoryBox(false)
 				await InventoryBox.inventoryBox()
 			case .up, .back_tab:
-				InventoryBox.previousInventoryItem()
+				await InventoryBox.previousInventoryItem()
 			case .down, .tab:
-				InventoryBox.nextInventoryItem()
+				await InventoryBox.nextInventoryItem()
 			case .questionMark:
 				InventoryBox.showHelp.toggle()
 			case .d:
