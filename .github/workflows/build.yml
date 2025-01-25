@@ -6,17 +6,55 @@ name: Build
 on: workflow_dispatch
 
 jobs:
-  build:
+  build_macos:
     permissions:
       contents: write
     strategy:
       fail-fast: true
       matrix:
-        platform: [ macos-latest, ubuntu-20.04, ubuntu-22.04, ubuntu-24.04, ubuntu-latest ]
+        architecture: [x86_64, arm64]
+    runs-on:  macos-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/cache@v4
+      with:
+        path: .build
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+
+    - name: Build
+      run: |
+        swift build -c release -Xswiftc -static-stdlib
+        zip_file="adventure_macos_${{ matrix.architecture }}.zip"
+        zip -r $zip_file .build/release/adventure .build/release/adventure_adventure.resources
+
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        prerelease: true
+        files: |
+          adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip
+  build_linux:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: true
+      matrix:
+        platform: [ ubuntu-20.04, ubuntu-22.04, ubuntu-24.04, ubuntu-latest ]
         architecture: [x86_64, arm64]
     runs-on: ${{ matrix.platform }}
     steps:
     - uses: actions/checkout@v4
+
+    - uses: actions/cache@v4
+      with:
+        path: .build
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
 
     - name: Run the build process with Docker
       uses: addnab/docker-run-action@v3
@@ -24,23 +62,16 @@ jobs:
         image: swift:6.0.3-focal
         options: -v ${{ github.workspace }}:/workspace -w /workspace
         run: |
-          if [[ "${{ matrix.platform }}" == "ubuntu-"* ]]; then
-            ARCH="${{ matrix.architecture }}"
-            docker build --platform linux/${ARCH} -t swift-build .
-          fi
-
-          if [[ "${{ matrix.platform }}" == "macos-latest" ]]; then
-            ARCH="${{ matrix.architecture }}"
-            docker build --platform darwin/${ARCH} -t swift-build .
-          fi
-
-          swift build -c release -Xswiftc -static-stdlib
-          zip_file="adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
-          zip -r $zip_file .build/release/adventure .build/release/adventure_adventure.resources
+            docker build --platform linux/${{ matrix.architecture }} -t swift-build .
+            swift build -c release -Xswiftc -static-stdlib
+            zip_file="adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
+            zip -r $zip_file .build/release/adventure .build/release/adventure_adventure.resources
 
     - name: Release
       uses: softprops/action-gh-release@v2
       if: startsWith(github.ref, 'refs/tags/')
       with:
+        prerelease: true
         files: |
           adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip
+
