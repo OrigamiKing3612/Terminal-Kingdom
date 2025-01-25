@@ -37,13 +37,13 @@ func endProgram() {
 	//    let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
 	//    if let filePath {
 	//        let file = filePath.appendingPathComponent("adventure.game.json")
-//
+	//
 	//        do {
 	//            let game = CodableGame(location: Game.location, hasInited: Game.hasInited, isTypingInMessageBox: Game.isTypingInMessageBox, player: Game.player, map: Game.map, startingVillageChecks: Game.startingVillageChecks, stages: Game.stages, messages: Game.messages)
 	//            let JSON = try JSONEncoder().encode(game)
 	//            try JSON.write(to: filePath)
 	//        } catch {
-//
+	//
 	//        }
 	//    }
 	TerminalInput.restoreOriginalMode()
