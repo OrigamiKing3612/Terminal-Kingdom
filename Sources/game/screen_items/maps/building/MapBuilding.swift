@@ -202,8 +202,8 @@ extension Int {
 
 private enum BuildForBuilderStage5 {
 	static func build(grid: inout [[MapTile]], x: Int, y: Int) async {
-		var buildingsPlaced: Int { get async { await Game.shared.stages.builder.stage5BuildingsPlaced } }
-		if await buildingsPlaced == 0 {
+		var buildingsPlaced: Int { Game.shared.stages.builder.stage5BuildingsPlaced }
+		if buildingsPlaced == 0 {
 			await MapBuilding.buildNormally(grid: &grid, x: x, y: y)
 			await Game.shared.stages.builder.setStage5LastBuildingPlaced(.init(x: x, y: y))
 		} else {

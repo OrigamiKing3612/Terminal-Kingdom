@@ -5,9 +5,7 @@ actor Game {
 	static var shared = Game()
 	nonisolated static let version = "0.0.1-alpha_1"
 	var config: Config = .init()
-	//! TODO: remove nonisolated
-	nonisolated(unsafe) var player = PlayerCharacter()
-	//! TODO: remove nonisolated
+	var player = PlayerCharacter()
 	var startingVillageChecks: StartingVillageChecks = .init()
 	var stages: Stages = .init()
 	private(set) var mapGen: MapGenSave = .init(amplitude: MapGenSave.defaultAmplitude, frequency: MapGenSave.defaultFrequency, seed: .random(in: 2 ... 1_000_000_000))

@@ -185,7 +185,7 @@ struct TitleScreen {
 					selectedSettingOptionIndex = min(SettingsScreenOptions.allCases.count - 1 + 3, selectedSettingOptionIndex + 1)
 				case .enter:
 					if selectedSettingOptionIndex == lastIndex + 2 {
-						config.write()
+						await config.write()
 						await Game.shared.loadConfig()
 						return
 					} else if selectedSettingOptionIndex == lastIndex + 3 {

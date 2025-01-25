@@ -3,11 +3,7 @@ import Foundation
 //! TODO: async load and save
 struct Config: Codable {
 	static let configFile: String = "adventure-config.json"
-	var useNerdFont: Bool = false {
-		didSet {
-			// Screen.initializeBoxes()
-		}
-	}
+	var useNerdFont: Bool = false
 
 	var vimKeys: Bool = false
 	var arrowKeys: Bool = false
@@ -26,6 +22,10 @@ struct Config: Codable {
 		return (filePath, directory, file)
 	}
 
+	mutating func load() async {
+		self = await Config.load()
+	}
+
 	static func load() async -> Config {
 		let (_, directory, file) = locations()
 		do {
@@ -37,16 +37,16 @@ struct Config: Codable {
 			return data
 		} catch {
 			print("Error: Could not read config file. Creating a new one.")
-			return write(config: Config())
+			return await write(config: Config())
 		}
 	}
 
-	func write() {
-		Config.write(config: self)
+	func write() async {
+		await Config.write(config: self)
 	}
 
 	@discardableResult
-	static func write(config: Config) -> Config {
+	static func write(config: Config) async -> Config {
 		let (_, _, file) = locations()
 		do {
 			let encoder = JSONEncoder()
