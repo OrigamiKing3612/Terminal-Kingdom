@@ -87,7 +87,7 @@ struct TitleScreen {
 						await newGame()
 					}
 				case .helpOption:
-					await screen.help()
+					screen.help()
 				case .settingsOption:
 					await screen.settings()
 				case .quitOption:

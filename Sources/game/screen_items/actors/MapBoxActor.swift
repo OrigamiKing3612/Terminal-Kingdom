@@ -122,7 +122,7 @@ actor MapBoxActor {
 
 	func setBuildingMapPlayer(x: Int, y: Int) async {
 		var map = buildingMap
-		await map!.setPlayer(x: x, y: y)
+		map!.setPlayer(x: x, y: y)
 		buildingMap = map
 	}
 }
