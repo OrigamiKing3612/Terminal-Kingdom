@@ -124,7 +124,7 @@ enum MessageBox {
 
 	private static func messageWithTyping(_ text: String, speaker: String) async -> String {
 		await MapBox.hideMapBox()
-		StatusBox.showStatusBox = false
+		await StatusBox.setShowStatusBox(false)
 		let typingIcon = await Game.shared.config.selectedIcon
 		await message(text, speaker: speaker)
 		await message("   \(typingIcon)", speaker: .game)
@@ -333,8 +333,8 @@ enum MessageBox {
 	static var showAllBoxes: Void {
 		get async {
 			await MapBox.showMapBox()
-			InventoryBox.showInventoryBox = true
-			StatusBox.showStatusBox = true
+			await InventoryBox.setShowInventoryBox(true)
+			await StatusBox.setShowStatusBox(true)
 		}
 	}
 
@@ -343,10 +343,10 @@ enum MessageBox {
 			await MapBox.hideMapBox()
 		}
 		if inventoryBox {
-			InventoryBox.showInventoryBox = false
+			await InventoryBox.setShowInventoryBox(false)
 		}
 		if statusBox {
-			StatusBox.showStatusBox = false
+			await StatusBox.setShowStatusBox(false)
 		}
 	}
 }

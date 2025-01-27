@@ -33,19 +33,6 @@ enum InventoryBox {
 		}
 	}
 
-	//! TODO: change this probably will cause bugs
-	nonisolated(unsafe) static var showInventoryBox = true {
-		didSet {
-			if showInventoryBox {
-				Task {
-					await inventoryBox()
-				}
-			} else {
-				clear()
-			}
-		}
-	}
-
 	static func sides() async {
 		await Screen.print(x: startX + 2, y: startY - 1, String(repeating: Game.shared.horizontalLine, count: width - 2).styled(with: [.bold, .yellow], styledIf: Game.shared.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
 		for y in (startY - 1) ..< endY {
@@ -196,5 +183,18 @@ extension InventoryBox {
 
 	static func addToSelectedInventoryIndex(_ amount: Int) async {
 		await setSelectedInventoryIndex(selectedInventoryIndex + amount)
+	}
+}
+
+extension InventoryBox {
+	private nonisolated(unsafe) static var _showInventoryBox = true
+	nonisolated(unsafe) static var showInventoryBox: Bool { _showInventoryBox }
+	static func setShowInventoryBox(_ newValue: Bool) async {
+		_showInventoryBox = newValue
+		if newValue {
+			await inventoryBox()
+		} else {
+			clear()
+		}
 	}
 }

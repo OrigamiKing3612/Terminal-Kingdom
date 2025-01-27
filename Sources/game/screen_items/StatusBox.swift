@@ -6,19 +6,6 @@ enum StatusBox {
 		}
 	}
 
-	//! TODO: this will probably break stuff
-	nonisolated(unsafe) static var showStatusBox = true {
-		didSet {
-			if showStatusBox {
-				Task {
-					await statusBox()
-				}
-			} else {
-				clear()
-			}
-		}
-	}
-
 	static var playerInfoStartX: Int { startX + 2 }
 	static var playerInfoEndX: Int { endX }
 	static var playerInfoStartY: Int { startY + 1 }
@@ -32,11 +19,10 @@ enum StatusBox {
 
 	static func statusBox() async {
 		updateQuestBox = false
-		await clear()
+		clear()
 		await sides()
 		await playerInfoArea()
 		await questArea()
-		await inventoryArea()
 	}
 
 	static func playerInfoArea() async {
@@ -88,8 +74,6 @@ enum StatusBox {
 		}
 	}
 
-	static func inventoryArea() {}
-
 	static func sides() async {
 		await Screen.print(x: startX, y: startY, String(repeating: Game.shared.horizontalLine, count: width + 1))
 		for y in (startY + 1) ..< endY {
@@ -132,5 +116,18 @@ enum StatusBox {
 	static func updateLastQuest(newQuest: Quest) async {
 		await Game.shared.player.updateLastQuest(newQuest: newQuest)
 		await statusBox()
+	}
+}
+
+extension StatusBox {
+	private nonisolated(unsafe) static var _showStatusBox = true
+	nonisolated(unsafe) static var showInventoryBox: Bool { _showStatusBox }
+	static func setShowStatusBox(_ newValue: Bool) async {
+		_showStatusBox = newValue
+		if newValue {
+			await statusBox()
+		} else {
+			clear()
+		}
 	}
 }
