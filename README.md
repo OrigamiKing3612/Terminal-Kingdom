@@ -9,7 +9,7 @@ TODO
 
 ## How to Play
 - Use the wasd or arrow keys to navigate.
-- Press **i**, **space**, or **enter** to interact with tiles.
+- Press **space** or **enter** to interact with tiles.
 
 ## License
 This project is licensed under the Apache-2.0 license. See the LICENSE file for details.
