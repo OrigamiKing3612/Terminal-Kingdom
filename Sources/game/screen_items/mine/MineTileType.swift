@@ -14,7 +14,7 @@ enum MineTileType: TileType {
 		let tile = grid[tileY][tileX]
 		let name = switch self {
 			case .plain: " "
-			case .player: "*".styled(with: [.blue, .bold])
+			case .player: "@".styled(with: [.blue, .bold])
 			case .playerStart: " "
 			case .stone: !MineTile.isSeen(tile: tile, tileX: tileX, tileY: tileY, grid: grid) ? "." : "S"
 			case .coal: !MineTile.isSeen(tile: tile, tileX: tileX, tileY: tileY, grid: grid) ? "." : "C".styled(with: .dim)

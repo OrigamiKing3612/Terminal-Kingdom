@@ -80,7 +80,7 @@ enum MapTileType: TileType {
 			case .gate: "g"
 			case let .crop(crop: cropTile): await CropTile.renderCrop(tile: cropTile)
 			case let .pot(tile: potTile): await PotTile.renderCropInPot(tile: potTile)
-			case let .station(station: station): await StationTile.render(tile: station)
+			case let .station(station: station): StationTile.render(tile: station)
 			case .startMining: "M"
 			case let .npc(tile: tile): await NPCTile.renderNPC(tile: tile)
 			case .shopStandingArea(type: _): "."

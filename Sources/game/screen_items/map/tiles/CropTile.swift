@@ -5,7 +5,7 @@ struct CropTile: Codable, Equatable {
 	let type: CropTileType
 
 	// 180 seconds max
-	var growthStage: Int {
+	private(set) var growthStage: Int {
 		didSet {
 			growthStage = max(0, min(growthStage, 180))
 		}
