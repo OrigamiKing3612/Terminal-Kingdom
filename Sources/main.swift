@@ -79,9 +79,8 @@ func newGame() async {
 }
 
 func startTasks() async {
-	// TODO: update label
-	let cropQueue = DispatchQueue(label: "adventure.cropQueue", qos: .background, attributes: .concurrent)
-	// let stationsQueue = DispatchQueue(label: "adventure.stationsQueue", qos: .background)
+	let cropQueue = DispatchQueue(label: "com.origamiking3612.adventure.cropQueue", qos: .background, attributes: .concurrent)
+	// let stationsQueue = DispatchQueue(label: "com.origamiking3612.adventure.stationsQueue", qos: .background)
 
 	cropQueue.async {
 		// TODO: building maps
