@@ -1,55 +1,60 @@
+import Foundation
+
 enum MapBuilding {
-	static func build(grid: inout [[MapTile]], x: Int, y: Int) {
+	static func build(grid: inout [[MapTile]], x: Int, y: Int) async {
 		if grid[y][x].type != .plain {
-			MessageBox.message("You can't build here.", speaker: .game)
+			await MessageBox.message("You can't build here.", speaker: .game)
 			return
 		}
 
-		let selectedItem = InventoryBox.buildableItems[InventoryBox.selectedBuildItemIndex]
-		if Game.player.has(item: selectedItem.type, count: selectedItem.type == .lumber ? 5 : 1) {
-			if Game.stages.builder.stage5Stages == .buildHouse {
-				BuildForBuilderStage5.build(grid: &grid, x: x, y: y)
-			} else if Game.stages.builder.stage7Stages == .buildInside, case .custom(mapID: _) = MapBox.mapType {
-				BuildForBuilderStage7.build(grid: &grid, x: x, y: y)
+		let selectedItem = await InventoryBox.buildableItems[InventoryBox.selectedBuildItemIndex]
+		if await Game.shared.player.has(item: selectedItem.type, count: selectedItem.type == .lumber ? 5 : 1) {
+			if await Game.shared.stages.builder.stage5Stages == .buildHouse {
+				await BuildForBuilderStage5.build(grid: &grid, x: x, y: y)
+			} else if await Game.shared.stages.builder.stage7Stages == .buildInside, case .custom(mapID: _) = await MapBox.mapType {
+				await BuildForBuilderStage7.build(grid: &grid, x: x, y: y)
 			} else {
-				buildNormally(grid: &grid, x: x, y: y)
+				await buildNormally(grid: &grid, x: x, y: y)
 			}
 		} else {
-			MessageBox.message("You don't have enough items to build", speaker: .game)
+			await MessageBox.message("You don't have enough items to build", speaker: .game)
 		}
 	}
 
-	static func destory(grid: inout [[MapTile]], x: Int, y: Int) {
+	//! TODO: Put anything that can happen later in a Task
+	static func destory(grid: inout [[MapTile]], x: Int, y: Int) async {
 		if grid[y][x].type.isBuildable {
-			removeNormally(grid: &grid, x: x, y: y)
+			await removeNormally(grid: &grid, x: x, y: y)
 		} else {
-			MessageBox.message("You can't remove this tile.", speaker: .game)
+			await MessageBox.message("You can't remove this tile.", speaker: .game)
 		}
 	}
 
-	static func removeNormally(grid: inout [[MapTile]], x: Int, y: Int) {
+	static func removeNormally(grid: inout [[MapTile]], x: Int, y: Int) async {
 		let tile = grid[y][x]
 		guard tile.type.isBuildable else {
-			MessageBox.message("You can't remove this tile.", speaker: .game)
+			await MessageBox.message("You can't remove this tile.", speaker: .game)
 			return
 		}
-		func placeTile(tile: some BuildableTile, count: Int = 1, name: String, item: () -> ItemType) {
+		func placeTile(tile: some BuildableTile, count: Int = 1, name: String, item: () -> ItemType) async {
 			if tile.isPlacedByPlayer {
 				grid[y][x] = MapTile(type: .plain)
 				let itemToCollect = item()
-				_ = Game.player.collect(item: .init(type: itemToCollect), count: count)
+				_ = await Game.shared.player.collect(item: .init(type: itemToCollect), count: count)
 			} else {
-				MessageBox.message("You can't remove this \(name).", speaker: .game)
+				await MessageBox.message("You can't remove this \(name).", speaker: .game)
 			}
 		}
 		switch tile.type {
 			case let .building(tile: buildingTile):
-				placeTile(tile: buildingTile, count: 4, name: "building", item: { .lumber })
+				await placeTile(tile: buildingTile, count: 4, name: "building", item: { .lumber })
 			case let .door(tile: doorTile):
-				placeTile(tile: doorTile, name: "\(doorTile.type.name) Door") {
+				await placeTile(tile: doorTile, name: "\(doorTile.type.name) Door") {
 					if case let .custom(mapID: id, doorType: doorType) = doorTile.type {
-						if let id {
-							Game.removeMap(mapID: id)
+						Task {
+							if let id {
+								await Game.shared.removeMap(mapID: id)
+							}
 						}
 						return .door(tile: .init(type: .custom(mapID: nil, doorType: doorType)))
 					} else {
@@ -57,49 +62,49 @@ enum MapBuilding {
 					}
 				}
 			case let .fence(tile: fenceTile):
-				placeTile(tile: fenceTile, name: "fence", item: { .fence })
+				await placeTile(tile: fenceTile, name: "fence", item: { .fence })
 			case let .gate(tile: gateTile):
-				placeTile(tile: gateTile, name: "gate", item: { .gate })
+				await placeTile(tile: gateTile, name: "gate", item: { .gate })
 			case .chest:
 				// TODO: break chest
-				MessageBox.message("You can't remove this chest yet", speaker: .game)
+				await MessageBox.message("You can't remove this chest yet", speaker: .game)
 			case let .bed(tile: bedTile):
-				placeTile(tile: bedTile, name: "bed", item: { .bed })
+				await placeTile(tile: bedTile, name: "bed", item: { .bed })
 			case let .desk(tile: deskTile):
-				placeTile(tile: deskTile, name: "desk", item: { .desk })
+				await placeTile(tile: deskTile, name: "desk", item: { .desk })
 			default:
-				MessageBox.message("This is a not buildable tile", speaker: .game)
+				await MessageBox.message("This is a not buildable tile", speaker: .game)
 		}
 	}
 
-	static func buildNormally(grid: inout [[MapTile]], x: Int, y: Int) {
-		let selectedItem = InventoryBox.buildableItems[InventoryBox.selectedBuildItemIndex]
+	static func buildNormally(grid: inout [[MapTile]], x: Int, y: Int) async {
+		let selectedItem = await InventoryBox.buildableItems[InventoryBox.selectedBuildItemIndex]
 		if selectedItem.type == .lumber {
-			if Game.player.has(item: .lumber, count: 5) {
+			if await Game.shared.player.has(item: .lumber, count: 5) {
 				grid[y][x] = MapTile(type: .building(tile: .init(isPlacedByPlayer: true)))
-				Game.player.removeItem(item: .lumber, count: 5)
+				await Game.shared.player.removeItem(item: .lumber, count: 5)
 			}
 		} else {
-			if Game.player.has(item: selectedItem.type, count: 1) {
+			if await Game.shared.player.has(item: selectedItem.type, count: 1) {
 				if case let .door(tile: tile) = selectedItem.type {
 					do {
-						let (doorPosition, buildingPerimeter) = try CreateCustomMap.checkDoor(tile: tile, grid: grid, x: x, y: y)
+						let (doorPosition, buildingPerimeter) = try await CreateCustomMap.checkDoor(tile: tile, grid: grid, x: x, y: y)
 						let map = createCustomMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.type)
 						let customMap = try CustomMap(grid: map)
 						if let customMap {
-							Game.addMap(map: customMap)
+							await Game.shared.addMap(map: customMap)
 							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor)
-							Game.player.removeItem(item: .door(tile: tile), count: 1)
-							if Game.stages.builder.stage5Stages == .buildHouse {
-								Game.stages.builder.stage5HasBuiltHouse = true
+							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
+							if await Game.shared.stages.builder.stage5Stages == .buildHouse {
+								await Game.shared.stages.builder.setStage5HasBuiltHouse(true)
 							}
 						}
 					} catch {
-						MessageBox.message(error.localizedDescription, speaker: .game)
+						await MessageBox.message(error.localizedDescription, speaker: .game)
 					}
 				} else {
 					grid[y][x] = MapTile(type: itemTypeToMapTileType(selectedItem.type)!)
-					Game.player.removeItem(item: selectedItem.type, count: 1)
+					await Game.shared.player.removeItem(item: selectedItem.type, count: 1)
 				}
 			}
 		}
@@ -109,7 +114,9 @@ enum MapBuilding {
 		// only used in building
 		switch itemType {
 			case .door:
-				MessageBox.message("This shouldn't have happen", speaker: .game)
+				Task {
+					await MessageBox.message("This shouldn't have happen", speaker: .game)
+				}
 				return nil
 			case .fence: return .fence(tile: .init(isPlacedByPlayer: true))
 			case .gate: return .gate(tile: .init(isPlacedByPlayer: true))
@@ -194,23 +201,23 @@ extension Int {
 }
 
 private enum BuildForBuilderStage5 {
-	static func build(grid: inout [[MapTile]], x: Int, y: Int) {
-		var buildingsPlaced: Int { Game.stages.builder.stage5BuildingsPlaced }
+	static func build(grid: inout [[MapTile]], x: Int, y: Int) async {
+		var buildingsPlaced: Int { Game.shared.stages.builder.stage5BuildingsPlaced }
 		if buildingsPlaced == 0 {
-			MapBuilding.buildNormally(grid: &grid, x: x, y: y)
-			Game.stages.builder.stage5LastBuildingPlaced = .init(x: x, y: y)
+			await MapBuilding.buildNormally(grid: &grid, x: x, y: y)
+			await Game.shared.stages.builder.setStage5LastBuildingPlaced(.init(x: x, y: y))
 		} else {
-			// let lastBuildingPlaced = Game.stages.builder.stage5LastBuildingPlaced
+			// let lastBuildingPlaced = await Game.shared.stages.builder.stage5LastBuildingPlaced
 			// if let lastBuildingPlaced {
 			// if x.isWithInOneOf(lastBuildingPlaced.x), y.isWithInOneOf(lastBuildingPlaced.y) {
-			MapBuilding.buildNormally(grid: &grid, x: x, y: y)
-			Game.stages.builder.stage5LastBuildingPlaced = .init(x: x, y: y)
+			await MapBuilding.buildNormally(grid: &grid, x: x, y: y)
+			await Game.shared.stages.builder.setStage5LastBuildingPlaced(.init(x: x, y: y))
 			// } else {
-			// 	MessageBox.message("To build a house, you should only build next to the last building you placed.", speaker: .game)
+			// 	await MessageBox.message("To build a house, you should only build next to the last building you placed.", speaker: .game)
 			// 	return
 			// }
 			// } else {
-			// 	MessageBox.message("You haven't placed a building?", speaker: .game)
+			// 	await MessageBox.message("You haven't placed a building?", speaker: .game)
 			// 	return
 			// }
 		}
@@ -218,9 +225,9 @@ private enum BuildForBuilderStage5 {
 }
 
 private enum BuildForBuilderStage7 {
-	static func build(grid: inout [[MapTile]], x: Int, y: Int) {
+	static func build(grid: inout [[MapTile]], x: Int, y: Int) async {
 		// This will only be called inside of a house.
-		MapBuilding.buildNormally(grid: &grid, x: x, y: y)
-		Game.stages.builder.stage7HasBuiltInside = true
+		await MapBuilding.buildNormally(grid: &grid, x: x, y: y)
+		await Game.shared.stages.builder.setStage7HasBuiltInside(true)
 	}
 }

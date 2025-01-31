@@ -1,16 +1,16 @@
 enum ChopTreeEvent {
-	static func chopTree() {
-		MessageBox.message("Timber!", speaker: .game)
-		let x = MapBox.player.x
-		let y = MapBox.player.y
-		if MapBox.mainMap.grid[y][x].type == .tree {
-			MapBox.mainMap.grid[y][x] = MapTile(type: .plain)
+	static func chopTree() async {
+		await MessageBox.message("Timber!", speaker: .game)
+		let x = await MapBox.player.x
+		let y = await MapBox.player.y
+		if await MapBox.mainMap.grid[y][x].type == .tree {
+			await MapBox.setMainMapGridTile(x: x, y: y, tile: MapTile(type: .plain))
 
 			let lumberCount = Int.random(in: 1 ... 3)
 			let seedCount = Int.random(in: 1 ... 3)
-			_ = Game.player.collect(item: .init(type: .lumber), count: lumberCount)
-			_ = Game.player.collect(item: .init(type: .tree_seed), count: seedCount)
-			Game.player.removeDurability(of: .axe)
+			_ = await Game.shared.player.collect(item: .init(type: .lumber), count: lumberCount)
+			_ = await Game.shared.player.collect(item: .init(type: .tree_seed), count: seedCount)
+			await Game.shared.player.removeDurability(of: .axe)
 		}
 	}
 }

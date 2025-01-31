@@ -5,11 +5,27 @@ struct PotTile: Codable, Equatable {
 		self.cropTile = cropTile
 	}
 
-	static func renderCropInPot(tile: PotTile) -> String {
+	static func renderCropInPot(tile: PotTile) async -> String {
 		if tile.cropTile.type == .none {
-			Game.config.useNerdFont ? "󰋥" : "p"
+			await Game.shared.config.useNerdFont ? "󰋥" : "p"
 		} else {
-			CropTile.renderCrop(tile: tile.cropTile)
+			await CropTile.renderCrop(tile: tile.cropTile)
 		}
+	}
+}
+
+extension PotTile {
+	enum CodingKeys: CodingKey {
+		case cropTile
+	}
+
+	func encode(to encoder: Encoder) throws {
+		var container = encoder.container(keyedBy: CodingKeys.self)
+		try container.encode(cropTile, forKey: .cropTile)
+	}
+
+	init(from decoder: Decoder) throws {
+		let container = try decoder.container(keyedBy: CodingKeys.self)
+		self.cropTile = try container.decode(CropTile.self, forKey: .cropTile)
 	}
 }
