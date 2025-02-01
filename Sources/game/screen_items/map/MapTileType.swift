@@ -158,5 +158,5 @@ enum ShopStandingAreaType: String, Codable {
 }
 
 enum BiomeType: String, Codable {
-	case plains, desert, snow, forest
+	case plains, desert, snow, forest, volcano, tuntra
 }

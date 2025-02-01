@@ -1,4 +1,5 @@
 import Foundation
+import GameplayKit
 
 // TODO: remove static because that undoes the point of the actor
 actor Game {
@@ -8,7 +9,7 @@ actor Game {
 	var player = PlayerCharacter()
 	var startingVillageChecks: StartingVillageChecks = .init()
 	var stages: Stages = .init()
-	private(set) var mapGen: MapGenSave = .init(amplitude: MapGenSave.defaultAmplitude, frequency: MapGenSave.defaultFrequency, seed: .random(in: 2 ... 1_000_000_000))
+	var mapGen: MapGen = .init()
 	private(set) var messages: [String] = []
 	private(set) var crops: Set<TilePosition> = []
 	private(set) var hasInited: Bool = false
@@ -28,7 +29,7 @@ actor Game {
 
 	func initGame() async {
 		hasInited = true
-		map = await MapGen.generateFullMap()
+		map = await mapGen.generateFullMap()
 		config = await Config.load()
 	}
 
@@ -98,6 +99,10 @@ actor Game {
 
 	func loadConfig() async {
 		config = await Config.load()
+	}
+
+	func getBiome(x: Int, y: Int) async -> BiomeType {
+		await mapGen.getBiome(x: x, y: y)
 	}
 }
 

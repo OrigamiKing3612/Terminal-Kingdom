@@ -38,7 +38,7 @@ enum MapBuilding {
 		}
 		func placeTile(tile: some BuildableTile, count: Int = 1, name: String, item: () -> ItemType) async {
 			if tile.isPlacedByPlayer {
-				grid[y][x] = MapTile(type: .plain)
+				grid[y][x] = await MapTile(type: .plain, biome: Game.shared.getBiome(x: x, y: y))
 				let itemToCollect = item()
 				_ = await Game.shared.player.collect(item: .init(type: itemToCollect), count: count)
 			} else {
@@ -135,10 +135,10 @@ enum MapBuilding {
 		let rightLength = buildingPerimeter.rightSide * ratio
 		// let leftLength = buildingPerimeter.leftSide * ratio
 
-		var map: [[MapTile]] = Array(repeating: Array(repeating: .init(type: .plain, isWalkable: true), count: topLength), count: rightLength)
+		var map: [[MapTile]] = Array(repeating: Array(repeating: .init(type: .plain, isWalkable: true), count: topLength), count: rightLength, biome: Game.shared.getBiome(x: x, y: y))
 
 		for (indexY, y) in map.enumerated() {
-			let buildingTile = MapTile(type: .building(tile: .init(isPlacedByPlayer: false)), isWalkable: false)
+			let buildingTile = MapTile(type: .building(tile: .init(isPlacedByPlayer: false)), isWalkable: false, biome: Game.shared.getBiome(x: x, y: y))
 			for (indexX, _) in y.enumerated() {
 				if indexY == 0 {
 					map[indexY][indexX] = buildingTile
@@ -171,7 +171,7 @@ enum MapBuilding {
 				doorY = rightLength - 1
 		}
 
-		map[doorY][doorX] = .init(type: .door(tile: .init(type: doorType, isPlacedByPlayer: false)), isWalkable: true)
+		map[doorY][doorX] = .init(type: .door(tile: .init(type: doorType, isPlacedByPlayer: false)), isWalkable: true, biome: Game.shared.getBiome(x: doorX, y: doorY))
 
 		var startX, startY: Int
 		switch doorPosition {
@@ -188,7 +188,7 @@ enum MapBuilding {
 				startX = doorX
 				startY = doorY - 1
 		}
-		map[startY][startX] = .init(type: .playerStart, isWalkable: true)
+		map[startY][startX] = .init(type: .playerStart, isWalkable: true, biome: Game.shared.getBiome(x: startX, y: startY))
 
 		return map
 	}
