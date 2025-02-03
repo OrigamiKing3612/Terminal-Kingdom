@@ -14,8 +14,8 @@ actor MapGen {
 	let moistureMap: GKNoiseMap
 
 	init() {
-		// self.seed = 13_124_557
-		self.seed = .random(in: 2 ... 1_000_000_000)
+		self.seed = 13_124_557
+		// self.seed = .random(in: 2 ... 1_000_000_000)
 		self.temperatureMap = Self.createNoiseGenerator(seed, frequency: 0.005)
 		self.elevationMap = Self.createNoiseGenerator(seed + 1, frequency: 0.002)
 		self.moistureMap = Self.createNoiseGenerator(seed + 2, frequency: 0.006)
@@ -77,7 +77,7 @@ actor MapGen {
 							} else {
 								map[y][x] = MapTile(type: .plain, isWalkable: true, biome: type)
 							}
-						case .snow:
+						case .snow, .tundra:
 							let rand = Int.random(in: 1 ... 10)
 							if rand == 2 || rand == 3 {
 								map[y][x] = MapTile(type: .snow_tree, isWalkable: true, biome: type)
@@ -87,9 +87,12 @@ actor MapGen {
 								map[y][x] = MapTile(type: .snow, isWalkable: true, event: .chopTree, biome: type)
 							}
 						case .volcano:
-							map[y][x] = MapTile(type: .TOBEGENERATED, isWalkable: true, biome: type)
-						case .tundra:
-							map[y][x] = MapTile(type: .TOBEGENERATED, isWalkable: true, biome: type)
+							let rand = Int.random(in: 1 ... 10)
+							if rand == 1 || rand == 3 {
+								map[y][x] = MapTile(type: .lava, isWalkable: false, biome: type)
+							} else {
+								map[y][x] = MapTile(type: .sand, isWalkable: true, biome: type)
+							}
 						case .ocean:
 							map[y][x] = MapTile(type: .water, isWalkable: true, biome: type)
 						case .coast:

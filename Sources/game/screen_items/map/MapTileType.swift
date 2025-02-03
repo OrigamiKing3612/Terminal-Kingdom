@@ -19,6 +19,7 @@ enum MapTileType: TileType {
 	// MARK: Other Biome
 
 	case stone
+	case lava
 
 	// MARK: Other
 
@@ -93,6 +94,7 @@ enum MapTileType: TileType {
 			case .bed: await Game.shared.config.useNerdFont ? "" : "B"
 			case .desk: await Game.shared.config.useNerdFont ? "󱈹" : "D"
 			case .stone: "S".styled(with: .dim)
+			case .lava: "L".styled(with: .red)
 		}
 	}
 
@@ -130,6 +132,7 @@ enum MapTileType: TileType {
 			case .bed: "bed"
 			case .desk: "desk"
 			case .stone: "stone"
+			case .lava: "lava"
 		}
 	}
 
