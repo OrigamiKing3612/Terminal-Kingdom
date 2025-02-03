@@ -1,15 +1,19 @@
 import Foundation
 
-struct Stages: Codable {
-	// MARK: Blacksmith
-
+struct Stages {
 	var random: RandomStages = .init()
 	var blacksmith: BlacksmithStages = .init()
 	var mine: MineStages = .init()
 	var farm: FarmStages = .init()
 	var builder: BuilderStages = .init()
+
+	init() {}
 }
 
-struct RandomStages: Codable {
+actor RandomStages {
 	var chopTreeAxeUUIDToRemove: UUID?
+
+	func setChopTreeAxeUUIDToRemove(_ uuid: UUID) {
+		chopTreeAxeUUIDToRemove = uuid
+	}
 }

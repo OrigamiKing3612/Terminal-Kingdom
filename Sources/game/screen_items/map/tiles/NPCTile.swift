@@ -5,47 +5,47 @@ struct NPCTile: Codable, Equatable {
 		self.type = type
 	}
 
-	static func renderNPC(tile: NPCTile) -> String {
-		if !tile.type.hasTalkedToBefore {
+	static func renderNPC(tile: NPCTile) async -> String {
+		if await !tile.type.hasTalkedToBefore {
 			return "!".styled(with: [.bold, .red])
 		}
 		switch tile.type {
 			default:
 				// TODO: Not sure if this will stay
-				return (Game.config.useNerdFont ? "󰙍" : "N").styled(with: .bold)
+				return await (Game.shared.config.useNerdFont ? "󰙍" : "N").styled(with: .bold)
 		}
 	}
 
-	func talk() {
+	func talk() async {
 		switch type {
 			case .blacksmith:
-				BlacksmithNPC.talk()
+				await BlacksmithNPC.talk()
 			case .blacksmith_helper:
-				BlacksmithHelperNPC.talk()
+				await BlacksmithHelperNPC.talk()
 			case .miner:
-				MinerNPC.talk()
+				await MinerNPC.talk()
 			case .mine_helper:
-				MineHelperNPC.talk()
+				await MineHelperNPC.talk()
 			case .carpenter:
-				CarpenterNPC.talk()
+				await CarpenterNPC.talk()
 			case .carpenter_helper:
-				CarpenterHelperNPC.talk()
+				await CarpenterHelperNPC.talk()
 			case .king:
-				KingNPC.talk()
+				await KingNPC.talk()
 			case .salesman:
-				SalesmanNPC.talk()
+				await SalesmanNPC.talk()
 			case .builder:
-				BuilderNPC.talk()
+				await BuilderNPC.talk()
 			case .builder_helper:
-				BuilderHelperNPC.talk()
+				await BuilderHelperNPC.talk()
 			case .hunter:
-				HunterNPC.talk()
+				await HunterNPC.talk()
 			case .inventor:
 				break
 			case .stable_master:
 				break
 			case .farmer:
-				FarmerNPC.talk()
+				await FarmerNPC.talk()
 			case .doctor:
 				break
 			case .chef:
@@ -53,7 +53,7 @@ struct NPCTile: Codable, Equatable {
 			case .potter:
 				break
 			case .farmer_helper:
-				FarmerHelperNPC.talk()
+				await FarmerHelperNPC.talk()
 		}
 	}
 }

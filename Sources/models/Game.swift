@@ -1,68 +1,128 @@
 import Foundation
+import GameplayKit
 
-struct Game: Codable {
-	static let version = "0.0.1-alpha_1"
-	nonisolated(unsafe) static var config: Config = .init()
-	nonisolated(unsafe) static var player = PlayerCharacter()
-	nonisolated(unsafe) static var startingVillageChecks: StartingVillageChecks = .init()
-	nonisolated(unsafe) static var stages: Stages = .init()
-	nonisolated(unsafe) static var messages: [String] = []
-	nonisolated(unsafe) static var mapGen: MapGenSave = .init(amplitude: MapGenSave.defaultAmplitude, frequency: MapGenSave.defaultFrequency, seed: .random(in: 2 ... 1_000_000_000))
-	private(set) nonisolated(unsafe) static var hasInited: Bool = false
-	private(set) nonisolated(unsafe) static var isTypingInMessageBox: Bool = false
-	private(set) nonisolated(unsafe) static var map = MapGen.generateFullMap()
-	private(set) nonisolated(unsafe) static var customMaps: [CustomMap] = []
+// TODO: remove static because that undoes the point of the actor
+actor Game {
+	static var shared = Game()
+	nonisolated static let version = "0.0.1-alpha_1"
+	var config: Config = .init()
+	var player = PlayerCharacter()
+	var startingVillageChecks: StartingVillageChecks = .init()
+	var stages: Stages = .init()
+	var mapGen: MapGen = .init()
+	private(set) var messages: [String] = []
+	private(set) var crops: Set<TilePosition> = []
+	private(set) var hasInited: Bool = false
+	private(set) var isTypingInMessageBox: Bool = false
+	private(set) var map: [[MapTile]] = []
+	private(set) var customMaps: [CustomMap] = []
 
 	// Don't save
-	nonisolated(unsafe) static var isInInventoryBox: Bool = false
-	nonisolated(unsafe) static var isBuilding: Bool = false
-	nonisolated(unsafe) static var horizontalLine: String { config.useNerdFont ? "─" : "=" }
-	nonisolated(unsafe) static var verticalLine: String { config.useNerdFont ? "│" : "|" }
+	private(set) var isInInventoryBox: Bool = false
+	private(set) var isBuilding: Bool = false
+	var horizontalLine: String { config.useNerdFont ? "─" : "=" }
+	var verticalLine: String { config.useNerdFont ? "│" : "|" }
 
-	//    nonisolated(unsafe) private(set) static var map = MapGen.generateFullMap()
+	//     private(set) var map = MapGen.generateFullMap()
 
-	static func initGame() {
+	private init() {}
+
+	func initGame() async {
 		hasInited = true
-		MapBox.mainMap = MainMap()
-		config = Config.load()
+		map = await mapGen.generateFullMap()
+		config = await Config.load()
 	}
 
-	static func setIsTypingInMessageBox(_ newIsTypingInMessageBox: Bool) {
+	func setIsTypingInMessageBox(_ newIsTypingInMessageBox: Bool) async {
 		isTypingInMessageBox = newIsTypingInMessageBox
 	}
 
-	static func reloadGame(decodedGame: CodableGame) {
-		hasInited = decodedGame.hasInited
-		isTypingInMessageBox = decodedGame.isTypingInMessageBox
-		player = decodedGame.player
-		map = decodedGame.map
-		startingVillageChecks = decodedGame.startingVillageChecks
-		stages = decodedGame.stages
-		messages = decodedGame.messages
-		mapGen = decodedGame.mapGen
+	// func reloadGame(decodedGame: CodableGame) async {
+	// 	hasInited = decodedGame.hasInited
+	// 	isTypingInMessageBox = decodedGame.isTypingInMessageBox
+	// 	// player = decodedGame.player
+	// 	map = decodedGame.map
+	// 	startingVillageChecks = decodedGame.startingVillageChecks
+	// 	stages = decodedGame.stages
+	// 	messages = decodedGame.messages
+	// 	mapGen = decodedGame.mapGen
+	// }
+
+	func addMessage(_ message: String) async {
+		messages.append(message)
 	}
 
-	static func addMap(map: CustomMap) {
+	func removeMessage(at index: Int) async {
+		messages.remove(at: index)
+	}
+
+	func addCrop(_ position: TilePosition) async {
+		crops.insert(position)
+	}
+
+	func removeCrop(_ position: TilePosition) async {
+		crops.remove(position)
+	}
+
+	func setIsInInventoryBox(_ newIsInInventoryBox: Bool) async {
+		isInInventoryBox = newIsInInventoryBox
+	}
+
+	func setIsBuilding(_ newIsBuilding: Bool) async {
+		isBuilding = newIsBuilding
+	}
+
+	func addMap(map: CustomMap) async {
 		customMaps.append(map)
 	}
 
-	static func removeMap(map: CustomMap) {
+	func removeMap(map: CustomMap) async {
 		customMaps.removeAll(where: { $0.id == map.id })
 	}
 
-	static func removeMap(mapID: UUID) {
+	func removeMap(mapID: UUID) async {
 		customMaps.removeAll(where: { $0.id == mapID })
+	}
+
+	@discardableResult
+	func messagesRemoveLast() async -> String {
+		messages.removeLast()
+	}
+
+	func setHasBeenTaughtToChopLumber(_ newHasBeenTaughtToChopLumber: StartingVillageChecksStages) async {
+		await startingVillageChecks.setHasBeenTaughtToChopLumber(newHasBeenTaughtToChopLumber)
+	}
+
+	func setHasUsedMessageWithOptions(_ newHasUsedMessageWithOptions: Bool) async {
+		await startingVillageChecks.setHasUsedMessageWithOptions(newHasUsedMessageWithOptions)
+	}
+
+	func loadConfig() async {
+		config = await Config.load()
+	}
+
+	func getBiome(x: Int, y: Int) async -> BiomeType {
+		await mapGen.getBiome(x: x, y: y)
+	}
+
+	func getBiomeAtPlayerPosition() async -> BiomeType {
+		await mapGen.getBiomeAtPlayerPosition()
 	}
 }
 
-// TODO: remove because Game is codable
-struct CodableGame: Codable {
-	var hasInited: Bool
-	var isTypingInMessageBox: Bool
-	var player: PlayerCharacter
-	var map: [[MapTile]]
-	var startingVillageChecks: StartingVillageChecks
-	var stages: Stages
-	var messages: [String]
-	var mapGen: MapGenSave
+// TODO: update because Game is not codable
+// struct CodableGame: Codable {
+// 	var hasInited: Bool
+// 	var isTypingInMessageBox: Bool
+// 	var player: PlayerCharacterCodable
+// 	var map: [[MapTile]]
+// 	var startingVillageChecks: StartingVillageChecks
+// 	var stages: Stages
+// 	var messages: [String]
+// 	var mapGen: MapGenSave
+// }
+
+struct TilePosition: Codable, Hashable {
+	var x: Int
+	var y: Int
 }

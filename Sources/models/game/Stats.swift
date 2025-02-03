@@ -1,20 +1,101 @@
 struct Stats: Codable {
-	nonisolated(unsafe) var blacksmithSkillLevel: SkillLevels = .zero
-	nonisolated(unsafe) var miningSkillLevel: SkillLevels = .zero
-	nonisolated(unsafe) var builderSkillLevel: SkillLevels = .zero // architect?
-	nonisolated(unsafe) var huntingSkillLevel: SkillLevels = .zero
-	nonisolated(unsafe) var inventorSkillLevel: SkillLevels = .zero
-	nonisolated(unsafe) var stableSkillLevel: SkillLevels = .zero
-	nonisolated(unsafe) var farmingSkillLevel: SkillLevels = .zero
-	nonisolated(unsafe) var medicalSkillLevel: SkillLevels = .zero
-	nonisolated(unsafe) var carpentrySkillLevel: SkillLevels = .zero
-	nonisolated(unsafe) var cookingSkillLevel: SkillLevels = .zero
-	nonisolated(unsafe) var mineLevel: MineLevel = .one {
+	private(set) var blacksmithSkillLevel: SkillLevels = .zero
+	private(set) var miningSkillLevel: SkillLevels = .zero
+	private(set) var builderSkillLevel: SkillLevels = .zero // architect?
+	private(set) var huntingSkillLevel: SkillLevels = .zero
+	private(set) var inventorSkillLevel: SkillLevels = .zero
+	private(set) var stableSkillLevel: SkillLevels = .zero
+	private(set) var farmingSkillLevel: SkillLevels = .zero
+	private(set) var medicalSkillLevel: SkillLevels = .zero
+	private(set) var cookingSkillLevel: SkillLevels = .zero
+	private(set) var mineLevel: MineLevel = .one {
 		didSet {
 			if mineLevel.rawValue < oldValue.rawValue {
 				mineLevel = oldValue
 			}
 		}
+	}
+
+	mutating func setBlacksmithSkillLevel(_ level: SkillLevels) {
+		blacksmithSkillLevel = level
+	}
+
+	mutating func setMiningSkillLevel(_ level: SkillLevels) {
+		miningSkillLevel = level
+	}
+
+	mutating func setBuilderSkillLevel(_ level: SkillLevels) {
+		builderSkillLevel = level
+	}
+
+	mutating func setHuntingSkillLevel(_ level: SkillLevels) {
+		huntingSkillLevel = level
+	}
+
+	mutating func setInventorSkillLevel(_ level: SkillLevels) {
+		inventorSkillLevel = level
+	}
+
+	mutating func setStableSkillLevel(_ level: SkillLevels) {
+		stableSkillLevel = level
+	}
+
+	mutating func setFarmingSkillLevel(_ level: SkillLevels) {
+		farmingSkillLevel = level
+	}
+
+	mutating func setMedicalSkillLevel(_ level: SkillLevels) {
+		medicalSkillLevel = level
+	}
+
+	mutating func setCookingSkillLevel(_ level: SkillLevels) {
+		cookingSkillLevel = level
+	}
+
+	mutating func setMineLevel(_ level: MineLevel) {
+		mineLevel = level
+	}
+}
+
+extension PlayerCharacter {
+	func setBlacksmithSkillLevel(_ level: SkillLevels) {
+		stats.setBlacksmithSkillLevel(level)
+	}
+
+	func setMiningSkillLevel(_ level: SkillLevels) {
+		stats.setMiningSkillLevel(level)
+	}
+
+	func setBuilderSkillLevel(_ level: SkillLevels) {
+		stats.setBuilderSkillLevel(level)
+	}
+
+	func setHuntingSkillLevel(_ level: SkillLevels) {
+		stats.setHuntingSkillLevel(level)
+	}
+
+	func setInventorSkillLevel(_ level: SkillLevels) {
+		stats.setInventorSkillLevel(level)
+	}
+
+	func setStableSkillLevel(_ level: SkillLevels) {
+		stats.setStableSkillLevel(level)
+	}
+
+	func setFarmingSkillLevel(_ level: SkillLevels) {
+		stats.setFarmingSkillLevel(level)
+	}
+
+	func setMedicalSkillLevel(_ level: SkillLevels) {
+		stats.setMedicalSkillLevel(level)
+	}
+
+	func setCookingSkillLevel(_ level: SkillLevels) {
+		stats.setCookingSkillLevel(level)
+	}
+
+	func setMineLevel(_ level: MineLevel) {
+		stats.setMineLevel(level)
 	}
 }
 
@@ -27,28 +108,27 @@ enum AllSkillLevels: CaseIterable {
 	case stableSkillLevel
 	case farmingSkillLevel
 	case medicalSkillLevel
-	case carpentrySkillLevel
 
 	var stat: SkillLevels {
-		switch self {
-			case .blacksmithSkillLevel:
-				Game.player.stats.blacksmithSkillLevel
-			case .miningSkillLevel:
-				Game.player.stats.miningSkillLevel
-			case .builderSkillLevel:
-				Game.player.stats.builderSkillLevel
-			case .huntingSkillLevel:
-				Game.player.stats.huntingSkillLevel
-			case .inventorSkillLevel:
-				Game.player.stats.inventorSkillLevel
-			case .stableSkillLevel:
-				Game.player.stats.stableSkillLevel
-			case .farmingSkillLevel:
-				Game.player.stats.farmingSkillLevel
-			case .medicalSkillLevel:
-				Game.player.stats.medicalSkillLevel
-			case .carpentrySkillLevel:
-				Game.player.stats.carpentrySkillLevel
+		get async {
+			switch self {
+				case .blacksmithSkillLevel:
+					await Game.shared.player.stats.blacksmithSkillLevel
+				case .miningSkillLevel:
+					await Game.shared.player.stats.miningSkillLevel
+				case .builderSkillLevel:
+					await Game.shared.player.stats.builderSkillLevel
+				case .huntingSkillLevel:
+					await Game.shared.player.stats.huntingSkillLevel
+				case .inventorSkillLevel:
+					await Game.shared.player.stats.inventorSkillLevel
+				case .stableSkillLevel:
+					await Game.shared.player.stats.stableSkillLevel
+				case .farmingSkillLevel:
+					await Game.shared.player.stats.farmingSkillLevel
+				case .medicalSkillLevel:
+					await Game.shared.player.stats.medicalSkillLevel
+			}
 		}
 	}
 
@@ -70,8 +150,6 @@ enum AllSkillLevels: CaseIterable {
 				"Farming Skill Level"
 			case .medicalSkillLevel:
 				"Medical Skill Level"
-			case .carpentrySkillLevel:
-				"Carpentry Skill Level"
 		}
 	}
 }

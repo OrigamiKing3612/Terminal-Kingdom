@@ -11,21 +11,23 @@ struct BuildingMap: MapBoxMap {
 	var player: Player = .init(x: 1, y: 1)
 
 	var tilePlayerIsOn: MapTile {
-		grid[player.y][player.x]
+		get async {
+			grid[player.y][player.x]
+		}
 	}
 
 	let mapType: MapType
 
-	init(_ mapType: MapType) {
+	init(_ mapType: MapType) async {
 		self.mapType = mapType
 		if case let .custom(mapID: mapID) = mapType {
-			self.grid = Game.customMaps.filter { $0.id == mapID }[0].grid
+			self.grid = await Game.shared.customMaps.filter { $0.id == mapID }[0].grid
 		} else {
 			self.grid = StaticMaps.buildingMap(for: StaticMaps.mapTypeToBuilding(mapType: mapType))
 		}
 
 		// Coordinates for inside the building
-		if Game.player.position.x == 55, Game.player.position.y == 23 {
+		if await Game.shared.player.position.x == 55, await Game.shared.player.position.y == 23 {
 			// Start player in correct spot on start
 			player.x = 55
 			player.y = 23
@@ -66,10 +68,10 @@ struct BuildingMap: MapBoxMap {
 		}
 	}
 
-	mutating func map() {
+	mutating func map() async {
 		let viewportWidth = MapBox.width + 1
 		let viewportHeight = MapBox.height
-		render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
+		await render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
 	}
 
 	func isWalkable(x: Int, y: Int) -> Bool {
@@ -77,7 +79,7 @@ struct BuildingMap: MapBoxMap {
 		return grid[y][x].isWalkable
 	}
 
-	func render(playerX: Int, playerY: Int, viewportWidth: Int, viewportHeight: Int) {
+	func render(playerX: Int, playerY: Int, viewportWidth: Int, viewportHeight: Int) async {
 		let halfViewportWidth = viewportWidth / 2
 		let halfViewportHeight = viewportHeight / 2
 
@@ -91,16 +93,16 @@ struct BuildingMap: MapBoxMap {
 			var rowString = ""
 			for mapX in startX ..< endX {
 				if mapX == playerX, mapY == playerY {
-					rowString += MapTileType.player.render()
+					rowString += await MapTileType.player.render()
 				} else {
-					rowString += grid[mapY][mapX].type.render()
+					rowString += await grid[mapY][mapX].type.render()
 				}
 			}
 			Screen.print(x: MapBox.startX, y: MapBox.startY + screenY, rowString)
 		}
 	}
 
-	mutating func movePlayer(_ direction: PlayerDirection) {
+	mutating func movePlayer(_ direction: PlayerDirection) async {
 		let oldX = player.x
 		let oldY = player.y
 
@@ -118,18 +120,18 @@ struct BuildingMap: MapBoxMap {
 		}
 
 		if oldX != player.x || oldY != player.y {
-			map()
+			await map()
 		}
 	}
 
-	func interactWithTile() {
+	func interactWithTile() async {
 		let tile = grid[player.y][player.x]
 		if tile.isInteractable {
 			if let event = tile.event {
-				MapTileEvent.trigger(event: event)
+				await MapTileEvent.trigger(event: event)
 			}
 		} else {
-			MessageBox.message("There is nothing to do here.", speaker: .game)
+			await MessageBox.message("There is nothing to do here.", speaker: .game)
 		}
 	}
 
@@ -137,11 +139,16 @@ struct BuildingMap: MapBoxMap {
 		grid[player.y][player.x] = newTile
 	}
 
-	mutating func build() {
-		MapBuilding.build(grid: &grid, x: player.x, y: player.y)
+	mutating func build() async {
+		await MapBuilding.build(grid: &grid, x: player.x, y: player.y)
 	}
 
-	mutating func destroy() {
-		MapBuilding.destory(grid: &grid, x: player.x, y: player.y)
+	mutating func destroy() async {
+		await MapBuilding.destory(grid: &grid, x: player.x, y: player.y)
+	}
+
+	mutating func setPlayer(x: Int, y: Int) {
+		player.x = x
+		player.y = y
 	}
 }

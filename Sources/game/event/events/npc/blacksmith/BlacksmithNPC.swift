@@ -1,317 +1,317 @@
 enum BlacksmithNPC {
-	static func talk() {
-		if Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith == false {
-			Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith = true
+	static func talk() async {
+		if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToBlacksmith == false {
+			await Game.shared.startingVillageChecks.setHasTalkedToBlacksmith()
 		}
-		if Game.stages.mine.stage1Stages == .collect {
-			MessageBox.message("Ah, here you are. Here is your pickaxe.", speaker: .blacksmith)
-			Game.stages.mine.stage1PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false))
-			Game.stages.mine.stage1Stages = .bringBack
-		} else if Game.stages.mine.stage4Stages == .collectPickaxe {
-			MessageBox.message("Here you are. Here is your pickaxe.", speaker: .blacksmith)
-			Game.stages.mine.stage4PickaxeUUIDToRemove = Game.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false))
-			Game.stages.mine.stage4Stages = .mine
-		} else if Game.stages.mine.stage6Stages == .goGetAxe {
-			MessageBox.message("Here you are. Here is your axe.", speaker: .blacksmith)
-			Game.stages.mine.stage6AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe(type: .init(durability: 100)), canBeSold: false))
-			Game.stages.mine.stage6Stages = .collect
-		} else if Game.stages.mine.stage8Stages == .getPickaxe {
-			MessageBox.message("Here you are. Here is your gift.", speaker: .blacksmith)
-			Game.stages.mine.stage8PickaxeUUID = Game.player.collect(item: .init(type: .pickaxe(type: .init(durability: 1000)), canBeSold: true))
+		if await Game.shared.stages.mine.stage1Stages == .collect {
+			await MessageBox.message("Ah, here you are. Here is your pickaxe.", speaker: .blacksmith)
+			await Game.shared.stages.mine.setStage1PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false)))
+			await Game.shared.stages.mine.setStage1Stages(.bringBack)
+		} else if await Game.shared.stages.mine.stage4Stages == .collectPickaxe {
+			await MessageBox.message("Here you are. Here is your pickaxe.", speaker: .blacksmith)
+			await Game.shared.stages.mine.setStage4PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false)))
+			await Game.shared.stages.mine.setStage4Stages(.mine)
+		} else if await Game.shared.stages.mine.stage6Stages == .goGetAxe {
+			await MessageBox.message("Here you are. Here is your axe.", speaker: .blacksmith)
+			await Game.shared.stages.mine.setStage6AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init(durability: 100)), canBeSold: false)))
+			await Game.shared.stages.mine.setStage6Stages(.collect)
+		} else if await Game.shared.stages.mine.stage8Stages == .getPickaxe {
+			await MessageBox.message("Here you are. Here is your gift.", speaker: .blacksmith)
+			await Game.shared.stages.mine.setStage8PickaxeUUID(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init(durability: 1000)), canBeSold: true)))
 		} else {
-			getStage()
+			await getStage()
 		}
 	}
 
-	static func getStage() {
-		switch Game.stages.blacksmith.stageNumber {
+	static func getStage() async {
+		switch await Game.shared.stages.blacksmith.stageNumber {
 			case 0:
 				let options: [MessageOption] = [
 					.init(label: "Yes", action: {}),
 					.init(label: "No", action: {}),
 				]
-				let selectedOption = MessageBox.messageWithOptions("Hello \(Game.player.name)! Would you like to learn how to be a blacksmith?", speaker: .blacksmith, options: options)
+				let selectedOption = await MessageBox.messageWithOptions("Hello \(Game.shared.player.name)! Would you like to learn how to be a blacksmith?", speaker: .blacksmith, options: options)
 				if selectedOption.label == "Yes" {
-					Game.stages.blacksmith.next()
-					getStage()
+					await Game.shared.stages.blacksmith.next()
+					await getStage()
 				} else {
 					return
 				}
 			case 1:
-				stage1()
+				await stage1()
 			case 2:
-				stage2()
+				await stage2()
 			case 3:
-				stage3()
+				await stage3()
 			case 4:
-				stage4()
+				await stage4()
 			case 5:
-				stage5()
+				await stage5()
 			case 6:
-				stage6()
+				await stage6()
 			case 7:
-				stage7()
+				await stage7()
 			case 8:
-				stage8()
+				await stage8()
 			case 9:
-				stage9()
+				await stage9()
 			default:
 				break
 		}
 	}
 
-	static func stage1() {
-		switch Game.stages.blacksmith.stage1Stages {
+	static func stage1() async {
+		switch await Game.shared.stages.blacksmith.stage1Stages {
 			case .notStarted, .goToMine:
-				Game.stages.blacksmith.stage1Stages = .goToMine
-				MessageBox.message("I need you to go get some iron from the mine. Then bring it back to me. The door to the mine will be a \"\("!".styled(with: [.red, .bold]))\" to help you find your way.", speaker: .blacksmith)
-				StatusBox.quest(.blacksmith1)
+				await Game.shared.stages.blacksmith.setStage1Stages(.goToMine)
+				await MessageBox.message("I need you to go get some iron from the mine. Then bring it back to me. The door to the mine will be a \"\("!".styled(with: [.red, .bold]))\" to help you find your way.", speaker: .blacksmith)
+				await StatusBox.quest(.blacksmith1)
 			case .bringItBack:
-				if Game.player.has(item: .iron, count: 5) {
-					MessageBox.message("Thank you!", speaker: .blacksmith)
-					if let ironUUID = Game.stages.blacksmith.stage1AIronUUIDsToRemove {
-						Game.player.removeItems(ids: ironUUID)
+				if await Game.shared.player.has(item: .iron, count: 5) {
+					await MessageBox.message("Thank you!", speaker: .blacksmith)
+					if let ironUUID = await Game.shared.stages.blacksmith.stage1AIronUUIDsToRemove {
+						await Game.shared.player.removeItems(ids: ironUUID)
 					}
-					StatusBox.removeQuest(quest: .blacksmith1)
-					Game.stages.blacksmith.stage1Stages = .done
-					Game.player.stats.blacksmithSkillLevel = .one
+					await StatusBox.removeQuest(quest: .blacksmith1)
+					await Game.shared.stages.blacksmith.setStage1Stages(.done)
+					await Game.shared.player.setBlacksmithSkillLevel(.one)
 					fallthrough
 				} else {
-					MessageBox.message("Somehow do don't have iron.", speaker: .blacksmith)
+					await MessageBox.message("Somehow do don't have iron.", speaker: .blacksmith)
 				}
 			case .done:
-				Game.stages.blacksmith.next()
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				await Game.shared.stages.blacksmith.next()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage2() {
-		switch Game.stages.blacksmith.stage2Stages {
+	static func stage2() async {
+		switch await Game.shared.stages.blacksmith.stage2Stages {
 			case .notStarted:
-				Game.stages.blacksmith.stage2Stages = .getLumber
-				MessageBox.message("Now I need you to get 20 lumber. Here is an axe.", speaker: .blacksmith)
-				Game.stages.blacksmith.stage2AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe(type: .init(durability: 100)), canBeSold: false))
-				StatusBox.quest(.blacksmith2)
+				await Game.shared.stages.blacksmith.setStage2Stages(.getLumber)
+				await MessageBox.message("Now I need you to get 20 lumber. Here is an axe.", speaker: .blacksmith)
+				await Game.shared.stages.blacksmith.setStage2AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init(durability: 100)), canBeSold: false)))
+				await StatusBox.quest(.blacksmith2)
 			case .getLumber:
-				if Game.player.has(item: .lumber, count: 20) {
-					MessageBox.message("Thank you!", speaker: .blacksmith)
-					if let id = Game.stages.blacksmith.stage2AxeUUIDToRemove {
-						Game.player.removeItem(id: id)
+				if await Game.shared.player.has(item: .lumber, count: 20) {
+					await MessageBox.message("Thank you!", speaker: .blacksmith)
+					if let id = await Game.shared.stages.blacksmith.stage2AxeUUIDToRemove {
+						await Game.shared.player.removeItem(id: id)
 					}
-					Game.player.removeItem(item: .lumber, count: 20)
-					StatusBox.removeQuest(quest: .blacksmith2)
-					Game.player.stats.blacksmithSkillLevel = .two
-					Game.stages.blacksmith.stage2Stages = .done
+					await Game.shared.player.removeItem(item: .lumber, count: 20)
+					await StatusBox.removeQuest(quest: .blacksmith2)
+					await Game.shared.player.setBlacksmithSkillLevel(.two)
+					await Game.shared.stages.blacksmith.setStage2Stages(.done)
 					fallthrough
 				} else {
-					if let stage2AxeUUIDToRemove = Game.stages.blacksmith.stage2AxeUUIDToRemove, !Game.player.has(id: stage2AxeUUIDToRemove) {
-						MessageBox.message("Uh oh, looks like you lost your axe, here is a new one.", speaker: .blacksmith)
-						Game.stages.blacksmith.stage2AxeUUIDToRemove = Game.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false))
+					if let stage2AxeUUIDToRemove = await Game.shared.stages.blacksmith.stage2AxeUUIDToRemove, await !Game.shared.player.has(id: stage2AxeUUIDToRemove) {
+						await MessageBox.message("Uh oh, looks like you lost your axe, here is a new one.", speaker: .blacksmith)
+						await Game.shared.stages.blacksmith.setStage2AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false)))
 					}
-					MessageBox.message("You are almost there, you you still need to get \(abs(Game.player.getCount(of: .clay) - 20)) clay.", speaker: .blacksmith)
+					await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .clay) - 20)) clay.", speaker: .blacksmith)
 				}
 			case .done:
-				Game.stages.blacksmith.next()
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				await Game.shared.stages.blacksmith.next()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage3() {
-		switch Game.stages.blacksmith.stage3Stages {
+	static func stage3() async {
+		switch await Game.shared.stages.blacksmith.stage3Stages {
 			case .notStarted:
-				MessageBox.message("Now I need you to give this lumber to the carpenter to get sticks.", speaker: .blacksmith)
-				Game.stages.blacksmith.stage3LumberUUIDsToRemove = Game.player.collect(item: .init(type: .lumber, canBeSold: false), count: 20)
-				Game.stages.blacksmith.stage3Stages = .goToCarpenter
-				StatusBox.quest(.blacksmith3)
+				await MessageBox.message("Now I need you to give this lumber to the carpenter to get sticks.", speaker: .blacksmith)
+				await Game.shared.stages.blacksmith.setStage3LumberUUIDsToRemove(Game.shared.player.collect(item: .init(type: .lumber, canBeSold: false), count: 20))
+				await Game.shared.stages.blacksmith.setStage3Stages(.goToCarpenter)
+				await StatusBox.quest(.blacksmith3)
 			case .goToCarpenter:
-				MessageBox.message("You haven't gone to the carpenter yet.", speaker: .blacksmith)
+				await MessageBox.message("You haven't gone to the carpenter yet.", speaker: .blacksmith)
 			case .comeBack:
-				if Game.player.has(item: .stick, count: 20) {
-					MessageBox.message("Thank you!", speaker: .blacksmith)
-					StatusBox.removeQuest(quest: .blacksmith3)
-					if let sticksUUIDs = Game.stages.blacksmith.stage3LumberUUIDsToRemove {
-						Game.player.removeItems(ids: sticksUUIDs)
+				if await Game.shared.player.has(item: .stick, count: 20) {
+					await MessageBox.message("Thank you!", speaker: .blacksmith)
+					await StatusBox.removeQuest(quest: .blacksmith3)
+					if let sticksUUIDs = await Game.shared.stages.blacksmith.stage3LumberUUIDsToRemove {
+						await Game.shared.player.removeItems(ids: sticksUUIDs)
 					}
-					Game.player.stats.blacksmithSkillLevel = .three
-					Game.stages.blacksmith.stage3Stages = .done
+					await Game.shared.player.setBlacksmithSkillLevel(.three)
+					await Game.shared.stages.blacksmith.setStage3Stages(.done)
 					fallthrough
 				}
 			case .done:
-				Game.stages.blacksmith.next()
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				await Game.shared.stages.blacksmith.next()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage4() {
-		switch Game.stages.blacksmith.stage4Stages {
+	static func stage4() async {
+		switch await Game.shared.stages.blacksmith.stage4Stages {
 			case .notStarted:
-				MessageBox.message("I need you to get 5 coal from the miner. We need the iron, lumber and this coal, because I want to show you how to make a pickaxe.", speaker: .blacksmith)
-				Game.stages.blacksmith.stage4Stages = .collect
-				StatusBox.quest(.blacksmith4)
+				await MessageBox.message("I need you to get 5 coal from the miner. We need the iron, lumber and this coal, because I want to show you how to make a pickaxe.", speaker: .blacksmith)
+				await Game.shared.stages.blacksmith.setStage4Stages(.collect)
+				await StatusBox.quest(.blacksmith4)
 			case .collect:
-				MessageBox.message("You haven't gotten the coal yet.", speaker: .blacksmith)
+				await MessageBox.message("You haven't gotten the coal yet.", speaker: .blacksmith)
 			case .bringItBack:
-				if Game.player.has(item: .coal, count: 5) {
-					MessageBox.message("Thank you!", speaker: .blacksmith)
-					StatusBox.removeQuest(quest: .blacksmith4)
-					if let coalUUIDs = Game.stages.blacksmith.stage4CoalUUIDsToRemove {
-						Game.player.removeItems(ids: coalUUIDs)
+				if await Game.shared.player.has(item: .coal, count: 5) {
+					await MessageBox.message("Thank you!", speaker: .blacksmith)
+					await StatusBox.removeQuest(quest: .blacksmith4)
+					if let coalUUIDs = await Game.shared.stages.blacksmith.stage4CoalUUIDsToRemove {
+						await Game.shared.player.removeItems(ids: coalUUIDs)
 					}
-					Game.player.stats.blacksmithSkillLevel = .four
-					Game.stages.blacksmith.stage4Stages = .done
+					await Game.shared.player.setBlacksmithSkillLevel(.four)
+					await Game.shared.stages.blacksmith.setStage4Stages(.done)
 					fallthrough
 				}
 			case .done:
-				Game.stages.blacksmith.next()
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				await Game.shared.stages.blacksmith.next()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage5() {
-		switch Game.stages.blacksmith.stage5Stages {
+	static func stage5() async {
+		switch await Game.shared.stages.blacksmith.stage5Stages {
 			case .notStarted:
-				MessageBox.message("Now you get to do the fun stuff. I need to you make some steel. Go over to the furnace (\(StationTileType.furnace(progress: .empty).render))", speaker: .blacksmith)
-				let uuids1 = Game.player.collect(item: .init(type: .coal, canBeSold: false), count: 5)
-				let uuids2 = Game.player.collect(item: .init(type: .iron, canBeSold: false), count: 5)
-				Game.stages.blacksmith.stage5ItemsToMakeSteelUUIDs = uuids1 + uuids2
-				StatusBox.quest(.blacksmith5)
-				Game.stages.blacksmith.stage5Stages = .makeSteel
+				await MessageBox.message("Now you get to do the fun stuff. I need to you make some steel. Go over to the furnace (\(StationTileType.furnace(progress: .empty).render))", speaker: .blacksmith)
+				let uuids1 = await Game.shared.player.collect(item: .init(type: .coal, canBeSold: false), count: 5)
+				let uuids2 = await Game.shared.player.collect(item: .init(type: .iron, canBeSold: false), count: 5)
+				await Game.shared.stages.blacksmith.setStage5ItemsToMakeSteelUUIDs(uuids1 + uuids2)
+				await StatusBox.quest(.blacksmith5)
+				await Game.shared.stages.blacksmith.setStage5Stages(.makeSteel)
 			case .makeSteel:
-				MessageBox.message("You haven't gone to the furnace yet. It is labeled with an \"\(StationTileType.furnace(progress: .empty).render)\"", speaker: .blacksmith)
+				await MessageBox.message("You haven't gone to the furnace yet. It is labeled with an \"\(StationTileType.furnace(progress: .empty).render)\"", speaker: .blacksmith)
 			case .returnToBlacksmith:
-				if Game.player.hasPickaxe() {
-					MessageBox.message("Yay! You made your first Pickaxe!", speaker: .blacksmith)
-					StatusBox.removeQuest(quest: .blacksmith5)
-					Game.player.removeItems(ids: Game.stages.blacksmith.stage5SteelUUIDsToRemove)
-					Game.player.stats.blacksmithSkillLevel = .five
-					Game.stages.blacksmith.stage5Stages = .done
+				if await Game.shared.player.hasPickaxe() {
+					await MessageBox.message("Yay! You made your first Pickaxe!", speaker: .blacksmith)
+					await StatusBox.removeQuest(quest: .blacksmith5)
+					await Game.shared.player.removeItems(ids: Game.shared.stages.blacksmith.stage5SteelUUIDsToRemove)
+					await Game.shared.player.setBlacksmithSkillLevel(.five)
+					await Game.shared.stages.blacksmith.setStage5Stages(.done)
 					fallthrough
 				}
 			case .done:
-				Game.stages.blacksmith.next()
+				await Game.shared.stages.blacksmith.next()
 
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage6() {
-		switch Game.stages.blacksmith.stage6Stages {
+	static func stage6() async {
+		switch await Game.shared.stages.blacksmith.stage6Stages {
 			case .notStarted:
-				MessageBox.message("I need you to make a pickaxe. Go over to the anvil (\(StationTileType.anvil.render)) and make a pickaxe. Here is all of the things you will need.", speaker: .blacksmith)
-				Game.stages.blacksmith.stage6Stages = .makePickaxe
-				StatusBox.quest(.blacksmith6)
-				let uuid1 = Game.player.collect(item: .init(type: .stick, canBeSold: false), count: 2)
-				let uuid2 = Game.player.collect(item: .init(type: .steel, canBeSold: false), count: 3)
-				Game.stages.blacksmith.stage6ItemsToMakePickaxeUUIDs = uuid1 + uuid2
+				await MessageBox.message("I need you to make a pickaxe. Go over to the anvil (\(StationTileType.anvil.render)) and make a pickaxe. Here is all of the things you will need.", speaker: .blacksmith)
+				await Game.shared.stages.blacksmith.setStage6Stages(.makePickaxe)
+				await StatusBox.quest(.blacksmith6)
+				let uuid1 = await Game.shared.player.collect(item: .init(type: .stick, canBeSold: false), count: 2)
+				let uuid2 = await Game.shared.player.collect(item: .init(type: .steel, canBeSold: false), count: 3)
+				await Game.shared.stages.blacksmith.setStage6ItemsToMakePickaxeUUIDs(uuid1 + uuid2)
 			case .makePickaxe:
-				MessageBox.message("You haven't gone to the anvil yet. It is labeled with an \"\(StationTileType.anvil.render)\"", speaker: .blacksmith)
+				await MessageBox.message("You haven't gone to the anvil yet. It is labeled with an \"\(StationTileType.anvil.render)\"", speaker: .blacksmith)
 			case .returnToBlacksmith:
-				if Game.player.hasPickaxe() {
-					MessageBox.message("Yay! You made your first Pickaxe!", speaker: .blacksmith)
-					StatusBox.removeQuest(quest: .blacksmith6)
-					if let ids = Game.stages.blacksmith.stage6ItemsToMakePickaxeUUIDs {
-						Game.player.removeItems(ids: ids)
+				if await Game.shared.player.hasPickaxe() {
+					await MessageBox.message("Yay! You made your first Pickaxe!", speaker: .blacksmith)
+					await StatusBox.removeQuest(quest: .blacksmith6)
+					if let ids = await Game.shared.stages.blacksmith.stage6ItemsToMakePickaxeUUIDs {
+						await Game.shared.player.removeItems(ids: ids)
 					}
-					if let id = Game.stages.blacksmith.stage6PickaxeUUIDToRemove {
-						Game.player.removeItem(id: id)
+					if let id = await Game.shared.stages.blacksmith.stage6PickaxeUUIDToRemove {
+						await Game.shared.player.removeItem(id: id)
 					}
-					Game.player.stats.blacksmithSkillLevel = .six
-					Game.stages.blacksmith.stage6Stages = .done
+					await Game.shared.player.setBlacksmithSkillLevel(.six)
+					await Game.shared.stages.blacksmith.setStage6Stages(.done)
 					fallthrough
 				} else {
-					MessageBox.message("Somehow, you haven't made the pickaxe yet.", speaker: .blacksmith)
+					await MessageBox.message("Somehow, you haven't made the pickaxe yet.", speaker: .blacksmith)
 				}
 			case .done:
-				Game.stages.blacksmith.next()
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				await Game.shared.stages.blacksmith.next()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage7() {
-		switch Game.stages.blacksmith.stage7Stages {
+	static func stage7() async {
+		switch await Game.shared.stages.blacksmith.stage7Stages {
 			case .notStarted:
-				MessageBox.message("The hunter asked me to make him a sword. Why don't you do that? Here is the stuff you need. Make a sword on the anvil and then bring it to the Hunter in the \(DoorTileTypes.hunting_area.name.styled(with: .bold)).", speaker: .blacksmith)
-				Game.stages.blacksmith.stage7Stages = .makeSword
-				StatusBox.quest(.blacksmith7)
-				let uuid1 = Game.player.collect(item: .init(type: .stick, canBeSold: false), count: 2)
-				let uuid2 = Game.player.collect(item: .init(type: .steel, canBeSold: false), count: 2)
-				Game.stages.blacksmith.stage7ItemsToMakeSwordUUIDs = uuid1 + uuid2
+				await MessageBox.message("The hunter asked me to make him a sword. Why don't you do that? Here is the stuff you need. Make a sword on the anvil and then bring it to the Hunter in the \(DoorTileTypes.hunting_area.name.styled(with: .bold)).", speaker: .blacksmith)
+				await Game.shared.stages.blacksmith.setStage7Stages(.makeSword)
+				await StatusBox.quest(.blacksmith7)
+				let uuid1 = await Game.shared.player.collect(item: .init(type: .stick, canBeSold: false), count: 2)
+				let uuid2 = await Game.shared.player.collect(item: .init(type: .steel, canBeSold: false), count: 2)
+				await Game.shared.stages.blacksmith.setStage7ItemsToMakeSwordUUIDs(uuid1 + uuid2)
 			case .makeSword:
-				MessageBox.message("You haven't gone to the anvil yet. It is labeled with an \"\(StationTileType.anvil.render)\"", speaker: .blacksmith)
+				await MessageBox.message("You haven't gone to the anvil yet. It is labeled with an \"\(StationTileType.anvil.render)\"", speaker: .blacksmith)
 			case .bringToHunter:
-				MessageBox.message("You haven't brought the sword to the hunter yet. The \(DoorTileTypes.hunting_area.name.styled(with: .bold)) is marked with an \("!".styled(with: [.bold, .red])).", speaker: .blacksmith)
+				await MessageBox.message("You haven't brought the sword to the hunter yet. The \(DoorTileTypes.hunting_area.name.styled(with: .bold)) is marked with an \("!".styled(with: [.bold, .red])).", speaker: .blacksmith)
 			case .comeBack:
-				MessageBox.message("Yay! You made your first sword!", speaker: .blacksmith)
-				StatusBox.removeQuest(quest: .blacksmith7)
-				Game.player.stats.blacksmithSkillLevel = .seven
-				Game.stages.blacksmith.stage7Stages = .done
+				await MessageBox.message("Yay! You made your first sword!", speaker: .blacksmith)
+				await StatusBox.removeQuest(quest: .blacksmith7)
+				await Game.shared.player.setBlacksmithSkillLevel(.seven)
+				await Game.shared.stages.blacksmith.setStage7Stages(.done)
 				fallthrough
 			case .done:
-				Game.stages.blacksmith.next()
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				await Game.shared.stages.blacksmith.next()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage8() {
-		switch Game.stages.blacksmith.stage8Stages {
+	static func stage8() async {
+		switch await Game.shared.stages.blacksmith.stage8Stages {
 			case .notStarted:
-				MessageBox.message("You are almost there to becoming a blacksmith! I need you to get some materials from the mine. Then I need you to make some steel. Then come back to me", speaker: .blacksmith)
-				Game.stages.blacksmith.stage8Stages = .getMaterials
-				StatusBox.quest(.blacksmith8)
+				await MessageBox.message("You are almost there to becoming a blacksmith! I need you to get some materials from the mine. Then I need you to make some steel. Then come back to me", speaker: .blacksmith)
+				await Game.shared.stages.blacksmith.setStage8Stages(.getMaterials)
+				await StatusBox.quest(.blacksmith8)
 			case .getMaterials:
-				MessageBox.message("You haven't gotten the materials yet.", speaker: .blacksmith)
+				await MessageBox.message("You haven't gotten the materials yet.", speaker: .blacksmith)
 			case .makeSteel:
-				MessageBox.message("You haven't made the steel at the furnace yet.", speaker: .blacksmith)
+				await MessageBox.message("You haven't made the steel at the furnace yet.", speaker: .blacksmith)
 			case .comeBack:
-				MessageBox.message("Yay!", speaker: .blacksmith)
-				StatusBox.removeQuest(quest: .blacksmith8)
-				Game.player.stats.blacksmithSkillLevel = .eight
-				if let ids = Game.stages.blacksmith.stage8MaterialsToRemove {
-					Game.player.removeItems(ids: ids)
+				await MessageBox.message("Yay!", speaker: .blacksmith)
+				await StatusBox.removeQuest(quest: .blacksmith8)
+				await Game.shared.player.setBlacksmithSkillLevel(.eight)
+				if let ids = await Game.shared.stages.blacksmith.stage8MaterialsToRemove {
+					await Game.shared.player.removeItems(ids: ids)
 				}
-				Game.stages.blacksmith.stage8Stages = .done
+				await Game.shared.stages.blacksmith.setStage8Stages(.done)
 				fallthrough
 			case .done:
-				Game.stages.blacksmith.next()
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				await Game.shared.stages.blacksmith.next()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}
 
-	static func stage9() {
-		switch Game.stages.blacksmith.stage9Stages {
+	static func stage9() async {
+		switch await Game.shared.stages.blacksmith.stage9Stages {
 			case .notStarted:
-				MessageBox.message("Now I want you to sell this steel in the shop. The shop will be marked with an \"\("!".styled(with: [.bold, .red]))\"", speaker: .blacksmith)
-				Game.stages.blacksmith.stage9Stages = .goToSalesman
-				StatusBox.quest(.blacksmith9)
-				Game.stages.blacksmith.stage9SteelUUIDToRemove = Game.player.collect(item: .init(type: .steel, canBeSold: false), count: 3)
+				await MessageBox.message("Now I want you to sell this steel in the shop. The shop will be marked with an \"\("!".styled(with: [.bold, .red]))\"", speaker: .blacksmith)
+				await Game.shared.stages.blacksmith.setStage9Stages(.goToSalesman)
+				await StatusBox.quest(.blacksmith9)
+				await Game.shared.stages.blacksmith.setStage9SteelUUIDToRemove(Game.shared.player.collect(item: .init(type: .steel, canBeSold: false), count: 3))
 			case .goToSalesman:
-				MessageBox.message("You haven't gone to the salesman yet.", speaker: .blacksmith)
+				await MessageBox.message("You haven't gone to the salesman yet.", speaker: .blacksmith)
 			case .comeBack:
-				MessageBox.message("I want you to keep these coins. I have one more thing I want to give you.", speaker: .blacksmith)
-				Game.stages.blacksmith.stage9Stages = .done
-				StatusBox.removeQuest(quest: .blacksmith9)
-				Game.player.stats.blacksmithSkillLevel = .nine
+				await MessageBox.message("I want you to keep these coins. I have one more thing I want to give you.", speaker: .blacksmith)
+				await Game.shared.stages.blacksmith.setStage9Stages(.done)
+				await StatusBox.removeQuest(quest: .blacksmith9)
+				await Game.shared.player.setBlacksmithSkillLevel(.nine)
 				fallthrough
 			case .done:
-				Game.stages.blacksmith.next()
-				if RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
-					getStage()
+				await Game.shared.stages.blacksmith.next()
+				if await RandomEventStuff.wantsToContinue(speaker: .blacksmith) {
+					await getStage()
 				}
 		}
 	}

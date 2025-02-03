@@ -1,14 +1,14 @@
 import Foundation
 
 enum CreateCustomMap {
-	static func checkDoor(tile: DoorTile, grid: [[MapTile]], x: Int, y: Int) throws(DoorPlaceError) -> (DoorPosition, BuildingPerimeter) {
+	static func checkDoor(tile: DoorTile, grid: [[MapTile]], x: Int, y: Int) async throws(DoorPlaceError) -> (DoorPosition, BuildingPerimeter) {
 		guard y > 0, y < grid.count - 1, x > 0, x < grid[0].count - 1 else {
 			throw .invalidPosition
 		}
 		if !(grid[y][x].type == .plain) {
 			throw .noSpace
 		}
-		if !Game.player.has(item: .door(tile: tile), count: 1) {
+		if await !Game.shared.player.has(item: .door(tile: tile), count: 1) {
 			throw .noDoor
 		}
 		let doorPosition = try getDoorPosition(grid: grid, x: x, y: y)

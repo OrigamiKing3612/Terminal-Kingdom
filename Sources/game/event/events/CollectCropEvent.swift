@@ -1,18 +1,19 @@
 enum CollectCropEvent {
-	static func collectCrop(cropTile: CropTile, isInPot: Bool) {
+	static func collectCrop(cropTile: CropTile, isInPot: Bool) async {
+		let mtile = await MapBox.tilePlayerIsOn
 		if isInPot {
 			if cropTile.type != .none {
-				_ = Game.player.collect(item: .init(type: cropTileToItem(cropTile.type)!))
-				MapBox.updateTile(newTile: .init(type: .pot(tile: .init(cropTile: .init(type: .none))), event: .collectCrop))
+				_ = await Game.shared.player.collect(item: .init(type: cropTileToItem(cropTile.type)!))
+				await MapBox.updateTile(newTile: .init(type: .pot(tile: .init(cropTile: .init(type: .none))), event: .collectCrop, biome: mtile.biome))
 			} else {
-				MessageBox.message("There is no crop here", speaker: .game)
+				await MessageBox.message("There is no crop here", speaker: .game)
 			}
 		} else {
-			if case let .crop(crop: tile) = MapBox.tilePlayerIsOn.type {
-				_ = Game.player.collect(item: .init(type: cropTileToItem(tile.type)!), count: Int.random(in: 1 ... 3))
-				MapBox.updateTile(newTile: .init(type: .plain))
+			if case let .crop(crop: tile) = await MapBox.tilePlayerIsOn.type {
+				_ = await Game.shared.player.collect(item: .init(type: cropTileToItem(tile.type)!), count: Int.random(in: 1 ... 3))
+				await MapBox.updateTile(newTile: .init(type: .plain, biome: mtile.biome))
 			} else {
-				MessageBox.message("There is no crop here", speaker: .game)
+				await MessageBox.message("There is no crop here", speaker: .game)
 			}
 		}
 	}

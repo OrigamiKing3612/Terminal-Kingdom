@@ -1,5 +1,5 @@
 enum BlacksmithHelperNPC {
-	static func talk() {
-		MessageBox.message("I'm busy here...", speaker: .blacksmith_helper)
+	static func talk() async {
+		await MessageBox.message("I'm busy here...", speaker: .blacksmith_helper)
 	}
 }

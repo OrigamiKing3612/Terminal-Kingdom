@@ -43,50 +43,52 @@ enum NPCTileType: Codable, Equatable {
 	}
 
 	var hasTalkedToBefore: Bool {
-		switch self {
-			case .blacksmith:
-				Game.startingVillageChecks.firstTimes.hasTalkedToBlacksmith
-			case .blacksmith_helper:
-				true
-			case .builder:
-				Game.startingVillageChecks.firstTimes.hasTalkedToBuilder
-			case .builder_helper:
-				true
-			case .carpenter:
-				true
-			case .carpenter_helper:
-				true
-			case .chef:
-				Game.startingVillageChecks.firstTimes.hasTalkedToChef
-			case .doctor:
-				Game.startingVillageChecks.firstTimes.hasTalkedToDoctor
-			case .farmer:
-				Game.startingVillageChecks.firstTimes.hasTalkedToFarmer
-			case .farmer_helper:
-				true
-			case .hunter:
-				Game.startingVillageChecks.firstTimes.hasTalkedToHunter
-			case .inventor:
-				Game.startingVillageChecks.firstTimes.hasTalkedToInventor
-			case .king:
-				Game.startingVillageChecks.firstTimes.hasTalkedToKing
-			case .mine_helper:
-				true
-			case .miner:
-				Game.startingVillageChecks.firstTimes.hasTalkedToMiner
-			case .potter:
-				Game.startingVillageChecks.firstTimes.hasTalkedToPotter
-			case let .salesman(type):
-				switch type {
-					case .help:
-						Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp
-					case .buy:
-						Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy
-					case .sell:
-						Game.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell
-				}
-			case .stable_master:
-				Game.startingVillageChecks.firstTimes.hasTalkedToStableMaster
+		get async {
+			switch self {
+				case .blacksmith:
+					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToBlacksmith
+				case .blacksmith_helper:
+					true
+				case .builder:
+					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToBuilder
+				case .builder_helper:
+					true
+				case .carpenter:
+					true
+				case .carpenter_helper:
+					true
+				case .chef:
+					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToChef
+				case .doctor:
+					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToDoctor
+				case .farmer:
+					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToFarmer
+				case .farmer_helper:
+					true
+				case .hunter:
+					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToHunter
+				case .inventor:
+					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToInventor
+				case .king:
+					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToKing
+				case .mine_helper:
+					true
+				case .miner:
+					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToMiner
+				case .potter:
+					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToPotter
+				case let .salesman(type):
+					switch type {
+						case .help:
+							await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp
+						case .buy:
+							await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy
+						case .sell:
+							await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell
+					}
+				case .stable_master:
+					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToStableMaster
+			}
 		}
 	}
 }
@@ -97,10 +99,12 @@ enum MessageSpeakers {
 	case dev
 
 	var render: String {
-		switch self {
-			case .player: Game.player.name
-			case .game: "This shouldn't be seen"
-			case .dev: "Dev"
+		get async {
+			switch self {
+				case .player: await Game.shared.player.name
+				case .game: "This shouldn't be seen"
+				case .dev: "Dev"
+			}
 		}
 	}
 }

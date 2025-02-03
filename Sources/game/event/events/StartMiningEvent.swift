@@ -1,5 +1,5 @@
 enum StartMiningEvent {
-	static func startMining() {
-		MapBox.mapType = .mining
+	static func startMining() async {
+		await MapBox.setMapType(.mining)
 	}
 }
