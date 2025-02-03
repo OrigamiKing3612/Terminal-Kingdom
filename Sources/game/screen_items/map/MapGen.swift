@@ -113,10 +113,10 @@ actor MapGen {
 			}
 		}
 
-		#if DEBUG
-			await outputMap(map)
-			// exit(0)
-		#endif
+		// #if DEBUG
+		// 	await outputMap(map)
+		// 	// exit(0)
+		// #endif
 
 		return map
 	}
