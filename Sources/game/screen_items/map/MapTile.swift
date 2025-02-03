@@ -2,8 +2,9 @@ struct MapTile: Tile {
 	let type: MapTileType
 	let isWalkable: Bool
 	let event: MapTileEvent?
+	let biome: BiomeType
 
-	init(type: MapTileType, isWalkable: Bool = true, event: MapTileEvent? = nil) {
+	init(type: MapTileType, isWalkable: Bool = true, event: MapTileEvent? = nil, biome: BiomeType) {
 		self.type = type
 		self.isWalkable = isWalkable
 		if case .door = type {
@@ -11,6 +12,7 @@ struct MapTile: Tile {
 		} else {
 			self.event = event
 		}
+		self.biome = biome
 	}
 
 	var isInteractable: Bool {
@@ -37,12 +39,14 @@ extension MapTile {
 		try container.encode(type, forKey: .tileType)
 		try container.encode(isWalkable, forKey: .isWalkable)
 		try container.encodeIfPresent(event, forKey: .event)
+		try container.encode(biome, forKey: .biome)
 	}
 
 	enum CodingKeys: CodingKey {
 		case tileType
 		case isWalkable
 		case event
+		case biome
 	}
 
 	init(from decoder: any Decoder) throws {
@@ -50,5 +54,6 @@ extension MapTile {
 		self.type = try container.decode(MapTileType.self, forKey: .tileType)
 		self.isWalkable = try container.decode(Bool.self, forKey: .isWalkable)
 		self.event = try container.decodeIfPresent(MapTileEvent.self, forKey: .event)
+		self.biome = try container.decode(BiomeType.self, forKey: .biome)
 	}
 }

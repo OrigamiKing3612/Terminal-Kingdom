@@ -92,7 +92,7 @@ func startTasks() async {
 						if case let .crop(crop) = tile.type {
 							var newCropTile = CropTile(type: crop.type, growthStage: crop.growthStage)
 							newCropTile.grow()
-							await MapBox.setMainMapGridTile(x: position.x, y: position.y, tile: .init(type: .crop(crop: newCropTile), isWalkable: tile.isWalkable, event: tile.event))
+							await MapBox.setMainMapGridTile(x: position.x, y: position.y, tile: .init(type: .crop(crop: newCropTile), isWalkable: tile.isWalkable, event: tile.event, biome: tile.biome))
 						}
 					}
 				}

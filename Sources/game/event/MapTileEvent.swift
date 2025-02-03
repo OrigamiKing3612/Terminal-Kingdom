@@ -36,16 +36,16 @@ enum MapTileEvent: TileEvent {
 				let tile = await MapBox.tilePlayerIsOn
 				if case let .crop(crop: crop) = tile.type {
 					await CollectCropEvent.collectCrop(cropTile: crop, isInPot: false)
-				} else if case let .pot(tile: tile) = tile.type {
-					if tile.cropTile.type != .none {
-						await CollectCropEvent.collectCrop(cropTile: tile.cropTile, isInPot: true)
+				} else if case let .pot(tile: potTile) = tile.type {
+					if potTile.cropTile.type != .none {
+						await CollectCropEvent.collectCrop(cropTile: potTile.cropTile, isInPot: true)
 					} else {
 						if await !Game.shared.player.has(item: .tree_seed) {
 							await MessageBox.message("There is no crop here", speaker: .game)
 							return
 						}
 						let options: [MessageOption] = [.init(label: "Quit", action: {}), .init(label: "Plant Seed", action: {
-							await MapBox.updateTile(newTile: .init(type: .pot(tile: .init(cropTile: .init(type: .tree_seed)))))
+							await MapBox.updateTile(newTile: .init(type: .pot(tile: .init(cropTile: .init(type: .tree_seed))), biome: tile.biome))
 						})]
 						let selectedOption = await MessageBox.messageWithOptions("Plant Seed", speaker: .game, options: options)
 						await selectedOption.action()

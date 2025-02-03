@@ -38,7 +38,7 @@ enum MapBuilding {
 		}
 		func placeTile(tile: some BuildableTile, count: Int = 1, name: String, item: () -> ItemType) async {
 			if tile.isPlacedByPlayer {
-				grid[y][x] = MapTile(type: .plain)
+				grid[y][x] = await MapTile(type: .plain, biome: Game.shared.getBiome(x: x, y: y))
 				let itemToCollect = item()
 				_ = await Game.shared.player.collect(item: .init(type: itemToCollect), count: count)
 			} else {
@@ -81,7 +81,7 @@ enum MapBuilding {
 		let selectedItem = await InventoryBox.buildableItems[InventoryBox.selectedBuildItemIndex]
 		if selectedItem.type == .lumber {
 			if await Game.shared.player.has(item: .lumber, count: 5) {
-				grid[y][x] = MapTile(type: .building(tile: .init(isPlacedByPlayer: true)))
+				grid[y][x] = MapTile(type: .building(tile: .init(isPlacedByPlayer: true)), biome: grid[y][x].biome)
 				await Game.shared.player.removeItem(item: .lumber, count: 5)
 			}
 		} else {
@@ -89,11 +89,11 @@ enum MapBuilding {
 				if case let .door(tile: tile) = selectedItem.type {
 					do {
 						let (doorPosition, buildingPerimeter) = try await CreateCustomMap.checkDoor(tile: tile, grid: grid, x: x, y: y)
-						let map = createCustomMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.type)
+						let map = await createCustomMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.type)
 						let customMap = try CustomMap(grid: map)
 						if let customMap {
 							await Game.shared.addMap(map: customMap)
-							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor)
+							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor, biome: grid[y][x].biome)
 							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
 							if await Game.shared.stages.builder.stage5Stages == .buildHouse {
 								await Game.shared.stages.builder.setStage5HasBuiltHouse(true)
@@ -103,7 +103,7 @@ enum MapBuilding {
 						await MessageBox.message(error.localizedDescription, speaker: .game)
 					}
 				} else {
-					grid[y][x] = MapTile(type: itemTypeToMapTileType(selectedItem.type)!)
+					grid[y][x] = MapTile(type: itemTypeToMapTileType(selectedItem.type)!, biome: grid[y][x].biome)
 					await Game.shared.player.removeItem(item: selectedItem.type, count: 1)
 				}
 			}
@@ -127,7 +127,7 @@ enum MapBuilding {
 		}
 	}
 
-	private static func createCustomMap(buildingPerimeter: BuildingPerimeter, doorPosition: DoorPosition, doorType: DoorTileTypes) -> [[MapTile]] {
+	private static func createCustomMap(buildingPerimeter: BuildingPerimeter, doorPosition: DoorPosition, doorType: DoorTileTypes) async -> [[MapTile]] {
 		let ratio = 4
 
 		let topLength = buildingPerimeter.top * ratio
@@ -135,10 +135,10 @@ enum MapBuilding {
 		let rightLength = buildingPerimeter.rightSide * ratio
 		// let leftLength = buildingPerimeter.leftSide * ratio
 
-		var map: [[MapTile]] = Array(repeating: Array(repeating: .init(type: .plain, isWalkable: true), count: topLength), count: rightLength)
+		var map: [[MapTile]] = await Array(repeating: Array(repeating: .init(type: .plain, isWalkable: true, biome: Game.shared.getBiomeAtPlayerPosition()), count: topLength), count: rightLength)
 
 		for (indexY, y) in map.enumerated() {
-			let buildingTile = MapTile(type: .building(tile: .init(isPlacedByPlayer: false)), isWalkable: false)
+			let buildingTile = await MapTile(type: .building(tile: .init(isPlacedByPlayer: false)), isWalkable: false, biome: Game.shared.getBiomeAtPlayerPosition())
 			for (indexX, _) in y.enumerated() {
 				if indexY == 0 {
 					map[indexY][indexX] = buildingTile
@@ -171,7 +171,7 @@ enum MapBuilding {
 				doorY = rightLength - 1
 		}
 
-		map[doorY][doorX] = .init(type: .door(tile: .init(type: doorType, isPlacedByPlayer: false)), isWalkable: true)
+		map[doorY][doorX] = await .init(type: .door(tile: .init(type: doorType, isPlacedByPlayer: false)), isWalkable: true, biome: Game.shared.getBiomeAtPlayerPosition())
 
 		var startX, startY: Int
 		switch doorPosition {
@@ -188,7 +188,7 @@ enum MapBuilding {
 				startX = doorX
 				startY = doorY - 1
 		}
-		map[startY][startX] = .init(type: .playerStart, isWalkable: true)
+		map[startY][startX] = await .init(type: .playerStart, isWalkable: true, biome: Game.shared.getBiomeAtPlayerPosition())
 
 		return map
 	}

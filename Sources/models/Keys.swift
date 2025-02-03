@@ -20,16 +20,7 @@ enum Keys {
 			#if DEBUG
 				case .o:
 					let tile = await MapBox.mapType.map.tilePlayerIsOn as! MapTile
-					if let event = tile.event {
-						if case let .crop(crop: cropTile) = tile.type {
-							await MessageBox.message("tileType: \(tile.type.name), tileEvent: \(event.name), isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType), \(cropTile.growthStage)", speaker: .dev)
-						} else {
-							await MessageBox.message("tileType: \(tile.type.name), tileEvent: \(event.name), isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType)", speaker: .dev)
-						}
-						await MessageBox.message("tileType: \(tile.type.name), tileEvent: \(event.name), isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType)", speaker: .dev)
-					} else {
-						await MessageBox.message("tileType: \(tile.type.name), tileEvent: nil, isWalkable: \(tile.isWalkable), mapType: \(MapBox.mapType)", speaker: .dev)
-					}
+					await MessageBox.message("\(tile)", speaker: .dev)
 			#endif
 			case .zero:
 				Screen.clear()
@@ -51,8 +42,7 @@ enum Keys {
 				await MessageBox.lineDown()
 			#if DEBUG
 				case .t:
-					await MessageBox.message("t", speaker: .dev)
-					await MapBox.setMainMapGridTile(tile: .init(type: .crop(crop: .init(type: .carrot)), isWalkable: true, event: .collectCrop))
+					await MapBox.setMainMapGridTile(tile: .init(type: .crop(crop: .init(type: .carrot)), isWalkable: true, event: .collectCrop, biome: Game.shared.getBiomeAtPlayerPosition()))
 					await Game.shared.addCrop(TilePosition(x: MapBox.player.x, y: MapBox.player.y))
 			#endif
 			default:
