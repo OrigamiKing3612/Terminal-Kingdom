@@ -104,6 +104,10 @@ actor Game {
 	func getBiome(x: Int, y: Int) async -> BiomeType {
 		await mapGen.getBiome(x: x, y: y)
 	}
+
+	func getBiomeAtPlayerPosition() async -> BiomeType {
+		await mapGen.getBiomeAtPlayerPosition()
+	}
 }
 
 // TODO: update because Game is not codable

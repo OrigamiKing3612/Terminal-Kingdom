@@ -164,4 +164,10 @@ actor MapGen {
 			return .plains
 		}
 	}
+
+	func getBiomeAtPlayerPosition() async -> BiomeType {
+		let x = await MapBox.player.x
+		let y = await MapBox.player.y
+		return getBiome(x: x, y: y)
+	}
 }
