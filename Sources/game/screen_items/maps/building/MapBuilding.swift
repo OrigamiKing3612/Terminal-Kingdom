@@ -81,7 +81,7 @@ enum MapBuilding {
 		let selectedItem = await InventoryBox.buildableItems[InventoryBox.selectedBuildItemIndex]
 		if selectedItem.type == .lumber {
 			if await Game.shared.player.has(item: .lumber, count: 5) {
-				grid[y][x] = MapTile(type: .building(tile: .init(isPlacedByPlayer: true)))
+				grid[y][x] = MapTile(type: .building(tile: .init(isPlacedByPlayer: true)), biome: grid[y][x].biome)
 				await Game.shared.player.removeItem(item: .lumber, count: 5)
 			}
 		} else {
@@ -93,7 +93,7 @@ enum MapBuilding {
 						let customMap = try CustomMap(grid: map)
 						if let customMap {
 							await Game.shared.addMap(map: customMap)
-							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor)
+							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor, biome: grid[y][x].biome)
 							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
 							if await Game.shared.stages.builder.stage5Stages == .buildHouse {
 								await Game.shared.stages.builder.setStage5HasBuiltHouse(true)
@@ -103,7 +103,7 @@ enum MapBuilding {
 						await MessageBox.message(error.localizedDescription, speaker: .game)
 					}
 				} else {
-					grid[y][x] = MapTile(type: itemTypeToMapTileType(selectedItem.type)!)
+					grid[y][x] = MapTile(type: itemTypeToMapTileType(selectedItem.type)!, biome: grid[y][x].biome)
 					await Game.shared.player.removeItem(item: selectedItem.type, count: 1)
 				}
 			}

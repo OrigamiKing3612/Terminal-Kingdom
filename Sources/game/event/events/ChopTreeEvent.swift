@@ -3,8 +3,9 @@ enum ChopTreeEvent {
 		await MessageBox.message("Timber!", speaker: .game)
 		let x = await MapBox.player.x
 		let y = await MapBox.player.y
-		if await MapBox.mainMap.grid[y][x].type == .tree {
-			await MapBox.setMainMapGridTile(x: x, y: y, tile: MapTile(type: .plain))
+		let tile = await MapBox.mainMap.grid[y][x]
+		if tile.type == .tree {
+			await MapBox.setMainMapGridTile(x: x, y: y, tile: MapTile(type: .plain, biome: tile.biome))
 
 			let lumberCount = Int.random(in: 1 ... 3)
 			let seedCount = Int.random(in: 1 ... 3)
