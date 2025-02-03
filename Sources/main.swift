@@ -50,6 +50,7 @@ func endProgram() {
 	//        }
 	//    }
 	TerminalInput.restoreOriginalMode()
+	Screen.clear()
 	exit(0)
 }
 

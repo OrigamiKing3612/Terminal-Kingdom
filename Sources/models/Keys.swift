@@ -1,7 +1,7 @@
 enum Keys {
 	static func normal(key: KeyboardKeys) async {
 		switch key {
-			case .q:
+			case .Q:
 				endProgram()
 			case .w where await Game.shared.config.wasdKeys, .up where await Game.shared.config.arrowKeys, .k where await Game.shared.config.vimKeys:
 				await MapBox.movePlayer(.up)
