@@ -39,7 +39,7 @@ actor MapGen {
 			sampleCount: vector_int2(Int32(mapWidth), Int32(mapHeight)),
 			seamless: true
 		)
-		print(seed)
+		// print(seed)
 		return noiseMap
 	}
 
