@@ -9,16 +9,21 @@ actor MapGen {
 	static let mapHeight = 500 / 2
 	var mapHeight: Int { Self.mapHeight }
 	var seed: Int32
-	let noiseMap: GKNoiseMap
+	let temperatureMap: GKNoiseMap
+	let elevationMap: GKNoiseMap
+	let moistureMap: GKNoiseMap
 
 	init() {
+		// self.seed = 13_124_557
 		self.seed = .random(in: 2 ... 1_000_000_000)
-		self.noiseMap = Self.createNoiseGenerator(seed)
+		self.temperatureMap = Self.createNoiseGenerator(seed, frequency: 0.005)
+		self.elevationMap = Self.createNoiseGenerator(seed + 1, frequency: 0.002)
+		self.moistureMap = Self.createNoiseGenerator(seed + 2, frequency: 0.006)
 	}
 
-	static func createNoiseGenerator(_ seed: Int32) -> GKNoiseMap {
+	static func createNoiseGenerator(_ seed: Int32, frequency: Double) -> GKNoiseMap {
 		let noiseSource = GKPerlinNoiseSource(
-			frequency: 0.005,
+			frequency: frequency,
 			octaveCount: 5, // Determines the detail level of the noise
 			persistence: 0.4, // Controls amplitude reduction per octave
 			lacunarity: 2.0, // Controls frequency increase per octave
@@ -34,7 +39,7 @@ actor MapGen {
 			sampleCount: vector_int2(Int32(mapWidth), Int32(mapHeight)),
 			seamless: true
 		)
-
+		print(seed)
 		return noiseMap
 	}
 
@@ -83,8 +88,23 @@ actor MapGen {
 							}
 						case .volcano:
 							map[y][x] = MapTile(type: .TOBEGENERATED, isWalkable: true, biome: type)
-						case .tuntra:
+						case .tundra:
 							map[y][x] = MapTile(type: .TOBEGENERATED, isWalkable: true, biome: type)
+						case .ocean:
+							map[y][x] = MapTile(type: .water, isWalkable: true, biome: type)
+						case .coast:
+							map[y][x] = MapTile(type: .sand, isWalkable: true, biome: type)
+						case .mountain:
+							map[y][x] = MapTile(type: .stone, isWalkable: false, biome: type)
+						case .swamp:
+							let rand = Int.random(in: 1 ... 10)
+							if rand == 2 || rand == 3 {
+								map[y][x] = MapTile(type: .tree, isWalkable: true, event: .chopTree, biome: type)
+							} else if rand == 1 {
+								map[y][x] = MapTile(type: .water, isWalkable: true, biome: type)
+							} else {
+								map[y][x] = MapTile(type: .plain, isWalkable: true, biome: type)
+							}
 					}
 				}
 			}
@@ -92,7 +112,7 @@ actor MapGen {
 
 		#if DEBUG
 			await outputMap(map)
-			exit(0)
+			// exit(0)
 		#endif
 
 		return map
@@ -119,55 +139,96 @@ actor MapGen {
 			}
 		}
 	#endif
+
 	private func createMap() -> [[MapTile]] {
-		var map: [[MapTile]] = []
+		var biomeMap: [[BiomeType]] = []
 
 		for y in 0 ..< mapHeight {
-			var xMap: [MapTile] = []
-
+			var row: [BiomeType] = []
 			for x in 0 ..< mapWidth {
-				let biome = getBiome(x: x, y: y)
-				xMap.append(MapTile(type: .biomeTOBEGENERATED(type: biome), biome: biome))
+				row.append(getBiome(x: x, y: y))
 			}
-
-			map.append(xMap)
+			biomeMap.append(row)
 		}
 
-		return map
+		// Apply biome smoothing here
+		biomeMap = smoothBiomes(map: biomeMap)
+
+		// Convert smoothed biome map to MapTile grid
+		var tileMap: [[MapTile]] = []
+		for y in 0 ..< mapHeight {
+			var row: [MapTile] = []
+			for x in 0 ..< mapWidth {
+				let biome = biomeMap[y][x]
+				row.append(MapTile(type: .biomeTOBEGENERATED(type: biome), biome: biome))
+			}
+			tileMap.append(row)
+		}
+
+		return tileMap
 	}
 
 	func getBiome(x: Int, y: Int) -> BiomeType {
-		let noiseValue = noiseMap.value(at: vector_int2(Int32(x), Int32(y))) * 10
-		if noiseValue < -6 {
-			return .volcano
-		} else if noiseValue >= -6, noiseValue < -4 {
-			return .desert
-		} else if noiseValue >= -4, noiseValue < -3 {
-			return .plains
-		} else if noiseValue >= -3, noiseValue < -2 {
-			return .plains
-		} else if noiseValue >= -2, noiseValue < -1 {
-			return .plains
-		} else if noiseValue >= -1, noiseValue < 1 {
-			return .forest
-		} else if noiseValue >= 1, noiseValue < 2 {
-			return .plains
-		} else if noiseValue >= 2, noiseValue < 3 {
-			return .plains
-		} else if noiseValue >= 3, noiseValue < 4 {
-			return .plains
-		} else if noiseValue >= 4, noiseValue < 6 {
-			return .snow
-		} else if noiseValue >= 6 {
-			return .tuntra
-		} else {
-			return .plains
+		let temperature = temperatureMap.value(at: vector_int2(Int32(x), Int32(y))) * 10 // Higher = hotter
+		let elevation = elevationMap.value(at: vector_int2(Int32(x), Int32(y))) * 10 // Higher = higher
+		let moisture = moistureMap.value(at: vector_int2(Int32(x), Int32(y))) * 10 // Higher = wetter
+
+		var biome: BiomeType = switch temperature {
+			case -11 ..< -7: .volcano
+			case -7 ..< -5: .desert
+			case -5 ..< 5: .plains
+			case 5 ..< 7: .snow
+			case 7 ..< 11: .tundra
+			default: .plains
 		}
+
+		if biome == .plains {
+			biome = switch moisture {
+				case -10 ..< -5: .desert
+				case -5 ..< 2: .plains
+				case 2 ..< 6: .forest
+				case 6 ..< 10: .swamp
+				default: .plains
+			}
+		}
+
+		biome = switch elevation {
+			case -10 ..< -6: .ocean
+			case -6 ..< -5.5: .coast
+			case 6 ..< 8: .mountain
+			case 8 ... 10: .tundra
+			default: biome
+		}
+
+		return biome
+	}
+
+	func smoothBiomes(map: [[BiomeType]]) -> [[BiomeType]] {
+		var newMap = map
+		for y in 1 ..< (map.count - 1) {
+			for x in 1 ..< (map[0].count - 1) {
+				let neighbors = [
+					map[y - 1][x], map[y + 1][x], map[y][x - 1], map[y][x + 1],
+				]
+				let mostCommon = neighbors.mostCommonType()
+				if Bool.random() {
+					newMap[y][x] = mostCommon
+				}
+			}
+		}
+		return newMap
 	}
 
 	func getBiomeAtPlayerPosition() async -> BiomeType {
 		let x = await MapBox.player.x
 		let y = await MapBox.player.y
 		return getBiome(x: x, y: y)
+	}
+}
+
+extension Array where Element: Hashable {
+	func mostCommonType() -> Element {
+		let counts = reduce(into: [Element: Int]()) { $0[$1, default: 0] += 1 }
+		return counts.max(by: { $0.value < $1.value })?.key ?? self[0]
 	}
 }

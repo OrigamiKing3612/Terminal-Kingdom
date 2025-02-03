@@ -16,6 +16,10 @@ enum MapTileType: TileType {
 	case snow_tree
 	case ice
 
+	// MARK: Other Biome
+
+	case stone
+
 	// MARK: Other
 
 	case path // TODO: Make buildable
@@ -88,6 +92,7 @@ enum MapTileType: TileType {
 			case .chest /* (tile: _) */: await (Game.shared.config.useNerdFont ? "󰜦" : "C").styled(with: .yellow)
 			case .bed: await Game.shared.config.useNerdFont ? "" : "B"
 			case .desk: await Game.shared.config.useNerdFont ? "󱈹" : "D"
+			case .stone: "S".styled(with: .dim)
 		}
 	}
 
@@ -124,6 +129,7 @@ enum MapTileType: TileType {
 			case .chest: "chest"
 			case .bed: "bed"
 			case .desk: "desk"
+			case .stone: "stone"
 		}
 	}
 
@@ -158,5 +164,5 @@ enum ShopStandingAreaType: String, Codable {
 }
 
 enum BiomeType: String, Codable {
-	case plains, desert, snow, forest, volcano, tuntra
+	case plains, desert, snow, forest, volcano, tundra, ocean, coast, swamp, mountain
 }
