@@ -1,5 +1,9 @@
 import Foundation
-import GameplayKit
+#if canImport(GameplayKit)
+	import GameplayKit
+#else
+	import Noise
+#endif
 
 actor MapGen {
 	// TODO: chunks Chuck is [[Tile]]? gen new if it is nil
@@ -8,40 +12,53 @@ actor MapGen {
 	var mapWidth: Int { Self.mapWidth }
 	static let mapHeight = 500 / 2
 	var mapHeight: Int { Self.mapHeight }
-	var seed: Int32
-	let temperatureMap: GKNoiseMap
-	let elevationMap: GKNoiseMap
-	let moistureMap: GKNoiseMap
+	#if canImport(GameplayKit)
+		var seed: Int32
+		let temperatureMap: GKNoiseMap
+		let elevationMap: GKNoiseMap
+		let moistureMap: GKNoiseMap
+	#else
+		var seed: Int
+		let temperatureMap: GradientNoise2D
+		let elevationMap: GradientNoise2D
+		let moistureMap: GradientNoise2D
+	#endif
 
 	init() {
-		self.seed = 13_124_557
-		// self.seed = .random(in: 2 ... 1_000_000_000)
+		self.seed = .random(in: 2 ... 1_000_000_000)
 		self.temperatureMap = Self.createNoiseGenerator(seed, frequency: 0.005)
 		self.elevationMap = Self.createNoiseGenerator(seed + 1, frequency: 0.002)
 		self.moistureMap = Self.createNoiseGenerator(seed + 2, frequency: 0.006)
 	}
 
-	static func createNoiseGenerator(_ seed: Int32, frequency: Double) -> GKNoiseMap {
-		let noiseSource = GKPerlinNoiseSource(
-			frequency: frequency,
-			octaveCount: 5, // Determines the detail level of the noise
-			persistence: 0.4, // Controls amplitude reduction per octave
-			lacunarity: 2.0, // Controls frequency increase per octave
-			seed: seed // Ensure consistent generation
-		)
+	#if canImport(GameplayKit)
+		static func createNoiseGenerator(_ seed: Int32, frequency: Double) -> GKNoiseMap {
+			let noiseSource = GKPerlinNoiseSource(
+				frequency: frequency,
+				octaveCount: 5, // Determines the detail level of the noise
+				persistence: 0.4, // Controls amplitude reduction per octave
+				lacunarity: 2.0, // Controls frequency increase per octave
+				seed: seed // Ensure consistent generation
+			)
 
-		let noise = GKNoise(noiseSource)
+			let noise = GKNoise(noiseSource)
 
-		let noiseMap = GKNoiseMap(
-			noise,
-			size: vector_double2(Double(mapWidth), Double(mapHeight)),
-			origin: vector_double2(0, 0),
-			sampleCount: vector_int2(Int32(mapWidth), Int32(mapHeight)),
-			seamless: true
-		)
-		// print(seed)
-		return noiseMap
-	}
+			let noiseMap = GKNoiseMap(
+				noise,
+				size: vector_double2(Double(mapWidth), Double(mapHeight)),
+				origin: vector_double2(0, 0),
+				sampleCount: vector_int2(Int32(mapWidth), Int32(mapHeight)),
+				seamless: true
+			)
+
+			// print(seed)
+			return noiseMap
+		}
+	#else
+		static func createNoiseGenerator(_ seed: Int, frequency: Double) -> GradientNoise2D {
+			GradientNoise2D(amplitude: 0.4, frequency: frequency, seed: seed)
+		}
+	#endif
 
 	func generateFullMap() async -> [[MapTile]] {
 		var map: [[MapTile]] = createMap()
@@ -113,10 +130,10 @@ actor MapGen {
 			}
 		}
 
-		// #if DEBUG
-		// 	await outputMap(map)
-		// 	// exit(0)
-		// #endif
+		#if DEBUG
+			await outputMap(map)
+			exit(0)
+		#endif
 
 		return map
 	}
@@ -172,10 +189,15 @@ actor MapGen {
 	}
 
 	func getBiome(x: Int, y: Int) -> BiomeType {
-		let temperature = temperatureMap.value(at: vector_int2(Int32(x), Int32(y))) * 10 // Higher = hotter
-		let elevation = elevationMap.value(at: vector_int2(Int32(x), Int32(y))) * 10 // Higher = higher
-		let moisture = moistureMap.value(at: vector_int2(Int32(x), Int32(y))) * 10 // Higher = wetter
-
+		#if canImport(GameplayKit)
+			let temperature = temperatureMap.value(at: vector_int2(Int32(x), Int32(y))) * 10 // Higher = hotter
+			let elevation = elevationMap.value(at: vector_int2(Int32(x), Int32(y))) * 10 // Higher = higher
+			let moisture = moistureMap.value(at: vector_int2(Int32(x), Int32(y))) * 10 // Higher = wetter
+		#else
+			let temperature = (temperatureMap.evaluate(Double(x), Double(y)) * 22).rounded() // Higher = hotter
+			let elevation = (elevationMap.evaluate(Double(x), Double(y)) * 22).rounded() // Higher = higher
+			let moisture = (moistureMap.evaluate(Double(x), Double(y)) * 22).rounded() // Higher = wetter
+		#endif
 		var biome: BiomeType = switch temperature {
 			case -11 ..< -7: .volcano
 			case -7 ..< -5: .desert
