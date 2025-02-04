@@ -3,6 +3,8 @@ import Foundation
 	import Darwin
 #elseif os(Linux)
 	import Glibc
+#elseif os(Windows)
+	import WinSDK
 #endif
 
 enum Placement {
