@@ -30,18 +30,18 @@ import Foundation
 				case VK_UP: return .up
 				case VK_DOWN: return .down
 				case VK_TAB where GetKeyState(VK_SHIFT) & 0x8000 != 0: return .back_tab
-				case VK_F1: return .f1
-				case VK_F2: return .f2
-				case VK_F3: return .f3
-				case VK_F4: return .f4
-				case VK_F5: return .f5
-				case VK_F6: return .f6
-				case VK_F7: return .f7
-				case VK_F8: return .f8
-				case VK_F9: return .f9
-				case VK_F10: return .f10
-				case VK_F11: return .f11
-				case VK_F12: return .f12
+				// case VK_F1: return .f1
+				// case VK_F2: return .f2
+				// case VK_F3: return .f3
+				// case VK_F4: return .f4
+				// case VK_F5: return .f5
+				// case VK_F6: return .f6
+				// case VK_F7: return .f7
+				// case VK_F8: return .f8
+				// case VK_F9: return .f9
+				// case VK_F10: return .f10
+				// case VK_F11: return .f11
+				// case VK_F12: return .f12
 				default: return .unknown
 			}
 		}
