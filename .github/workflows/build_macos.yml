@@ -1,4 +1,4 @@
-name: Build
+name: Build Macos
 
 on: workflow_dispatch
 
@@ -25,7 +25,7 @@ jobs:
         swift-version: "6.0.3"
     - name: Build
       run: |
-        swift build -c release -Xswiftc -static-stdlib
+        swift build -c release
         zip_file="adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
         zip -r $zip_file .build/release/adventure .build/release/adventure_adventure.resources
     - name: Release
