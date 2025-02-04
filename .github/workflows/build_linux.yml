@@ -20,26 +20,19 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    # - uses: actions/cache@v4
-    #   with:
-    #     path: .build
-    #     key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-    #     restore-keys: |
-    #       ${{ runner.os }}-spm-
-
     - name: Build
       run: |
         docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace swift:6.0.3-focal swift build -c release -Xswiftc -static-stdlib
         ls -la .build
         zip_file="adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
         zip -r $zip_file .build/x86_64-unknown-linux-gnu/release/adventure .build/x86_64-unknown-linux-gnu/release/adventure_adventure.resources
-    #
-    # - name: Release
-    #   uses: softprops/action-gh-release@v2
-    #   with:
-    #     name: 'Testing Release'
-    #     prerelease: true
-    #     tag_name: testing_release
-    #     target_commitish: ${{ github.sha }}
-    #     files: |
-    #       adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip
+
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: 'Testing Release'
+        prerelease: true
+        tag_name: testing_release
+        target_commitish: ${{ github.sha }}
+        files: |
+          adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip
