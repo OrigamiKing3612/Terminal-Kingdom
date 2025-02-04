@@ -35,6 +35,7 @@ jobs:
       run: |
         swift build -c release
         ls -la .build
+        ls -la .build/arm64-apple-macosx/
         zip_file="adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
         zip -r $zip_file .build/arm64-apple-macosx/release/adventure .build/arm64-apple-macosx/release/adventure_adventure.resources
 
