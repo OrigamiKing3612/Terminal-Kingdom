@@ -35,7 +35,11 @@ enum WindowsTerminalInput {
 				case 0xBF: return .questionMark
 				case 0x30 ... 0x39, 0x41 ... 0x5A:
 					if let scalar = UnicodeScalar(vkCode) {
-						return KeyboardKeys(rawValue: String(scalar)) ?? .unknown
+						if GetAsyncKeyState(VK_SHIFT) & 16 != 0 {
+							return KeyboardKeys(rawValue: String(scalar)) ?? .unknown
+						} else {
+							return KeyboardKeys(rawValue: String(scalar).lowercase()) ?? .unknown
+						}
 					}
 				case 0x25: return .left
 				case 0x27: return .right
