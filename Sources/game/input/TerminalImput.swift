@@ -35,10 +35,15 @@ enum TerminalInput {
 	// Restore original terminal attributes
 	static func restoreOriginalMode() {
 		#if os(Windows)
+			// var mode: DWORD = 0
+			// let hStdin = GetStdHandle(STD_INPUT_HANDLE)
+			// GetConsoleMode(hStdin, &mode)
+			// SetConsoleMode(hStdin, Int32(DWORD(mode | ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT)))
+			let handle = GetStdHandle(STD_HANDLE_INPUT)
 			var mode: DWORD = 0
-			let hStdin = GetStdHandle(STD_INPUT_HANDLE)
-			GetConsoleMode(hStdin, &mode)
-			SetConsoleMode(hStdin, Int32(DWORD(mode | ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT)))
+			GetConsoleMode(handle, &mode)
+			mode &= ~DWORD(ENABLE_PROCESSED_INPUT)
+			SetConsoleMode(handle, mode)
 		#else
 			tcsetattr(STDIN_FILENO, TCSANOW, &originalTermios)
 		#endif
