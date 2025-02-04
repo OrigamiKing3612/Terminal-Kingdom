@@ -16,12 +16,9 @@ jobs:
       - name: Get Release ID by Name
         id: get_release
         run: |
-          release_name="testing release"
-          release_id=$(gh release list --json id,tagName,name -q ".[] | select(.name == \"${release_name}\") | .id")
-          if [ -z "$release_id" ]; then
-            echo "Release '${release_name}' not found."
-            exit 1
-          fi
+          release_tag="testing_release"
+          release_info=$(gh release list --json name,tagName -q ".[] | select(.tagName == \"$release_tag\")")
+          release_id=$(echo "$release_info" | jq -r '.id')
           echo "release_id=${release_id}" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
