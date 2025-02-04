@@ -4,8 +4,8 @@ import Foundation
 #elseif os(Linux)
 	import Glibc
 #endif
-#if os(macOS) || os(Linux)
-	enum UnixTerminalInput {
+enum UnixTerminalInput {
+	#if os(macOS) || os(Linux)
 		static func readKey() -> KeyboardKeys {
 			var buffer = [UInt8](repeating: 0, count: 3)
 			read(STDIN_FILENO, &buffer, 3)
@@ -38,5 +38,5 @@ import Foundation
 
 			return .unknown
 		}
-	}
-#endif
+	#endif
+}

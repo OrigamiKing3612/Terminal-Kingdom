@@ -3,9 +3,8 @@ import Foundation
 	import WinSDK
 #endif
 
-#if os(Windows)
-
-	enum WindowsTerminalInput {
+enum WindowsTerminalInput {
+	#if os(Windows)
 		static func readKey() -> KeyboardKeys {
 			var inputRecord = INPUT_RECORD()
 			var eventsRead: DWORD = 0
@@ -18,7 +17,7 @@ import Foundation
 
 			repeat {
 				ReadConsoleInputW(hStdin, &inputRecord, 1, &eventsRead)
-			} while eventsRead == 0 || inputRecord.EventType != KEY_EVENT || inputRecord.Event.KeyEvent.bKeyDown == FALSE
+			} while eventsRead == 0 || inputRecord.EventType != KEY_EVENT || inputRecord.Event.KeyEvent.bKeyDown == false
 
 			let vkCode = inputRecord.Event.KeyEvent.wVirtualKeyCode
 			switch vkCode {
@@ -60,6 +59,5 @@ import Foundation
 
 			return .unknown
 		}
-	}
-
-#endif
+	#endif
+}
