@@ -1,0 +1,42 @@
+name: Build Windows2
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  build:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: true
+      matrix:
+        platform: [windows-latest]
+        architecture: [x86_64]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: SwiftyLab/setup-swift@latest
+      with:
+        swift-version: "6.0.3"
+
+    - name: Build Swift Project for Windows
+      run: |
+        docker run --rm -v $PWD:/workspace -w /workspace swift:5.7.3-bionic swift build -c release --arch x86_64 --target x86_64-pc-windows-msvc
+
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: 'Testing Release'
+        prerelease: true
+        tag_name: testing_release
+        target_commitish: ${{ github.sha }}
+        files: |
+          adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip
