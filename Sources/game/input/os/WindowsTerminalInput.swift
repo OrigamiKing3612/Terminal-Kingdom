@@ -38,7 +38,7 @@ enum WindowsTerminalInput {
 						if GetAsyncKeyState(VK_SHIFT) & 16 != 0 {
 							return KeyboardKeys(rawValue: String(scalar)) ?? .unknown
 						} else {
-							return KeyboardKeys(rawValue: String(scalar).lowercase()) ?? .unknown
+							return KeyboardKeys(rawValue: String(scalar).lowercased()) ?? .unknown
 						}
 					}
 				case 0x25: return .left
