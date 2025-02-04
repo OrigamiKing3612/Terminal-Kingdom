@@ -1,11 +1,7 @@
 import Foundation
 
 actor BuilderStages {
-	#if DEBUG
-		private(set) var stageNumber = 5
-	#else
-		private(set) var stageNumber = 0
-	#endif
+	private(set) var stageNumber = 0
 	var isDone: Bool { stageNumber > 10 }
 	private(set) var stage1ItemsUUIDsToRemove: [UUID]?
 	private(set) var stage2LumberUUIDToRemove: [UUID]?
@@ -32,11 +28,7 @@ actor BuilderStages {
 	private(set) var stage3Stages: BuilderStage3Stages = .notStarted
 	private(set) var stage4Stages: BuilderStage4Stages = .notStarted
 	private(set) var stage5Stages: BuilderStage5Stages = .notStarted
-	#if DEBUG
-		private(set) var stage6Stages: BuilderStage6Stages = .done
-	#else
-		private(set) var stage6Stages: BuilderStage6Stages = .notStarted
-	#endif
+	private(set) var stage6Stages: BuilderStage6Stages = .notStarted
 	private(set) var stage7Stages: BuilderStage7Stages = .notStarted
 	private(set) var stage8Stages: BuilderStage8Stages = .notStarted
 	private(set) var stage9Stages: BuilderStage9Stages = .notStarted
