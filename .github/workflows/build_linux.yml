@@ -30,7 +30,7 @@ jobs:
     - name: Build
       run: |
         docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace swift:6.0.3-focal swift build -c release -Xswiftc -static-stdlib
-        ls
+        ls -la .build
     #     zip_file="adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
     #     zip -r $zip_file .build/release/adventure .build/release/adventure_adventure.resources
     #
