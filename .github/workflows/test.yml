@@ -1,22 +1,46 @@
-name: Build Windows
+name: Test
 
 on:
-  workflow_dispatch:
   push:
-    branches:
+    branches-ignore:
       - master
     paths-ignore:
       - 'LICENSE'
       - '**.md'
 
-defaults:
-  run:
-    shell: pwsh
+  pull_request:
+  workflow_dispatch:
 
 jobs:
-  build:
-    permissions:
-      contents: write
+  build_linux:
+    strategy:
+      fail-fast: true
+      matrix:
+        platform: [ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build
+      run: |
+        docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace swift:6.0.3-focal swift build -c release -Xswiftc -static-stdlib
+
+  build_macos:
+    strategy:
+      fail-fast: true
+      matrix:
+        platform: [macos-latest]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build
+      run: |
+        swift build -c release
+
+  build_windows:
     strategy:
       fail-fast: true
       matrix:
@@ -30,16 +54,10 @@ jobs:
     - uses: SwiftyLab/setup-swift@latest
       with:
         swift-version: "6.0.3"
-    # TODO: make the user not need to install swift for this to work
     - name: Build
       run: |
+        shell: pwsh
         swift build -c release
-        ls .build
-        ls .build/x86_64-unknown-windows-msvc/release
-        cp -r .build/x86_64-unknown-windows-msvc/release/adventure.exe .
-        cp -r .build/x86_64-unknown-windows-msvc/release/adventure_adventure.resources .
-        $zipFile = "adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
-        Compress-Archive -Path "adventure.exe", "adventure_adventure.resources" -DestinationPath $zipFile
     - name: Release
       uses: softprops/action-gh-release@v2
       with:
