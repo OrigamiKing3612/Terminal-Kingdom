@@ -61,11 +61,10 @@ enum Screen {
 		#elseif os(Windows)
 			var consoleInfo = CONSOLE_SCREEN_BUFFER_INFO()
 			let handle = GetStdHandle(STD_OUTPUT_HANDLE)
-			if GetConsoleScreenBufferInfo(Int(handle), &consoleInfo) != 0 {
-				let rows = Int(consoleInfo.srWindow.Bottom - consoleInfo.srWindow.Top + 1)
-				let columns = Int(consoleInfo.srWindow.Right - consoleInfo.srWindow.Left + 1)
-				return TerminalSize(rows: rows, columns: columns)
-			}
+			GetConsoleScreenBufferInfo(handle, &consoleInfo)
+			let rows = Int(consoleInfo.srWindow.Bottom - consoleInfo.srWindow.Top + 1)
+			let columns = Int(consoleInfo.srWindow.Right - consoleInfo.srWindow.Left + 1)
+			return TerminalSize(rows: rows, columns: columns)
 		#else
 			var windowSize = winsize()
 			if ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) == 0 {
