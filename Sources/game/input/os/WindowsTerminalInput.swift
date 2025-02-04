@@ -21,13 +21,13 @@ enum WindowsTerminalInput {
 
 			let vkCode = inputRecord.Event.KeyEvent.wVirtualKeyCode
 			switch vkCode {
-				case 0x1B: return .esc
-				case 0x08: return .backspace
-				case 0x0D: return .enter
-				case 0x20: return .space
-				case 0x09:
+				case 27: return .esc
+				case 8: return .backspace
+				case 13: return .enter
+				case 32: return .space
+				case 9:
 					// Check if shift is held down for back-tab
-					if GetAsyncKeyState(VK_SHIFT) & 0x8000 != 0 {
+					if GetAsyncKeyState(VK_SHIFT) & 16 != 0 {
 						return .back_tab
 					}
 					return .tab

@@ -38,7 +38,7 @@ enum TerminalInput {
 			var mode: DWORD = 0
 			let hStdin = GetStdHandle(STD_INPUT_HANDLE)
 			GetConsoleMode(hStdin, &mode)
-			SetConsoleMode(hStdin, DWORD(mode | ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT))
+			SetConsoleMode(hStdin, Int32(DWORD(mode | ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT)))
 		#else
 			tcsetattr(STDIN_FILENO, TCSANOW, &originalTermios)
 		#endif
@@ -53,19 +53,4 @@ enum TerminalInput {
 			UnixTerminalInput.readKey()
 		#endif
 	}
-
-	#if os(Windows)
-		private static func mapWindowsKey(_ charCode: UInt8) -> KeyboardKeys {
-			switch charCode {
-				case 27: .esc
-				case 9: .tab
-				case 13: .enter
-				case 32: .space
-				case 8: .backspace
-				case 48 ... 57: KeyboardKeys(rawValue: String(UnicodeScalar(charCode))) ?? .unknown
-				case 65 ... 90, 97 ... 122: KeyboardKeys(rawValue: String(UnicodeScalar(charCode))) ?? .unknown
-				default: .unknown
-			}
-		}
-	#endif
 }
