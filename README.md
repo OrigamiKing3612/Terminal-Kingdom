@@ -11,12 +11,12 @@ Right now, I've only worked on the tutorial. It is not done yet, but the tutoria
 2. Extract the zip file.
 3. Run the `adventure` executable.
 
-> [!important]
-> Make sure to keep the resources in the same directory as the executable.
-
 ## How to Play
 - Use the wasd or arrow keys to navigate.
 - Press **space** or **enter** to interact with tiles.
 
 ## License
 This project is licensed under the Apache-2.0 license. See the LICENSE file for details.
+
+## Troubleshooting
+
