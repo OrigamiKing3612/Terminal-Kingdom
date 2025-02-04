@@ -1,4 +1,4 @@
-name: Build Macos
+name: Build Windows
 
 on:
   workflow_dispatch:
@@ -13,8 +13,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        platform: [macos-latest]
-        architecture: [x86_64, arm64]
+        platform: [windows-latest]
+        architecture: [x86_64]
     runs-on: ${{ matrix.platform }}
 
     steps:
@@ -29,9 +29,9 @@ jobs:
         swift build -c release
         ls -la .build
         zip_file="adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
-        cp -r .build/arm64-apple-macosx/release/adventure .
-        cp -r .build/arm64-apple-macosx/release/adventure_adventure.bundle .
-        zip -r $zip_file adventure adventure_adventure.bundle
+        cp -r .build/x86_64-pc-windows-msvc/release/adventure.exe .
+        cp -r .build/x86_64-pc-windows-msvc/release/adventure_adventure.resources .
+        zip -r $zip_file adventure.exe adventure_adventure.resources
 
     - name: Release
       uses: softprops/action-gh-release@v2
