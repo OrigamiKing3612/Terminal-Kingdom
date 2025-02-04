@@ -49,14 +49,23 @@ enum Screen {
 	}
 
 	private static func getTerminalSize() -> TerminalSize? {
-		var windowSize = winsize()
 		#if os(Linux)
+			var windowSize = winsize()
 			if ioctl(STDOUT_FILENO, UInt(TIOCGWINSZ), &windowSize) == 0 {
 				let rows = Int(windowSize.ws_row)
 				let columns = Int(windowSize.ws_col)
 				return TerminalSize(rows: rows, columns: columns)
 			}
+		#elseif os(Windows)
+			var consoleInfo = CONSOLE_SCREEN_BUFFER_INFO()
+			let handle = GetStdHandle(STD_OUTPUT_HANDLE)
+			if GetConsoleScreenBufferInfo(handle, &consoleInfo) != 0 {
+				let rows = Int(consoleInfo.srWindow.Bottom - consoleInfo.srWindow.Top + 1)
+				let columns = Int(consoleInfo.srWindow.Right - consoleInfo.srWindow.Left + 1)
+				return TerminalSize(rows: rows, columns: columns)
+			}
 		#else
+			var windowSize = winsize()
 			if ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) == 0 {
 				let rows = Int(windowSize.ws_row)
 				let columns = Int(windowSize.ws_col)
