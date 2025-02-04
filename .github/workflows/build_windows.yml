@@ -5,6 +5,9 @@ on:
   # push:
   #   branches:
   #     - master
+defaults:
+  run:
+    shell: pwsh
 
 jobs:
   build:
@@ -27,7 +30,7 @@ jobs:
     - name: Build
       run: |
         swift build -c release
-        ls -la .build
+        ls .build
         zip_file="adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
         cp -r .build/x86_64-pc-windows-msvc/release/adventure.exe .
         cp -r .build/x86_64-pc-windows-msvc/release/adventure_adventure.resources .
