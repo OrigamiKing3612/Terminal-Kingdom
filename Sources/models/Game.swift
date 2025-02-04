@@ -1,5 +1,4 @@
 import Foundation
-import GameplayKit
 
 // TODO: remove static because that undoes the point of the actor
 actor Game {
