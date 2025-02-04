@@ -22,19 +22,31 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - uses: docker/setup-docker@v1  # Installs Docker
 
-    - uses: SwiftyLab/setup-swift@latest
-      with:
-        swift-version: "6.0.3"
+    - run: docker --version
 
     - name: Build
       run: |
-        swift build -c release -Xswiftc -static-stdlib
+        docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace swift:6.0.3-focal swift build -c release -Xswiftc -static-stdlib
         ls .build
         ls .build/x86_64-unknown-windows-msvc/release
         cp -r .build/x86_64-unknown-windows-msvc/release/adventure.exe .
         cp -r .build/x86_64-unknown-windows-msvc/release/adventure_adventure.resources .
         zip -r adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip adventure.exe adventure_adventure.resources
+
+    # - uses: SwiftyLab/setup-swift@latest
+    #   with:
+    #     swift-version: "6.0.3"
+    #
+    # - name: Build
+    #   run: |
+    #     swift build -c release -Xswiftc -static-stdlib
+    #     ls .build
+    #     ls .build/x86_64-unknown-windows-msvc/release
+    #     cp -r .build/x86_64-unknown-windows-msvc/release/adventure.exe .
+    #     cp -r .build/x86_64-unknown-windows-msvc/release/adventure_adventure.resources .
+    #     zip -r adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip adventure.exe adventure_adventure.resources
 
     - name: Release
       uses: softprops/action-gh-release@v2
