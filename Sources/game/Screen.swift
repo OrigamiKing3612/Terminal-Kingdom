@@ -61,7 +61,7 @@ enum Screen {
 		#elseif os(Windows)
 			var consoleInfo = CONSOLE_SCREEN_BUFFER_INFO()
 			let handle = GetStdHandle(STD_OUTPUT_HANDLE)
-			if GetConsoleScreenBufferInfo(handle, &consoleInfo) != 0 {
+			if GetConsoleScreenBufferInfo(Int(handle), &consoleInfo) != 0 {
 				let rows = Int(consoleInfo.srWindow.Bottom - consoleInfo.srWindow.Top + 1)
 				let columns = Int(consoleInfo.srWindow.Right - consoleInfo.srWindow.Left + 1)
 				return TerminalSize(rows: rows, columns: columns)
