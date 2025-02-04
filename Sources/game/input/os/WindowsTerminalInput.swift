@@ -41,19 +41,6 @@ enum WindowsTerminalInput {
 				case 0x27: return .right
 				case 0x26: return .up
 				case 0x28: return .down
-				// Uncomment these lines if F-keys are needed
-				// case VK_F1: return .f1
-				// case VK_F2: return .f2
-				// case VK_F3: return .f3
-				// case VK_F4: return .f4
-				// case VK_F5: return .f5
-				// case VK_F6: return .f6
-				// case VK_F7: return .f7
-				// case VK_F8: return .f8
-				// case VK_F9: return .f9
-				// case VK_F10: return .f10
-				// case VK_F11: return .f11
-				// case VK_F12: return .f12
 				default: return .unknown
 			}
 

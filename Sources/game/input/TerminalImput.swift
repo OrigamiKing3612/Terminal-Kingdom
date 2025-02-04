@@ -38,7 +38,7 @@ enum TerminalInput {
 			var mode: DWORD = 0
 			let hStdin = GetStdHandle(STD_INPUT_HANDLE)
 			GetConsoleMode(hStdin, &mode)
-			SetConsoleMode(hStdin, mode | ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT)
+			SetConsoleMode(hStdin, DWORD(mode | ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT))
 		#else
 			tcsetattr(STDIN_FILENO, TCSANOW, &originalTermios)
 		#endif
