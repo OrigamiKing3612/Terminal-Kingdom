@@ -13,10 +13,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get Release ID
+      - name: Get Release ID by Name
         id: get_release
         run: |
-          release_id=$(gh release view "latest" --json id -q ".id")
+          release_name="testing release"
+          release_id=$(gh release list --json id,tagName,name -q ".[] | select(.name == \"${release_name}\") | .id")
+          if [ -z "$release_id" ]; then
+            echo "Release '${release_name}' not found."
+            exit 1
+          fi
           echo "release_id=${release_id}" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
