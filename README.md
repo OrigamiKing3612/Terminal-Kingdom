@@ -5,7 +5,14 @@ This game is still in early development and is not *fully* yet playable.
 Right now, I've only worked on the tutorial. It is not done yet, but the tutorial will guide you through the basics of the game, but not be annoying. You will be able to skip the tutorial if you want to the game will just be harder.
 
 ## Installation
-TODO
+> [!important]
+> If you are on Windows, you will need to install the swift tool chain. You can find it [here](https://swift.org/download/). (I hope to fix this one day)
+1. Download the newest version from the releases.
+2. Extract the zip file.
+3. Run the `adventure` executable.
+
+> [!important]
+> Make sure to keep the resources in the same directory as the executable.
 
 ## How to Play
 - Use the wasd or arrow keys to navigate.
