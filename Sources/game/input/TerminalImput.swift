@@ -39,7 +39,7 @@ enum TerminalInput {
 			// let hStdin = GetStdHandle(STD_INPUT_HANDLE)
 			// GetConsoleMode(hStdin, &mode)
 			// SetConsoleMode(hStdin, Int32(DWORD(mode | ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT)))
-			let handle = GetStdHandle(STD_HANDLE_INPUT)
+			let handle = GetStdHandle(STD_INPUT_HANDLE)
 			var mode: DWORD = 0
 			GetConsoleMode(handle, &mode)
 			mode &= ~DWORD(ENABLE_PROCESSED_INPUT)
