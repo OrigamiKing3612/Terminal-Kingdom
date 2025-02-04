@@ -31,7 +31,7 @@ jobs:
       run: |
         swift build -c release -Xswiftc -static-stdlib
         ls .build
-        ls .build/x86_64-unknown-windows-msvc
+        ls .build/x86_64-unknown-windows-msvc/release
         cp -r .build/x86_64-unknown-windows-msvc/release/adventure.exe .
         cp -r .build/x86_64-unknown-windows-msvc/release/adventure_adventure.resources .
         zip -r adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip adventure.exe adventure_adventure.resources
