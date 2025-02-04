@@ -2,9 +2,9 @@ name: Build Windows
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - master
+  push:
+    branches:
+      - master
 defaults:
   run:
     shell: pwsh
@@ -26,7 +26,7 @@ jobs:
     - uses: SwiftyLab/setup-swift@latest
       with:
         swift-version: "6.0.3"
-
+    # TODO: make the user not need to install swift for this to work
     - name: Build
       run: |
         swift build -c release
