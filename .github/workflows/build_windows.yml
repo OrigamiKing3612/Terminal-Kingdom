@@ -29,12 +29,11 @@ jobs:
 
     - name: Build
       run: |
-        swift build -c release
+        swift build -c release -Xswiftc -static-stdlib
         ls .build
-        zip_file="adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
-        cp -r .build/x86_64-pc-windows-msvc/release/adventure.exe .
-        cp -r .build/x86_64-pc-windows-msvc/release/adventure_adventure.resources .
-        zip -r $zip_file adventure.exe adventure_adventure.resources
+        cp -r .build/x86_64-unknown-windows-msvc/release/adventure.exe .
+        cp -r .build/x86_64-unknown-windows-msvc/release/adventure_adventure.resources .
+        zip -r adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip adventure.exe adventure_adventure.resources
 
     - name: Release
       uses: softprops/action-gh-release@v2
