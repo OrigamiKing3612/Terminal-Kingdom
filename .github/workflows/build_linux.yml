@@ -25,7 +25,9 @@ jobs:
         docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace swift:6.0.3-focal swift build -c release -Xswiftc -static-stdlib
         ls -la .build
         zip_file="adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
-        zip -r $zip_file .build/x86_64-unknown-linux-gnu/release/adventure .build/x86_64-unknown-linux-gnu/release/adventure_adventure.resources
+        cp -r .build/x86_64-unknown-linux-gnu/release/adventure .
+        cp -r .build/x86_64-unknown-linux-gnu/release/adventure_adventure.bundle .
+        zip -r $zip_file adventure adventure_adventure.resources
 
     - name: Release
       uses: softprops/action-gh-release@v2

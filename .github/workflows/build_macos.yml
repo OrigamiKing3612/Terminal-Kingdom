@@ -29,7 +29,9 @@ jobs:
         swift build -c release
         ls -la .build
         zip_file="adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
-        zip -r $zip_file .build/arm64-apple-macosx/release/adventure .build/arm64-apple-macosx/release/adventure_adventure.bundle
+        cp -r .build/arm64-apple-macosx/release/adventure .
+        cp -r .build/arm64-apple-macosx/release/adventure_adventure.bundle .
+        zip -r $zip_file adventure adventure_adventure.bundle
 
     - name: Release
       uses: softprops/action-gh-release@v2
