@@ -31,6 +31,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: List existing release assets
+        id: list_assets
+        run: |
+          release_assets=$(gh release view "${{ env.release_id }}" --json assets -q ".assets[].id")
+          echo "release_assets=${release_assets}" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Delete old release assets
         run: |
           for asset_id in ${{ env.release_assets }}; do
