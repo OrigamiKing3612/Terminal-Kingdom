@@ -1,6 +1,10 @@
 name: Build Linux
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -27,17 +31,6 @@ jobs:
         docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace swift:6.0.3-focal swift build -c release -Xswiftc -static-stdlib
         zip_file="adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
         zip -r $zip_file .build/release/adventure .build/release/adventure_adventure.resources
-
-    # - name: Run the build process with Docker
-    #   uses: addnab/docker-run-action@v3
-    #   with:
-    #     image: swift:6.0.3-focal
-    #     options: -v ${{ github.workspace }}:/workspace -w /workspace
-    #     run: |
-    #         docker build --platform linux/${{ matrix.architecture }} -t swift-build .
-    #         swift build -c release -Xswiftc -static-stdlib
-    #         zip_file="adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
-    #         zip -r $zip_file .build/release/adventure .build/release/adventure_adventure.resources
 
     - name: Release
       uses: softprops/action-gh-release@v2
