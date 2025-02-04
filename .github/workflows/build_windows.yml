@@ -29,7 +29,7 @@ jobs:
 
     - name: Build
       run: |
-        swift build -c release -Xswiftc -static-stdlib --destination x86_64-pc-windows-msvc
+        swift build -c release
         ls .build
         ls .build/x86_64-unknown-windows-msvc/release
         cp -r .build/x86_64-unknown-windows-msvc/release/adventure.exe .
