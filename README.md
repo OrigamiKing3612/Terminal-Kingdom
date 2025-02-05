@@ -6,7 +6,8 @@ Right now, I've only worked on the tutorial. It is not done yet, but the tutoria
 
 ## Installation
 > [!important]
-> If you are on Windows, you will need to install the swift tool chain. You can find it [here](https://swift.org/download/). (I hope to fix this one day)
+> If you are on Windows, you will need to install the swift tool chain. I recommend the `.exe` version. You don't have to install the C compiler stuff for this to work.
+> You can find it [here](https://swift.org/download/). (I hope to fix this one day)
 1. Download the newest version from the releases.
 2. Extract the zip file.
 3. Run the `adventure` executable.
