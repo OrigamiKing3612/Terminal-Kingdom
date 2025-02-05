@@ -101,7 +101,7 @@ enum BuilderNPC {
 				await MessageBox.message("Now, we need some lumber. Can you get 20 of it? Here is an axe.", speaker: .builder)
 				await Game.shared.stages.builder.setStage2Stages(.collect)
 				await StatusBox.quest(.builder2)
-				await Game.shared.stages.builder.setStage2AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false)))
+				await Game.shared.stages.builder.setStage2AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init(durability: 20)), canBeSold: false)))
 			case .collect:
 				if await Game.shared.player.has(item: .lumber, count: 20) {
 					await MessageBox.message("Great, You have collected the lumber! Now we can start building.", speaker: .builder)
@@ -116,7 +116,7 @@ enum BuilderNPC {
 				} else {
 					if let id = await Game.shared.stages.builder.stage2AxeUUIDToRemove, await !Game.shared.player.has(id: id) {
 						await MessageBox.message("Uh oh, looks like you lost your axe. Here is a new one.", speaker: .builder)
-						await Game.shared.stages.builder.setStage2AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false)))
+						await Game.shared.stages.builder.setStage2AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init(durability: 5)), canBeSold: false)))
 					}
 					await MessageBox.message("You are almost there, but you still need to get \(abs(Game.shared.player.getCount(of: .lumber) - 20)) lumber.", speaker: .builder)
 				}
@@ -230,7 +230,7 @@ enum BuilderNPC {
 				await MessageBox.message("Now that we have a house, we need to decorate the interior. Can you collect 30 lumber and bring it back to me?", speaker: .builder)
 				await Game.shared.stages.builder.setStage6Stages(.collect)
 				await StatusBox.quest(.builder6)
-				await Game.shared.stages.builder.setStage6AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false)))
+				await Game.shared.stages.builder.setStage6AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init(durability: 30)), canBeSold: false)))
 			case .collect:
 				if await Game.shared.player.has(item: .lumber, count: 30) {
 					await MessageBox.message("Great! You have collected the lumber! Now we can start decorating the inside.", speaker: .builder)
@@ -245,7 +245,7 @@ enum BuilderNPC {
 				} else {
 					if let id = await Game.shared.stages.builder.stage6AxeUUIDToRemove, await !Game.shared.player.has(id: id) {
 						await MessageBox.message("Uh oh, looks like you lost your axe, here is a new one.", speaker: .builder)
-						await Game.shared.stages.builder.setStage6AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false)))
+						await Game.shared.stages.builder.setStage6AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init(durability: 5)), canBeSold: false)))
 					}
 					await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .lumber) - 30)) lumber.", speaker: .builder)
 				}

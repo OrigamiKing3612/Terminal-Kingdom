@@ -5,11 +5,11 @@ enum BlacksmithNPC {
 		}
 		if await Game.shared.stages.mine.stage1Stages == .collect {
 			await MessageBox.message("Ah, here you are. Here is your pickaxe.", speaker: .blacksmith)
-			await Game.shared.stages.mine.setStage1PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false)))
+			await Game.shared.stages.mine.setStage1PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init(durability: 20)), canBeSold: false)))
 			await Game.shared.stages.mine.setStage1Stages(.bringBack)
 		} else if await Game.shared.stages.mine.stage4Stages == .collectPickaxe {
 			await MessageBox.message("Here you are. Here is your pickaxe.", speaker: .blacksmith)
-			await Game.shared.stages.mine.setStage4PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false)))
+			await Game.shared.stages.mine.setStage4PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init(durability: 30)), canBeSold: false)))
 			await Game.shared.stages.mine.setStage4Stages(.mine)
 		} else if await Game.shared.stages.mine.stage6Stages == .goGetAxe {
 			await MessageBox.message("Here you are. Here is your axe.", speaker: .blacksmith)
@@ -92,7 +92,7 @@ enum BlacksmithNPC {
 			case .notStarted:
 				await Game.shared.stages.blacksmith.setStage2Stages(.getLumber)
 				await MessageBox.message("Now I need you to get 20 lumber. Here is an axe.", speaker: .blacksmith)
-				await Game.shared.stages.blacksmith.setStage2AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init(durability: 100)), canBeSold: false)))
+				await Game.shared.stages.blacksmith.setStage2AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init(durability: 20)), canBeSold: false)))
 				await StatusBox.quest(.blacksmith2)
 			case .getLumber:
 				if await Game.shared.player.has(item: .lumber, count: 20) {
@@ -108,7 +108,7 @@ enum BlacksmithNPC {
 				} else {
 					if let stage2AxeUUIDToRemove = await Game.shared.stages.blacksmith.stage2AxeUUIDToRemove, await !Game.shared.player.has(id: stage2AxeUUIDToRemove) {
 						await MessageBox.message("Uh oh, looks like you lost your axe, here is a new one.", speaker: .blacksmith)
-						await Game.shared.stages.blacksmith.setStage2AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false)))
+						await Game.shared.stages.blacksmith.setStage2AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init(durability: 5)), canBeSold: false)))
 					}
 					await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .clay) - 20)) clay.", speaker: .blacksmith)
 				}

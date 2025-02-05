@@ -130,7 +130,7 @@ enum MinerNPC {
 				await StatusBox.quest(.mine2)
 				// TODO: make a door in the mine to come back
 				await MessageBox.message("Oh also, press '\(KeyboardKeys.L.render)' to leave the mine.", speaker: .miner)
-				await Game.shared.stages.mine.setStage2PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false)))
+				await Game.shared.stages.mine.setStage2PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init(durability: 20)), canBeSold: false)))
 				await Game.shared.stages.mine.setStage2Stages(.mine)
 			case .mine:
 				if await Game.shared.player.has(item: .clay, count: 20) {
@@ -147,7 +147,7 @@ enum MinerNPC {
 				} else {
 					if let stage2AxeUUIDToRemove = await Game.shared.stages.mine.stage2PickaxeUUIDToRemove, await !Game.shared.player.has(id: stage2AxeUUIDToRemove) {
 						await MessageBox.message("Uh oh, looks like you lost your pickaxe, here is a new one.", speaker: .miner)
-						await Game.shared.stages.mine.setStage2PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false)))
+						await Game.shared.stages.mine.setStage2PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init(durability: 5)), canBeSold: false)))
 					}
 					await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .clay) - 20)) clay.", speaker: .miner)
 				}
@@ -163,7 +163,7 @@ enum MinerNPC {
 		switch await Game.shared.stages.mine.stage3Stages {
 			case .notStarted:
 				await MessageBox.message("We need 50 lumber to upgrade the mine to be able to mine more stuff. Can you please go get 50 lumber and bring it back to me?", speaker: .miner)
-				await Game.shared.stages.mine.setStage3AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false)))
+				await Game.shared.stages.mine.setStage3AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init(durability: 50)), canBeSold: false)))
 				await StatusBox.quest(.mine3)
 				await Game.shared.stages.mine.setStage3Stages(.collect)
 			case .collect:
@@ -178,6 +178,10 @@ enum MinerNPC {
 					await StatusBox.removeQuest(quest: .mine3)
 					fallthrough
 				} else {
+					if let id = await Game.shared.stages.mine.stage3AxeUUIDToRemove, await !Game.shared.player.has(id: id) {
+						await MessageBox.message("Uh oh, looks like you lost your axe, here is a new one.", speaker: .miner)
+						await Game.shared.stages.mine.setStage2PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init(durability: 5)), canBeSold: false)))
+					}
 					await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .lumber) - 50)) lumber.", speaker: .miner)
 				}
 			case .done:
@@ -211,7 +215,7 @@ enum MinerNPC {
 				} else {
 					if await !Game.shared.player.hasPickaxe() {
 						await MessageBox.message("Uh oh, looks like you lost your pickaxe, here is a new one.", speaker: .miner)
-						await Game.shared.stages.mine.setStage4PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false)))
+						await Game.shared.stages.mine.setStage4PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init(durability: 5)), canBeSold: false)))
 					}
 					await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .stone) - 30)) stone from level 2 of the mine.", speaker: .miner)
 				}
@@ -229,7 +233,7 @@ enum MinerNPC {
 				await MessageBox.message("Here is another pickaxe. I need you to go get 20 iron for me.", speaker: .miner)
 				await StatusBox.quest(.mine5)
 				await Game.shared.stages.mine.setStage5Stages(.mine)
-				await Game.shared.stages.mine.setStage5PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false)))
+				await Game.shared.stages.mine.setStage5PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init(durability: 20)), canBeSold: false)))
 			case .mine:
 				if await Game.shared.player.has(item: .iron, count: 20) {
 					await MessageBox.message("Thank you for getting the iron!", speaker: .miner)
@@ -244,7 +248,7 @@ enum MinerNPC {
 				} else {
 					if await !Game.shared.player.hasPickaxe() {
 						await MessageBox.message("Uh oh, looks like you lost your pickaxe, here is a new one.", speaker: .miner)
-						await Game.shared.stages.mine.setStage5PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false)))
+						await Game.shared.stages.mine.setStage5PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init(durability: 5)), canBeSold: false)))
 					}
 					await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .iron) - 20)) iron.", speaker: .miner)
 				}
@@ -279,7 +283,7 @@ enum MinerNPC {
 				} else {
 					if await !Game.shared.player.hasPickaxe() {
 						await MessageBox.message("Uh oh, looks like you lost your pickaxe, here is a new one.", speaker: .miner)
-						await Game.shared.stages.mine.setStage6AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init()), canBeSold: false)))
+						await Game.shared.stages.mine.setStage6AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init(durability: 5)), canBeSold: false)))
 					}
 					await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .lumber) - 100)) lumber.", speaker: .miner)
 				}
@@ -366,7 +370,7 @@ enum MinerNPC {
 				} else {
 					if await !Game.shared.player.hasPickaxe() {
 						await MessageBox.message("Uh oh, looks like you lost your pickaxe, here is a new one.", speaker: .miner)
-						await Game.shared.stages.mine.setStage9PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init()), canBeSold: false)))
+						await Game.shared.stages.mine.setStage9PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init(durability: 5)), canBeSold: false)))
 					}
 					await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .gold) - 5)) gold.", speaker: .miner)
 				}
