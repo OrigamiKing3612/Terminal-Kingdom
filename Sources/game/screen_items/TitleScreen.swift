@@ -155,8 +155,9 @@ struct TitleScreen {
 		yStart = printHelpMessage(x: x, y: y + yStart, "Press \(KeyboardKeys.b.render) to start building.")
 		yStart = printHelpMessage(x: x, y: y + yStart, "Press \(KeyboardKeys.zero.render) to resize the screen.")
 		yStart = printHelpMessage(x: x, y: y + yStart, "Press \(KeyboardKeys.W.render) and \(KeyboardKeys.S.render) to scroll up and down in the message box.")
+		yStart = printHelpMessage(x: x, y: y + yStart, "Press \(KeyboardKeys.Q.render) to quit.")
 
-		yStart = printHelpMessage(x: x, y: y + yStart, "Press any key to quit.")
+		yStart = printHelpMessage(x: x, y: y + yStart, "Press any key to leave.")
 		Screen.print(x: Screen.columns - 1 - Game.version.count, y: Screen.rows - 1, Game.version)
 	}
 
