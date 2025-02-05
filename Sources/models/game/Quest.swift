@@ -40,6 +40,10 @@ enum Quest: Codable, Equatable {
 	case builder9
 	case builder10
 
+	// MARK: Farm
+
+	case farm1
+
 	var label: String {
 		get async {
 			switch self {
@@ -111,6 +115,7 @@ enum Quest: Codable, Equatable {
 				case .builder8: "Talk to the Builder"
 				case .builder9: "Build a house for the Builder"
 				case .builder10: "Take the door and have fun creating!"
+				case .farm1: "Collect a tree seed for the Farmer"
 			}
 		}
 	}

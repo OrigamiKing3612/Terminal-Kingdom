@@ -21,7 +21,3 @@ enum FarmDoorEvent {
 		// TODO: upgrade building
 	}
 }
-
-enum FarmStage1Stages: Codable {
-	case notStarted, mine, done
-}
