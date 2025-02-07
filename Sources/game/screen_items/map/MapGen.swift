@@ -139,26 +139,23 @@ actor MapGen {
 		for y in 0 ..< staticHeight {
 			for x in 0 ..< staticWidth {
 				let biome = map[startY + y][startX + x].biome
+
+				var isInOkBiomes: Bool {
+					biome == .snow || biome == .tundra || biome == .forest || biome == .plains || biome == .swamp
+				}
 				let oldTile = staticRegion[y][x]
-				// if oldTile.type == .tree {
-				// 	let treeType: MapTileType = switch biome {
-				// 		case .forest, .plains, .swamp:
-				// 			.tree
-				// 		case .snow, .tundra:
-				// 			.snow_tree
-				// 		default:
-				// 			oldTile.type
-				// 	}
-				// 	newTile = MapTile(type: treeType, isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
-				// } else {
-				// 	newTile = MapTile(type: oldTile.type, isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
-				// }
 				let newTile =
 					if case let .biomeTOBEGENERATED(type: preBiome) = oldTile.type {
-						if biome == .snow || biome == .tundra || biome == .forest || biome == .plains || biome == .swamp {
+						if isInOkBiomes {
 							MapTile(type: .biomeTOBEGENERATED(type: biome), isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
 						} else {
 							MapTile(type: .biomeTOBEGENERATED(type: preBiome), isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
+						}
+					} else if case .building = oldTile.type {
+						if isInOkBiomes, x == 0 || x == staticWidth - 1 || y == 0 || y == staticHeight - 1 {
+							MapTile(type: .biomeTOBEGENERATED(type: biome), isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
+						} else {
+							oldTile
 						}
 					} else {
 						MapTile(type: oldTile.type, isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
