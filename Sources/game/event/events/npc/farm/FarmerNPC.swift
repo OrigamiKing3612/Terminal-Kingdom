@@ -24,6 +24,8 @@ enum FarmerNPC {
 				await stage1()
 			case 2:
 				await stage2()
+			case 3:
+				await stage3()
 			default:
 				break
 		}
@@ -79,6 +81,27 @@ enum FarmerNPC {
 				}
 		}
 	}
+
+	static func stage3() async {
+		switch await Game.shared.stages.farm.stage3Stages {
+			case .notStarted:
+				await MessageBox.message("Now we need to wait for the tree to grow. After it has grown, collect it and bring it to me.", speaker: .farmer)
+				await Game.shared.stages.farm.setStage3Stages(.collect)
+				await StatusBox.quest(.farm3)
+			case .collect:
+				await MessageBox.message("You haven't collected the tree yet.", speaker: .farmer)
+			case .comeBack:
+				await MessageBox.message("Great job!", speaker: .farmer)
+				await Game.shared.stages.farm.setStage3Stages(.done)
+				await StatusBox.removeQuest(quest: .farm3)
+				await Game.shared.player.setFarmingSkillLevel(.three)
+			case .done:
+				await Game.shared.stages.farm.next()
+				if await RandomEventStuff.wantsToContinue(speaker: .farmer) {
+					await getStage()
+				}
+		}
+	}
 }
 
 enum FarmStage1Stages: Codable {
@@ -87,4 +110,8 @@ enum FarmStage1Stages: Codable {
 
 enum FarmStage2Stages: Codable {
 	case notStarted, plant, comeback, done
+}
+
+enum FarmStage3Stages: Codable {
+	case notStarted, collect, comeBack, done
 }
