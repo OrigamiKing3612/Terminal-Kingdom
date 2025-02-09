@@ -40,6 +40,9 @@ enum MapTileEvent: TileEvent {
 					// TODO: fix this. It doesn't work
 					if potTile.cropTile.type != .none {
 						await CollectCropEvent.collectCrop(cropTile: potTile.cropTile, isInPot: true)
+						if await Game.shared.stages.farm.stage2Stages == .plant {
+							await Game.shared.stages.farm.setStage2Stages(.comeback)
+						}
 					} else {
 						if await !Game.shared.player.has(item: .tree_seed) {
 							await MessageBox.message("There is no crop here", speaker: .game)
