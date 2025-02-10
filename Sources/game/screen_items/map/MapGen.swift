@@ -151,12 +151,6 @@ actor MapGen {
 						} else {
 							MapTile(type: .biomeTOBEGENERATED(type: preBiome), isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
 						}
-					} else if case .building = oldTile.type {
-						if isInOkBiomes, x == 0 || x == staticWidth - 1 || y == 0 || y == staticHeight - 1 {
-							MapTile(type: .biomeTOBEGENERATED(type: biome), isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
-						} else {
-							oldTile
-						}
 					} else {
 						MapTile(type: oldTile.type, isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
 					}
