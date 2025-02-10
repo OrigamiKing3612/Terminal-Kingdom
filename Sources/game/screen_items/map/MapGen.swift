@@ -62,17 +62,8 @@ actor MapGen {
 
 	func generateFullMap() async -> [[MapTile]] {
 		var map: [[MapTile]] = createMap()
-		let staticRegion = StaticMaps.MainMap
-		let staticWidth = staticRegion[0].count
-		let staticHeight = staticRegion.count
-		let startX = (mapWidth - staticWidth) / 2
-		let startY = (mapHeight - staticHeight) / 2
 
-		for y in 0 ..< staticHeight {
-			for x in 0 ..< staticWidth {
-				map[startY + y][startX + x] = staticRegion[y][x]
-			}
-		}
+		addStaticArea(to: &map)
 
 		for y in 0 ..< mapHeight {
 			for x in 0 ..< mapWidth {
@@ -130,12 +121,42 @@ actor MapGen {
 			}
 		}
 
-		// #if DEBUG
-		// 	await outputMap(map)
-		// 	exit(0)
-		// #endif
+		#if DEBUG
+			await outputMap(map)
+			// 	exit(0)
+		#endif
 
 		return map
+	}
+
+	func addStaticArea(to map: inout [[MapTile]]) {
+		let staticRegion = StaticMaps.MainMap
+		let staticWidth = staticRegion[0].count
+		let staticHeight = staticRegion.count
+		let startX = (mapWidth - staticWidth) / 2
+		let startY = (mapHeight - staticHeight) / 2
+
+		for y in 0 ..< staticHeight {
+			for x in 0 ..< staticWidth {
+				let biome = map[startY + y][startX + x].biome
+
+				var isInOkBiomes: Bool {
+					biome == .snow || biome == .tundra || biome == .forest || biome == .plains || biome == .swamp
+				}
+				let oldTile = staticRegion[y][x]
+				let newTile =
+					if case let .biomeTOBEGENERATED(type: preBiome) = oldTile.type {
+						if isInOkBiomes {
+							MapTile(type: .biomeTOBEGENERATED(type: biome), isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
+						} else {
+							MapTile(type: .biomeTOBEGENERATED(type: preBiome), isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
+						}
+					} else {
+						MapTile(type: oldTile.type, isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
+					}
+				map[startY + y][startX + x] = newTile
+			}
+		}
 	}
 
 	#if DEBUG

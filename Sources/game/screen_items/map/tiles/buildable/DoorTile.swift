@@ -31,7 +31,7 @@ struct DoorTile: BuildableTile, Hashable {
 				}
 			}
 		}
-		return "D".styled(with: .bold)
+		return "D".styled(with: [.bold, .brown])
 	}
 }
 

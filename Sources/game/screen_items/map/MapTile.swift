@@ -54,6 +54,6 @@ extension MapTile {
 		self.type = try container.decode(MapTileType.self, forKey: .tileType)
 		self.isWalkable = try container.decode(Bool.self, forKey: .isWalkable)
 		self.event = try container.decodeIfPresent(MapTileEvent.self, forKey: .event)
-		self.biome = try container.decode(BiomeType.self, forKey: .biome)
+		self.biome = try container.decodeIfPresent(BiomeType.self, forKey: .biome) ?? .plains
 	}
 }
