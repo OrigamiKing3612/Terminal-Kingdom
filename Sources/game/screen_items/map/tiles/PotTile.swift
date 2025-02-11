@@ -1,5 +1,5 @@
 struct PotTile: Codable, Equatable {
-	let cropTile: CropTile
+	var cropTile: CropTile
 
 	init(cropTile: CropTile = .init(type: .none)) {
 		self.cropTile = cropTile
@@ -11,6 +11,10 @@ struct PotTile: Codable, Equatable {
 		} else {
 			await CropTile.renderCrop(tile: tile.cropTile)
 		}
+	}
+
+	mutating func grow() {
+		cropTile.grow()
 	}
 }
 

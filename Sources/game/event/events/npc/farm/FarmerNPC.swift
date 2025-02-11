@@ -43,6 +43,7 @@ enum FarmerNPC {
 					await Game.shared.stages.farm.setStage1Stages(.done)
 					await StatusBox.removeQuest(quest: .farm1)
 					await Game.shared.player.setFarmingSkillLevel(.one)
+					fallthrough
 				} else {
 					if let id = await Game.shared.stages.farm.stage1AxeUUIDToRemove, await !Game.shared.player.has(id: id) {
 						await MessageBox.message("Uh oh, looks like you lost your axe. Here is a new one.", speaker: .builder)
@@ -72,6 +73,7 @@ enum FarmerNPC {
 				await Game.shared.stages.farm.setStage2Stages(.done)
 				await StatusBox.removeQuest(quest: .farm2)
 				await Game.shared.player.setFarmingSkillLevel(.two)
+				fallthrough
 			case .done:
 				await Game.shared.stages.farm.next()
 				if await RandomEventStuff.wantsToContinue(speaker: .farmer) {
@@ -93,6 +95,7 @@ enum FarmerNPC {
 				await Game.shared.stages.farm.setStage3Stages(.done)
 				await StatusBox.removeQuest(quest: .farm3)
 				await Game.shared.player.setFarmingSkillLevel(.three)
+				fallthrough
 			case .done:
 				await Game.shared.stages.farm.next()
 				if await RandomEventStuff.wantsToContinue(speaker: .farmer) {
