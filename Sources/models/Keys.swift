@@ -43,7 +43,7 @@ enum Keys {
 			#if DEBUG
 				case .t:
 					await MapBox.setMainMapGridTile(tile: .init(type: .crop(crop: .init(type: .carrot)), isWalkable: true, event: .collectCrop, biome: Game.shared.getBiomeAtPlayerPosition()))
-					await Game.shared.addCrop(TilePosition(x: MapBox.player.x, y: MapBox.player.y))
+					await Game.shared.addCrop(TilePosition(x: MapBox.player.x, y: MapBox.player.y, mapType: MapBox.mapType))
 			#endif
 			default:
 				#if DEBUG
