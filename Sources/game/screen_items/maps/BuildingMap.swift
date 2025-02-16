@@ -22,7 +22,7 @@ struct BuildingMap: MapBoxMap {
 
 	init(_ mapType: MapType) async {
 		self.mapType = mapType
-		// TODO: Clean up
+		//! TODO: Clean up
 		switch mapType {
 			case .blacksmith:
 				self.grid = await StaticMaps.buildingMap(mapType: mapType)
