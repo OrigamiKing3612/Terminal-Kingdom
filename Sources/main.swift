@@ -89,15 +89,35 @@ func startTasks() async {
 			while true {
 				if await Game.shared.crops.count > 0 {
 					for position in await Game.shared.crops {
-						let tile = await MapBox.mainMap.grid[position.y][position.x]
-						if case let .crop(crop) = tile.type {
-							var newCropTile = CropTile(type: crop.type, growthStage: crop.growthStage)
-							newCropTile.grow()
-							await MapBox.setMapGridTile(x: position.x, y: position.y, tile: .init(type: .crop(crop: newCropTile), isWalkable: tile.isWalkable, event: tile.event, biome: tile.biome), mapType: position.mapType)
-						} else if case let .pot(tile: pot) = tile.type {
-							var newPotTile = PotTile(cropTile: pot.cropTile)
-							newPotTile.grow()
-							await MapBox.setMapGridTile(x: position.x, y: position.y, tile: .init(type: .pot(tile: newPotTile), isWalkable: tile.isWalkable, event: tile.event, biome: tile.biome), mapType: position.mapType)
+						switch position.mapType {
+							case let .custom(mapID: mapID):
+								// TODO: custom map crop growing maybe?
+								break
+							case .farm:
+								let tile = await Game.shared.maps.farm[position.y][position.x]
+								if case let .pot(tile: pot) = tile.type {
+									var newPotTile = PotTile(cropTile: pot.cropTile)
+									newPotTile.grow()
+									let isInsideFarm = await MapBox.mapType == .farm(type: .main)
+									let isInsideFarm2 = await MapBox.mapType == .farm(type: .farm_area)
+									if isInsideFarm || isInsideFarm2 {
+										await MapBox.setMapGridTile(x: position.x, y: position.y, tile: .init(type: .pot(tile: newPotTile), isWalkable: tile.isWalkable, event: tile.event, biome: tile.biome), mapType: position.mapType)
+									} else {
+										await Game.shared.maps.updateMap(mapType: .farm(type: .main), x: position.x, y: position.y, tile: .init(type: .pot(tile: newPotTile), isWalkable: tile.isWalkable, event: tile.event, biome: tile.biome))
+									}
+								}
+							case .mainMap:
+								let tile = await MapBox.mainMap.grid[position.y][position.x]
+								if case let .crop(crop) = tile.type {
+									var newCropTile = CropTile(type: crop.type, growthStage: crop.growthStage)
+									newCropTile.grow()
+									await MapBox.setMapGridTile(x: position.x, y: position.y, tile: .init(type: .crop(crop: newCropTile), isWalkable: tile.isWalkable, event: tile.event, biome: tile.biome), mapType: position.mapType)
+								} else if case let .pot(tile: pot) = tile.type {
+									var newPotTile = PotTile(cropTile: pot.cropTile)
+									newPotTile.grow()
+									await MapBox.setMapGridTile(x: position.x, y: position.y, tile: .init(type: .pot(tile: newPotTile), isWalkable: tile.isWalkable, event: tile.event, biome: tile.biome), mapType: position.mapType)
+								}
+							default: break
 						}
 					}
 				}
