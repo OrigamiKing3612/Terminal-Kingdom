@@ -49,7 +49,7 @@ enum MapTileEvent: TileEvent {
 							return
 						}
 						let options: [MessageOption] = [.init(label: "Quit", action: {}), .init(label: "Plant Seed", action: {
-							await Game.shared.addCrop(TilePosition(x: MapBox.player.x, y: MapBox.player.y))
+							await Game.shared.addCrop(TilePosition(x: MapBox.player.x, y: MapBox.player.y, mapType: MapBox.mapType))
 							if await Game.shared.stages.farm.stage2Stages == .plant {
 								await Game.shared.stages.farm.setStage2Stages(.comeback)
 							}

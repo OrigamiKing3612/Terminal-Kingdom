@@ -30,6 +30,7 @@ actor MapBoxActor {
 
 	func updateBuildingMapTile(at x: Int, y: Int, with tile: MapTile) async {
 		buildingMap!.grid[y][x] = tile
+		await Game.shared.maps.updateMap(mapType: buildingMap!.mapType, x: x, y: y, tile: tile)
 	}
 
 	func updateMainMapTile(newTile: MapTile) async {

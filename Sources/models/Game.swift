@@ -9,12 +9,12 @@ actor Game {
 	var startingVillageChecks: StartingVillageChecks = .init()
 	var stages: Stages = .init()
 	var mapGen: MapGen = .init()
+	var maps: Maps = .init()
 	private(set) var messages: [String] = []
 	private(set) var crops: Set<TilePosition> = []
 	private(set) var hasInited: Bool = false
 	private(set) var isTypingInMessageBox: Bool = false
 	private(set) var map: [[MapTile]] = []
-	private(set) var customMaps: [CustomMap] = []
 
 	// Don't save
 	private(set) var isInInventoryBox: Bool = false
@@ -72,15 +72,15 @@ actor Game {
 	}
 
 	func addMap(map: CustomMap) async {
-		customMaps.append(map)
+		await maps.addMap(map: map)
 	}
 
 	func removeMap(map: CustomMap) async {
-		customMaps.removeAll(where: { $0.id == map.id })
+		await maps.removeMap(map: map)
 	}
 
 	func removeMap(mapID: UUID) async {
-		customMaps.removeAll(where: { $0.id == mapID })
+		await maps.removeMap(mapID: mapID)
 	}
 
 	@discardableResult
@@ -124,4 +124,5 @@ actor Game {
 struct TilePosition: Codable, Hashable {
 	var x: Int
 	var y: Int
+	var mapType: MapType
 }

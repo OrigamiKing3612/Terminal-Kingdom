@@ -146,6 +146,17 @@ enum MapBox {
 		await MapBoxActor.shared.updateMainMapTile(at: x, y: y, with: tile)
 	}
 
+	static func setMapGridTile(x: Int, y: Int, tile: MapTile, mapType: MapType) async {
+		switch mapType {
+			case .mainMap:
+				await MapBoxActor.shared.updateMainMapTile(at: x, y: y, with: tile)
+			case .mining:
+				break
+			default:
+				await MapBoxActor.shared.updateBuildingMapTile(at: x, y: y, with: tile)
+		}
+	}
+
 	static func setMainMapGridTile(tile: MapTile) async {
 		await MapBoxActor.shared.updateMainMapTile(at: MapBox.player.x, y: MapBox.player.y, with: tile)
 	}
@@ -167,7 +178,7 @@ enum MapBox {
 	}
 }
 
-enum MapType: Codable, Equatable {
+enum MapType: Codable, Equatable, Hashable {
 	case mainMap
 	case mining
 	case castle(side: CastleSide)

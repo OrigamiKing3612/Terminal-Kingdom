@@ -5,8 +5,14 @@ enum StaticMaps {
 		loadMap(fileName: "main")
 	}
 
-	static func buildingMap(for name: MapFileName) -> [[MapTile]] {
-		loadMap(fileName: name.rawValue)
+	static func buildingMap(mapType: MapType) async -> [[MapTile]] {
+		if await Game.shared.maps.getMapType(mapType: mapType) == [] {
+			let map = loadMap(fileName: mapTypeToBuilding(mapType: mapType).rawValue)
+			await Game.shared.maps.setMap(mapType: mapType, map: map)
+			return map
+		} else {
+			return await Game.shared.maps.getMapType(mapType: mapType)
+		}
 	}
 
 	private static func loadMap(fileName: String) -> [[MapTile]] {

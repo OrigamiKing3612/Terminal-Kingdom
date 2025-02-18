@@ -59,6 +59,8 @@ enum OpenDoorEvent {
 				break
 		}
 
+		await Game.shared.maps.setMap(mapType: MapBox.mapType, map: MapBox.buildingMap.grid)
+
 		// Return to the main map
 		await MapBox.setMapType(.mainMap)
 	}
