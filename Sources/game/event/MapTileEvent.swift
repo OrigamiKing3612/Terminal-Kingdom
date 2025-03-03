@@ -37,7 +37,6 @@ enum MapTileEvent: TileEvent {
 				if case let .crop(crop: crop) = tile.type {
 					await CollectCropEvent.collectCrop(cropTile: crop, isInPot: false)
 				} else if case let .pot(tile: potTile) = tile.type {
-					// TODO: fix this. It doesn't work
 					if potTile.cropTile.type != .none {
 						await CollectCropEvent.collectCrop(cropTile: potTile.cropTile, isInPot: true)
 						if await Game.shared.stages.farm.stage2Stages == .plant {
@@ -53,7 +52,7 @@ enum MapTileEvent: TileEvent {
 							if await Game.shared.stages.farm.stage2Stages == .plant {
 								await Game.shared.stages.farm.setStage2Stages(.comeback)
 							}
-							await MapBox.updateTile(newTile: .init(type: .pot(tile: .init(cropTile: .init(type: .tree_seed))), biome: tile.biome))
+							await MapBox.updateTile(newTile: .init(type: .pot(tile: .init(cropTile: .init(type: .tree_seed))), event: .collectCrop, biome: tile.biome))
 						})]
 						let selectedOption = await MessageBox.messageWithOptions("Plant Seed", speaker: .game, options: options)
 						await selectedOption.action()

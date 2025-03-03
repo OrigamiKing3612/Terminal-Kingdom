@@ -5,16 +5,17 @@ struct CropTile: Codable, Equatable {
 	let type: CropTileType
 
 	// 180 seconds max
+	static let maxGrowthStage = 180
 	private(set) var growthStage: Int {
 		didSet {
-			growthStage = max(0, min(growthStage, 180))
+			growthStage = max(0, min(growthStage, Self.maxGrowthStage))
 		}
 	}
 
 	var stage: CropStage {
-		if growthStage < 100 {
+		if growthStage < (Self.maxGrowthStage / 3) {
 			.seed
-		} else if growthStage < 200 {
+		} else if growthStage < (Self.maxGrowthStage / 2) {
 			.sprout
 		} else {
 			.mature
@@ -36,7 +37,14 @@ struct CropTile: Codable, Equatable {
 			case .none:
 				"."
 			case .tree_seed:
-				await Game.shared.config.useNerdFont ? "" : "t"
+				switch tile.stage {
+					case .seed:
+						await Game.shared.config.useNerdFont ? "" : "t"
+					case .sprout:
+						await Game.shared.config.useNerdFont ? "" : "t"
+					case .mature:
+						await Game.shared.config.useNerdFont ? "󰐅" : "t"
+				}
 			case .carrot:
 				switch tile.stage {
 					case .seed:

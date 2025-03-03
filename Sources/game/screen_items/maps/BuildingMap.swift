@@ -169,7 +169,14 @@ struct BuildingMap: MapBoxMap {
 	}
 
 	mutating func updateTile(newTile: MapTile) {
-		grid[player.y][player.x] = newTile
+		let mapTypeCopy = mapType
+		let x = player.x
+		let y = player.y
+		grid[y][x] = newTile
+
+		Task {
+			await Game.shared.maps.updateMap(mapType: mapTypeCopy, x: x, y: y, tile: newTile)
+		}
 	}
 
 	mutating func build() async {
