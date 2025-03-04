@@ -14,7 +14,7 @@ if await Game.shared.hasInited == false {
 	await Game.shared.initGame()
 	MapBoxActor.shared = await MapBoxActor()
 	await showTitleScreen()
-	await startTasks()
+	// await startCropQueue()
 	await mainGameLoop()
 }
 
@@ -79,7 +79,7 @@ func newGame() async {
 	await StatusBox.statusBox()
 }
 
-func startTasks() async {
+func startCropQueue() async {
 	let cropQueue = DispatchQueue(label: "com.origamiking3612.adventure.cropQueue", qos: .background, attributes: .concurrent)
 	// let stationsQueue = DispatchQueue(label: "com.origamiking3612.adventure.stationsQueue", qos: .background)
 

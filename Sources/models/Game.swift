@@ -15,7 +15,7 @@ actor Game {
 	private(set) var hasInited: Bool = false
 	private(set) var isTypingInMessageBox: Bool = false
 	private(set) var map: [[MapTile]] = []
-
+	private(set) var hasStartedCropQueue: Bool = false
 	// Don't save
 	private(set) var isInInventoryBox: Bool = false
 	private(set) var isBuilding: Bool = false
@@ -56,6 +56,11 @@ actor Game {
 	}
 
 	func addCrop(_ position: TilePosition) async {
+		// TODO: cancel the crop queue if crops is empty and remove a crop position if it is fully grown
+		if !hasStartedCropQueue {
+			await startCropQueue()
+			hasStartedCropQueue = true
+		}
 		crops.insert(position)
 	}
 
