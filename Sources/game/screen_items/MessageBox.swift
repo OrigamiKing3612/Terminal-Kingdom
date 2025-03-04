@@ -1,5 +1,5 @@
 enum MessageBox {
-	private nonisolated(unsafe) static var messages: [String] {
+	private static var messages: [String] {
 		get async { await Game.shared.messages }
 	}
 
@@ -15,8 +15,8 @@ enum MessageBox {
 		let maxVisibleLines = height - 2
 		var renderedLines: [String] = []
 
-		for message in await messages {
-			if await message == messages.last, showXCounter {
+		for (index, message) in await messages.enumerated() {
+			if await message == messages.last, showXCounter, await index == messages.count - 1 {
 				renderedLines.append(contentsOf: "\(message) (x\(lastMessageCount))".wrappedWithStyles(toWidth: width - 2))
 			} else {
 				renderedLines.append(contentsOf: message.wrappedWithStyles(toWidth: width - 2))
@@ -51,7 +51,6 @@ enum MessageBox {
 	}
 
 	static func clear() {
-		// Redraw blank lines inside the message box
 		let blankLine = String(repeating: " ", count: width - 1)
 		for y in (startY + 1) ..< (endY - 1) {
 			Screen.print(x: startX + 1, y: y, blankLine)
@@ -59,13 +58,11 @@ enum MessageBox {
 	}
 
 	static func lineUp() async {
-		// Scroll up by increasing the scrollOffset
 		scrollOffset += 1
 		await messageBox()
 	}
 
 	static func lineDown() async {
-		// Scroll down by decreasing the scrollOffset
 		if scrollOffset > 0 {
 			scrollOffset -= 1
 			await messageBox()
@@ -82,10 +79,15 @@ enum MessageBox {
 
 	private static func message(_ text: String, speaker: String) async {
 		// clear()
+		scrollOffset = 0
 		if await text == messages.last {
 			lastMessageCount += 1
 		} else {
-			lastMessageCount = 1
+			if lastMessageCount > 1 {
+				let count = lastMessageCount
+				lastMessageCount = 1
+				await updateLastMessage(newMessage: "\(messages.last!) (x\(count))", speaker: speaker)
+			}
 			if await speaker == MessageSpeakers.game.render {
 				await Game.shared.addMessage(text)
 			} else {

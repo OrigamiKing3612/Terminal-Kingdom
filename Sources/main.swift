@@ -90,7 +90,7 @@ func startTasks() async {
 				if await Game.shared.crops.count > 0 {
 					for position in await Game.shared.crops {
 						switch position.mapType {
-							case let .custom(mapID: mapID):
+							case .custom:
 								// TODO: custom map crop growing maybe?
 								break
 							case .farm:
