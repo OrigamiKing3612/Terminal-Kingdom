@@ -31,6 +31,13 @@ jobs:
       with:
         swift-version: "6.0.3"
     # TODO: make the user not need to install swift for this to work
+
+    - name: Verify Swift Installation
+      run: swift --version
+    - name: Check Visual Studio Build Tools
+      run: |
+        where msbuild
+        where cl
     - name: Build
       run: |
         swift build -c release
