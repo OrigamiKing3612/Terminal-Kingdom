@@ -1,5 +1,4 @@
 name: Build Macos
-
 on:
   workflow_dispatch:
   push:
@@ -8,7 +7,6 @@ on:
     paths-ignore:
       - 'LICENSE'
       - '**.md'
-
 jobs:
   build:
     permissions:
@@ -19,29 +17,25 @@ jobs:
         platform: [macos-latest]
         architecture: [x86_64, arm64]
     runs-on: ${{ matrix.platform }}
-
     steps:
-    - uses: actions/checkout@v4
-
-    - uses: SwiftyLab/setup-swift@latest
-      with:
-        swift-version: "6.0.3"
-
-    - name: Build
-      run: |
-        swift build -c release
-        ls -la .build
-        zip_file="TerminalKingdom_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
-        cp -r .build/arm64-apple-macosx/release/TerminalKingdom .
-        cp -r .build/arm64-apple-macosx/release/TerminalKingdom_TerminalKingdom.bundle .
-        zip -r $zip_file TerminalKingdom TerminalKingdom_TerminalKingdom.bundle
-
-    - name: Release
-      uses: softprops/action-gh-release@v2
-      with:
-        name: 'Testing Release'
-        prerelease: true
-        tag_name: testing_release
-        target_commitish: ${{ github.sha }}
-        files: |
-          TerminalKingdom_${{ matrix.platform }}_${{ matrix.architecture }}.zip
+      - uses: actions/checkout@v4
+      - uses: SwiftyLab/setup-swift@latest
+        with:
+          swift-version: "6.0.3"
+      - name: Build
+        run: |
+          swift build -c release
+          ls -la .build
+          zip_file="TerminalKingdom_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
+          cp -r .build/arm64-apple-macosx/release/TerminalKingdom .
+          cp -r .build/arm64-apple-macosx/release/TerminalKingdom_TerminalKingdom.bundle .
+          zip -r $zip_file TerminalKingdom TerminalKingdom_TerminalKingdom.bundle
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: 'Testing Release'
+          prerelease: true
+          tag_name: testing_release
+          target_commitish: ${{ github.sha }}
+          files: |
+            TerminalKingdom_${{ matrix.platform }}_${{ matrix.architecture }}.zip

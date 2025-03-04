@@ -1,5 +1,4 @@
 name: Test
-
 on:
   push:
     branches-ignore:
@@ -7,10 +6,8 @@ on:
     paths-ignore:
       - 'LICENSE'
       - '**.md'
-
   pull_request:
   workflow_dispatch:
-
 jobs:
   build_linux:
     strategy:
@@ -18,32 +15,25 @@ jobs:
       matrix:
         platform: [ubuntu-latest]
     runs-on: ${{ matrix.platform }}
-
     steps:
-    - uses: actions/checkout@v4
-
-    - name: Build
-      run: |
-        docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace swift:6.0.3-focal swift build -c release -Xswiftc -static-stdlib
-
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace swift:6.0.3-focal swift build -c release -Xswiftc -static-stdlib
   build_macos:
     strategy:
       fail-fast: true
       matrix:
         platform: [macos-latest]
     runs-on: ${{ matrix.platform }}
-
     steps:
-    - uses: actions/checkout@v4
-
-    - uses: SwiftyLab/setup-swift@latest
-      with:
-        swift-version: "6.0.3"
-
-    - name: Build
-      run: |
-        swift build -c release
-
+      - uses: actions/checkout@v4
+      - uses: SwiftyLab/setup-swift@latest
+        with:
+          swift-version: "6.0.3"
+      - name: Build
+        run: |
+          swift build -c release
   build_windows:
     strategy:
       fail-fast: true
@@ -51,15 +41,12 @@ jobs:
         platform: [windows-latest]
         architecture: [x86_64]
     runs-on: ${{ matrix.platform }}
-
     steps:
-    - uses: actions/checkout@v4
-
-    - uses: SwiftyLab/setup-swift@latest
-      with:
-        swift-version: "6.0.3"
-
-    - name: Build
-      shell: pwsh
-      run: |
-        swift build -c release
+      - uses: actions/checkout@v4
+      - uses: SwiftyLab/setup-swift@latest
+        with:
+          swift-version: "6.0.3"
+      - name: Build
+        shell: pwsh
+        run: |
+          swift build -c release

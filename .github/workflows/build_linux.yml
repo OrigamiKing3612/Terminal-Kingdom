@@ -1,5 +1,4 @@
 name: Build Linux
-
 on:
   workflow_dispatch:
   push:
@@ -8,7 +7,6 @@ on:
     paths-ignore:
       - 'LICENSE'
       - '**.md'
-
 jobs:
   build:
     permissions:
@@ -19,25 +17,22 @@ jobs:
         platform: [ubuntu-22.04, ubuntu-24.04, ubuntu-latest]
         architecture: [x86_64, arm64]
     runs-on: ${{ matrix.platform }}
-
     steps:
-    - uses: actions/checkout@v4
-
-    - name: Build
-      run: |
-        docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace swift:6.0.3-focal swift build -c release -Xswiftc -static-stdlib
-        ls -la .build
-        zip_file="TerminalKingdom_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
-        cp -r .build/x86_64-unknown-linux-gnu/release/TerminalKingdom .
-        cp -r .build/x86_64-unknown-linux-gnu/release/TerminalKingdom_TerminalKingdom.resources .
-        zip -r $zip_file TerminalKingdom TerminalKingdom_TerminalKingdom.resources
-
-    - name: Release
-      uses: softprops/action-gh-release@v2
-      with:
-        name: 'Testing Release'
-        prerelease: true
-        tag_name: testing_release
-        target_commitish: ${{ github.sha }}
-        files: |
-          TerminalKingdom_${{ matrix.platform }}_${{ matrix.architecture }}.zip
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace swift:6.0.3-focal swift build -c release -Xswiftc -static-stdlib
+          ls -la .build
+          zip_file="TerminalKingdom_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
+          cp -r .build/x86_64-unknown-linux-gnu/release/TerminalKingdom .
+          cp -r .build/x86_64-unknown-linux-gnu/release/TerminalKingdom_TerminalKingdom.resources .
+          zip -r $zip_file TerminalKingdom TerminalKingdom_TerminalKingdom.resources
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: 'Testing Release'
+          prerelease: true
+          tag_name: testing_release
+          target_commitish: ${{ github.sha }}
+          files: |
+            TerminalKingdom_${{ matrix.platform }}_${{ matrix.architecture }}.zip

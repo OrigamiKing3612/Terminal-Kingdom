@@ -1,5 +1,4 @@
 name: Build Windows
-
 on:
   workflow_dispatch:
   push:
@@ -8,11 +7,9 @@ on:
     paths-ignore:
       - 'LICENSE'
       - '**.md'
-
 defaults:
   run:
     shell: pwsh
-
 jobs:
   build:
     permissions:
@@ -23,36 +20,33 @@ jobs:
         platform: [windows-latest]
         architecture: [x86_64]
     runs-on: ${{ matrix.platform }}
-
     steps:
-    - uses: actions/checkout@v4
-
-    - uses: SwiftyLab/setup-swift@latest
-      with:
-        swift-version: "6.0.3"
-    # TODO: make the user not need to install swift for this to work
-
-    - name: Verify Swift Installation
-      run: swift --version
-    - name: Check Visual Studio Build Tools
-      run: |
-        where msbuild
-        where cl
-    - name: Build
-      run: |
-        swift build -c release
-        ls .build
-        ls .build/x86_64-unknown-windows-msvc/release
-        cp -r .build/x86_64-unknown-windows-msvc/release/TerminalKingdom.exe .
-        cp -r .build/x86_64-unknown-windows-msvc/release/TerminalKingdom_TerminalKingdom.resources .
-        $zipFile = "TerminalKingdom_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
-        Compress-Archive -Path "TerminalKingdom.exe", "TerminalKingdom_TerminalKingdom.resources" -DestinationPath $zipFile
-    - name: Release
-      uses: softprops/action-gh-release@v2
-      with:
-        name: 'Testing Release'
-        prerelease: true
-        tag_name: testing_release
-        target_commitish: ${{ github.sha }}
-        files: |
-          TerminalKingdom_${{ matrix.platform }}_${{ matrix.architecture }}.zip
+      - uses: actions/checkout@v4
+      - uses: SwiftyLab/setup-swift@latest
+        with:
+          swift-version: "6.0.3"
+          # TODO: make the user not need to install swift for this to work
+      - name: Verify Swift Installation
+        run: swift --version
+      - name: Check Visual Studio Build Tools
+        run: |
+          where msbuild
+          where cl
+      - name: Build
+        run: |
+          swift build -c release
+          ls .build
+          ls .build/x86_64-unknown-windows-msvc/release
+          cp -r .build/x86_64-unknown-windows-msvc/release/TerminalKingdom.exe .
+          cp -r .build/x86_64-unknown-windows-msvc/release/TerminalKingdom_TerminalKingdom.resources .
+          $zipFile = "TerminalKingdom_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
+          Compress-Archive -Path "TerminalKingdom.exe", "TerminalKingdom_TerminalKingdom.resources" -DestinationPath $zipFile
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: 'Testing Release'
+          prerelease: true
+          tag_name: testing_release
+          target_commitish: ${{ github.sha }}
+          files: |
+            TerminalKingdom_${{ matrix.platform }}_${{ matrix.architecture }}.zip
