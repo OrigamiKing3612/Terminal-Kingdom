@@ -36,10 +36,10 @@ jobs:
         swift build -c release
         ls .build
         ls .build/x86_64-unknown-windows-msvc/release
-        cp -r .build/x86_64-unknown-windows-msvc/release/adventure.exe .
-        cp -r .build/x86_64-unknown-windows-msvc/release/adventure_adventure.resources .
-        $zipFile = "adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
-        Compress-Archive -Path "adventure.exe", "adventure_adventure.resources" -DestinationPath $zipFile
+        cp -r .build/x86_64-unknown-windows-msvc/release/TerminalKingdom.exe .
+        cp -r .build/x86_64-unknown-windows-msvc/release/TerminalKingdom_TerminalKingdom.resources .
+        $zipFile = "TerminalKingdom_${{ matrix.platform }}_${{ matrix.architecture }}.zip"
+        Compress-Archive -Path "TerminalKingdom.exe", "TerminalKingdom_TerminalKingdom.resources" -DestinationPath $zipFile
     - name: Release
       uses: softprops/action-gh-release@v2
       with:
@@ -48,4 +48,4 @@ jobs:
         tag_name: testing_release
         target_commitish: ${{ github.sha }}
         files: |
-          adventure_${{ matrix.platform }}_${{ matrix.architecture }}.zip
+          TerminalKingdom_${{ matrix.platform }}_${{ matrix.architecture }}.zip

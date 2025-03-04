@@ -163,7 +163,7 @@ actor MapGen {
 		func outputMap(_ map: [[MapTile]]) async {
 			do {
 				let filePath = FileManager.default.homeDirectoryForCurrentUser
-				let directory = filePath.appendingPathComponent(".adventure")
+				let directory = filePath.appendingPathComponent(".terminalkingdom")
 				let file = directory.appendingPathComponent("map.txt")
 				var mapString = ""
 				for (index, row) in map.enumerated() {

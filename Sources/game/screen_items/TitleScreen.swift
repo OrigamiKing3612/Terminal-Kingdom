@@ -19,7 +19,7 @@ struct TitleScreen {
 			selectedOptionIndex = 0
 			while true {
 				Screen.clear()
-				let text = "Welcome to Adventure!"
+				let text = "Welcome to Terminal Kingdom!"
 				let x = middleX - (text.count / 2)
 				let y = middleY - (Screen.rows / 2)
 				Screen.print(x: x, y: y, text.styled(with: .bold))

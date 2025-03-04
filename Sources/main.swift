@@ -39,7 +39,7 @@ func endProgram() {
 	// TODO: Save game
 	//    let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
 	//    if let filePath {
-	//        let file = filePath.appendingPathComponent("adventure.game.json")
+	//        let file = filePath.appendingPathComponent("terminalkingdom.game.json")
 	//
 	//        do {
 	//            let game = CodableGame(location: await Game.shared.location, hasInited: await Game.shared.hasInited, isTypingInMessageBox: await Game.shared.isTypingInMessageBox, player: await Game.shared.player, map: await Game.shared.map, startingVillageChecks: await Game.shared.startingVillageChecks, stages: await Game.shared.stages, messages: await Game.shared.messages)
@@ -58,7 +58,7 @@ func loadGame() async -> Bool {
 	// let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
 	//
 	// if let filePath {
-	// 	let file = filePath.appendingPathComponent("adventure.game.json")
+	// 	let file = filePath.appendingPathComponent("terminalkingdom.game.json")
 	// 	do {
 	// 		let fileData = try Data(contentsOf: file)
 	// 		let decodedGame = try JSONDecoder().decode(CodableGame.self, from: fileData)
@@ -72,7 +72,7 @@ func loadGame() async -> Bool {
 }
 
 func newGame() async {
-	await MessageBox.message("Welcome to Adventure!", speaker: .game)
+	await MessageBox.message("Welcome to Terminal Kingdom!", speaker: .game)
 	let playerName = await MessageBox.messageWithTyping("Let's create your character. What is your name?", speaker: .game)
 	await MessageBox.message("Welcome \(playerName)!", speaker: .game)
 	await Game.shared.player.setName(playerName)
@@ -80,8 +80,8 @@ func newGame() async {
 }
 
 func startCropQueue() async {
-	let cropQueue = DispatchQueue(label: "com.origamiking3612.adventure.cropQueue", qos: .background, attributes: .concurrent)
-	// let stationsQueue = DispatchQueue(label: "com.origamiking3612.adventure.stationsQueue", qos: .background)
+	let cropQueue = DispatchQueue(label: "com.origamiking3612.terminalkingdom.cropQueue", qos: .background, attributes: .concurrent)
+	// let stationsQueue = DispatchQueue(label: "com.origamiking3612.terminalkingdom.stationsQueue", qos: .background)
 
 	cropQueue.async {
 		// TODO: building maps

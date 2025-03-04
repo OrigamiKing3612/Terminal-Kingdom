@@ -1,4 +1,4 @@
-# Adventure
+# Terminal kingdom
 This is a game played entirely in the command line. Your goal is to create a new village from the ground up and keep it running. You will have to make choices that will affect your village. You will be able to create many villages and keep your kingdom running smoothly!
 This game is still in early development and is not *fully* yet playable.
 
@@ -10,7 +10,7 @@ Right now, I've only worked on the tutorial. It is not done yet, but the tutoria
 > You can find it [here](https://swift.org/download/). (I hope to fix this one day)
 1. Download the newest version from the releases.
 2. Extract the zip file.
-3. Run the `adventure` executable.
+3. Run the `TerminalKingdom` executable.
 
 ## How to Play
 - Use the wasd or arrow keys to navigate.

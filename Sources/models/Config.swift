@@ -2,7 +2,7 @@ import Foundation
 
 //! TODO: async load and save
 struct Config: Codable {
-	static let configFile: String = "adventure-config.json"
+	static let configFile: String = "config.json"
 	var useNerdFont: Bool = false
 
 	var vimKeys: Bool = false
@@ -17,7 +17,7 @@ struct Config: Codable {
 
 	static func locations() -> (filePath: URL, directory: URL, file: URL) {
 		let filePath = FileManager.default.homeDirectoryForCurrentUser
-		let directory = filePath.appendingPathComponent(".adventure")
+		let directory = filePath.appendingPathComponent(".terminalkingdom")
 		let file = directory.appendingPathComponent(Config.configFile)
 		return (filePath, directory, file)
 	}
