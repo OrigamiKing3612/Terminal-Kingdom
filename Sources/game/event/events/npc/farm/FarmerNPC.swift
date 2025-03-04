@@ -24,6 +24,10 @@ enum FarmerNPC {
 				await stage1()
 			case 2:
 				await stage2()
+			case 3:
+				await stage3()
+			case 4:
+				await stage4()
 			default:
 				break
 		}
@@ -103,6 +107,49 @@ enum FarmerNPC {
 				}
 		}
 	}
+
+	static func stage4() async {
+		switch await Game.shared.stages.farm.stage4Stages {
+			case .notStarted:
+				await MessageBox.message("Now I want to teach you how to get a pot to plant your own stuff. Can you go get 10 clay from the mine?", speaker: .farmer)
+				await Game.shared.stages.farm.setStage4Stages(.collect)
+				await StatusBox.quest(.farm4)
+			case .collect:
+				if await Game.shared.stages.farm.stage4Stages.canGetClay {
+					await MessageBox.message("You haven't collected the clay from the mine yet.", speaker: .farmer)
+				} else {
+					await MessageBox.message("You haven't collected the clay from the miner yet.", speaker: .farmer)
+				}
+			case .comeBack:
+				if await Game.shared.player.has(item: .clay, count: 10) {
+					// TODO: Test this, it might be better to just remove 10 clay and delete the stage4ClayUUIDToRemove
+					if let ids = await Game.shared.stages.farm.stage4ClayUUIDToRemove {
+						await Game.shared.player.removeItems(ids: ids)
+					} else {
+						await Game.shared.player.removeItem(item: .clay, count: 10)
+					}
+					if let id = await Game.shared.stages.farm.stage4PickaxeUUIDToRemove {
+						await Game.shared.player.removeItem(id: id)
+					}
+
+					await Game.shared.stages.farm.setStage4Stages(.done)
+					await StatusBox.removeQuest(quest: .farm4)
+					await Game.shared.player.setFarmingSkillLevel(.four)
+					fallthrough
+				} else {
+					if await Game.shared.stages.farm.stage4Stages.canGetClay {
+						await MessageBox.message("You don't have the clay from the mine.", speaker: .farmer)
+					} else {
+						await MessageBox.message("You don't have the clay from the miner.", speaker: .farmer)
+					}
+				}
+			case .done:
+				await Game.shared.stages.farm.next()
+				if await RandomEventStuff.wantsToContinue(speaker: .farmer) {
+					await getStage()
+				}
+		}
+	}
 }
 
 enum FarmStage1Stages: Codable {
@@ -115,4 +162,14 @@ enum FarmStage2Stages: Codable {
 
 enum FarmStage3Stages: Codable {
 	case notStarted, collect, comeBack, done
+}
+
+enum FarmStage4Stages: Codable {
+	case notStarted, collect, comeBack, done
+
+	var canGetClay: Bool {
+		get async {
+			await Game.shared.stages.mine.stageNumber >= 3
+		}
+	}
 }

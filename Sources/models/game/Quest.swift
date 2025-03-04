@@ -45,6 +45,7 @@ enum Quest: Codable, Equatable {
 	case farm1
 	case farm2
 	case farm3
+	case farm4
 
 	var label: String {
 		get async {
@@ -120,6 +121,17 @@ enum Quest: Codable, Equatable {
 				case .farm1: "Collect a tree seed for the Farmer"
 				case .farm2: "Plant the tree seed in the pot"
 				case .farm3: "Collect the tree and bring it to the Farmer"
+				case .farm4:
+					switch await Game.shared.stages.farm.stage4Stages {
+						case .notStarted:
+							"Farm Stage 4 not started"
+						case .collect:
+							"Go get 10 clay from the mine"
+						case .comeBack:
+							"Return to the farmer"
+						case .done:
+							"Farm Stage 4 done"
+					}
 			}
 		}
 	}

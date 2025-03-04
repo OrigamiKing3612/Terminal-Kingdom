@@ -4,10 +4,13 @@ actor FarmStages {
 	private(set) var stageNumber = 0
 	private(set) var stage1AxeUUIDToRemove: UUID?
 	private(set) var stage2SeedUUIDToRemove: UUID?
+	private(set) var stage4ClayUUIDToRemove: [UUID]?
+	private(set) var stage4PickaxeUUIDToRemove: UUID?
 
 	private(set) var stage1Stages: FarmStage1Stages = .notStarted
 	private(set) var stage2Stages: FarmStage2Stages = .notStarted
 	private(set) var stage3Stages: FarmStage3Stages = .notStarted
+	private(set) var stage4Stages: FarmStage4Stages = .notStarted
 
 	func next() {
 		stageNumber += 1
@@ -21,6 +24,14 @@ actor FarmStages {
 		stage2SeedUUIDToRemove = uuid
 	}
 
+	func setStage4ClayUUIDsToRemove(_ uuid: [UUID]) {
+		stage4ClayUUIDToRemove = uuid
+	}
+
+	func setStage4PickaxeUUIDsToRemove(_ uuid: UUID) {
+		stage4PickaxeUUIDToRemove = uuid
+	}
+
 	func setStage1Stages(_ stage: FarmStage1Stages) {
 		stage1Stages = stage
 	}
@@ -31,5 +42,9 @@ actor FarmStages {
 
 	func setStage3Stages(_ stage: FarmStage3Stages) {
 		stage3Stages = stage
+	}
+
+	func setStage4Stages(_ stage: FarmStage4Stages) {
+		stage4Stages = stage
 	}
 }

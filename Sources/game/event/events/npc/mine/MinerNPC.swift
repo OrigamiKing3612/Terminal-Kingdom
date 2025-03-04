@@ -23,6 +23,15 @@ enum MinerNPC {
 			let uuids2 = await Game.shared.player.collect(item: .init(type: .iron, canBeSold: false), count: 10)
 			await Game.shared.stages.builder.setStage1ItemsUUIDsToRemove(uuids1 + uuids2)
 			await Game.shared.stages.builder.setStage1Stages(.bringBack)
+		} else if await Game.shared.stages.farm.stage4Stages == .collect {
+			if await Game.shared.stages.farm.stage4Stages.canGetClay {
+				await MessageBox.message("You know how to do it, I'll let you practice this time. Take this pickaxe and go get it from the mine.", speaker: .miner)
+				await Game.shared.stages.farm.setStage4PickaxeUUIDsToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init(durability: 25)), canBeSold: false)))
+			} else {
+				await MessageBox.message("Yes let me get that for you", speaker: .miner)
+				await Game.shared.stages.farm.setStage4ClayUUIDsToRemove(Game.shared.player.collect(item: .init(type: .clay, canBeSold: false), count: 10))
+			}
+			await Game.shared.stages.farm.setStage4Stages(.comeBack)
 		} else {
 			await getStage()
 		}
