@@ -33,31 +33,7 @@ enum MapTileEvent: TileEvent {
 					await SalesmanNPC.talk()
 				}
 			case .collectCrop:
-				let tile = await MapBox.tilePlayerIsOn
-				if case let .crop(crop: crop) = tile.type {
-					await CollectCropEvent.collectCrop(cropTile: crop, isInPot: false)
-				} else if case let .pot(tile: potTile) = tile.type {
-					if potTile.cropTile.type != .none {
-						await CollectCropEvent.collectCrop(cropTile: potTile.cropTile, isInPot: true)
-						if await Game.shared.stages.farm.stage2Stages == .plant {
-							await Game.shared.stages.farm.setStage2Stages(.comeback)
-						}
-					} else {
-						if await !Game.shared.player.has(item: .tree_seed) {
-							await MessageBox.message("There is no crop here", speaker: .game)
-							return
-						}
-						let options: [MessageOption] = [.init(label: "Quit", action: {}), .init(label: "Plant Seed", action: {
-							await Game.shared.addCrop(TilePosition(x: MapBox.player.x, y: MapBox.player.y, mapType: MapBox.mapType))
-							if await Game.shared.stages.farm.stage2Stages == .plant {
-								await Game.shared.stages.farm.setStage2Stages(.comeback)
-							}
-							await MapBox.updateTile(newTile: .init(type: .pot(tile: .init(cropTile: .init(type: .tree_seed))), event: .collectCrop, biome: tile.biome))
-						})]
-						let selectedOption = await MessageBox.messageWithOptions("Plant Seed", speaker: .game, options: options)
-						await selectedOption.action()
-					}
-				}
+				await CollectCropEvent.collectCrop()
 			case .useStation:
 				await UseStationEvent.useStation()
 		}

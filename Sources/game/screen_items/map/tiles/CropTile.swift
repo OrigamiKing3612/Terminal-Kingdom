@@ -43,7 +43,7 @@ struct CropTile: Codable, Equatable {
 					case .sprout:
 						await Game.shared.config.useNerdFont ? "" : "t"
 					case .mature:
-						await Game.shared.config.useNerdFont ? "󰐅" : "t"
+						await MapTileType.tree.render()
 				}
 			case .carrot:
 				switch tile.stage {
