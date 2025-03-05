@@ -7,7 +7,7 @@ enum RandomEventStuff {
 		switch await Game.shared.startingVillageChecks.hasBeenTaughtToChopLumber {
 			case .no:
 				await MessageBox.message("Here is what you need to do, take this axe and walk up to a tree and press the \(KeyboardKeys.space.render), or the \(KeyboardKeys.enter.render) key to chop it down. Please go get 10 lumber and bring it to me to show me you can do it.", speaker: speaker)
-				await Game.shared.stages.random.setChopTreeAxeUUIDToRemove(Game.shared.player.collectIfNotPresent(item: .init(type: .axe(type: .init()), canBeSold: false)))
+				await Game.shared.stages.random.setChopTreeAxeUUIDToRemove(Game.shared.player.collectIfNotPresent(item: .init(type: .axe(type: .init(durability: 10)), canBeSold: false)))
 				await StatusBox.quest(.chopLumber(for: choppingLumberTeachingDoorTypes.name))
 				await Game.shared.startingVillageChecks.setHasBeenTaughtToChopLumber(.inProgress(by: choppingLumberTeachingDoorTypes))
 			case .inProgress(by: choppingLumberTeachingDoorTypes):
