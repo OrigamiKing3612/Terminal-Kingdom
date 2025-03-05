@@ -51,7 +51,7 @@ struct NPCTile: Codable, Equatable {
 			case .chef:
 				break
 			case .potter:
-				break
+				await PotterNPC.talk()
 			case .farmer_helper:
 				await FarmerHelperNPC.talk()
 		}

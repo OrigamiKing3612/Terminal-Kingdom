@@ -17,12 +17,14 @@ struct DoorTile: BuildableTile, Hashable {
 	static func renderDoor(tile: DoorTile) async -> String {
 		let conditions: [(DoorTileTypes, Bool)] = await [
 			(.mine, Game.shared.stages.blacksmith.stage1Stages == .goToMine),
+			(.hunting_area, Game.shared.stages.blacksmith.stage7Stages == .bringToHunter),
+			(.shop, Game.shared.stages.blacksmith.stage9Stages == .goToSalesman),
 			(.blacksmith, Game.shared.stages.mine.stage1Stages == .collect),
 			(.shop, Game.shared.stages.mine.stage10Stages == .goToSalesman),
 			(.carpenter, Game.shared.stages.blacksmith.stage3Stages == .goToCarpenter),
-			(.hunting_area, Game.shared.stages.blacksmith.stage7Stages == .bringToHunter),
-			(.shop, Game.shared.stages.blacksmith.stage9Stages == .goToSalesman),
 			(.mine, Game.shared.stages.builder.stage1Stages == .collect),
+			(.mine, Game.shared.stages.farm.stage4Stages == .collect),
+			(.potter, Game.shared.stages.farm.stage5Stages == .collect),
 		]
 		if await MapBox.mapType == .mainMap {
 			for (doorType, condition) in conditions {

@@ -40,10 +40,11 @@ enum ItemType: Codable, Equatable, Hashable {
 	case potato
 	case wheat
 	case lettuce
+	case pot
 
 	var isBuildable: Bool {
 		switch self {
-			case .door, .fence, .gate, .lumber, .chest, .bed, .desk: true
+			case .door, .fence, .gate, .lumber, .chest, .bed, .desk, .pot: true
 			default: false
 		}
 	}
@@ -75,6 +76,7 @@ enum ItemType: Codable, Equatable, Hashable {
 			case .chest: "Chest"
 			case .bed: "Bed"
 			case .desk: "Desk"
+			case .pot: "Pot"
 		}
 	}
 

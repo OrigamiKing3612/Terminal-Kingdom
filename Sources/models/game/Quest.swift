@@ -46,6 +46,7 @@ enum Quest: Codable, Equatable {
 	case farm2
 	case farm3
 	case farm4
+	case farm5
 
 	var label: String {
 		get async {
@@ -132,6 +133,7 @@ enum Quest: Codable, Equatable {
 						case .done:
 							"Farm Stage 4 done"
 					}
+				case .farm5: "Get a pot from the potter."
 			}
 		}
 	}

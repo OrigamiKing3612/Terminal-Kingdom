@@ -17,10 +17,11 @@ actor PlayerCharacter {
 	private(set) var quests: [Quest] = []
 	#if DEBUG
 		private(set) var mapType: MapType = .mainMap
+		private(set) var canBuild: Bool = true
 	#else
 		private(set) var mapType: MapType = .castle(side: .left)
+		private(set) var canBuild: Bool = false
 	#endif
-	private(set) var canBuild: Bool = false
 	var stats: Stats = .init()
 
 	func setName(_ name: String) {

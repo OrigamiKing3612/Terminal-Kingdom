@@ -9,7 +9,10 @@ enum PotterAreaDoorEvent {
 	}
 
 	static func goInside(tile _: DoorTile) async {
-		// TODO: Map changed to be a "map" of the building
-		await MessageBox.message("Its locked.", speaker: .game)
+		if await Game.shared.stages.farm.stageNumber >= 5 {
+			await MapBox.setMapType(.potter)
+		} else {
+			await MessageBox.message("Its locked.", speaker: .game)
+		}
 	}
 }

@@ -15,9 +15,6 @@ enum CollectCropEvent {
 					await removeCrop()
 				case .mature:
 					await collect(cropTile: potTile.cropTile, isInPot: true)
-					if await Game.shared.stages.farm.stage2Stages == .plant {
-						await Game.shared.stages.farm.setStage2Stages(.comeback)
-					}
 			}
 		} else {
 			await addCrop()
@@ -59,6 +56,9 @@ enum CollectCropEvent {
 				let seedCount = Int.random(in: 0 ... 2)
 				_ = await Game.shared.player.collect(item: .init(type: .lumber), count: lumberCount)
 				_ = await Game.shared.player.collect(item: .init(type: .tree_seed), count: seedCount)
+				if await Game.shared.stages.farm.stage3Stages == .collect {
+					await Game.shared.stages.farm.setStage3Stages(.comeBack)
+				}
 			case .none:
 				break
 		}
@@ -71,11 +71,11 @@ enum CollectCropEvent {
 			return
 		}
 		let options: [MessageOption] = [.init(label: "Quit", action: {}), .init(label: "Plant Seed", action: {
-			await Game.shared.addCrop(TilePosition(x: MapBox.player.x, y: MapBox.player.y, mapType: MapBox.mapType))
 			if await Game.shared.stages.farm.stage2Stages == .plant {
 				await Game.shared.stages.farm.setStage2Stages(.comeback)
 			}
 			await MapBox.updateTile(newTile: .init(type: .pot(tile: .init(cropTile: .init(type: .tree_seed))), event: .collectCrop, biome: tile.biome))
+			await Game.shared.addCrop(TilePosition(x: MapBox.player.x, y: MapBox.player.y, mapType: MapBox.mapType))
 		})]
 		let selectedOption = await MessageBox.messageWithOptions("Plant Seed", speaker: .game, options: options)
 		await selectedOption.action()

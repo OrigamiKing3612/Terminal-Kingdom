@@ -15,7 +15,7 @@ struct CropTile: Codable, Equatable {
 	var stage: CropStage {
 		if growthStage < (Self.maxGrowthStage / 3) {
 			.seed
-		} else if growthStage < (Self.maxGrowthStage / 2) {
+		} else if growthStage < (Self.maxGrowthStage) {
 			.sprout
 		} else {
 			.mature

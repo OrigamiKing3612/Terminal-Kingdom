@@ -28,6 +28,8 @@ enum FarmerNPC {
 				await stage3()
 			case 4:
 				await stage4()
+			case 5:
+				await stage5()
 			default:
 				break
 		}
@@ -150,6 +152,34 @@ enum FarmerNPC {
 				}
 		}
 	}
+
+	static func stage5() async {
+		switch await Game.shared.stages.farm.stage5Stages {
+			case .notStarted:
+				await MessageBox.message("Now that you have the clay, you can take it to the potter and get a pot.", speaker: .farmer)
+				await Game.shared.stages.farm.setStage5ClayUUIDsToRemove(Game.shared.player.collect(item: .init(type: .clay, canBeSold: false), count: 10))
+				await Game.shared.stages.farm.setStage5Stages(.collect)
+				await StatusBox.quest(.farm5)
+			case .collect:
+				await MessageBox.message("You haven't gotten the pot yet.", speaker: .farmer)
+			case .comeBack:
+				if await Game.shared.player.has(item: .pot, count: 5) {
+					await MessageBox.message("Great job!", speaker: .farmer)
+					await Game.shared.player.removeItem(item: .pot)
+					await Game.shared.stages.farm.setStage5Stages(.done)
+					await StatusBox.removeQuest(quest: .farm5)
+					await Game.shared.player.setFarmingSkillLevel(.five)
+					fallthrough
+				} else {
+					await MessageBox.message("You haven't gotten all the pots yet.", speaker: .farmer)
+				}
+			case .done:
+				await Game.shared.stages.farm.next()
+				if await RandomEventStuff.wantsToContinue(speaker: .farmer) {
+					await getStage()
+				}
+		}
+	}
 }
 
 enum FarmStage1Stages: Codable {
@@ -172,4 +202,8 @@ enum FarmStage4Stages: Codable {
 			await Game.shared.stages.mine.stageNumber >= 3
 		}
 	}
+}
+
+enum FarmStage5Stages: Codable {
+	case notStarted, collect, comeBack, done
 }
