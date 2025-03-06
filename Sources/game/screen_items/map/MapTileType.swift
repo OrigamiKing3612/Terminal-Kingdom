@@ -71,8 +71,8 @@ enum MapTileType: TileType {
 			case .water: "W".styled(with: .brightBlue)
 			case .path: "P"
 			case .tree: await (Game.shared.config.useNerdFont ? "󰐅" : "T").styled(with: .green)
-			case let .building(tile: buildingTile): await "#".styled(with: .dim, styledIf: Game.shared.isBuilding && buildingTile.isPlacedByPlayer)
-			case .player: "@".styled(with: [.blue, .bold])
+			case let .building(tile: buildingTile): await Game.shared.config.icons.buildingIcon.styled(with: .dim, styledIf: Game.shared.isBuilding && buildingTile.isPlacedByPlayer)
+			case .player: await Game.shared.config.icons.characterIcon.styled(with: [.blue, .bold])
 			case .sand: "S".styled(with: .yellow)
 			case let .door(doorTile): await DoorTile.renderDoor(tile: doorTile)
 			case .TOBEGENERATED: "."

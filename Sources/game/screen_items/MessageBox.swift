@@ -127,7 +127,7 @@ enum MessageBox {
 	private static func messageWithTyping(_ text: String, speaker: String) async -> String {
 		await MapBox.hideMapBox()
 		await StatusBox.setShowStatusBox(false)
-		let typingIcon = await Game.shared.config.selectedIcon
+		let typingIcon = await Game.shared.config.icons.selectedIcon
 		await message(text, speaker: speaker)
 		await message("   \(typingIcon)", speaker: .game)
 		await Game.shared.setIsTypingInMessageBox(true)
@@ -173,7 +173,7 @@ enum MessageBox {
 
 	private static func messageWithTypingNumbers(_ text: String, speaker: String) async -> Int {
 		await MapBox.hideMapBox()
-		let typingIcon = await Game.shared.config.selectedIcon
+		let typingIcon = await Game.shared.config.icons.selectedIcon
 		await message(text, speaker: speaker)
 		await message("   \(typingIcon)", speaker: .game)
 		await Game.shared.setIsTypingInMessageBox(true)
@@ -222,7 +222,7 @@ enum MessageBox {
 		await hideAllBoxes(inventoryBox: hideInventoryBox)
 		await Game.shared.setIsTypingInMessageBox(true)
 
-		let typingIcon = await Game.shared.config.selectedIcon
+		let typingIcon = await Game.shared.config.icons.selectedIcon
 		var newText = text
 		if await !Game.shared.startingVillageChecks.hasUsedMessageWithOptions {
 			newText += " (Use your arrow keys to select an option)".styled(with: .bold)
@@ -285,7 +285,7 @@ enum MessageBox {
 		await hideAllBoxes(inventoryBox: hideInventoryBox)
 		await Game.shared.setIsTypingInMessageBox(true)
 
-		let typingIcon = await Game.shared.config.selectedIcon
+		let typingIcon = await Game.shared.config.icons.selectedIcon
 		var newText = text
 		if await !Game.shared.startingVillageChecks.hasUsedMessageWithOptions {
 			newText += " (Use your arrow keys to select an option)".styled(with: .bold)

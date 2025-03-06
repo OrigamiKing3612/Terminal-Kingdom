@@ -1,16 +1,18 @@
 import Foundation
 
 //! TODO: async load and save
-struct Config: Codable {
+struct Config {
 	static let configFile: String = "config.json"
 	var useNerdFont: Bool = false
 
 	var vimKeys: Bool = false
 	var arrowKeys: Bool = false
 	var wasdKeys: Bool = true
-	private var _selectedIcon: String = ">"
+	var icons: ConfigIcons = .init()
+
+	@available(*, deprecated, message: "Use `icons.selectedIcon` instead")
 	var selectedIcon: String {
-		_selectedIcon.styled(with: .bold)
+		icons.selectedIcon.styled(with: .bold)
 	}
 
 	init() {}
@@ -59,16 +61,64 @@ struct Config: Codable {
 			exit(1)
 		}
 	}
+
+	struct ConfigIcons: Codable {
+		var characterIcon: String = "@"
+		var buildingIcon: String = "#"
+		private var _selectedIcon: String = ">"
+
+		var selectedIcon: String {
+			get { _selectedIcon.styled(with: .bold) }
+			set { _selectedIcon = newValue }
+		}
+
+		init() {}
+
+		func encode(to encoder: any Encoder) throws {
+			var container = encoder.container(keyedBy: CodingKeys.self)
+			try container.encode(characterIcon, forKey: .characterIcon)
+			try container.encode(buildingIcon, forKey: .buildingIcon)
+			try container.encode(_selectedIcon, forKey: .selectedIcon)
+		}
+
+		enum CodingKeys: CodingKey {
+			case characterIcon
+			case buildingIcon
+			case selectedIcon
+		}
+
+		init(from decoder: any Decoder) throws {
+			let container = try decoder.container(keyedBy: CodingKeys.self)
+			self.characterIcon = decodeIcon(container, key: .characterIcon)
+			self.buildingIcon = decodeIcon(container, key: .buildingIcon)
+			self._selectedIcon = decodeIcon(container, key: .selectedIcon)
+		}
+
+		private func decodeIcon(_ container: KeyedDecodingContainer<CodingKeys>, key: CodingKeys) -> String {
+			let icon = try? container.decode(String.self, forKey: key)
+			if let icon {
+				if icon.count == 1 {
+					return icon
+				} else {
+					print("Error: icon for \(key) must be a single character.")
+					exit(-2)
+				}
+			} else {
+				print("Error: icon for \(key) not found.")
+				exit(-1)
+			}
+		}
+	}
 }
 
-extension Config {
+extension Config: Codable {
 	func encode(to encoder: any Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
 		try container.encode(useNerdFont, forKey: .useNerdFont)
 		try container.encode(vimKeys, forKey: .vimKeys)
 		try container.encode(arrowKeys, forKey: .arrowKeys)
 		try container.encode(wasdKeys, forKey: .wasdKeys)
-		try container.encode(_selectedIcon, forKey: .selectedIcon)
+		try container.encode(icons, forKey: .icons)
 	}
 
 	enum CodingKeys: CodingKey {
@@ -76,7 +126,7 @@ extension Config {
 		case vimKeys
 		case arrowKeys
 		case wasdKeys
-		case selectedIcon
+		case icons
 	}
 
 	init(from decoder: any Decoder) throws {
@@ -85,6 +135,6 @@ extension Config {
 		self.vimKeys = try container.decode(Bool.self, forKey: .vimKeys)
 		self.arrowKeys = try container.decode(Bool.self, forKey: .arrowKeys)
 		self.wasdKeys = try container.decode(Bool.self, forKey: .wasdKeys)
-		self._selectedIcon = try container.decode(String.self, forKey: .selectedIcon)
+		self.icons = try container.decode(ConfigIcons.self, forKey: .icons)
 	}
 }
