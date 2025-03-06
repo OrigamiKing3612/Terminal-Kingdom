@@ -17,6 +17,7 @@ actor FarmStages {
 	private(set) var stage3Stages: FarmStage3Stages = .notStarted
 	private(set) var stage4Stages: FarmStage4Stages = .notStarted
 	private(set) var stage5Stages: FarmStage5Stages = .notStarted
+	private(set) var stage6Stages: FarmStage6Stages = .notStarted
 
 	func next() {
 		stageNumber += 1
@@ -60,5 +61,9 @@ actor FarmStages {
 
 	func setStage5Stages(_ stage: FarmStage5Stages) {
 		stage5Stages = stage
+	}
+
+	func setStage6Stages(_ stage: FarmStage6Stages) {
+		stage6Stages = stage
 	}
 }

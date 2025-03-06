@@ -30,6 +30,8 @@ enum FarmerNPC {
 				await stage4()
 			case 5:
 				await stage5()
+			case 6:
+				await stage6()
 			default:
 				break
 		}
@@ -180,6 +182,21 @@ enum FarmerNPC {
 				}
 		}
 	}
+
+	static func stage6() async {
+		switch await Game.shared.stages.farm.stage6Stages {
+			case .notStarted:
+				await MessageBox.message("I wanted to tell you that you can use the backyard part of my farm to plant your own stuff!", speaker: .farmer)
+				await Game.shared.player.setFarmingSkillLevel(.six)
+				await Game.shared.stages.farm.setStage6Stages(.done)
+				fallthrough
+			case .done:
+				await Game.shared.stages.farm.next()
+				if await RandomEventStuff.wantsToContinue(speaker: .farmer) {
+					await getStage()
+				}
+		}
+	}
 }
 
 enum FarmStage1Stages: Codable {
@@ -206,4 +223,8 @@ enum FarmStage4Stages: Codable {
 
 enum FarmStage5Stages: Codable {
 	case notStarted, collect, comeBack, done
+}
+
+enum FarmStage6Stages: Codable {
+	case notStarted, done
 }
