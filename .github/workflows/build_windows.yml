@@ -30,7 +30,7 @@ jobs:
           # TODO: make the user not need to install swift for this to work
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2.4
         with:
-          sdk-version: '10.0.26100.3323'
+          sdk-version: '26100.3323'
       - name: Verify Swift Installation
         run: swift --version
       - name: Check Visual Studio Build Tools
