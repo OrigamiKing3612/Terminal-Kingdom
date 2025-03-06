@@ -42,8 +42,8 @@ enum Keys {
 				await MessageBox.lineDown()
 			#if DEBUG
 				case .t:
-					await MapBox.setMainMapGridTile(tile: .init(type: .crop(crop: .init(type: .carrot)), isWalkable: true, event: .collectCrop, biome: Game.shared.getBiomeAtPlayerPosition()))
-					await Game.shared.addCrop(TilePosition(x: MapBox.player.x, y: MapBox.player.y, mapType: MapBox.mapType))
+					_ = await Game.shared.player.collect(item: .init(type: .lumber), count: 1000)
+					_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))))
 			#endif
 			default:
 				#if DEBUG

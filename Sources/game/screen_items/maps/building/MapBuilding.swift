@@ -89,7 +89,7 @@ enum MapBuilding {
 				if case let .door(tile: tile) = selectedItem.type {
 					do {
 						let (doorPosition, buildingPerimeter) = try await CreateCustomMap.checkDoor(tile: tile, grid: grid, x: x, y: y)
-						let map = await createCustomMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.type)
+						let map = await CreateCustomMap.createCustomMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.type)
 						let customMap = try CustomMap(grid: map)
 						if let customMap {
 							await Game.shared.addMap(map: customMap)
@@ -100,7 +100,7 @@ enum MapBuilding {
 							}
 						}
 					} catch {
-						await MessageBox.message(error.localizedDescription, speaker: .game)
+						await MessageBox.message("An error occurred: \(error.localizedDescription)", speaker: .game)
 					}
 				} else {
 					grid[y][x] = MapTile(type: itemTypeToMapTileType(selectedItem.type)!, biome: grid[y][x].biome)
@@ -125,72 +125,6 @@ enum MapBuilding {
 			case .chest: return .chest
 			default: return nil
 		}
-	}
-
-	private static func createCustomMap(buildingPerimeter: BuildingPerimeter, doorPosition: DoorPosition, doorType: DoorTileTypes) async -> [[MapTile]] {
-		let ratio = 4
-
-		let topLength = buildingPerimeter.top * ratio
-		// let bottomLength = buildingPerimeter.bottom * ratio
-		let rightLength = buildingPerimeter.rightSide * ratio
-		// let leftLength = buildingPerimeter.leftSide * ratio
-
-		var map: [[MapTile]] = await Array(repeating: Array(repeating: .init(type: .plain, isWalkable: true, biome: Game.shared.getBiomeAtPlayerPosition()), count: topLength), count: rightLength)
-
-		for (indexY, y) in map.enumerated() {
-			let buildingTile = await MapTile(type: .building(tile: .init(isPlacedByPlayer: false)), isWalkable: false, biome: Game.shared.getBiomeAtPlayerPosition())
-			for (indexX, _) in y.enumerated() {
-				if indexY == 0 {
-					map[indexY][indexX] = buildingTile
-				}
-				if indexX == 0 {
-					map[indexY][indexX] = buildingTile
-				}
-				if indexY == (rightLength - 1) {
-					map[indexY][indexX] = buildingTile
-				}
-				if indexX == (topLength - 1) {
-					map[indexY][indexX] = buildingTile
-				}
-			}
-		}
-		// TODO: put door in the position that best matches where it is in the grid
-		var doorX, doorY: Int
-		switch doorPosition {
-			case .top:
-				doorX = topLength / 2
-				doorY = 0
-			case .right:
-				doorX = topLength - 1
-				doorY = rightLength / 2
-			case .left:
-				doorX = 0
-				doorY = rightLength / 2
-			case .bottom:
-				doorX = topLength / 2
-				doorY = rightLength - 1
-		}
-
-		map[doorY][doorX] = await .init(type: .door(tile: .init(type: doorType, isPlacedByPlayer: false)), isWalkable: true, biome: Game.shared.getBiomeAtPlayerPosition())
-
-		var startX, startY: Int
-		switch doorPosition {
-			case .top:
-				startX = doorX
-				startY = doorY + 1
-			case .right:
-				startX = doorX - 1
-				startY = doorY
-			case .left:
-				startX = doorX + 1
-				startY = doorY
-			case .bottom:
-				startX = doorX
-				startY = doorY - 1
-		}
-		map[startY][startX] = await .init(type: .playerStart, isWalkable: true, biome: Game.shared.getBiomeAtPlayerPosition())
-
-		return map
 	}
 }
 
