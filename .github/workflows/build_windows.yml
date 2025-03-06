@@ -1,14 +1,14 @@
 name: Build Windows
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
-    paths-ignore:
-      - 'LICENSE'
-      - '**.md'
-      - .github/workflows/build_linux.yml
-      - .github/workflows/build_macos.yml
+  # push:
+  #   branches:
+  #     - master
+  #   paths-ignore:
+  #     - 'LICENSE'
+  #     - '**.md'
+  #     - .github/workflows/build_linux.yml
+  #     - .github/workflows/build_macos.yml
 defaults:
   run:
     shell: pwsh
@@ -28,15 +28,6 @@ jobs:
         with:
           swift-version: "6.0.3"
           # TODO: make the user not need to install swift for this to work
-      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2.4
-        with:
-          sdk-version: '22621'
-      - name: Verify Swift Installation
-        run: swift --version
-      - name: Check Visual Studio Build Tools
-        run: |
-          where msbuild
-          where cl
       - name: Build
         run: |
           swift build -c release
