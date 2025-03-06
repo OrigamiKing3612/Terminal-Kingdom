@@ -7,6 +7,8 @@ on:
     paths-ignore:
       - 'LICENSE'
       - '**.md'
+      - .github/workflows/build_windows.yml
+      - .github/workflows/build_macos.yml
 jobs:
   build:
     permissions:
