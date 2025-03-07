@@ -1,8 +1,21 @@
-struct NPCTile: Codable, Equatable {
-	let type: NPCTileType
+import Foundation
 
-	init(type: NPCTileType) {
+struct NPCTile: Codable, Equatable {
+	let id: UUID
+	let type: NPCTileType
+	let canWalk: Bool
+	let positionToWalkTo: TilePosition?
+	var lastDirection: PlayerDirection = .allCases.randomElement()!
+
+	init(type: NPCTileType, canWalk: Bool = false, tilePosition: TilePosition) {
+		self.id = UUID()
 		self.type = type
+		self.canWalk = canWalk
+		self.positionToWalkTo = nil
+
+		Task {
+			await Game.shared.addNPC(tilePosition)
+		}
 	}
 
 	static func renderNPC(tile: NPCTile) async -> String {
@@ -14,6 +27,10 @@ struct NPCTile: Codable, Equatable {
 				// TODO: Not sure if this will stay
 				return await (Game.shared.config.useNerdFont ? "󰙍" : "N").styled(with: .bold)
 		}
+	}
+
+	var queueName: String {
+		"\(type.queueName).\(id)"
 	}
 
 	func talk() async {
@@ -61,15 +78,24 @@ struct NPCTile: Codable, Equatable {
 extension NPCTile {
 	func encode(to encoder: any Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
+		try container.encode(id, forKey: .id)
 		try container.encode(type, forKey: .tileType)
+		try container.encode(canWalk, forKey: .canWalk)
+		try container.encodeIfPresent(positionToWalkTo, forKey: .positionToWalkTo)
 	}
 
 	enum CodingKeys: CodingKey {
+		case id
 		case tileType
+		case canWalk
+		case positionToWalkTo
 	}
 
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
+		self.id = try container.decode(UUID.self, forKey: .id)
 		self.type = try container.decode(NPCTileType.self, forKey: .tileType)
+		self.canWalk = try container.decode(Bool.self, forKey: .canWalk)
+		self.positionToWalkTo = try container.decodeIfPresent(TilePosition.self, forKey: .positionToWalkTo)
 	}
 }

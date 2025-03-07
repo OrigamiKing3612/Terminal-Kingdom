@@ -42,6 +42,8 @@ enum Keys {
 				await MessageBox.lineDown()
 			#if DEBUG
 				case .t:
+					let p = await Game.shared.player.position
+					await MapBox.updateTile(newTile: .init(type: .npc(tile: .init(type: .builder, canWalk: true, tilePosition: .init(x: p.x, y: p.y, mapType: .mainMap))), event: .talkToNPC, biome: .plains))
 					_ = await Game.shared.player.collect(item: .init(type: .lumber), count: 1000)
 					_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))))
 			#endif

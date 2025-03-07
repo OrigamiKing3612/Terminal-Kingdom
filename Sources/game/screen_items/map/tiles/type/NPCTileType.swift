@@ -42,6 +42,10 @@ enum NPCTileType: Codable, Equatable {
 		}
 	}
 
+	var queueName: String {
+		"\(render.lowercased().replacingOccurrences(of: " ", with: "_"))"
+	}
+
 	var hasTalkedToBefore: Bool {
 		get async {
 			switch self {

@@ -12,10 +12,12 @@ actor Game {
 	var maps: Maps = .init()
 	private(set) var messages: [String] = []
 	private(set) var crops: Set<TilePosition> = []
+	private(set) var npcs: Set<TilePosition> = []
 	private(set) var hasInited: Bool = false
 	private(set) var isTypingInMessageBox: Bool = false
 	private(set) var map: [[MapTile]] = []
 	private(set) var hasStartedCropQueue: Bool = false
+	private(set) var hasStartedNPCQueue: Bool = false
 	// Don't save
 	private(set) var isInInventoryBox: Bool = false
 	private(set) var isBuilding: Bool = false
@@ -66,6 +68,24 @@ actor Game {
 
 	func removeCrop(_ position: TilePosition) async {
 		crops.remove(position)
+	}
+
+	func addNPC(_ position: TilePosition) async {
+		// TODO: cancel the crop queue if crops is empty and remove a crop position if it is fully grown
+		if !hasStartedNPCQueue {
+			await startNPCMovingQueue()
+			hasStartedNPCQueue = true
+		}
+		npcs.insert(position)
+	}
+
+	func updateNPC(oldPosition: TilePosition, newPosition: TilePosition) async {
+		npcs.remove(oldPosition)
+		await addNPC(newPosition)
+	}
+
+	func removeNPC(_ position: TilePosition) async {
+		npcs.remove(position)
 	}
 
 	func setIsInInventoryBox(_ newIsInInventoryBox: Bool) async {
