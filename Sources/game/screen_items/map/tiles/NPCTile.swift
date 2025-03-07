@@ -1,13 +1,13 @@
 import Foundation
 
-struct NPCTile: Codable, Equatable {
+struct NPCTile: Codable, Hashable, Equatable {
 	let id: UUID
 	let type: NPCTileType
 	let canWalk: Bool
 	let positionToWalkTo: TilePosition?
 	var lastDirection: PlayerDirection = .allCases.randomElement()!
 
-	init(type: NPCTileType, canWalk: Bool = false, tilePosition: TilePosition) {
+	init(type: NPCTileType, canWalk: Bool = false, tilePosition: NPCPosition) {
 		self.id = UUID()
 		self.type = type
 		self.canWalk = canWalk

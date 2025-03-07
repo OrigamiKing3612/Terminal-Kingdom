@@ -12,7 +12,7 @@ actor Game {
 	var maps: Maps = .init()
 	private(set) var messages: [String] = []
 	private(set) var crops: Set<TilePosition> = []
-	private(set) var npcs: Set<TilePosition> = []
+	private(set) var npcs: Set<NPCPosition> = []
 	private(set) var hasInited: Bool = false
 	private(set) var isTypingInMessageBox: Bool = false
 	private(set) var map: [[MapTile]] = []
@@ -70,7 +70,7 @@ actor Game {
 		crops.remove(position)
 	}
 
-	func addNPC(_ position: TilePosition) async {
+	func addNPC(_ position: NPCPosition) async {
 		// TODO: cancel the crop queue if crops is empty and remove a crop position if it is fully grown
 		if !hasStartedNPCQueue {
 			await startNPCMovingQueue()
@@ -79,12 +79,12 @@ actor Game {
 		npcs.insert(position)
 	}
 
-	func updateNPC(oldPosition: TilePosition, newPosition: TilePosition) async {
+	func updateNPC(oldPosition: NPCPosition, newPosition: NPCPosition) async {
 		npcs.remove(oldPosition)
 		await addNPC(newPosition)
 	}
 
-	func removeNPC(_ position: TilePosition) async {
+	func removeNPC(_ position: NPCPosition) async {
 		npcs.remove(position)
 	}
 
@@ -150,4 +150,11 @@ struct TilePosition: Codable, Hashable {
 	var x: Int
 	var y: Int
 	var mapType: MapType
+}
+
+struct NPCPosition: Codable, Hashable {
+	var oldX: Int
+	var oldY: Int
+	var mapType: MapType
+	var oldTile: MapTile
 }

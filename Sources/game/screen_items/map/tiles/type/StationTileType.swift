@@ -1,4 +1,4 @@
-enum StationTileType: Codable, Equatable {
+enum StationTileType: Codable, Hashable, Equatable {
 	case furnace(progress: FurnaceProgress)
 	case anvil
 	case workbench

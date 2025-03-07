@@ -1,4 +1,4 @@
-enum NPCTileType: Codable, Equatable {
+enum NPCTileType: Codable, Hashable, Equatable {
 	case blacksmith
 	case blacksmith_helper
 	case miner
