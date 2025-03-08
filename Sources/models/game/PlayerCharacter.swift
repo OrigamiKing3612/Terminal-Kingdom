@@ -232,7 +232,7 @@ actor PlayerCharacter {
 	}
 }
 
-enum PlayerDirection: String, Codable {
+enum PlayerDirection: String, Codable, CaseIterable {
 	case up, down, left, right
 
 	var render: String {

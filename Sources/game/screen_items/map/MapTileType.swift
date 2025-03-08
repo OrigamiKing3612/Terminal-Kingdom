@@ -162,10 +162,10 @@ enum MapTileType: TileType {
 	}
 }
 
-enum ShopStandingAreaType: String, Codable {
+enum ShopStandingAreaType: String, Hashable, Codable {
 	case buy, sell, help
 }
 
-enum BiomeType: String, Codable {
+enum BiomeType: String, Hashable, Codable {
 	case plains, desert, snow, forest, volcano, tundra, ocean, coast, swamp, mountain
 }

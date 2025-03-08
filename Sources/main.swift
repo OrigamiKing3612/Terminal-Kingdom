@@ -79,6 +79,75 @@ func newGame() async {
 	await StatusBox.statusBox()
 }
 
+func startNPCMovingQueue() async {
+	let npcQueue = DispatchQueue(label: "com.origamiking3612.terminalkingdom.npcs", qos: .background, attributes: .concurrent)
+
+	npcQueue.async {
+		Task {
+			while true {
+				await MessageBox.message("NPC Moving Queue Started", speaker: .dev)
+				let npcPositions = await Game.shared.npcs
+
+				guard !npcPositions.isEmpty else {
+					try? await Task.sleep(for: .seconds(0.5))
+					continue
+				}
+
+				for position in npcPositions {
+					await MessageBox.message("  For loop", speaker: .dev)
+
+					let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
+
+					if case let .npc(npc) = npcTile.type, let positionToWalkTo = npc.positionToWalkTo {
+						await MessageBox.message("  If case let", speaker: .dev)
+
+						let newNpcPosition = await NPCMoving.move(
+							target: positionToWalkTo,
+							current: .init(x: position.x, y: position.y, mapType: position.mapType)
+						)
+
+						// Capture the original tile before modifying it
+						let oldTile = await MapBox.mapType.map.grid[newNpcPosition.y][newNpcPosition.x] as! MapTile
+
+						let newPosition = NPCPosition(
+							x: newNpcPosition.x,
+							y: newNpcPosition.y,
+							mapType: position.mapType,
+							oldTile: oldTile // Store old tile
+						)
+
+						// Restore old tile state
+						await MapBox.setMapGridTile(
+							x: position.x,
+							y: position.y,
+							tile: oldTile, // Correct old tile reference
+							mapType: position.mapType
+						)
+
+						// Update new tile with NPC
+						await MapBox.setMapGridTile(
+							x: newNpcPosition.x,
+							y: newNpcPosition.y,
+							tile: MapTile(
+								type: .npc(tile: npc),
+								isWalkable: npcTile.isWalkable,
+								event: npcTile.event,
+								biome: npcTile.biome
+							),
+							mapType: position.mapType
+						)
+
+						// Update NPC's position in Game state
+						await Game.shared.updateNPC(oldPosition: position, newPosition: newPosition)
+						await MapBox.mapBox()
+					}
+				}
+				try? await Task.sleep(for: .seconds(0.5))
+			}
+		}
+	}
+}
+
 func startCropQueue() async {
 	let cropQueue = DispatchQueue(label: "com.origamiking3612.terminalkingdom.cropQueue", qos: .background, attributes: .concurrent)
 	// let stationsQueue = DispatchQueue(label: "com.origamiking3612.terminalkingdom.stationsQueue", qos: .background)

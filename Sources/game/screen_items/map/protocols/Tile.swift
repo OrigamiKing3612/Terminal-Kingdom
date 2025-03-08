@@ -1,4 +1,4 @@
-protocol Tile: Equatable, Codable {
+protocol Tile: Equatable, Hashable, Codable {
 	associatedtype pTileType: TileType
 	associatedtype pTileEvent: TileEvent
 

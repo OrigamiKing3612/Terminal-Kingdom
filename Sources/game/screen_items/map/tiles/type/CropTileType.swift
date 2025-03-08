@@ -1,4 +1,4 @@
-enum CropTileType: String, Codable {
+enum CropTileType: String, Hashable, Codable {
 	case none
 	case tree_seed
 	case carrot

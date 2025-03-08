@@ -1,3 +1,3 @@
-protocol TileEvent: Equatable, Codable {
+protocol TileEvent: Equatable, Hashable, Codable {
 	var name: String { get async }
 }
