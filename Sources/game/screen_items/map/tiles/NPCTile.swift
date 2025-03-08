@@ -4,17 +4,18 @@ struct NPCTile: Codable, Hashable, Equatable {
 	let id: UUID
 	let type: NPCTileType
 	let canWalk: Bool
-	let positionToWalkTo: TilePosition?
-	var lastDirection: PlayerDirection = .allCases.randomElement()!
+	private(set) var positionToWalkTo: TilePosition?
+	// var lastDirection: PlayerDirection = .allCases.randomElement()!
 
-	init(type: NPCTileType, canWalk: Bool = false, tilePosition: NPCPosition) {
+	init(type: NPCTileType, canWalk: Bool = false, positionToWalkTo: TilePosition, tilePosition: NPCPosition?) {
 		self.id = UUID()
 		self.type = type
 		self.canWalk = canWalk
-		self.positionToWalkTo = nil
-
-		Task {
-			await Game.shared.addNPC(tilePosition)
+		self.positionToWalkTo = positionToWalkTo
+		if let tilePosition {
+			Task {
+				await Game.shared.addNPC(tilePosition)
+			}
 		}
 	}
 

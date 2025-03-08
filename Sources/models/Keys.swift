@@ -43,7 +43,7 @@ enum Keys {
 			#if DEBUG
 				case .t:
 					let p = await Game.shared.player.position
-					await MapBox.updateTile(newTile: .init(type: .npc(tile: .init(type: .builder, canWalk: true, tilePosition: .init(oldX: p.x, oldY: p.y, mapType: .mainMap, oldTile: MapBox.tilePlayerIsOn))), event: .talkToNPC, biome: .plains))
+					await MapBox.updateTile(newTile: .init(type: .npc(tile: .init(type: .builder, canWalk: true, positionToWalkTo: .init(x: p.x, y: p.y - 50, mapType: .mainMap), tilePosition: .init(x: p.x, y: p.y, mapType: .mainMap, oldTile: .init(type: .cactus, biome: .plains)))), event: .talkToNPC, biome: .plains))
 					_ = await Game.shared.player.collect(item: .init(type: .lumber), count: 1000)
 					_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))))
 			#endif

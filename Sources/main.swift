@@ -85,6 +85,7 @@ func startNPCMovingQueue() async {
 	npcQueue.async {
 		Task {
 			while true {
+				await MessageBox.message("NPC Moving Queue Started", speaker: .dev)
 				let npcPositions = await Game.shared.npcs
 
 				guard !npcPositions.isEmpty else {
@@ -92,44 +93,53 @@ func startNPCMovingQueue() async {
 					continue
 				}
 
-				for npcPosition in npcPositions {
-					// guard npcPosition.tilePosition.mapType != .mainMap else { continue }
+				for position in npcPositions {
+					await MessageBox.message("  For loop", speaker: .dev)
 
-					let grid = await MapBox.mapType.map.grid
-					guard let tile = grid[npcPosition.oldY][npcPosition.oldX] as? MapTile else { continue }
+					let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
 
-					let npcType = tile.type
+					if case let .npc(npc) = npcTile.type, let positionToWalkTo = npc.positionToWalkTo {
+						await MessageBox.message("  If case let", speaker: .dev)
 
-					if case let .npc(tile: npc) = npcType {
-						let changeDirectionChance = Int.random(in: 1 ... 100)
-						var newDirection = npc.lastDirection
-						if changeDirectionChance <= 20 {
-							newDirection = PlayerDirection.allCases.randomElement()!
-						}
+						let newNpcPosition = await NPCMoving.move(
+							target: positionToWalkTo,
+							current: .init(x: position.x, y: position.y, mapType: position.mapType)
+						)
 
-						var newX = npcPosition.oldX
-						var newY = npcPosition.oldY
+						// Capture the original tile before modifying it
+						let oldTile = await MapBox.mapType.map.grid[newNpcPosition.y][newNpcPosition.x] as! MapTile
 
-						switch newDirection {
-							case .up: newY -= 1
-							case .down: newY += 1
-							case .left: newX -= 1
-							case .right: newX += 1
-						}
+						let newPosition = NPCPosition(
+							x: newNpcPosition.x,
+							y: newNpcPosition.y,
+							mapType: position.mapType,
+							oldTile: oldTile // Store old tile
+						)
 
-						if newX >= 0, newX < grid[0].count, newY >= 0, newY < grid.count, grid[newY][newX].isWalkable {
-							let newPosition = NPCPosition(oldX: newX, oldY: newY, mapType: npcPosition.mapType, oldTile: tile)
+						// Restore old tile state
+						await MapBox.setMapGridTile(
+							x: position.x,
+							y: position.y,
+							tile: oldTile, // Correct old tile reference
+							mapType: position.mapType
+						)
 
-							await Game.shared.updateNPC(oldPosition: npcPosition, newPosition: newPosition)
+						// Update new tile with NPC
+						await MapBox.setMapGridTile(
+							x: newNpcPosition.x,
+							y: newNpcPosition.y,
+							tile: MapTile(
+								type: .npc(tile: npc),
+								isWalkable: npcTile.isWalkable,
+								event: npcTile.event,
+								biome: npcTile.biome
+							),
+							mapType: position.mapType
+						)
 
-							// Put back old
-							await MapBox.setMapGridTile(x: npcPosition.oldX, y: npcPosition.oldY, tile: npcPosition.oldTile, mapType: npcPosition.mapType)
-
-							// Put new
-							await MapBox.setMapGridTile(x: newX, y: newY, tile: .init(type: .npc(tile: npc), isWalkable: true, event: .talkToNPC, biome: tile.biome), mapType: npcPosition.mapType)
-
-							await MapBox.mapBox() //! TODO: Improve this
-						}
+						// Update NPC's position in Game state
+						await Game.shared.updateNPC(oldPosition: position, newPosition: newPosition)
+						await MapBox.mapBox()
 					}
 				}
 				try? await Task.sleep(for: .seconds(0.5))

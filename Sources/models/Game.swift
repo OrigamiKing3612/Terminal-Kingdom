@@ -153,8 +153,8 @@ struct TilePosition: Codable, Hashable {
 }
 
 struct NPCPosition: Codable, Hashable {
-	var oldX: Int
-	var oldY: Int
+	var x: Int
+	var y: Int
 	var mapType: MapType
 	var oldTile: MapTile
 }
