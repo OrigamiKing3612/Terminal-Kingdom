@@ -10,7 +10,7 @@ Right now, I've only worked on the tutorial. It is not done yet, but the tutoria
 > You can find it [here](https://swift.org/download/). (I hope to fix this one day)
 1. Download the newest version from the releases.
 2. Extract the zip file.
-3. Make sure the `TerminalKingdom` executable is in the same directory as the `resources` (or `bundle`) directory.
+3. Make sure the `TerminalKingdom` executable is in the same directory as the `.resources` (or `.bundle`) directory.
 4. Run the `TerminalKingdom` executable.
 
 ## How to Play
