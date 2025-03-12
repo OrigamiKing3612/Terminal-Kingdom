@@ -1,4 +1,4 @@
-struct PotTile: Codable, Equatable {
+struct PotTile: Codable, Hashable, Equatable {
 	var cropTile: CropTile
 
 	init(cropTile: CropTile = .init(type: .none)) {

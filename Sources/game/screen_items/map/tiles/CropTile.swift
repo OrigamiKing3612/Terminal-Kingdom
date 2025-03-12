@@ -1,6 +1,6 @@
 import Foundation
 
-struct CropTile: Codable, Equatable {
+struct CropTile: Codable, Hashable, Equatable {
 	let id: UUID
 	let type: CropTileType
 

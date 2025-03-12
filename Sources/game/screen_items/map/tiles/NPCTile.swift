@@ -1,8 +1,24 @@
-struct NPCTile: Codable, Equatable {
-	let type: NPCTileType
+import Foundation
 
-	init(type: NPCTileType) {
+struct NPCTile: Codable, Hashable, Equatable {
+	let id: UUID
+	let type: NPCTileType
+	private(set) var positionToWalkTo: TilePosition?
+	// var lastDirection: PlayerDirection = .allCases.randomElement()!
+
+	init(type: NPCTileType, positionToWalkTo: TilePosition, tilePosition: NPCPosition?) {
+		self.id = UUID()
 		self.type = type
+		self.positionToWalkTo = positionToWalkTo
+		if let tilePosition {
+			Task {
+				await Game.shared.addNPC(tilePosition)
+			}
+		}
+	}
+
+	mutating func removePostion() {
+		positionToWalkTo = nil
 	}
 
 	static func renderNPC(tile: NPCTile) async -> String {
@@ -12,8 +28,16 @@ struct NPCTile: Codable, Equatable {
 		switch tile.type {
 			default:
 				// TODO: Not sure if this will stay
-				return await (Game.shared.config.useNerdFont ? "󰙍" : "N").styled(with: .bold)
+				if tile.positionToWalkTo != nil {
+					return await (Game.shared.config.useNerdFont ? "" : "N").styled(with: .bold)
+				} else {
+					return await (Game.shared.config.useNerdFont ? "󰙍" : "N").styled(with: .bold)
+				}
 		}
+	}
+
+	var queueName: String {
+		"\(type.queueName).\(id)"
 	}
 
 	func talk() async {
@@ -56,20 +80,94 @@ struct NPCTile: Codable, Equatable {
 				await FarmerHelperNPC.talk()
 		}
 	}
+
+	static func move(position: NPCPosition) async {
+		let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
+
+		if case let .npc(npc) = npcTile.type, let positionToWalkTo = npc.positionToWalkTo {
+			if positionToWalkTo == .init(x: position.x, y: position.y, mapType: position.mapType) {
+				await Game.shared.removeNPC(position)
+				var npcNew = npc
+				npcNew.removePostion()
+				await MapBox.updateTile(newTile: MapTile(
+					type: .npc(tile: npcNew),
+					isWalkable: npcTile.isWalkable,
+					event: npcTile.event,
+					biome: npcTile.biome
+				), thisOnlyWorksOnMainMap: true, x: position.x, y: position.y)
+				return
+			}
+			let newNpcPosition = await NPCMoving.move(
+				target: positionToWalkTo,
+				current: .init(x: position.x, y: position.y, mapType: position.mapType)
+			)
+
+			let currentTile = await MapBox.mapType.map.grid[newNpcPosition.y][newNpcPosition.x] as! MapTile
+
+			let newPosition = NPCPosition(
+				x: newNpcPosition.x,
+				y: newNpcPosition.y,
+				mapType: position.mapType,
+				oldTile: currentTile
+			)
+
+			await withTaskGroup(of: Void.self) { group in
+				group.addTask {
+					// Restore old tile
+					await MapBox.setMapGridTile(
+						x: position.x,
+						y: position.y,
+						tile: position.oldTile,
+						mapType: position.mapType
+					)
+				}
+
+				group.addTask {
+					// Update new tile to NPC
+					await MapBox.setMapGridTile(
+						x: newNpcPosition.x,
+						y: newNpcPosition.y,
+						tile: MapTile(
+							type: .npc(tile: npc),
+							isWalkable: npcTile.isWalkable,
+							event: npcTile.event,
+							biome: npcTile.biome
+						),
+						mapType: position.mapType
+					)
+				}
+
+				group.addTask {
+					await Game.shared.updateNPC(oldPosition: position, newPosition: newPosition)
+				}
+
+				group.addTask {
+					await MapBox.updateTwoTiles(x1: newNpcPosition.x, y1: newNpcPosition.y, x2: position.x, y2: position.y)
+				}
+			}
+		}
+	}
 }
 
 extension NPCTile {
 	func encode(to encoder: any Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
+		try container.encode(id, forKey: .id)
 		try container.encode(type, forKey: .tileType)
+		try container.encodeIfPresent(positionToWalkTo, forKey: .positionToWalkTo)
 	}
 
 	enum CodingKeys: CodingKey {
+		case id
 		case tileType
+		case canWalk
+		case positionToWalkTo
 	}
 
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
+		self.id = try container.decode(UUID.self, forKey: .id)
 		self.type = try container.decode(NPCTileType.self, forKey: .tileType)
+		self.positionToWalkTo = try container.decodeIfPresent(TilePosition.self, forKey: .positionToWalkTo)
 	}
 }

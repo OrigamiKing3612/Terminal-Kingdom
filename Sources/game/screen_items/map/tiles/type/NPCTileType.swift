@@ -1,4 +1,4 @@
-enum NPCTileType: Codable, Equatable {
+enum NPCTileType: Codable, Hashable, Equatable {
 	case blacksmith
 	case blacksmith_helper
 	case miner
@@ -40,6 +40,10 @@ enum NPCTileType: Codable, Equatable {
 			case .builder_helper: "Builder Helper"
 			case .farmer_helper: "Farmer Helper"
 		}
+	}
+
+	var queueName: String {
+		"\(render.lowercased().replacingOccurrences(of: " ", with: "_"))"
 	}
 
 	var hasTalkedToBefore: Bool {

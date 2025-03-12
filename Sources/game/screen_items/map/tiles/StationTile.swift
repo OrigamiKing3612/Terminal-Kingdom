@@ -1,4 +1,4 @@
-struct StationTile: Codable, Equatable {
+struct StationTile: Codable, Hashable, Equatable {
 	let type: StationTileType
 
 	init(type: StationTileType) {

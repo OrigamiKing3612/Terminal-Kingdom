@@ -43,6 +43,17 @@ enum MapBox {
 		}
 	}
 
+	static func updateTwoTiles(x1: Int, y1: Int, x2: Int, y2: Int) async {
+		switch await mapType {
+			case .mainMap:
+				await MapBoxActor.shared.updateMainMapTwoTiles(x1: x1, y1: y1, x2: x2, y2: y2)
+			case .mining:
+				break
+			default:
+				await MapBoxActor.shared.updateBuildingMapTwoTiles(x1: x1, y1: y1, x2: x2, y2: y2)
+		}
+	}
+
 	static func sides() async {
 		await Screen.print(x: startX, y: startY - 1, String(repeating: Game.shared.horizontalLine, count: width + 1).styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
 		for y in startY ..< (endY + 1) {
@@ -107,6 +118,16 @@ enum MapBox {
 				break
 			default:
 				await MapBoxActor.shared.buildingMapBuild()
+		}
+	}
+
+	// TODO: (Yes i know this is bad.) Fix this
+	static func updateTile(newTile: MapTile, thisOnlyWorksOnMainMap _: Bool, x: Int, y: Int) async {
+		switch await mapType {
+			case .mainMap:
+				await MapBoxActor.shared.updateMainMapTile(newTile: newTile, x: x, y: y)
+			default:
+				break
 		}
 	}
 

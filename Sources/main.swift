@@ -79,6 +79,20 @@ func newGame() async {
 	await StatusBox.statusBox()
 }
 
+func startNPCMovingQueue() async {
+	// TODO: Make sure this isn't run twice
+	Task.detached(priority: .background) {
+		while true {
+			let npcPositions = await Game.shared.npcs
+
+			for position in npcPositions {
+				await NPCTile.move(position: position)
+			}
+			try? await Task.sleep(nanoseconds: 500_000_000) // .5 seconds
+		}
+	}
+}
+
 func startCropQueue() async {
 	let cropQueue = DispatchQueue(label: "com.origamiking3612.terminalkingdom.cropQueue", qos: .background, attributes: .concurrent)
 	// let stationsQueue = DispatchQueue(label: "com.origamiking3612.terminalkingdom.stationsQueue", qos: .background)
