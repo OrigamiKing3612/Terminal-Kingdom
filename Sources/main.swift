@@ -86,9 +86,10 @@ func startNPCMovingQueue() async {
 			let npcPositions = await Game.shared.npcs
 
 			for position in npcPositions {
-                await NPCTile.move(position: position)
-            }
-            try? await Task.sleep(nanoseconds: 500_000_000) // .5 seconds
+				await NPCTile.move(position: position)
+			}
+			try? await Task.sleep(nanoseconds: 500_000_000) // .5 seconds
+		}
 	}
 }
 
