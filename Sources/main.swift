@@ -102,20 +102,20 @@ func startNPCMovingQueue() async {
 						)
 
 						// Capture the original tile before modifying it
-						let oldTile = await MapBox.mapType.map.grid[newNpcPosition.y][newNpcPosition.x] as! MapTile
+						let currentTile = await MapBox.mapType.map.grid[newNpcPosition.y][newNpcPosition.x] as! MapTile
 
 						let newPosition = NPCPosition(
 							x: newNpcPosition.x,
 							y: newNpcPosition.y,
 							mapType: position.mapType,
-							oldTile: oldTile // Store old tile
+							oldTile: currentTile // Store old tile
 						)
 
 						// Restore old tile state
 						await MapBox.setMapGridTile(
 							x: position.x,
 							y: position.y,
-							tile: oldTile, // Correct old tile reference
+							tile: position.oldTile, // Correct old tile reference
 							mapType: position.mapType
 						)
 
