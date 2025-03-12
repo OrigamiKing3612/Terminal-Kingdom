@@ -85,7 +85,6 @@ func startNPCMovingQueue() async {
 	npcQueue.async {
 		Task {
 			while true {
-				await MessageBox.message("NPC Moving Queue Started", speaker: .dev)
 				let npcPositions = await Game.shared.npcs
 
 				guard !npcPositions.isEmpty else {
@@ -94,13 +93,9 @@ func startNPCMovingQueue() async {
 				}
 
 				for position in npcPositions {
-					await MessageBox.message("  For loop", speaker: .dev)
-
 					let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
 
 					if case let .npc(npc) = npcTile.type, let positionToWalkTo = npc.positionToWalkTo {
-						await MessageBox.message("  If case let", speaker: .dev)
-
 						let newNpcPosition = await NPCMoving.move(
 							target: positionToWalkTo,
 							current: .init(x: position.x, y: position.y, mapType: position.mapType)

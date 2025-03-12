@@ -7,7 +7,6 @@ enum NPCMoving {
 	}
 
 	static func move(target toTilePosition: TilePosition, current: TilePosition) async -> Position {
-		await MessageBox.message("  Move", speaker: .dev)
 		let targetPosition = Position(x: toTilePosition.x, y: toTilePosition.y)
 		let currentPosition = Position(x: current.x, y: current.y)
 		let map = await MapBox.mapType.map.grid
