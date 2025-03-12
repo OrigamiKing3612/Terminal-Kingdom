@@ -17,6 +17,10 @@ struct NPCTile: Codable, Hashable, Equatable {
 		}
 	}
 
+	mutating func removePostion() {
+		positionToWalkTo = nil
+	}
+
 	static func renderNPC(tile: NPCTile) async -> String {
 		if await !tile.type.hasTalkedToBefore {
 			return "!".styled(with: [.bold, .red])
@@ -24,7 +28,11 @@ struct NPCTile: Codable, Hashable, Equatable {
 		switch tile.type {
 			default:
 				// TODO: Not sure if this will stay
-				return await (Game.shared.config.useNerdFont ? "󰙍" : "N").styled(with: .bold)
+				if tile.positionToWalkTo != nil {
+					return await (Game.shared.config.useNerdFont ? "" : "N").styled(with: .bold)
+				} else {
+					return await (Game.shared.config.useNerdFont ? "󰙍" : "N").styled(with: .bold)
+				}
 		}
 	}
 

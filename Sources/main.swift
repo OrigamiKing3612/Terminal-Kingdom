@@ -80,65 +80,78 @@ func newGame() async {
 }
 
 func startNPCMovingQueue() async {
-	let npcQueue = DispatchQueue(label: "com.origamiking3612.terminalkingdom.npcs", qos: .background, attributes: .concurrent)
+	// TODO: Make sure this isn't run twice
+	Task.detached(priority: .background) {
+		while true {
+			let npcPositions = await Game.shared.npcs
 
-	npcQueue.async {
-		Task {
-			while true {
-				let npcPositions = await Game.shared.npcs
+			for position in npcPositions {
+				let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
 
-				guard !npcPositions.isEmpty else {
-					try? await Task.sleep(for: .seconds(0.5))
-					continue
-				}
+				if case let .npc(npc) = npcTile.type, let positionToWalkTo = npc.positionToWalkTo {
+					if positionToWalkTo == .init(x: position.x, y: position.y, mapType: position.mapType) {
+						await Game.shared.removeNPC(position)
+						var npcNew = npc
+						npcNew.removePostion()
+						await MapBox.updateTile(newTile: MapTile(
+							type: .npc(tile: npcNew),
+							isWalkable: npcTile.isWalkable,
+							event: npcTile.event,
+							biome: npcTile.biome
+						), thisOnlyWorksOnMainMap: true, x: position.x, y: position.y)
+						continue
+					}
+					let newNpcPosition = await NPCMoving.move(
+						target: positionToWalkTo,
+						current: .init(x: position.x, y: position.y, mapType: position.mapType)
+					)
 
-				for position in npcPositions {
-					let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
+					let currentTile = await MapBox.mapType.map.grid[newNpcPosition.y][newNpcPosition.x] as! MapTile
 
-					if case let .npc(npc) = npcTile.type, let positionToWalkTo = npc.positionToWalkTo {
-						let newNpcPosition = await NPCMoving.move(
-							target: positionToWalkTo,
-							current: .init(x: position.x, y: position.y, mapType: position.mapType)
-						)
+					let newPosition = NPCPosition(
+						x: newNpcPosition.x,
+						y: newNpcPosition.y,
+						mapType: position.mapType,
+						oldTile: currentTile
+					)
 
-						// Capture the original tile before modifying it
-						let currentTile = await MapBox.mapType.map.grid[newNpcPosition.y][newNpcPosition.x] as! MapTile
+					await withTaskGroup(of: Void.self) { group in
+						group.addTask {
+							// Restore old tile
+							await MapBox.setMapGridTile(
+								x: position.x,
+								y: position.y,
+								tile: position.oldTile,
+								mapType: position.mapType
+							)
+						}
 
-						let newPosition = NPCPosition(
-							x: newNpcPosition.x,
-							y: newNpcPosition.y,
-							mapType: position.mapType,
-							oldTile: currentTile // Store old tile
-						)
+						group.addTask {
+							// Update new tile to NPC
+							await MapBox.setMapGridTile(
+								x: newNpcPosition.x,
+								y: newNpcPosition.y,
+								tile: MapTile(
+									type: .npc(tile: npc),
+									isWalkable: npcTile.isWalkable,
+									event: npcTile.event,
+									biome: npcTile.biome
+								),
+								mapType: position.mapType
+							)
+						}
 
-						// Restore old tile state
-						await MapBox.setMapGridTile(
-							x: position.x,
-							y: position.y,
-							tile: position.oldTile, // Correct old tile reference
-							mapType: position.mapType
-						)
+						group.addTask {
+							await Game.shared.updateNPC(oldPosition: position, newPosition: newPosition)
+						}
 
-						// Update new tile with NPC
-						await MapBox.setMapGridTile(
-							x: newNpcPosition.x,
-							y: newNpcPosition.y,
-							tile: MapTile(
-								type: .npc(tile: npc),
-								isWalkable: npcTile.isWalkable,
-								event: npcTile.event,
-								biome: npcTile.biome
-							),
-							mapType: position.mapType
-						)
-
-						// Update NPC's position in Game state
-						await Game.shared.updateNPC(oldPosition: position, newPosition: newPosition)
-						await MapBox.mapBox()
+						group.addTask {
+							await MapBox.mapBox()
+						}
 					}
 				}
-				try? await Task.sleep(for: .seconds(0.5))
 			}
+			try? await Task.sleep(nanoseconds: 500_000_000) // .5 seconds
 		}
 	}
 }

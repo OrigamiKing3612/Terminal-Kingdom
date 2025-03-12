@@ -114,6 +114,10 @@ struct MainMap: MapBoxMap {
 		await grid[player.y][player.x] = newTile
 	}
 
+	mutating func updateTile(newTile: MapTile, x: Int, y: Int) async {
+		grid[y][x] = newTile
+	}
+
 	mutating func build() async {
 		await MapBuilding.build(grid: &grid, x: player.x, y: player.y)
 	}

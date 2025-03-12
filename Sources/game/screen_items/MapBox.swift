@@ -110,6 +110,16 @@ enum MapBox {
 		}
 	}
 
+	// TODO: (Yes i know this is bad.) Fix this
+	static func updateTile(newTile: MapTile, thisOnlyWorksOnMainMap _: Bool, x: Int, y: Int) async {
+		switch await mapType {
+			case .mainMap:
+				await MapBoxActor.shared.updateMainMapTile(newTile: newTile, x: x, y: y)
+			default:
+				break
+		}
+	}
+
 	static func updateTile(newTile: MapTile) async {
 		switch await mapType {
 			case .mainMap:
