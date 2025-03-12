@@ -146,7 +146,7 @@ func startNPCMovingQueue() async {
 						}
 
 						group.addTask {
-							await MapBox.mapBox()
+							await MapBox.updateTwoTiles(x1: newNpcPosition.x, y1: newNpcPosition.y, x2: position.x, y2: position.y)
 						}
 					}
 				}

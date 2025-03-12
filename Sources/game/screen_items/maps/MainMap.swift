@@ -99,6 +99,40 @@ struct MainMap: MapBoxMap {
 		await render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
 	}
 
+	mutating func updateTwoTiles(x1: Int, y1: Int, x2: Int, y2: Int) async {
+		// let viewportWidth = MapBox.width
+		// let viewportHeight = MapBox.height
+		// let playerX = await player.x
+		// let playerY = await player.y
+		//
+		// func withinViewport(_ x: Int, _ y: Int) -> Bool {
+		// 	x >= playerX - viewportWidth / 2 && x <= playerX + viewportWidth / 2 && y >= playerY - viewportHeight / 2 && y <= playerY + viewportHeight / 2
+		// }
+		//
+		// if withinViewport(x1, y1) {
+		// 	await Screen.print(x: x1, y: y1, grid[y1][x1].type.render())
+		// }
+		// if withinViewport(x2, y2) {
+		// 	await Screen.print(x: x2, y: y2, grid[y2][x2].type.render())
+		// }
+		let viewportWidth = MapBox.width
+		let viewportHeight = MapBox.height
+		let startX = await player.x - viewportWidth / 2
+		let startY = await player.y - viewportHeight / 2
+
+		if x1 >= startX, x1 < startX + viewportWidth, y1 >= startY, y1 < startY + viewportHeight {
+			let screenX1 = x1 - startX + MapBox.startX
+			let screenY1 = y1 - startY + MapBox.startY
+			await Screen.print(x: screenX1, y: screenY1, grid[y1][x1].type.render())
+		}
+
+		if x2 >= startX, x2 < startX + viewportWidth, y2 >= startY, y2 < startY + viewportHeight {
+			let screenX2 = x2 - startX + MapBox.startX
+			let screenY2 = y2 - startY + MapBox.startY
+			await Screen.print(x: screenX2, y: screenY2, grid[y2][x2].type.render())
+		}
+	}
+
 	func interactWithTile() async {
 		let tile = await grid[player.y][player.x]
 		if tile.isInteractable {
