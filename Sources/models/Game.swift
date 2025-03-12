@@ -1,6 +1,5 @@
 import Foundation
 
-// TODO: remove static because that undoes the point of the actor
 actor Game {
 	static var shared = Game()
 	nonisolated static let version = "0.0.1-alpha_1"

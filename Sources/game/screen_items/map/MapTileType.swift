@@ -60,7 +60,7 @@ enum MapTileType: TileType {
 
 	var isBuildable: Bool {
 		switch self {
-			case .building, .door, .fence, .gate, .chest, .bed, .desk: true
+			case .building, .door, .fence, .gate, .chest, .bed, .desk, .path: true
 			default: false
 		}
 	}
