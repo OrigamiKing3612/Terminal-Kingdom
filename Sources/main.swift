@@ -86,73 +86,9 @@ func startNPCMovingQueue() async {
 			let npcPositions = await Game.shared.npcs
 
 			for position in npcPositions {
-				let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
-
-				if case let .npc(npc) = npcTile.type, let positionToWalkTo = npc.positionToWalkTo {
-					if positionToWalkTo == .init(x: position.x, y: position.y, mapType: position.mapType) {
-						await Game.shared.removeNPC(position)
-						var npcNew = npc
-						npcNew.removePostion()
-						await MapBox.updateTile(newTile: MapTile(
-							type: .npc(tile: npcNew),
-							isWalkable: npcTile.isWalkable,
-							event: npcTile.event,
-							biome: npcTile.biome
-						), thisOnlyWorksOnMainMap: true, x: position.x, y: position.y)
-						continue
-					}
-					let newNpcPosition = await NPCMoving.move(
-						target: positionToWalkTo,
-						current: .init(x: position.x, y: position.y, mapType: position.mapType)
-					)
-
-					let currentTile = await MapBox.mapType.map.grid[newNpcPosition.y][newNpcPosition.x] as! MapTile
-
-					let newPosition = NPCPosition(
-						x: newNpcPosition.x,
-						y: newNpcPosition.y,
-						mapType: position.mapType,
-						oldTile: currentTile
-					)
-
-					await withTaskGroup(of: Void.self) { group in
-						group.addTask {
-							// Restore old tile
-							await MapBox.setMapGridTile(
-								x: position.x,
-								y: position.y,
-								tile: position.oldTile,
-								mapType: position.mapType
-							)
-						}
-
-						group.addTask {
-							// Update new tile to NPC
-							await MapBox.setMapGridTile(
-								x: newNpcPosition.x,
-								y: newNpcPosition.y,
-								tile: MapTile(
-									type: .npc(tile: npc),
-									isWalkable: npcTile.isWalkable,
-									event: npcTile.event,
-									biome: npcTile.biome
-								),
-								mapType: position.mapType
-							)
-						}
-
-						group.addTask {
-							await Game.shared.updateNPC(oldPosition: position, newPosition: newPosition)
-						}
-
-						group.addTask {
-							await MapBox.updateTwoTiles(x1: newNpcPosition.x, y1: newNpcPosition.y, x2: position.x, y2: position.y)
-						}
-					}
-				}
-			}
-			try? await Task.sleep(nanoseconds: 500_000_000) // .5 seconds
-		}
+                await NPCTile.move(position: position)
+            }
+            try? await Task.sleep(nanoseconds: 500_000_000) // .5 seconds
 	}
 }
 

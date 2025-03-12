@@ -99,6 +99,7 @@ struct MainMap: MapBoxMap {
 		await render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
 	}
 
+	// TODO: make this one tile and use it twice. Also update existing full redraws
 	mutating func updateTwoTiles(x1: Int, y1: Int, x2: Int, y2: Int) async {
 		// let viewportWidth = MapBox.width
 		// let viewportHeight = MapBox.height
