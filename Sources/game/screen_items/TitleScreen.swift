@@ -24,7 +24,7 @@ struct TitleScreen {
 				let y = middleY - (Screen.rows / 2)
 				Screen.print(x: x, y: y, text.styled(with: .bold))
 				let optionsX = middleX - (text.count / 4)
-				let icon = await " \(Game.shared.config.selectedIcon)"
+				let icon = await " \(Game.shared.config.icons.selectedIcon)"
 
 				for (index, option) in TitleScreenOptions.allCases.enumerated() {
 					let isSelected = selectedOptionIndex == index
