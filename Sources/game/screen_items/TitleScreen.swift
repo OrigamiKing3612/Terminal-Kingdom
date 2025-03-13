@@ -203,7 +203,7 @@ struct TitleScreen {
 	private func printSettingsOption(x: Int, y: Int, index: Int, text: String, configOption: String) async -> Int {
 		let isSelected = selectedSettingOptionIndex == index
 		let configOptionToPrint = configOption == "" ? "" : ": \(configOption)"
-		await Screen.print(x: x - (text.count / 2), y: y, "\(isSelected ? Game.shared.config.selectedIcon : " ")\(text)\(configOptionToPrint)".styled(with: .bold, styledIf: isSelected))
+		await Screen.print(x: x - (text.count / 2), y: y, "\(isSelected ? Game.shared.config.icons.selectedIcon : " ")\(text)\(configOptionToPrint)".styled(with: .bold, styledIf: isSelected))
 		return y + 1
 	}
 

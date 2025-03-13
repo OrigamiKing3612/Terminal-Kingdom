@@ -10,11 +10,6 @@ struct Config {
 	var wasdKeys: Bool = true
 	var icons: ConfigIcons = .init()
 
-	@available(*, deprecated, message: "Use `icons.selectedIcon` instead")
-	var selectedIcon: String {
-		icons.selectedIcon.styled(with: .bold)
-	}
-
 	init() {}
 
 	static func locations() -> (filePath: URL, directory: URL, file: URL) {
