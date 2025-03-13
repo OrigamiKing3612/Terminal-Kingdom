@@ -107,12 +107,16 @@ struct BuildingMap: MapBoxMap {
 		await render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
 	}
 
-	mutating func updateTwoTiles(x1: Int, y1: Int, x2: Int, y2: Int) async {
+	mutating func updateTile(x: Int, y: Int) async {
 		let viewportWidth = MapBox.width
 		let viewportHeight = MapBox.height
-		if await x1 >= player.x - viewportWidth / 2, await x1 <= player.x + viewportWidth / 2, await y1 >= player.y - viewportHeight / 2, await y1 <= player.y + viewportHeight / 2 {
-			await Screen.print(x: x1, y: y1, grid[y1][x1].type.render())
-			await Screen.print(x: x2, y: y2, grid[y2][x2].type.render())
+		let startX = player.x - viewportWidth / 2
+		let startY = player.y - viewportHeight / 2
+
+		if x >= startX, x < startX + viewportWidth, y >= startY, y < startY + viewportHeight {
+			let screenX = x - startX + MapBox.startX
+			let screenY = y - startY + MapBox.startY
+			await Screen.print(x: screenX, y: screenY, grid[y][x].type.render())
 		}
 	}
 

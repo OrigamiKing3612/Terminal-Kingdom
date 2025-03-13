@@ -53,45 +53,4 @@ enum NPCMoving {
 
 		return currentPosition
 	}
-	// func moveAlong(path: [Position], currentPosition: Position) {
-	// 	if let nextPosition = path.first {
-	// 		currentPosition = nextPosition
-	// 	}
-	// }
-	// let grid = await MapBox.mapType.map.grid
-	// // guard let tile = grid[from.y][from.x] as? MapTile else { continue }
-	//
-	// // let npcType = tile.type
-	//
-	// // if case let .npc(tile: npc) = npcType {
-	// let changeDirectionChance = Int.random(in: 1 ... 100)
-	// var newDirection = npc.lastDirection
-	// if changeDirectionChance <= 20 {
-	// 	newDirection = PlayerDirection.allCases.randomElement()!
-	// }
-	//
-	// var newX = from.x
-	// var newY = from.y
-	//
-	// switch newDirection {
-	// 	case .up: newY -= 1
-	// 	case .down: newY += 1
-	// 	case .left: newX -= 1
-	// 	case .right: newX += 1
-	// }
-	//
-	// if newX >= 0, newX < grid[0].count, newY >= 0, newY < grid.count, grid[newY][newX].isWalkable {
-	// 	let newPosition = NPCPosition(oldX: newX, oldY: newY, mapType: npcPosition.mapType, oldTile: tile)
-	//
-	// 	await Game.shared.updateNPC(oldPosition: npcPosition, newPosition: newPosition)
-	//
-	// 	// Put back old
-	// 	await MapBox.setMapGridTile(x: npcPosition.oldX, y: npcPosition.oldY, tile: npcPosition.oldTile, mapType: npcPosition.mapType)
-	//
-	// 	// Put new
-	// 	await MapBox.setMapGridTile(x: newX, y: newY, tile: .init(type: .npc(tile: npc), isWalkable: true, event: .talkToNPC, biome: tile.biome), mapType: npcPosition.mapType)
-	//
-	// 	await MapBox.mapBox() //! TODO: Improve this
-	// 	// }
-	// }
 }

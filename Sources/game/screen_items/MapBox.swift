@@ -43,15 +43,23 @@ enum MapBox {
 		}
 	}
 
-	static func updateTwoTiles(x1: Int, y1: Int, x2: Int, y2: Int) async {
+	static func updateTile(x: Int, y: Int) async {
 		switch await mapType {
 			case .mainMap:
-				await MapBoxActor.shared.updateMainMapTwoTiles(x1: x1, y1: y1, x2: x2, y2: y2)
+				await MapBoxActor.shared.updateMainMapTile(x: x, y: y)
 			case .mining:
 				break
 			default:
-				await MapBoxActor.shared.updateBuildingMapTwoTiles(x1: x1, y1: y1, x2: x2, y2: y2)
+				await MapBoxActor.shared.updateBuildingMapTile(x: x, y: y)
 		}
+	}
+
+	static func updateTwoTiles(x1: Int, y1: Int, x2: Int, y2: Int) async {
+		guard await mapType != .mine else {
+			return
+		}
+		await updateTile(x: x1, y: y1)
+		await updateTile(x: x2, y: y2)
 	}
 
 	static func sides() async {

@@ -87,6 +87,14 @@ actor Game {
 		npcs.remove(position)
 	}
 
+	func setHasStartedNPCMovingQueue(_ newHasStartedNPCMovingQueue: Bool) async {
+		hasStartedNPCQueue = newHasStartedNPCMovingQueue
+	}
+
+	func setHasStartedCropQueue(_ newHasStartedCropQueue: Bool) async {
+		hasStartedCropQueue = newHasStartedCropQueue
+	}
+
 	func setIsInInventoryBox(_ newIsInInventoryBox: Bool) async {
 		isInInventoryBox = newIsInInventoryBox
 	}

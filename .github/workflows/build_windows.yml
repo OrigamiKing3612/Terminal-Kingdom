@@ -30,7 +30,7 @@ jobs:
           # TODO: make the user not need to install swift for this to work
       - name: Build
         run: |
-          swift build -c release -Xswiftc -cxx-interoperability-mode="off"
+          swift build -c release
           ls .build
           ls .build/x86_64-unknown-windows-msvc/release
           cp -r .build/x86_64-unknown-windows-msvc/release/TerminalKingdom.exe .
