@@ -3,33 +3,25 @@ import Foundation
 struct NPCTile: Codable, Hashable, Equatable {
 	let id: UUID
 	var npc: NPC
-	let type: NPCTileType
-	private(set) var positionToWalkTo: TilePosition?
 
-	init(id: UUID = UUID(), type: NPCTileType, positionToWalkTo: TilePosition? = nil, tilePosition: NPCPosition?) {
+	init(id: UUID = UUID(), tilePosition: NPCPosition?) {
 		self.id = id
-		self.type = type
-		self.positionToWalkTo = positionToWalkTo
 		if let tilePosition {
 			Task {
 				await Game.shared.addNPC(tilePosition)
 			}
 		}
-		self.npc = .init(isStartingVillageNPC: false, tileID: id)
-	}
-
-	mutating func removePostion() {
-		positionToWalkTo = nil
+		self.npc = .init(tileID: id, isStartingVillageNPC: false)
 	}
 
 	static func renderNPC(tile: NPCTile) async -> String {
-		if await !tile.type.hasTalkedToBefore {
+		if !tile.npc.hasTalkedToBefore {
 			return "!".styled(with: [.bold, .red])
 		}
-		switch tile.type {
+		switch tile.npc.job {
 			default:
 				// TODO: Not sure if this will stay
-				if tile.positionToWalkTo != nil {
+				if tile.npc.positionToWalkTo != nil {
 					return await (Game.shared.config.useNerdFont ? "" : "N").styled(with: .bold)
 				} else {
 					return await (Game.shared.config.useNerdFont ? "󰙍" : "N").styled(with: .bold)
@@ -37,62 +29,14 @@ struct NPCTile: Codable, Hashable, Equatable {
 		}
 	}
 
-	func talk() async {
-		if npc.isStartingVillageNPC {
-			switch type {
-				case .blacksmith:
-					await BlacksmithNPC.talk()
-				case .blacksmith_helper:
-					await BlacksmithHelperNPC.talk()
-				case .miner:
-					await MinerNPC.talk()
-				case .mine_helper:
-					await MineHelperNPC.talk()
-				case .carpenter:
-					await CarpenterNPC.talk()
-				case .carpenter_helper:
-					await CarpenterHelperNPC.talk()
-				case .king:
-					await KingNPC.talk()
-				case .salesman:
-					await SalesmanNPC.talk()
-				case .builder:
-					await BuilderNPC.talk()
-				case .builder_helper:
-					await BuilderHelperNPC.talk()
-				case .hunter:
-					await HunterNPC.talk()
-				case .inventor:
-					break
-				case .stable_master:
-					break
-				case .farmer:
-					await FarmerNPC.talk()
-				case .doctor:
-					break
-				case .chef:
-					break
-				case .potter:
-					await PotterNPC.talk()
-				case .farmer_helper:
-					await FarmerHelperNPC.talk()
-				case .citizen:
-					// await CitizenNPC.talk()
-					break
-			}
-		} else {
-			await npc.talk()
-		}
-	}
-
 	static func move(position: NPCPosition) async {
 		let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
 
-		if case let .npc(npc) = npcTile.type, let positionToWalkTo = npc.positionToWalkTo {
+		if case let .npc(tile) = npcTile.type, let positionToWalkTo = tile.npc.positionToWalkTo {
 			if positionToWalkTo == .init(x: position.x, y: position.y, mapType: position.mapType) {
 				await Game.shared.removeNPC(position)
-				var npcNew = npc
-				npcNew.removePostion()
+				var npcNew = tile
+				npcNew.npc.removePostion()
 				await MapBox.updateTile(newTile: MapTile(
 					type: .npc(tile: npcNew),
 					isWalkable: npcTile.isWalkable,
@@ -132,7 +76,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 						x: newNpcPosition.x,
 						y: newNpcPosition.y,
 						tile: MapTile(
-							type: .npc(tile: npc),
+							type: .npc(tile: tile),
 							isWalkable: npcTile.isWalkable,
 							event: npcTile.event,
 							biome: npcTile.biome
@@ -157,24 +101,17 @@ extension NPCTile {
 	func encode(to encoder: any Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
 		try container.encode(id, forKey: .id)
-		try container.encode(type, forKey: .tileType)
-		try container.encodeIfPresent(positionToWalkTo, forKey: .positionToWalkTo)
 		try container.encode(npc, forKey: .npc)
 	}
 
 	enum CodingKeys: CodingKey {
 		case id
-		case tileType
-		case canWalk
-		case positionToWalkTo
 		case npc
 	}
 
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		self.id = try container.decode(UUID.self, forKey: .id)
-		self.type = try container.decode(NPCTileType.self, forKey: .tileType)
-		self.positionToWalkTo = try container.decodeIfPresent(TilePosition.self, forKey: .positionToWalkTo)
 		self.npc = try container.decode(NPC.self, forKey: .npc)
 	}
 }
