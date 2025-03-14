@@ -80,7 +80,7 @@ struct TitleScreen {
 				case .loadGameOption:
 					if await loadGame() {
 						// Load game
-						await MessageBox.message("Game can not be loaded at this time. Creating new game.", speaker: .game)
+						await MessageBox.message("Games can not be loaded at this time. Creating new game.", speaker: .game)
 						await newGame()
 					} else {
 						await MessageBox.message("No saved game found. Creating new game.", speaker: .game)
@@ -176,14 +176,22 @@ struct TitleScreen {
 				yStart = await printSettingsOption(x: x, y: y + yStart, index: index, text: option.label, configOption: option.configOption(config))
 				lastIndex = index
 			}
+
+			let skip = lastIndex + 1
 			yStart = await printSettingsOption(x: x, y: yStart + 1, index: lastIndex + 2, text: "Save and Quit", configOption: "")
 			yStart = await printSettingsOption(x: x, y: yStart, index: lastIndex + 3, text: "Quit", configOption: "")
 			let key = TerminalInput.readKey()
 			switch key {
 				case .up, .w, .k, .back_tab:
 					selectedSettingOptionIndex = max(0, selectedSettingOptionIndex - 1)
+					if selectedSettingOptionIndex == skip {
+						selectedSettingOptionIndex = selectedSettingOptionIndex - 1
+					}
 				case .down, .s, .j, .tab:
 					selectedSettingOptionIndex = min(SettingsScreenOptions.allCases.count - 1 + 3, selectedSettingOptionIndex + 1)
+					if selectedSettingOptionIndex == skip {
+						selectedSettingOptionIndex = selectedSettingOptionIndex + 1
+					}
 				case .enter:
 					if selectedSettingOptionIndex == lastIndex + 2 {
 						await config.write()
@@ -203,7 +211,7 @@ struct TitleScreen {
 	private func printSettingsOption(x: Int, y: Int, index: Int, text: String, configOption: String) async -> Int {
 		let isSelected = selectedSettingOptionIndex == index
 		let configOptionToPrint = configOption == "" ? "" : ": \(configOption)"
-		await Screen.print(x: x - (text.count / 2), y: y, "\(isSelected ? Game.shared.config.icons.selectedIcon : " ")\(text)\(configOptionToPrint)".styled(with: .bold, styledIf: isSelected))
+		await Screen.print(x: x - (text.count / 2), y: y, "\(isSelected ? "\(Game.shared.config.icons.selectedIcon) " : " ")\(text)\(configOptionToPrint)".styled(with: .bold, styledIf: isSelected))
 		return y + 1
 	}
 
