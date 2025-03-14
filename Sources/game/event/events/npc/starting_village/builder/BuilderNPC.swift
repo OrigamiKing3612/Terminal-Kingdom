@@ -1,8 +1,6 @@
 enum BuilderNPC {
 	static func talk() async {
-		if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToBuilder == false {
-			await Game.shared.startingVillageChecks.setHasTalkedToBuilder()
-		}
+		await NPC.setTalkedTo()
 		await getStage()
 	}
 

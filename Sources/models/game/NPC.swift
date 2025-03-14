@@ -51,6 +51,24 @@ struct NPC: Codable, Hashable, Equatable {
 		hasTalkedToBefore = true
 	}
 
+	static func setTalkedTo(after: @escaping @Sendable () async -> Void) async {
+		let mapTile = await MapBox.tilePlayerIsOn
+		guard case let .npc(tile: tile) = mapTile.type else {
+			return
+		}
+		if tile.npc.hasTalkedToBefore == false {
+			var newTile = tile
+			newTile.npc.updateTalkedTo()
+			let newMapTile = MapTile(type: .npc(tile: newTile), isWalkable: mapTile.isWalkable, event: mapTile.event, biome: mapTile.biome)
+			await MapBox.updateTile(newTile: newMapTile)
+			await after()
+		}
+	}
+
+	static func setTalkedTo() async {
+		await setTalkedTo(after: {})
+	}
+
 	static func == (lhs: NPC, rhs: NPC) -> Bool {
 		lhs.id == rhs.id
 	}

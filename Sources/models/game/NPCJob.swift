@@ -45,57 +45,6 @@ enum NPCJob: Codable, Hashable, Equatable {
 	var queueName: String {
 		"\(render.lowercased().replacingOccurrences(of: " ", with: "_"))"
 	}
-
-	@available(*, deprecated, message: "Use NPC instead")
-	var hasTalkedToBefore: Bool {
-		get async {
-			switch self {
-				case .blacksmith:
-					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToBlacksmith
-				case .blacksmith_helper:
-					true
-				case .builder:
-					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToBuilder
-				case .builder_helper:
-					true
-				case .carpenter:
-					true
-				case .carpenter_helper:
-					true
-				case .chef:
-					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToChef
-				case .doctor:
-					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToDoctor
-				case .farmer:
-					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToFarmer
-				case .farmer_helper:
-					true
-				case .hunter:
-					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToHunter
-				case .inventor:
-					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToInventor
-				case .king:
-					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToKing
-				case .mine_helper:
-					true
-				case .miner:
-					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToMiner
-				case .potter:
-					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToPotter
-				case let .salesman(type):
-					switch type {
-						case .help:
-							await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanHelp
-						case .buy:
-							await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanBuy
-						case .sell:
-							await Game.shared.startingVillageChecks.firstTimes.hasTalkedToSalesmanSell
-					}
-				case .stable_master:
-					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToStableMaster
-			}
-		}
-	}
 }
 
 enum MessageSpeakers {

@@ -1,8 +1,6 @@
 enum BlacksmithNPC {
 	static func talk() async {
-		if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToBlacksmith == false {
-			await Game.shared.startingVillageChecks.setHasTalkedToBlacksmith()
-		}
+		await NPC.setTalkedTo()
 		if await Game.shared.stages.mine.stage1Stages == .collect {
 			await MessageBox.message("Ah, here you are. Here is your pickaxe.", speaker: .blacksmith)
 			await Game.shared.stages.mine.setStage1PickaxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .pickaxe(type: .init(durability: 20)), canBeSold: false)))

@@ -1,9 +1,6 @@
 enum PotterNPC {
 	static func talk() async {
-		if await !Game.shared.startingVillageChecks.firstTimes.hasTalkedToPotter {
-			await MessageBox.message("Hello \(Game.shared.player.name)!  I'm the potter. I make pots. I'll make you a pot for 2 clay or 5 coins!", speaker: .potter)
-			await Game.shared.startingVillageChecks.setHasTalkedToPotter()
-		}
+		await NPC.setTalkedTo()
 		await potterStuff()
 	}
 

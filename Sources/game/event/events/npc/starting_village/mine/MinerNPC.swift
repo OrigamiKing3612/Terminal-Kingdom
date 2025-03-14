@@ -1,8 +1,6 @@
 enum MinerNPC {
 	static func talk() async {
-		if await !Game.shared.startingVillageChecks.firstTimes.hasTalkedToMiner {
-			await Game.shared.startingVillageChecks.setHasTalkedToMiner()
-		}
+		await NPC.setTalkedTo()
 		if await Game.shared.stages.blacksmith.stage1Stages == .goToMine {
 			await MessageBox.message("Ah, here you are. This is the iron the \("Blacksmith".styled(with: .bold)) needs.", speaker: .miner)
 			await Game.shared.stages.blacksmith.setStage1Stages(.bringItBack)
