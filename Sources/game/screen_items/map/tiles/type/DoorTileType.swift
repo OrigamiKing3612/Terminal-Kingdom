@@ -54,9 +54,6 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
 
 	var coordinatesForStartingVillageBuildings: (x: Int, y: Int) {
 		// All in MainMap
-		Task {
-			await MessageBox.message("coordinatesForStartingVillageBuildings: \(self)", speaker: .dev)
-		}
 		switch self {
 			case let .castle(side):
 				switch side {

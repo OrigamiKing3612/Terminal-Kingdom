@@ -161,7 +161,6 @@ enum MapBox {
 				await MapBoxActor.shared.resetBuildingMap(mapType)
 		}
 		_ = await player
-		await MessageBox.message("player: \(player)", speaker: .dev)
 		await mapBox()
 	}
 
@@ -205,10 +204,7 @@ enum MapBox {
 	}
 
 	static func setMainMapPlayerPosition(_ position: (x: Int, y: Int)) async {
-		await MessageBox.message("Updating coordinates: USE x: \(position.x), use y: \(position.y)", speaker: .dev)
-		await MessageBox.message("Updating coordinates: Old x: \(Game.shared.player.position.x), old y: \(Game.shared.player.position.y)", speaker: .dev)
 		await Game.shared.player.setPlayerPosition(x: position.x, y: position.y)
-		await MessageBox.message("Updating coordinates: x: \(Game.shared.player.position.x),  y: \(Game.shared.player.position.y)", speaker: .dev)
 	}
 }
 

@@ -24,39 +24,13 @@ struct BuildingMap: MapBoxMap {
 		self.mapType = mapType
 		//! TODO: Clean up
 		switch mapType {
-			case .blacksmith:
-				self.grid = await StaticMaps.buildingMap(mapType: mapType)
-			case .builder:
-				self.grid = await StaticMaps.buildingMap(mapType: mapType)
-			case .carpenter:
-				self.grid = await StaticMaps.buildingMap(mapType: mapType)
-			case .castle:
-				self.grid = await StaticMaps.buildingMap(mapType: mapType)
 			case let .custom(mapID):
 				self.grid = await Game.shared.maps.customMaps.filter { $0.id == mapID }[0].grid
-			case .farm:
-				self.grid = await StaticMaps.buildingMap(mapType: mapType)
-			case .hospital:
-				self.grid = await StaticMaps.buildingMap(mapType: mapType)
-			case .house:
-				self.grid = await StaticMaps.buildingMap(mapType: mapType)
-			case .hunting_area:
-				self.grid = await StaticMaps.buildingMap(mapType: mapType)
-			case .inventor:
-				self.grid = await StaticMaps.buildingMap(mapType: mapType)
-			case .mine:
-				self.grid = await StaticMaps.buildingMap(mapType: mapType)
-			case .potter:
-				self.grid = await StaticMaps.buildingMap(mapType: mapType)
-			case .restaurant:
-				self.grid = await StaticMaps.buildingMap(mapType: mapType)
-			case .shop:
-				self.grid = await StaticMaps.buildingMap(mapType: mapType)
-			case .stable:
-				self.grid = await StaticMaps.buildingMap(mapType: mapType)
-			default:
+			case .mainMap, .mining:
 				print("Error: Could not find map for \(mapType)")
 				exit(8)
+			default:
+				self.grid = await StaticMaps.buildingMap(mapType: mapType)
 		}
 
 		// Coordinates for inside the building
@@ -86,6 +60,14 @@ struct BuildingMap: MapBoxMap {
 				case .farm_area:
 					player.x = 9
 					player.y = 1
+			}
+		} else if case let .hospital(side: side) = mapType {
+			switch side {
+				case .top:
+					findPayerStart()
+				case .bottom:
+					player.x = 11
+					player.y = 9
 			}
 		} else {
 			findPayerStart()

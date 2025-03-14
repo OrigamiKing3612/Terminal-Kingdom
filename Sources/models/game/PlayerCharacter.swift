@@ -9,13 +9,7 @@ actor PlayerCharacter {
 	}
 
 	#if DEBUG
-		private(set) var position: Player = .init(x: 5, y: 5) /* {
-			didSet {
-				Task {
-					await MessageBox.message("x: \(position.x); y: \(position.y)", speaker: .dev)
-				}
-			}
-		} */
+		private(set) var position: Player = .init(x: 5, y: 5)
 	#else
 		private(set) var position: Player = .init(x: 55, y: 23)
 	#endif
