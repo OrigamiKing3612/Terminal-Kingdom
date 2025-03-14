@@ -9,6 +9,7 @@ actor Game {
 	var stages: Stages = .init()
 	var mapGen: MapGen = .init()
 	var maps: Maps = .init()
+	private(set) var kingdoms: [Kingdom] = []
 	private(set) var messages: [String] = []
 	private(set) var crops: Set<TilePosition> = []
 	private(set) var npcs: Set<NPCPosition> = []
@@ -138,6 +139,24 @@ actor Game {
 
 	func getBiomeAtPlayerPosition() async -> BiomeType {
 		await mapGen.getBiomeAtPlayerPosition()
+	}
+
+	func createKingdom(_ kingdom: Kingdom) async {
+		kingdoms.append(kingdom)
+	}
+
+	func removeKingdom(_ kingdom: Kingdom) async {
+		kingdoms.removeAll(where: { $0.id == kingdom.id })
+	}
+
+	func removeKingdom(id: UUID) async {
+		kingdoms.removeAll(where: { $0.id == id })
+	}
+
+	func addKingdomBuilding(_ building: BuildingPosition, kingdomID: UUID) async {
+		if let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) {
+			kingdoms[index].buildings.append(building)
+		}
 	}
 }
 

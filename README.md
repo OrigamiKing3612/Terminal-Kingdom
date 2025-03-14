@@ -1,6 +1,6 @@
 # Terminal Kingdom
 This is a game played entirely in the command line. Your goal is to create a new village from the ground up and keep it running. You will have to make choices that will affect your village. You will be able to create many villages and keep your kingdom running smoothly!
-This game is still in early development and is not *fully* yet playable.
+This game is still in early development and is not yet *fully* playable.
 
 Right now, I've only worked on the tutorial. It is not done yet, but the tutorial will guide you through the basics of the game, but not be annoying. You will be able to skip the tutorial if you want to the game will just be harder.
 

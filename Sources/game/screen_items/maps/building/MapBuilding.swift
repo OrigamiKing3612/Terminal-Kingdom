@@ -95,6 +95,9 @@ enum MapBuilding {
 							await Game.shared.addMap(map: customMap)
 							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor, biome: grid[y][x].biome)
 							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
+							if tile.type == .builder {
+								await Game.shared.createKingdom(.init(buildings: [.init(x: x, y: y, type: .builder)]))
+							}
 							if await Game.shared.stages.builder.stage5Stages == .buildHouse {
 								await Game.shared.stages.builder.setStage5HasBuiltHouse(true)
 							}

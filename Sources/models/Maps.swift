@@ -31,7 +31,7 @@ actor Maps {
 		customMaps.removeAll(where: { $0.id == mapID })
 	}
 
-	func setMap(mapType: MapType, map: [[MapTile]]) {
+	func setMap(mapType: MapType, map: [[MapTile]]) async {
 		switch mapType {
 			case .blacksmith:
 				blacksmith = map
@@ -41,9 +41,13 @@ actor Maps {
 				carpenter = map
 			case .castle:
 				castle = map
-			case .custom:
-				print("Custom Map should not be put here")
-				exit(11)
+			case let .custom(mapID: id):
+				if let index = customMaps.firstIndex(where: { $0.id == id }) {
+					customMaps[index].updateGrid(map)
+				} else {
+					print("Custom Map not found")
+					exit(12)
+				}
 			case .farm:
 				farm = map
 			case .hospital:
