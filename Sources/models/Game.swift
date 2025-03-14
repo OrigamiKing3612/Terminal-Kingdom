@@ -12,7 +12,7 @@ actor Game {
 	private(set) var kingdoms: [Kingdom] = []
 	private(set) var messages: [String] = []
 	private(set) var crops: Set<TilePosition> = []
-	private(set) var npcs: Set<NPCPosition> = []
+	private(set) var movingNpcs: Set<NPCPosition> = []
 	private(set) var hasInited: Bool = false
 	private(set) var isTypingInMessageBox: Bool = false
 	private(set) var map: [[MapTile]] = []
@@ -76,16 +76,16 @@ actor Game {
 			await startNPCMovingQueue()
 			hasStartedNPCQueue = true
 		}
-		npcs.insert(position)
+		movingNpcs.insert(position)
 	}
 
 	func updateNPC(oldPosition: NPCPosition, newPosition: NPCPosition) async {
-		npcs.remove(oldPosition)
+		movingNpcs.remove(oldPosition)
 		await addNPC(newPosition)
 	}
 
 	func removeNPC(_ position: NPCPosition) async {
-		npcs.remove(position)
+		movingNpcs.remove(position)
 	}
 
 	func setHasStartedNPCMovingQueue(_ newHasStartedNPCMovingQueue: Bool) async {

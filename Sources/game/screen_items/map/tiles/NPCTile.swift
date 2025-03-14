@@ -3,11 +3,11 @@ import Foundation
 struct NPCTile: Codable, Hashable, Equatable {
 	let id: UUID
 	let type: NPCTileType
+	var npc: NPC
 	private(set) var positionToWalkTo: TilePosition?
-	// var lastDirection: PlayerDirection = .allCases.randomElement()!
 
-	init(type: NPCTileType, positionToWalkTo: TilePosition, tilePosition: NPCPosition?) {
-		self.id = UUID()
+	init(id: UUID = UUID(), type: NPCTileType, positionToWalkTo: TilePosition? = nil, tilePosition: NPCPosition?) {
+		self.id = id
 		self.type = type
 		self.positionToWalkTo = positionToWalkTo
 		if let tilePosition {
@@ -15,6 +15,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 				await Game.shared.addNPC(tilePosition)
 			}
 		}
+		self.npc = .init(isStartingVillageNPC: false, tileID: id)
 	}
 
 	mutating func removePostion() {
@@ -158,6 +159,7 @@ extension NPCTile {
 		try container.encode(id, forKey: .id)
 		try container.encode(type, forKey: .tileType)
 		try container.encodeIfPresent(positionToWalkTo, forKey: .positionToWalkTo)
+		try container.encode(npc, forKey: .npc)
 	}
 
 	enum CodingKeys: CodingKey {
@@ -165,6 +167,7 @@ extension NPCTile {
 		case tileType
 		case canWalk
 		case positionToWalkTo
+		case npc
 	}
 
 	init(from decoder: any Decoder) throws {
@@ -172,5 +175,6 @@ extension NPCTile {
 		self.id = try container.decode(UUID.self, forKey: .id)
 		self.type = try container.decode(NPCTileType.self, forKey: .tileType)
 		self.positionToWalkTo = try container.decodeIfPresent(TilePosition.self, forKey: .positionToWalkTo)
+		self.npc = try container.decode(NPC.self, forKey: .npc)
 	}
 }
