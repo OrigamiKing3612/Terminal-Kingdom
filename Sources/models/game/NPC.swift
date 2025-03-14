@@ -2,7 +2,6 @@ import Foundation
 
 struct NPC: Codable, Hashable, Equatable {
 	let id: UUID
-	let tileID: UUID // To link them
 	let name: String
 	let isStartingVillageNPC: Bool
 	var hasTalkedToBefore: Bool
@@ -12,13 +11,12 @@ struct NPC: Codable, Hashable, Equatable {
 	let gender: Gender
 	private(set) var positionToWalkTo: TilePosition?
 
-	init(id: UUID = UUID(), name: String? = nil /* , age: Int? = nil */, gender: Gender? = nil, job: NPCJob? = nil, tileID: UUID, isStartingVillageNPC: Bool, positionToWalkTo: TilePosition? = nil) {
+	init(id: UUID = UUID(), name: String? = nil /* , age: Int? = nil */, gender: Gender? = nil, job: NPCJob? = nil, isStartingVillageNPC: Bool = false, positionToWalkTo: TilePosition? = nil) {
 		self.id = id
 		self.gender = gender ?? Gender.allCases.randomElement()!
 		self.name = name ?? Self.generateRandomName(for: self.gender)
 		// self.age = age ?? Int.random(in: 18 ... 80)
 		self.job = job
-		self.tileID = tileID
 		self.isStartingVillageNPC = isStartingVillageNPC
 		self.hasTalkedToBefore = false
 		self.needsAttention = false

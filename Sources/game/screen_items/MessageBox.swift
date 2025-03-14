@@ -73,6 +73,10 @@ enum MessageBox {
 		await message(text, speaker: speaker.render)
 	}
 
+	static func message(_ text: String, speaker: StartingVillageNPCTileTypes) async {
+		await message(text, speaker: speaker.render)
+	}
+
 	private static func message(_ text: String, speaker: String) async {
 		// clear()
 		scrollOffset = 0
@@ -102,7 +106,7 @@ enum MessageBox {
 		await updateLastMessage(newMessage: newMessage, speaker: speaker.render)
 	}
 
-	static func updateLastMessage(newMessage: String, speaker: NPCTileType) async {
+	static func updateLastMessage(newMessage: String, speaker: StartingVillageNPCTileTypes) async {
 		await updateLastMessage(newMessage: newMessage, speaker: speaker.render)
 	}
 
@@ -116,7 +120,7 @@ enum MessageBox {
 		await messageWithTyping(text, speaker: speaker.render)
 	}
 
-	static func messageWithTyping(_ text: String, speaker: NPCTileType) async -> String {
+	static func messageWithTyping(_ text: String, speaker: StartingVillageNPCTileTypes) async -> String {
 		await messageWithTyping(text, speaker: speaker.render)
 	}
 
@@ -163,7 +167,7 @@ enum MessageBox {
 		await messageWithTypingNumbers(text, speaker: speaker.render)
 	}
 
-	static func messageWithTypingNumbers(_ text: String, speaker: NPCTileType) async -> Int {
+	static func messageWithTypingNumbers(_ text: String, speaker: StartingVillageNPCTileTypes) async -> Int {
 		await messageWithTypingNumbers(text, speaker: speaker.render)
 	}
 
@@ -206,7 +210,7 @@ enum MessageBox {
 		await messageWithOptions(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox)
 	}
 
-	static func messageWithOptions(_ text: String, speaker: NPCTileType, options: [MessageOption], hideInventoryBox: Bool = true) async -> MessageOption {
+	static func messageWithOptions(_ text: String, speaker: StartingVillageNPCTileTypes, options: [MessageOption], hideInventoryBox: Bool = true) async -> MessageOption {
 		await messageWithOptions(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox)
 	}
 
@@ -269,7 +273,7 @@ enum MessageBox {
 		await messageWithOptionsWithLabel(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox, label: label)
 	}
 
-	static func messageWithOptionsWithLabel(_ text: String, speaker: NPCTileType, options: [MessageOption], hideInventoryBox: Bool = true, label: String) async -> MessageOption {
+	static func messageWithOptionsWithLabel(_ text: String, speaker: StartingVillageNPCTileTypes, options: [MessageOption], hideInventoryBox: Bool = true, label: String) async -> MessageOption {
 		await messageWithOptionsWithLabel(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox, label: label)
 	}
 

@@ -1,6 +1,6 @@
 enum RandomEventStuff {
 	static func teachToChopLumber(by choppingLumberTeachingDoorTypes: ChoppingLumberTeachingDoorTypes) async {
-		let speaker: NPCTileType = switch choppingLumberTeachingDoorTypes {
+		let speaker: StartingVillageNPCTileTypes = switch choppingLumberTeachingDoorTypes {
 			case .builder: .builder
 			case .miner: .miner
 		}
@@ -30,7 +30,7 @@ enum RandomEventStuff {
 		}
 	}
 
-	static func wantsToContinue(speaker: NPCTileType) async -> Bool {
+	static func wantsToContinue(speaker: StartingVillageNPCTileTypes) async -> Bool {
 		let options: [MessageOption] = [
 			.init(label: "Yes", action: {}),
 			.init(label: "No", action: {}),

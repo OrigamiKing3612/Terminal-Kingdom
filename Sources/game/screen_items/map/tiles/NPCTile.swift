@@ -4,6 +4,16 @@ struct NPCTile: Codable, Hashable, Equatable {
 	let id: UUID
 	var npc: NPC
 
+	init(id: UUID = UUID(), npc: NPC, tilePosition: NPCPosition?) {
+		self.id = id
+		if let tilePosition {
+			Task {
+				await Game.shared.addNPC(tilePosition)
+			}
+		}
+		self.npc = npc
+	}
+
 	init(id: UUID = UUID(), tilePosition: NPCPosition?) {
 		self.id = id
 		if let tilePosition {
@@ -11,7 +21,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 				await Game.shared.addNPC(tilePosition)
 			}
 		}
-		self.npc = .init(tileID: id, isStartingVillageNPC: false)
+		self.npc = .init(isStartingVillageNPC: false)
 	}
 
 	static func renderNPC(tile: NPCTile) async -> String {
