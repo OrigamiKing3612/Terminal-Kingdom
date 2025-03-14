@@ -78,6 +78,9 @@ struct NPCTile: Codable, Hashable, Equatable {
 				await PotterNPC.talk()
 			case .farmer_helper:
 				await FarmerHelperNPC.talk()
+			case .citizen:
+				// await CitizenNPC.talk()
+				break
 		}
 	}
 

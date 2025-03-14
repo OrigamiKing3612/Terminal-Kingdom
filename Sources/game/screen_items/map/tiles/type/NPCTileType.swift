@@ -7,6 +7,7 @@ enum NPCTileType: Codable, Hashable, Equatable {
 	case carpenter_helper
 	case farmer
 	case farmer_helper
+	case citizen(type: CitizenType)
 
 	case king
 	case salesman(type: SalesmanType)
@@ -39,6 +40,7 @@ enum NPCTileType: Codable, Hashable, Equatable {
 			case .carpenter_helper: "Carpenter Helper"
 			case .builder_helper: "Builder Helper"
 			case .farmer_helper: "Farmer Helper"
+			case let .citizen(type): type.name
 		}
 	}
 
@@ -92,6 +94,8 @@ enum NPCTileType: Codable, Hashable, Equatable {
 					}
 				case .stable_master:
 					await Game.shared.startingVillageChecks.firstTimes.hasTalkedToStableMaster
+				case .citizen:
+					true
 			}
 		}
 	}
