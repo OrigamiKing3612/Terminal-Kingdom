@@ -1,6 +1,5 @@
 name: Bug Report
 description: File a bug report.
-title: "[Bug]: "
 labels: ["bug"]
 # assignees:
 # projects:
@@ -40,17 +39,15 @@ body:
       # value:
     validations:
       required: true
-  - type: dropdown
-    id: version
+  - type: textarea
+    id: screenshots
     attributes:
-      label: Version
-      description: What version of our software are you running?
-      options:
-        - 1.0.2 (Default)
-        - 1.0.3 (Edge)
-      default: 0
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem.
+      # placeholder:
+      # value:
     validations:
-      required: true
+      required: false
   - type: dropdown
     id: os
     attributes:
@@ -84,4 +81,4 @@ body:
       # placeholder:
       # value:
     validations:
-      required: true
+      required: false
