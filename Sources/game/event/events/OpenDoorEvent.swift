@@ -26,19 +26,21 @@ enum OpenDoorEvent {
 	private static func leaveBuildingMap() async {
 		let currentTile = await MapBox.tilePlayerIsOn
 
-		switch await MapBox.mapType {
+		let newCoordinates: (x: Int, y: Int)? = switch await MapBox.mapType {
 			case let .farm(type: farmType):
 				if case let .door(playerDoorTile) = currentTile.type {
 					// enter, out
 					switch (farmType, playerDoorTile.type) {
 						case (.main, .farm(type: .farm_area)):
-							await MapBox.setMainMapPlayerPosition(DoorTileTypes.farm(type: .main).coordinatesForStartingVillageBuildings)
+							DoorTileTypes.farm(type: .farm_area).coordinatesForStartingVillageBuildings
 						case (.farm_area, .farm(type: .main)):
-							await MapBox.setMainMapPlayerPosition(DoorTileTypes.farm(type: .farm_area).coordinatesForStartingVillageBuildings)
+							DoorTileTypes.farm(type: .main).coordinatesForStartingVillageBuildings
 						default:
 							// No change in doors has happened
-							break
+							nil
 					}
+				} else {
+					nil
 				}
 			case let .castle(side: castleSide):
 				await exitCastle(castleSide: castleSide, currentTile: currentTile)
@@ -47,16 +49,22 @@ enum OpenDoorEvent {
 					// enter, out
 					switch (hospitalSide, playerDoorTile.type) {
 						case (.top, .hospital(side: .bottom)):
-							await MapBox.setMainMapPlayerPosition(DoorTileTypes.hospital(side: .bottom).coordinatesForStartingVillageBuildings)
+							DoorTileTypes.hospital(side: .bottom).coordinatesForStartingVillageBuildings
 						case (.bottom, .hospital(side: .top)):
-							await MapBox.setMainMapPlayerPosition(DoorTileTypes.hospital(side: .top).coordinatesForStartingVillageBuildings)
+							DoorTileTypes.hospital(side: .top).coordinatesForStartingVillageBuildings
 						default:
 							// No change in doors has happened
-							break
+							nil
 					}
+				} else {
+					nil
 				}
 			default:
-				break
+				nil
+		}
+
+		if let newCoordinates {
+			await MapBox.setMainMapPlayerPosition(newCoordinates)
 		}
 
 		await Game.shared.maps.setMap(mapType: MapBox.mapType, map: MapBox.buildingMap.grid)
@@ -65,58 +73,52 @@ enum OpenDoorEvent {
 		await MapBox.setMapType(.mainMap)
 	}
 
-	private static func exitCastle(castleSide: CastleSide, currentTile: MapTile) async {
-		var topCoordinates: Void {
-			get async {
-				await MapBox.setMainMapPlayerPosition(DoorTileTypes.castle(side: .top).coordinatesForStartingVillageBuildings)
-			}
+	private static func exitCastle(castleSide: CastleSide, currentTile: MapTile) async -> (x: Int, y: Int)? {
+		var topCoordinates: (x: Int, y: Int) {
+			DoorTileTypes.castle(side: .top).coordinatesForStartingVillageBuildings
 		}
-		var rightCoordinates: Void {
-			get async {
-				await MapBox.setMainMapPlayerPosition(DoorTileTypes.castle(side: .right).coordinatesForStartingVillageBuildings)
-			}
+		var rightCoordinates: (x: Int, y: Int) {
+			DoorTileTypes.castle(side: .right).coordinatesForStartingVillageBuildings
 		}
-		var bottomCoordinates: Void {
-			get async {
-				await MapBox.setMainMapPlayerPosition(DoorTileTypes.castle(side: .bottom).coordinatesForStartingVillageBuildings)
-			}
+		var bottomCoordinates: (x: Int, y: Int) {
+			DoorTileTypes.castle(side: .bottom).coordinatesForStartingVillageBuildings
 		}
-		var leftCoordinates: Void {
-			get async {
-				await MapBox.setMainMapPlayerPosition(DoorTileTypes.castle(side: .left).coordinatesForStartingVillageBuildings)
-			}
+		var leftCoordinates: (x: Int, y: Int) {
+			DoorTileTypes.castle(side: .left).coordinatesForStartingVillageBuildings
 		}
-		if case let .door(playerDoorTile) = currentTile.type {
+		return if case let .door(playerDoorTile) = currentTile.type {
 			// enter, out
 			switch (castleSide, playerDoorTile.type) {
 				case (.top, .castle(side: .right)):
-					await rightCoordinates
+					rightCoordinates
 				case (.top, .castle(side: .bottom)):
-					await bottomCoordinates
+					bottomCoordinates
 				case (.top, .castle(side: .left)):
-					await leftCoordinates
+					leftCoordinates
 				case (.right, .castle(side: .top)):
-					await topCoordinates
+					topCoordinates
 				case (.right, .castle(side: .bottom)):
-					await bottomCoordinates
+					bottomCoordinates
 				case (.right, .castle(side: .left)):
-					await leftCoordinates
+					leftCoordinates
 				case (.bottom, .castle(side: .top)):
-					await topCoordinates
+					topCoordinates
 				case (.bottom, .castle(side: .right)):
-					await rightCoordinates
+					rightCoordinates
 				case (.bottom, .castle(side: .left)):
-					await leftCoordinates
+					leftCoordinates
 				case (.left, .castle(side: .top)):
-					await topCoordinates
+					topCoordinates
 				case (.left, .castle(side: .right)):
-					await rightCoordinates
+					rightCoordinates
 				case (.left, .castle(side: .bottom)):
-					await bottomCoordinates
+					bottomCoordinates
 				default:
 					// No change in doors has happened
-					break
+					nil
 			}
+		} else {
+			nil
 		}
 	}
 }
