@@ -5,7 +5,9 @@ struct MainMap: MapBoxMap {
 		get async { await Game.shared.player.position }
 	}
 
-	private var hasFoundPlayerStart = false
+	#if DEBUG
+		private var hasFoundPlayerStart = false
+	#endif
 
 	private init() {
 		self.grid = []
@@ -84,15 +86,16 @@ struct MainMap: MapBoxMap {
 	}
 
 	mutating func map() async {
-		// TODO: could fix #2
-		if !hasFoundPlayerStart {
-			if let (startX, startY) = MapTile.findTilePosition(of: .playerStart, in: grid) {
-				await Game.shared.player.setPlayerPosition(x: startX, y: startY)
-			} else {
-				print("Error: Could not find playerStart tile in the grid.")
+		#if DEBUG
+			if !hasFoundPlayerStart {
+				if let (startX, startY) = MapTile.findTilePosition(of: .playerStart, in: grid) {
+					await Game.shared.player.setPlayerPosition(x: startX, y: startY)
+				} else {
+					print("Error: Could not find playerStart tile in the grid.")
+				}
+				hasFoundPlayerStart = true
 			}
-			hasFoundPlayerStart = true
-		}
+		#endif
 
 		let viewportWidth = MapBox.width
 		let viewportHeight = MapBox.height

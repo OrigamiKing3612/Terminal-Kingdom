@@ -121,10 +121,10 @@ actor MapGen {
 			}
 		}
 
-		#if DEBUG
-			await outputMap(map)
-			// 	exit(0)
-		#endif
+		// #if DEBUG
+		// 	await outputMap(map)
+		// 	exit(0)
+		// #endif
 
 		return map
 	}
@@ -151,6 +151,12 @@ actor MapGen {
 						} else {
 							MapTile(type: .biomeTOBEGENERATED(type: preBiome), isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
 						}
+					} else if case .playerStart = oldTile.type {
+						#if DEBUG
+							MapTile(type: .playerStart, isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
+						#else
+							MapTile(type: .biomeTOBEGENERATED(type: biome), isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
+						#endif
 					} else {
 						MapTile(type: oldTile.type, isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
 					}

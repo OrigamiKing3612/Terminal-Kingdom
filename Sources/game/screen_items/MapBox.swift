@@ -160,6 +160,7 @@ enum MapBox {
 			default:
 				await MapBoxActor.shared.resetBuildingMap(mapType)
 		}
+		_ = await player
 		await mapBox()
 	}
 

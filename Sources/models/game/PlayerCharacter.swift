@@ -167,13 +167,7 @@ actor PlayerCharacter {
 		return item.id
 	}
 
-	@available(*, deprecated, message: "Use `setPlayerPosition(x:y:)` instead")
-	func updatePlayerPositionToSave(x: Int, y: Int) {
-		position.x = x
-		position.y = y
-	}
-
-	func setPlayerPosition(x: Int, y: Int) {
+	func setPlayerPosition(x: Int, y: Int) async {
 		position.x = x
 		position.y = y
 	}
@@ -212,15 +206,15 @@ actor PlayerCharacter {
 
 	func setMapType(_ newMapType: MapType) async {
 		mapType = newMapType
-		switch mapType {
-			case .mainMap:
-				break
-			case .mining:
-				await MapBox.resetMiningMap()
-			default:
-				await MapBox.resetBuildingMap(mapType)
-		}
-		await MapBox.mapBox()
+		// switch mapType {
+		// 	case .mainMap:
+		// 		break
+		// 	case .mining:
+		// 		await MapBox.resetMiningMap()
+		// 	default:
+		// 		await MapBox.resetBuildingMap(mapType)
+		// }
+		// await MapBox.mapBox()
 	}
 
 	func setDirection(_ newDirection: PlayerDirection) {
