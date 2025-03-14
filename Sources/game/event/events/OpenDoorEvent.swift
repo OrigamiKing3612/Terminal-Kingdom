@@ -113,6 +113,8 @@ enum OpenDoorEvent {
 					rightCoordinates
 				case (.left, .castle(side: .bottom)):
 					bottomCoordinates
+				case (.left, .castle(side: .left)):
+					leftCoordinates
 				default:
 					// No change in doors has happened
 					nil
