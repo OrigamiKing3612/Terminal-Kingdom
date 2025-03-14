@@ -2,8 +2,8 @@ name: Bug Report
 description: File a bug report.
 title: "[Bug]: "
 labels: ["bug"]
-assignees:
-projects:
+# assignees:
+# projects:
 body:
   - type: markdown
     attributes:
@@ -15,7 +15,7 @@ body:
       label: Describe the Bug
       description: A clear and concise description of what the bug is.
       placeholder: What happened?
-      value:
+      # value:
     validations:
       required: true
   - type: textarea
@@ -28,7 +28,7 @@ body:
         2. Click on '....'
         3. Scroll down to '....'
         ...
-      value:
+      # value:
     validations:
       required: true
   - type: textarea
@@ -36,8 +36,8 @@ body:
     attributes:
       label: Expected behavior
       description: A clear and concise description of what you expected to happen.
-      placeholder:
-      value:
+      # placeholder:
+      # value:
     validations:
       required: true
   - type: dropdown
@@ -81,8 +81,7 @@ body:
     attributes:
       label: Additional context
       description: Lastly, add any other context about the problem here.
-      placeholder:
-      value:
+      # placeholder:
+      # value:
     validations:
       required: true
-      
