@@ -26,4 +26,9 @@ struct NPC: Codable, Hashable, Equatable {
 	func hash(into hasher: inout Hasher) {
 		hasher.combine(id)
 	}
+
+	func talk() async {
+		//! TODO: uh oh
+		await MessageBox.message("Hello!", speaker: .game)
+	}
 }

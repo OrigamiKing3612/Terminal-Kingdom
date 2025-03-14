@@ -2,8 +2,8 @@ import Foundation
 
 struct NPCTile: Codable, Hashable, Equatable {
 	let id: UUID
-	let type: NPCTileType
 	var npc: NPC
+	let type: NPCTileType
 	private(set) var positionToWalkTo: TilePosition?
 
 	init(id: UUID = UUID(), type: NPCTileType, positionToWalkTo: TilePosition? = nil, tilePosition: NPCPosition?) {
@@ -37,51 +37,51 @@ struct NPCTile: Codable, Hashable, Equatable {
 		}
 	}
 
-	var queueName: String {
-		"\(type.queueName).\(id)"
-	}
-
 	func talk() async {
-		switch type {
-			case .blacksmith:
-				await BlacksmithNPC.talk()
-			case .blacksmith_helper:
-				await BlacksmithHelperNPC.talk()
-			case .miner:
-				await MinerNPC.talk()
-			case .mine_helper:
-				await MineHelperNPC.talk()
-			case .carpenter:
-				await CarpenterNPC.talk()
-			case .carpenter_helper:
-				await CarpenterHelperNPC.talk()
-			case .king:
-				await KingNPC.talk()
-			case .salesman:
-				await SalesmanNPC.talk()
-			case .builder:
-				await BuilderNPC.talk()
-			case .builder_helper:
-				await BuilderHelperNPC.talk()
-			case .hunter:
-				await HunterNPC.talk()
-			case .inventor:
-				break
-			case .stable_master:
-				break
-			case .farmer:
-				await FarmerNPC.talk()
-			case .doctor:
-				break
-			case .chef:
-				break
-			case .potter:
-				await PotterNPC.talk()
-			case .farmer_helper:
-				await FarmerHelperNPC.talk()
-			case .citizen:
-				// await CitizenNPC.talk()
-				break
+		if npc.isStartingVillageNPC {
+			switch type {
+				case .blacksmith:
+					await BlacksmithNPC.talk()
+				case .blacksmith_helper:
+					await BlacksmithHelperNPC.talk()
+				case .miner:
+					await MinerNPC.talk()
+				case .mine_helper:
+					await MineHelperNPC.talk()
+				case .carpenter:
+					await CarpenterNPC.talk()
+				case .carpenter_helper:
+					await CarpenterHelperNPC.talk()
+				case .king:
+					await KingNPC.talk()
+				case .salesman:
+					await SalesmanNPC.talk()
+				case .builder:
+					await BuilderNPC.talk()
+				case .builder_helper:
+					await BuilderHelperNPC.talk()
+				case .hunter:
+					await HunterNPC.talk()
+				case .inventor:
+					break
+				case .stable_master:
+					break
+				case .farmer:
+					await FarmerNPC.talk()
+				case .doctor:
+					break
+				case .chef:
+					break
+				case .potter:
+					await PotterNPC.talk()
+				case .farmer_helper:
+					await FarmerHelperNPC.talk()
+				case .citizen:
+					// await CitizenNPC.talk()
+					break
+			}
+		} else {
+			await npc.talk()
 		}
 	}
 
