@@ -161,6 +161,12 @@ actor Game {
 			kingdoms[index].buildings.append(building)
 		}
 	}
+
+	func addKingdomNPC(_ uuid: UUID, kingdomID: UUID) async {
+		if let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) {
+			kingdoms[index].npcsInKindom.append(uuid)
+		}
+	}
 }
 
 // TODO: update because Game is not codable

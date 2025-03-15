@@ -4,7 +4,12 @@ struct NPCTile: Codable, Hashable, Equatable {
 	let id: UUID
 	var npc: NPC
 
-	init(id: UUID = UUID(), npc: NPC = NPC(isStartingVillageNPC: false)) {
+	init(id: UUID = UUID()) {
+		self.id = id
+		self.npc = .init(isStartingVillageNPC: false, kingdomID: id)
+	}
+
+	init(id: UUID = UUID(), npc: NPC) {
 		self.id = id
 		self.npc = npc
 	}

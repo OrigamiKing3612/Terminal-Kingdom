@@ -135,7 +135,8 @@ enum MapBuilding {
 			await MessageBox.message("You can't start a kingdom here.", speaker: .game)
 			return
 		}
-		await Game.shared.createKingdom(.init(buildings: [.init(x: x, y: y, type: .builder)]))
+		let kingdom = Kingdom(buildings: [.init(x: x, y: y, type: .builder)])
+		await Game.shared.createKingdom(kingdom)
 		await MessageBox.message("A builder should be coming any minute now.", speaker: .player)
 
 		let npcStartX = 235
@@ -148,7 +149,7 @@ enum MapBuilding {
 			case .bottom: TilePosition(x: x, y: y + 1, mapType: .mainMap)
 		}
 		let tilePosition = NPCPosition(x: npcStartX, y: npcStartY, mapType: .mainMap, oldTile: oldTile)
-		let npcTile = NPCTile(npc: NPC(job: .builder, positionToWalkTo: positionToWalkTo, tilePosition: tilePosition))
+		let npcTile = NPCTile(npc: NPC(job: .builder, positionToWalkTo: positionToWalkTo, tilePosition: tilePosition, kingdomID: kingdom.id))
 		let npcMapTile = MapTile(type: .npc(tile: npcTile), event: .talkToNPC, biome: .plains)
 
 		grid[npcStartY][npcStartX] = npcMapTile

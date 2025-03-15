@@ -4,7 +4,7 @@ struct Kingdom: Codable, Identifiable, Hashable, Equatable {
 	let id: UUID
 	// let name: String
 	var buildings: [BuildingPosition]
-	let npcsInKindom: [UUID]
+	var npcsInKindom: [UUID]
 
 	init(id: UUID = UUID(), buildings: [BuildingPosition], npcsInKindom: [UUID] = []) {
 		self.id = id

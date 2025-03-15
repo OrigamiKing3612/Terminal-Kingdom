@@ -11,7 +11,7 @@ struct NPC: Codable, Hashable, Equatable {
 	let gender: Gender
 	private(set) var positionToWalkTo: TilePosition?
 
-	init(id: UUID = UUID(), name: String? = nil, gender: Gender? = nil, job: NPCJob? = nil, isStartingVillageNPC: Bool = false, positionToWalkTo: TilePosition? = nil, tilePosition: NPCPosition? = nil) {
+	init(id: UUID = UUID(), name: String? = nil, gender: Gender? = nil, job: NPCJob? = nil, isStartingVillageNPC: Bool = false, positionToWalkTo: TilePosition? = nil, tilePosition: NPCPosition? = nil, kingdomID: UUID) {
 		self.id = id
 		self.gender = gender ?? Gender.allCases.randomElement()!
 		self.name = name ?? Self.generateRandomName(for: self.gender)
@@ -24,6 +24,9 @@ struct NPC: Codable, Hashable, Equatable {
 			Task {
 				await Game.shared.addNPC(tilePosition)
 			}
+		}
+		Task {
+			await Game.shared.addKingdomNPC(id, kingdomID: kingdomID)
 		}
 	}
 
