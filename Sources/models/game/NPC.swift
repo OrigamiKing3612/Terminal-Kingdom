@@ -11,16 +11,20 @@ struct NPC: Codable, Hashable, Equatable {
 	let gender: Gender
 	private(set) var positionToWalkTo: TilePosition?
 
-	init(id: UUID = UUID(), name: String? = nil /* , age: Int? = nil */, gender: Gender? = nil, job: NPCJob? = nil, isStartingVillageNPC: Bool = false, positionToWalkTo: TilePosition? = nil) {
+	init(id: UUID = UUID(), name: String? = nil, gender: Gender? = nil, job: NPCJob? = nil, isStartingVillageNPC: Bool = false, positionToWalkTo: TilePosition? = nil, tilePosition: NPCPosition? = nil) {
 		self.id = id
 		self.gender = gender ?? Gender.allCases.randomElement()!
 		self.name = name ?? Self.generateRandomName(for: self.gender)
-		// self.age = age ?? Int.random(in: 18 ... 80)
 		self.job = job
 		self.isStartingVillageNPC = isStartingVillageNPC
 		self.hasTalkedToBefore = false
 		self.needsAttention = false
-		self.positionToWalkTo = positionToWalkTo
+		if let tilePosition {
+			self.positionToWalkTo = positionToWalkTo
+			Task {
+				await Game.shared.addNPC(tilePosition)
+			}
+		}
 	}
 
 	mutating func removePostion() {
@@ -118,6 +122,7 @@ struct NPC: Codable, Hashable, Equatable {
 					await FarmerHelperNPC.talk()
 			}
 		} else {
+			await NPC.setTalkedTo()
 			await MessageBox.message("Hello!", speaker: .npc(name: name, job: job))
 		}
 	}

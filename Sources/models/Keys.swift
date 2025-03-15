@@ -47,9 +47,9 @@ enum Keys {
 			#if DEBUG
 				case .t:
 					let p = await Game.shared.player.position
-					await MapBox.updateTile(newTile: MapTile(type: .npc(tile: NPCTile(npc: NPC(), tilePosition: NPCPosition(x: p.x, y: p.y, mapType: .mainMap, oldTile: .init(type: .cactus, biome: .plains)))), event: .talkToNPC, biome: .plains))
-					_ = await Game.shared.player.collect(item: .init(type: .lumber), count: 1000)
-					_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))))
+					await MapBox.updateTile(newTile: MapTile(type: .npc(tile: NPCTile(npc: NPC(positionToWalkTo: .init(x: p.x, y: p.y - 10, mapType: .mainMap), tilePosition: NPCPosition(x: p.x, y: p.y, mapType: .mainMap, oldTile: .init(type: .cactus, biome: .plains))))), event: .talkToNPC, biome: .plains))
+				case .u:
+					await MessageBox.message("movingNpcs: \(Game.shared.movingNpcs)", speaker: .game)
 			#endif
 			default:
 				#if DEBUG

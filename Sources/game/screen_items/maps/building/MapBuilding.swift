@@ -96,7 +96,7 @@ enum MapBuilding {
 							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor, biome: grid[y][x].biome)
 							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
 							if tile.type == .builder {
-								await Game.shared.createKingdom(.init(buildings: [.init(x: x, y: y, type: .builder)]))
+								await startKingdom(grid: &grid, x: x, y: y, doorPosition: doorPosition)
 							}
 							if await Game.shared.stages.builder.stage5Stages == .buildHouse {
 								await Game.shared.stages.builder.setStage5HasBuiltHouse(true)
@@ -128,6 +128,30 @@ enum MapBuilding {
 			case .chest: return .chest
 			default: return nil
 		}
+	}
+
+	private static func startKingdom(grid: inout [[MapTile]], x: Int, y: Int, doorPosition: DoorPosition) async {
+		guard await MapBox.mapType == .mainMap else {
+			await MessageBox.message("You can't start a kingdom here.", speaker: .game)
+			return
+		}
+		await Game.shared.createKingdom(.init(buildings: [.init(x: x, y: y, type: .builder)]))
+		await MessageBox.message("A builder should be coming any minute now.", speaker: .player)
+
+		let npcStartX = 235
+		let npcStartY = 122
+		let oldTile = await MapBox.mainMap.grid[npcStartY][npcStartX]
+		let positionToWalkTo = switch doorPosition {
+			case .left: TilePosition(x: x - 1, y: y, mapType: .mainMap)
+			case .right: TilePosition(x: x + 1, y: y, mapType: .mainMap)
+			case .top: TilePosition(x: x, y: y - 1, mapType: .mainMap)
+			case .bottom: TilePosition(x: x, y: y + 1, mapType: .mainMap)
+		}
+		let tilePosition = NPCPosition(x: npcStartX, y: npcStartY, mapType: .mainMap, oldTile: oldTile)
+		let npcTile = NPCTile(npc: NPC(job: .builder, positionToWalkTo: positionToWalkTo, tilePosition: tilePosition))
+		let npcMapTile = MapTile(type: .npc(tile: npcTile), event: .talkToNPC, biome: .plains)
+
+		grid[npcStartY][npcStartX] = npcMapTile
 	}
 }
 

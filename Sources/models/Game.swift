@@ -12,7 +12,10 @@ actor Game {
 	private(set) var kingdoms: [Kingdom] = []
 	private(set) var messages: [String] = []
 	private(set) var crops: Set<TilePosition> = []
-	private(set) var movingNpcs: Set<NPCPosition> = []
+	private(set) var movingNpcs: Set<NPCPosition> = [] {
+		didSet {} // TODO: for some reason this is fixing where the NPCs are not moving
+	}
+
 	private(set) var hasInited: Bool = false
 	private(set) var isTypingInMessageBox: Bool = false
 	private(set) var map: [[MapTile]] = []

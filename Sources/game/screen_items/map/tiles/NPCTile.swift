@@ -4,24 +4,9 @@ struct NPCTile: Codable, Hashable, Equatable {
 	let id: UUID
 	var npc: NPC
 
-	init(id: UUID = UUID(), npc: NPC, tilePosition: NPCPosition?) {
+	init(id: UUID = UUID(), npc: NPC = NPC(isStartingVillageNPC: false)) {
 		self.id = id
-		if let tilePosition {
-			Task {
-				await Game.shared.addNPC(tilePosition)
-			}
-		}
 		self.npc = npc
-	}
-
-	init(id: UUID = UUID(), tilePosition: NPCPosition?) {
-		self.id = id
-		if let tilePosition {
-			Task {
-				await Game.shared.addNPC(tilePosition)
-			}
-		}
-		self.npc = .init(isStartingVillageNPC: false)
 	}
 
 	static func renderNPC(tile: NPCTile) async -> String {
@@ -42,7 +27,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 	static func move(position: NPCPosition) async {
 		let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
 
-		if case let .npc(tile) = npcTile.type, let positionToWalkTo = tile.npc.positionToWalkTo {
+		if case let .npc(tile: tile) = npcTile.type, let positionToWalkTo = tile.npc.positionToWalkTo {
 			if positionToWalkTo == .init(x: position.x, y: position.y, mapType: position.mapType) {
 				await Game.shared.removeNPC(position)
 				var npcNew = tile
