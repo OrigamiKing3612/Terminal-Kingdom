@@ -1,4 +1,4 @@
-enum BuilderNPC {
+enum SVBuilderNPC: StartingVillageNPC {
 	static func talk() async {
 		await NPC.setTalkedTo()
 		await getStage()

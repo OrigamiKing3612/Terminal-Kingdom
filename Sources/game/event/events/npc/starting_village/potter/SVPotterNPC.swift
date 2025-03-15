@@ -1,4 +1,4 @@
-enum PotterNPC {
+enum SVPotterNPC: StartingVillageNPC {
 	static func talk() async {
 		await NPC.setTalkedTo()
 		await potterStuff()

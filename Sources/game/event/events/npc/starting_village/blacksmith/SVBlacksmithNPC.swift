@@ -1,4 +1,4 @@
-enum BlacksmithNPC {
+enum SVBlacksmithNPC: StartingVillageNPC {
 	static func talk() async {
 		await NPC.setTalkedTo()
 		if await Game.shared.stages.mine.stage1Stages == .collect {

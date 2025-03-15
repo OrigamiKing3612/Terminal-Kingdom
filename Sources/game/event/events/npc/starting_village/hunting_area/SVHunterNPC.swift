@@ -1,4 +1,4 @@
-enum HunterNPC {
+enum SVHunterNPC: StartingVillageNPC {
 	static func talk() async {
 		await NPC.setTalkedTo()
 		if await Game.shared.stages.blacksmith.stage7Stages == .bringToHunter {

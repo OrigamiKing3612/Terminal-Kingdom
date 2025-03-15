@@ -5,11 +5,11 @@ struct NPC: Codable, Hashable, Equatable {
 	let name: String
 	let isStartingVillageNPC: Bool
 	var hasTalkedToBefore: Bool
-	var needsAttention: Bool
 	var job: NPCJob?
 	// let age: Int
 	let gender: Gender
 	private(set) var positionToWalkTo: TilePosition?
+	private(set) var attributes: [NPCAttribute] = []
 
 	init(id: UUID = UUID(), name: String? = nil, gender: Gender? = nil, job: NPCJob? = nil, isStartingVillageNPC: Bool = false, positionToWalkTo: TilePosition? = nil, tilePosition: NPCPosition? = nil, kingdomID: UUID) {
 		self.id = id
@@ -18,7 +18,6 @@ struct NPC: Codable, Hashable, Equatable {
 		self.job = job
 		self.isStartingVillageNPC = isStartingVillageNPC
 		self.hasTalkedToBefore = false
-		self.needsAttention = false
 		if let tilePosition {
 			self.positionToWalkTo = positionToWalkTo
 			Task {
@@ -32,6 +31,14 @@ struct NPC: Codable, Hashable, Equatable {
 
 	mutating func removePostion() {
 		positionToWalkTo = nil
+	}
+
+	mutating func addAttribute(_ attribute: NPCAttribute) {
+		attributes.append(attribute)
+	}
+
+	mutating func removeAttribute(_ attribute: NPCAttribute) {
+		attributes.removeAll { $0 == attribute }
 	}
 
 	static func generateRandomName(for gender: Gender) -> String {
@@ -85,52 +92,62 @@ struct NPC: Codable, Hashable, Equatable {
 	}
 
 	func talk() async {
-		if let job, isStartingVillageNPC {
-			switch job {
-				case .blacksmith:
-					await BlacksmithNPC.talk()
-				case .blacksmith_helper:
-					await BlacksmithHelperNPC.talk()
-				case .miner:
-					await MinerNPC.talk()
-				case .mine_helper:
-					await MineHelperNPC.talk()
-				case .carpenter:
-					await CarpenterNPC.talk()
-				case .carpenter_helper:
-					await CarpenterHelperNPC.talk()
-				case .king:
-					await KingNPC.talk()
-				case .salesman:
-					await SalesmanNPC.talk()
-				case .builder:
-					await BuilderNPC.talk()
-				case .builder_helper:
-					await BuilderHelperNPC.talk()
-				case .hunter:
-					await HunterNPC.talk()
-				case .inventor:
-					break
-				case .stable_master:
-					break
-				case .farmer:
-					await FarmerNPC.talk()
-				case .doctor:
-					break
-				case .chef:
-					break
-				case .potter:
-					await PotterNPC.talk()
-				case .farmer_helper:
-					await FarmerHelperNPC.talk()
+		if let job {
+			if isStartingVillageNPC {
+				switch job {
+					case .blacksmith:
+						await SVBlacksmithNPC.talk()
+					case .blacksmith_helper:
+						await SVBlacksmithHelperNPC.talk()
+					case .miner:
+						await SVMinerNPC.talk()
+					case .mine_helper:
+						await SVMineHelperNPC.talk()
+					case .carpenter:
+						await SVCarpenterNPC.talk()
+					case .carpenter_helper:
+						await SVCarpenterHelperNPC.talk()
+					case .king:
+						await SVKingNPC.talk()
+					case .salesman:
+						await SVSalesmanNPC.talk()
+					case .builder:
+						await SVBuilderNPC.talk()
+					case .builder_helper:
+						await SVBuilderHelperNPC.talk()
+					case .hunter:
+						await SVHunterNPC.talk()
+					case .inventor:
+						break
+					case .stable_master:
+						break
+					case .farmer:
+						await SVFarmerNPC.talk()
+					case .doctor:
+						break
+					case .chef:
+						break
+					case .potter:
+						await SVPotterNPC.talk()
+					case .farmer_helper:
+						await SVFarmerHelperNPC.talk()
+				}
+			} else {
+				switch job {
+					case .builder:
+						await BuilderNPC.talk(npc: self)
+					default:
+						break
+				}
 			}
-		} else {
-			await NPC.setTalkedTo()
-			await MessageBox.message("Hello!", speaker: .npc(name: name, job: job))
 		}
 	}
 }
 
 enum Gender: String, Codable, CaseIterable {
 	case male, female
+}
+
+enum NPCAttribute: Codable, CaseIterable {
+	case needsAttention
 }

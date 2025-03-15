@@ -1,4 +1,4 @@
-enum KingNPC {
+enum SVKingNPC: StartingVillageNPC {
 	static func talk() async {
 		await NPC.setTalkedTo(after: firstDialogue)
 		if await Game.shared.stages.builder.stage4Stages == .talkToKing {

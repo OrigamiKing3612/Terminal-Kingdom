@@ -143,10 +143,10 @@ enum MapBuilding {
 		let npcStartY = 122
 		let oldTile = await MapBox.mainMap.grid[npcStartY][npcStartX]
 		let positionToWalkTo = switch doorPosition {
-			case .left: TilePosition(x: x - 1, y: y, mapType: .mainMap)
-			case .right: TilePosition(x: x + 1, y: y, mapType: .mainMap)
-			case .top: TilePosition(x: x, y: y - 1, mapType: .mainMap)
-			case .bottom: TilePosition(x: x, y: y + 1, mapType: .mainMap)
+			case .left: TilePosition(x: x - 1, y: y - 1, mapType: .mainMap)
+			case .right: TilePosition(x: x + 1, y: y + 1, mapType: .mainMap)
+			case .top: TilePosition(x: x - 1, y: y - 1, mapType: .mainMap)
+			case .bottom: TilePosition(x: x + 1, y: y + 1, mapType: .mainMap)
 		}
 		let tilePosition = NPCPosition(x: npcStartX, y: npcStartY, mapType: .mainMap, oldTile: oldTile)
 		let npcTile = NPCTile(npc: NPC(job: .builder, positionToWalkTo: positionToWalkTo, tilePosition: tilePosition, kingdomID: kingdom.id))
