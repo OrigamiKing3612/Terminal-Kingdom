@@ -135,7 +135,7 @@ enum MapBuilding {
 			await MessageBox.message("You can't start a kingdom here.", speaker: .game)
 			return
 		}
-		let kingdom = Kingdom(buildings: [.init(x: x, y: y, type: .builder)])
+		let kingdom = Kingdom(buildings: [.init(type: .builder, x: x, y: y)])
 		await Game.shared.createKingdom(kingdom)
 		await MessageBox.message("A builder should be coming any minute now.", speaker: .player)
 

@@ -156,7 +156,7 @@ actor Game {
 		kingdoms.removeAll(where: { $0.id == id })
 	}
 
-	func addKingdomBuilding(_ building: BuildingPosition, kingdomID: UUID) async {
+	func addKingdomBuilding(_ building: Building, kingdomID: UUID) async {
 		if let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) {
 			kingdoms[index].buildings.append(building)
 		}

@@ -24,7 +24,8 @@ struct NPCTile: Codable, Hashable, Equatable {
 				if tile.npc.positionToWalkTo != nil {
 					return await (Game.shared.config.useNerdFont ? "" : "N").styled(with: .bold)
 				} else {
-					return await (Game.shared.config.useNerdFont ? "󰙍" : "N").styled(with: .bold)
+					let nerdFontSymbol = tile.npc.gender == .male ? "󰙍" : "󰙉"
+					return await (Game.shared.config.useNerdFont ? nerdFontSymbol : "N").styled(with: .bold)
 				}
 		}
 	}
