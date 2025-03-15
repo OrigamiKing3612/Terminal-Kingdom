@@ -65,7 +65,7 @@ struct NPC: Codable, Hashable, Equatable {
 		hasTalkedToBefore = true
 	}
 
-	static func setTalkedTo(after: @escaping @Sendable () async -> Void) async {
+	static func setTalkedTo(after: @escaping () async -> Void) async {
 		let mapTile = await MapBox.tilePlayerIsOn
 		guard case let .npc(tile: tile) = mapTile.type else {
 			return
