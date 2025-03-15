@@ -123,7 +123,7 @@ enum MapTileType: TileType {
 			case let .pot(tile):
 				tile.cropTile.type.rawValue
 			case let .npc(tile):
-				tile.type.render
+				tile.npc.job?.render ?? "None"
 			case let .shopStandingArea(type):
 				type.rawValue
 			case let .biomeTOBEGENERATED(type: biome):

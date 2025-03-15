@@ -47,9 +47,13 @@ enum Keys {
 			#if DEBUG
 				case .t:
 					let p = await Game.shared.player.position
-					await MapBox.updateTile(newTile: .init(type: .npc(tile: .init(type: .builder, positionToWalkTo: .init(x: p.x, y: p.y - 10, mapType: .mainMap), tilePosition: .init(x: p.x, y: p.y, mapType: .mainMap, oldTile: .init(type: .cactus, biome: .plains)))), event: .talkToNPC, biome: .plains))
-					_ = await Game.shared.player.collect(item: .init(type: .lumber), count: 1000)
-					_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))))
+					if await !(Game.shared.kingdoms.isEmpty) {
+						await MapBox.updateTile(newTile: MapTile(type: .npc(tile: NPCTile(npc: NPC(positionToWalkTo: .init(x: p.x, y: p.y - 10, mapType: .mainMap), tilePosition: NPCPosition(x: p.x, y: p.y, mapType: .mainMap, oldTile: .init(type: .cactus, biome: .plains)), kingdomID: Game.shared.kingdoms[0].id))), event: .talkToNPC, biome: .plains))
+					}
+				case .u:
+					if await !(Game.shared.kingdoms.isEmpty) {
+						await MessageBox.message("\(Game.shared.kingdoms[0])", speaker: .dev)
+					}
 			#endif
 			default:
 				#if DEBUG

@@ -1,8 +1,7 @@
-enum HunterNPC {
+enum SVHunterNPC: StartingVillageNPC {
 	static func talk() async {
-		if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToHunter == false {
-			await Game.shared.startingVillageChecks.setHasTalkedToHunter()
-		} else if await Game.shared.stages.blacksmith.stage7Stages == .bringToHunter {
+		await NPC.setTalkedTo()
+		if await Game.shared.stages.blacksmith.stage7Stages == .bringToHunter {
 			await Game.shared.stages.blacksmith.setStage7Stages(.comeBack)
 			await MessageBox.message("Hello \(Game.shared.player.name)! Thank you for this sword!!", speaker: .hunter)
 			if let id = await Game.shared.stages.blacksmith.stage7SwordUUIDToRemove {

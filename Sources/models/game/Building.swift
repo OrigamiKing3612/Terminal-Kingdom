@@ -1,19 +1,17 @@
 import Foundation
 
-struct Building: Codable, Equatable {
+struct Building: Codable, Equatable, Hashable, Identifiable {
 	let id: UUID
+	let x: Int
+	let y: Int
 	let type: DoorTileTypes
-	let isPartOfPlayerVillage: Bool
 	private(set) var level: Int
-	var insideMap: [[MapTile]]
-	let buildingShape: [[MapTile]]
 
-	init(id: UUID = UUID(), type: DoorTileTypes, isPartOfPlayerVillage: Bool, insideMap: [[MapTile]], buildingShape: [[MapTile]]) {
+	init(id: UUID = UUID(), type: DoorTileTypes, x: Int, y: Int) {
 		self.id = id
 		self.type = type
-		self.isPartOfPlayerVillage = isPartOfPlayerVillage
 		self.level = 1
-		self.insideMap = insideMap
-		self.buildingShape = buildingShape
+		self.x = x
+		self.y = y
 	}
 }

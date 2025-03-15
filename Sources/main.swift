@@ -83,7 +83,7 @@ func startNPCMovingQueue() async {
 	// TODO: Make sure this isn't run twice
 	Task.detached(priority: .background) {
 		while true {
-			let npcPositions = await Game.shared.npcs
+			let npcPositions = await Game.shared.movingNpcs
 			if npcPositions.isEmpty {
 				await Game.shared.setHasStartedNPCMovingQueue(false)
 				break

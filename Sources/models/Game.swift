@@ -12,7 +12,10 @@ actor Game {
 	private(set) var kingdoms: [Kingdom] = []
 	private(set) var messages: [String] = []
 	private(set) var crops: Set<TilePosition> = []
-	private(set) var npcs: Set<NPCPosition> = []
+	private(set) var movingNpcs: Set<NPCPosition> = [] {
+		didSet {} // TODO: for some reason this is fixing where the NPCs are not moving
+	}
+
 	private(set) var hasInited: Bool = false
 	private(set) var isTypingInMessageBox: Bool = false
 	private(set) var map: [[MapTile]] = []
@@ -76,16 +79,16 @@ actor Game {
 			await startNPCMovingQueue()
 			hasStartedNPCQueue = true
 		}
-		npcs.insert(position)
+		movingNpcs.insert(position)
 	}
 
 	func updateNPC(oldPosition: NPCPosition, newPosition: NPCPosition) async {
-		npcs.remove(oldPosition)
+		movingNpcs.remove(oldPosition)
 		await addNPC(newPosition)
 	}
 
 	func removeNPC(_ position: NPCPosition) async {
-		npcs.remove(position)
+		movingNpcs.remove(position)
 	}
 
 	func setHasStartedNPCMovingQueue(_ newHasStartedNPCMovingQueue: Bool) async {
@@ -153,9 +156,15 @@ actor Game {
 		kingdoms.removeAll(where: { $0.id == id })
 	}
 
-	func addKingdomBuilding(_ building: BuildingPosition, kingdomID: UUID) async {
+	func addKingdomBuilding(_ building: Building, kingdomID: UUID) async {
 		if let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) {
 			kingdoms[index].buildings.append(building)
+		}
+	}
+
+	func addKingdomNPC(_ uuid: UUID, kingdomID: UUID) async {
+		if let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) {
+			kingdoms[index].npcsInKindom.append(uuid)
 		}
 	}
 }

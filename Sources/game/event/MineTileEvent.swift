@@ -7,10 +7,4 @@ enum MineTileEvent: TileEvent {
 				break
 		}
 	}
-
-	var name: String {
-		switch self {
-			case .placeholder: "Placeholder"
-		}
-	}
 }

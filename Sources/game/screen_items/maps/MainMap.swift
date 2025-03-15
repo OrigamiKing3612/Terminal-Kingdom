@@ -103,6 +103,7 @@ struct MainMap: MapBoxMap {
 	}
 
 	// TODO: make this one tile and use it twice. Also update existing full redraws
+	// TODO: rename to rerender tile
 	mutating func updateTile(x: Int, y: Int) async {
 		let viewportWidth = MapBox.width
 		let viewportHeight = MapBox.height

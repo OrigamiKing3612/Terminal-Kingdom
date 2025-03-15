@@ -1,4 +1,4 @@
-enum SalesmanNPC {
+enum SVSalesmanNPC: StartingVillageNPC {
 	static func talk() async {
 		if await Game.shared.stages.mine.stage10Stages == .goToSalesman {
 			await MessageBox.message("Oooh 5 gold! Can buy that for 10 coins!", speaker: .salesman(type: .buy))
@@ -114,7 +114,7 @@ enum SalesmanNPC {
 	}
 }
 
-extension SalesmanNPC {
+extension SVSalesmanNPC {
 	private static func buyItem(item: ItemType, count: Int, price: Int) async {
 		if await Game.shared.player.has(item: .coin, count: price) {
 			_ = await Game.shared.player.collect(item: .init(type: item), count: count)

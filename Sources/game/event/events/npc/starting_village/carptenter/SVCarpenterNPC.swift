@@ -1,4 +1,4 @@
-enum CarpenterNPC {
+enum SVCarpenterNPC: StartingVillageNPC {
 	static func talk() async {
 		if await Game.shared.stages.blacksmith.stage3Stages == .goToCarpenter {
 			await MessageBox.message("Here are your sticks.", speaker: .carpenter)
