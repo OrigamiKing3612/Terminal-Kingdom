@@ -83,6 +83,11 @@ struct MainMap: MapBoxMap {
 		if a || b {
 			await map()
 			await StatusBox.position()
+			if await Game.shared.isInsideKingdom(x: x, y: y) != nil {
+				await StatusBox.setShowKingdomInfo(true)
+			} else {
+				await StatusBox.setShowKingdomInfo(false)
+			}
 		}
 	}
 

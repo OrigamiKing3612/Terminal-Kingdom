@@ -2,7 +2,7 @@ import Foundation
 
 actor Game {
 	static var shared = Game()
-	nonisolated static let version = "0.0.1-alpha_2"
+	nonisolated static let version = "0.0.1-alpha_3"
 	var config: Config = .init()
 	var player = PlayerCharacter()
 	var startingVillageChecks: StartingVillageChecks = .init()

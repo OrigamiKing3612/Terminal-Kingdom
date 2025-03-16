@@ -6,6 +6,8 @@ enum StatusBox {
 		}
 	}
 
+	private(set) nonisolated(unsafe) static var showKingdomInfo: Bool = false
+
 	static var playerInfoStartX: Int { startX + 2 }
 	static var playerInfoEndX: Int { endX }
 	static var playerInfoStartY: Int { startY + 1 }
@@ -26,9 +28,11 @@ enum StatusBox {
 		await sides()
 		await playerInfoArea()
 		await questArea()
-		if let id = await Game.shared.isInsideKingdom(x: Game.shared.player.position.x, y: Game.shared.player.position.y) {
-			let kingdom = await Game.shared.getKingdom(id: id)
-			await kingdomInfo(kingdom!) // We already know there is a kingdom
+		if showKingdomInfo {
+			if let id = await Game.shared.isInsideKingdom(x: Game.shared.player.position.x, y: Game.shared.player.position.y) {
+				let kingdom = await Game.shared.getKingdom(id: id)
+				await kingdomInfo(kingdom!) // We already know there is a kingdom
+			}
 		}
 	}
 
@@ -83,7 +87,7 @@ enum StatusBox {
 	}
 
 	static func kingdomInfo(_ kingdom: Kingdom) async {
-		Screen.print(x: kingdomInfoAreaStartX, y: kingdomInfoAreaStartY, "\(kingdom.id):".styled(with: .bold))
+		Screen.print(x: kingdomInfoAreaStartX, y: kingdomInfoAreaStartY, "\(kingdom.name):".styled(with: .bold))
 		let maxVisibleLines = height - 2
 		var renderedLines: [String] = []
 		for (index, quest) in await quests.enumerated() {
@@ -145,6 +149,13 @@ enum StatusBox {
 	static func updateLastQuest(newQuest: Quest) async {
 		await Game.shared.player.updateLastQuest(newQuest: newQuest)
 		await statusBox()
+	}
+
+	static func setShowKingdomInfo(_ newValue: Bool) async {
+		showKingdomInfo = newValue
+		Task {
+			await statusBox()
+		}
 	}
 }
 

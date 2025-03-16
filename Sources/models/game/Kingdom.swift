@@ -2,7 +2,7 @@ import Foundation
 
 struct Kingdom: Codable, Identifiable, Hashable, Equatable {
 	let id: UUID
-	// let name: String
+	var name: String
 	var buildings: [Building]
 	var npcsInKindom: [UUID]
 	var hasCastle: Bool = false
@@ -11,10 +11,11 @@ struct Kingdom: Codable, Identifiable, Hashable, Equatable {
 	private(set) var radius: Int = 20
 	var castleID: UUID? = nil
 
-	init(id: UUID = UUID(), buildings: [Building], npcsInKindom: [UUID] = []) {
+	init(id: UUID = UUID(), name: String, buildings: [Building], npcsInKindom: [UUID] = []) {
 		self.id = id
 		self.buildings = buildings
 		self.npcsInKindom = npcsInKindom
+		self.name = name
 	}
 
 	mutating func addData(_ data: KingdomData) {
