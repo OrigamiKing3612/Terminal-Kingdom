@@ -167,6 +167,18 @@ actor Game {
 			kingdoms[index].npcsInKindom.append(uuid)
 		}
 	}
+
+	func addKingdomData(_ data: KingdomData, npcInKindom: UUID) async {
+		if let index = kingdoms.firstIndex(where: { $0.npcsInKindom.contains(npcInKindom) }) {
+			kingdoms[index].data.append(data)
+		}
+	}
+
+	func removeKingdomData(_ data: KingdomData, npcInKindom: UUID) async {
+		if let index = kingdoms.firstIndex(where: { $0.npcsInKindom.contains(npcInKindom) }) {
+			kingdoms[index].data.removeAll(where: { $0 == data })
+		}
+	}
 }
 
 // TODO: update because Game is not codable
