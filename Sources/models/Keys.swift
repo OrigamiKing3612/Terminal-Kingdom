@@ -39,6 +39,7 @@ enum Keys {
 					await Game.shared.setIsBuilding(true)
 					await MapBox.sides()
 					await InventoryBox.inventoryBox()
+					await MapBox.showKingdomLines(true)
 				}
 			case .W:
 				await MessageBox.lineUp()
@@ -71,6 +72,7 @@ enum Keys {
 				InventoryBox.showBuildHelp = false
 				await MapBox.mapBox()
 				await InventoryBox.inventoryBox()
+				await MapBox.showKingdomLines(false)
 			case .w where await Game.shared.config.wasdKeys, .up where await Game.shared.config.arrowKeys, .k where await Game.shared.config.vimKeys:
 				await MapBox.movePlayer(.up)
 			case .a where await Game.shared.config.wasdKeys, .left where await Game.shared.config.arrowKeys, .h where await Game.shared.config.vimKeys:

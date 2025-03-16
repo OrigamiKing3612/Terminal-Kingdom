@@ -180,10 +180,65 @@ actor Game {
 		}
 	}
 
-	func kingdomSetHasCastle(kingdomID: UUID, _ newValue: Bool) async {
+	func setKingdomCastle(kingdomID: UUID) async {
 		if let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) {
-			kingdoms[index].setHasCastle(newValue)
+			kingdoms[index].setHasCastle()
 		}
+	}
+
+	func removeKingdomCastle(kingdomID: UUID) async {
+		if let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) {
+			kingdoms[index].removeCastle()
+		}
+	}
+
+	func getKingdomCastle(kingdomID: UUID) async -> Building? {
+		if let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) {
+			return kingdoms[index].getCastle()
+		}
+		return nil
+	}
+
+	func isInsideKingdom(x: Int, y: Int) async -> UUID? {
+		for kingdom in kingdoms {
+			if kingdom.hasCastle {
+				let building = kingdom.getCastle()
+				if let building {
+					let radius = kingdom.radius
+					let dx = x - building.x
+					let dy = y - building.y
+
+					let distanceSquared = dx * dx + dy * dy
+					let radiusSquared = radius * radius
+
+					if distanceSquared <= radiusSquared {
+						return kingdom.id
+					}
+				}
+			} else {
+				let building = kingdom.buildings.first { $0.type == .builder }
+				if let building {
+					let radius = kingdom.radius
+					let dx = x - building.x
+					let dy = y - building.y
+
+					let distanceSquared = dx * dx + dy * dy
+					let radiusSquared = radius * radius
+
+					if distanceSquared <= radiusSquared {
+						return kingdom.id
+					}
+				}
+			}
+		}
+		return nil
+	}
+
+	func getKingdom(id: UUID) async -> Kingdom? {
+		if let index = kingdoms.firstIndex(where: { $0.id == id }) {
+			return kingdoms[index]
+		}
+		return nil
 	}
 }
 

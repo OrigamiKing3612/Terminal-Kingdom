@@ -144,4 +144,10 @@ actor MapBoxActor {
 		map!.setPlayer(x: x, y: y)
 		buildingMap = map
 	}
+
+	func setKingdomLines(_ value: Bool) async {
+		var map = mainMap
+		await map!.setShowKingdomLines(value)
+		mainMap = map
+	}
 }

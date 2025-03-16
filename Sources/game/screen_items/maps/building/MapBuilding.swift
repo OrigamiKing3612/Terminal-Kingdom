@@ -97,6 +97,12 @@ enum MapBuilding {
 							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
 							if tile.type == .builder {
 								await startKingdom(grid: &grid, x: x, y: y, doorPosition: doorPosition)
+							} else {
+								if let kingdomID = await Game.shared.isInsideKingdom(x: x, y: y) {
+									await Game.shared.addKingdomBuilding(.init(type: tile.type, x: x, y: y), kingdomID: kingdomID)
+								} else {
+									//! TODO: This should be done. I think the if inside kingdom needs to be done earlier
+								}
 							}
 							if await Game.shared.stages.builder.stage5Stages == .buildHouse {
 								await Game.shared.stages.builder.setStage5HasBuiltHouse(true)

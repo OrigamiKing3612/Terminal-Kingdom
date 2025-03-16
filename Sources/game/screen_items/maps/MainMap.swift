@@ -1,5 +1,6 @@
 struct MainMap: MapBoxMap {
 	var grid: [[MapTile]]
+	var showKingdomLines: Bool = false
 
 	var player: Player {
 		get async { await Game.shared.player.position }
@@ -100,6 +101,9 @@ struct MainMap: MapBoxMap {
 		let viewportWidth = MapBox.width
 		let viewportHeight = MapBox.height
 		await render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
+		if showKingdomLines {
+			await renderKingdomLines()
+		}
 	}
 
 	// TODO: make this one tile and use it twice. Also update existing full redraws
@@ -142,5 +146,42 @@ struct MainMap: MapBoxMap {
 
 	mutating func destroy() async {
 		await MapBuilding.destory(grid: &grid, x: player.x, y: player.y)
+	}
+
+	mutating func setShowKingdomLines(_ show: Bool) async {
+		// await MessageBox.message("Kingdom lines are \(show ? "on" : "off")", speaker: .dev)
+		showKingdomLines = show
+		await map()
+	}
+
+	private mutating func renderKingdomLines() async {
+		let kingdoms: [Kingdom] = await Game.shared.kingdoms
+
+		for kingdom in kingdoms {
+			if let castle = kingdom.getCastle() {
+				let x = castle.x
+				let y = castle.y
+				let radius = kingdom.radius
+				let viewportWidth = MapBox.width
+				let viewportHeight = MapBox.height
+				let startX = await player.x - viewportWidth / 2
+				let startY = await player.y - viewportHeight / 2
+
+				for tileY in (y - radius) ... (y + radius) {
+					for tileX in (x - radius) ... (x + radius) {
+						let dx = abs(tileX - x)
+						let dy = abs(tileY - y)
+
+						if dx == radius || dy == radius {
+							if tileX >= startX, tileX < startX + viewportWidth, tileY >= startY, tileY < startY + viewportHeight {
+								let screenX = tileX - startX + MapBox.startX
+								let screenY = tileY - startY + MapBox.startY
+								Screen.print(x: screenX, y: screenY, "*".styled(with: [.bold, .red]))
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }

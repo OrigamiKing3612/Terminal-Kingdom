@@ -7,6 +7,9 @@ struct Kingdom: Codable, Identifiable, Hashable, Equatable {
 	var npcsInKindom: [UUID]
 	var hasCastle: Bool = false
 	var data: [KingdomData] = []
+	// private(set) var radius: Int = 50
+	private(set) var radius: Int = 20
+	var castleID: UUID? = nil
 
 	init(id: UUID = UUID(), buildings: [Building], npcsInKindom: [UUID] = []) {
 		self.id = id
@@ -22,8 +25,38 @@ struct Kingdom: Codable, Identifiable, Hashable, Equatable {
 		self.data.removeAll { $0 == data }
 	}
 
-	mutating func setHasCastle(_ hasCastle: Bool) {
-		self.hasCastle = hasCastle
+	mutating func setHasCastle() {
+		hasCastle = true
+		let castleID = getCastle()?.id
+		if let castleID {
+			self.castleID = castleID
+		}
+	}
+
+	mutating func removeCastle() {
+		hasCastle = false
+		castleID = nil
+	}
+
+	func getCastle() -> Building? {
+		guard hasCastle else {
+			return nil
+		}
+		// index 1 should be castle beucase it is the second building added
+		if case .castle = buildings[1].type {
+			return buildings[1]
+		}
+
+		// Otherwise, search for any castle
+		return buildings.first { b in
+			// if case let .custom(_, doorType: doorType) = b.type {
+			if case .castle = b.type {
+				// if case .castle = doorType {
+				return true
+				// }
+			}
+			return false
+		}
 	}
 }
 

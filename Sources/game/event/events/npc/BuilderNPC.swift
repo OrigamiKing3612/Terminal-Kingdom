@@ -54,7 +54,7 @@ struct BuilderNPC: TalkableNPC {
 				if await !Game.shared.player.has(item: .door(tile: .init(type: .castle(side: .top)))) {
 					await MessageBox.message("Great! Your castle is now complete!", speaker: .npc(name: npc.name, job: npc.job))
 					await Game.shared.removeKingdomData(.buildingCastle, npcInKindom: npc.id)
-					await Game.shared.kingdomSetHasCastle(kingdomID: kingdom.id, true)
+					await Game.shared.setKingdomCastle(kingdomID: kingdom.id)
 				} else {
 					await MessageBox.message("You haven't placed your castle door yet.", speaker: .npc(name: npc.name, job: npc.job))
 				}

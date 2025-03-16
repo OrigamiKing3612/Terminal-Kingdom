@@ -206,6 +206,15 @@ enum MapBox {
 	static func setMainMapPlayerPosition(_ position: (x: Int, y: Int)) async {
 		await Game.shared.player.setPlayerPosition(x: position.x, y: position.y)
 	}
+
+	static func showKingdomLines(_ value: Bool) async {
+		switch await mapType {
+			case .mainMap:
+				await MapBoxActor.shared.setKingdomLines(value)
+			default:
+				break
+		}
+	}
 }
 
 enum MapType: Codable, Equatable, Hashable {
