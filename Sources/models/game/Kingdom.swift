@@ -21,8 +21,12 @@ struct Kingdom: Codable, Identifiable, Hashable, Equatable {
 	mutating func removeData(_ data: KingdomData) {
 		self.data.removeAll { $0 == data }
 	}
+
+	mutating func setHasCastle(_ hasCastle: Bool) {
+		self.hasCastle = hasCastle
+	}
 }
 
 enum KingdomData: Codable, Hashable {
-	case buildingCastle
+	case buildingCastle, gettingStuffToBuildCastle
 }

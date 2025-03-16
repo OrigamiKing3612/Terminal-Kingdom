@@ -179,6 +179,12 @@ actor Game {
 			kingdoms[index].data.removeAll(where: { $0 == data })
 		}
 	}
+
+	func kingdomSetHasCastle(kingdomID: UUID, _ newValue: Bool) async {
+		if let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) {
+			kingdoms[index].setHasCastle(newValue)
+		}
+	}
 }
 
 // TODO: update because Game is not codable
