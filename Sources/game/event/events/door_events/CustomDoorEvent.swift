@@ -35,9 +35,9 @@ enum CustomDoorEvent {
 	static func upgrade(building: Building) async {
 		var newBuilding = building
 		await newBuilding.upgrade()
-		let kingdomID = await Game.shared.getKingdomID(buildingID: building.id)
-		if let kingdomID {
-			await Game.shared.updateKingdomBuilding(kingdomID: kingdomID, buildingID: building.id, newBuilding: newBuilding)
+		let kingdom = await Game.shared.getKingdom(buildingID: building.id)
+		if let kingdom {
+			await Game.shared.updateKingdomBuilding(kingdomID: kingdom.id, buildingID: building.id, newBuilding: newBuilding)
 		}
 	}
 }

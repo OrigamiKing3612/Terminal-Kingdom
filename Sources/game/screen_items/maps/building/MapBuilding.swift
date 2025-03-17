@@ -56,6 +56,13 @@ enum MapBuilding {
 								await Game.shared.removeMap(mapID: id)
 							}
 						}
+						if case .castle = doorType {
+							Task {
+								guard let building = await Game.shared.hasKingdomBuilding(x: x, y: y) else { return }
+								guard let kingdom = await Game.shared.getKingdom(buildingID: building.id) else { return }
+								await Game.shared.removeKingdom(id: kingdom.id)
+							}
+						}
 						return .door(tile: .init(type: .custom(mapID: nil, doorType: doorType)))
 					} else {
 						return .door(tile: doorTile)

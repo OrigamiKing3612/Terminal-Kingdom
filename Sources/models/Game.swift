@@ -219,8 +219,8 @@ actor Game {
 		kingdoms[index].buildings[buildingIndex] = newBuilding
 	}
 
-	func getKingdomID(buildingID: UUID) async -> UUID? {
-		kingdoms.first { $0.buildings.contains { $0.id == buildingID } }?.id
+	func getKingdom(buildingID: UUID) async -> Kingdom? {
+		kingdoms.first { $0.buildings.contains { $0.id == buildingID } }
 	}
 
 	func getKingdom(for npc: NPC) async -> Kingdom? {
