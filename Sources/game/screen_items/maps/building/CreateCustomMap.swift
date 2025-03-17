@@ -145,6 +145,19 @@ enum CreateCustomMap {
 				map[doorY - 2][doorX] = await .init(type: .station(station: .init(type: .workbench)), isWalkable: true, event: .useStation, biome: Game.shared.getBiomeAtPlayerPosition())
 			}
 		}
+		if case .castle = doorType {
+			if let kingdomID = await Game.shared.isInsideKingdom(x: Game.shared.player.position.x, y: Game.shared.player.position.y) {
+				if doorPosition == .top {
+					map[doorY + 2][doorX] = await .init(type: .desk(tile: .init(isPlacedByPlayer: false)), isWalkable: true, event: .editKingdom(kingdomID: kingdomID), biome: Game.shared.getBiomeAtPlayerPosition())
+				} else if doorPosition == .right {
+					map[doorY][doorX - 2] = await .init(type: .desk(tile: .init(isPlacedByPlayer: false)), isWalkable: true, event: .editKingdom(kingdomID: kingdomID), biome: Game.shared.getBiomeAtPlayerPosition())
+				} else if doorPosition == .left {
+					map[doorY][doorX + 2] = await .init(type: .desk(tile: .init(isPlacedByPlayer: false)), isWalkable: true, event: .editKingdom(kingdomID: kingdomID), biome: Game.shared.getBiomeAtPlayerPosition())
+				} else if doorPosition == .bottom {
+					map[doorY - 2][doorX] = await .init(type: .desk(tile: .init(isPlacedByPlayer: false)), isWalkable: true, event: .editKingdom(kingdomID: kingdomID), biome: Game.shared.getBiomeAtPlayerPosition())
+				}
+			}
+		}
 
 		var startX, startY: Int
 		switch doorPosition {

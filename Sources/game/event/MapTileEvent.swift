@@ -1,3 +1,5 @@
+import Foundation
+
 enum MapTileEvent: TileEvent {
 	case openDoor
 	case chopTree
@@ -5,6 +7,7 @@ enum MapTileEvent: TileEvent {
 	case talkToNPC
 	case collectCrop
 	case useStation
+	case editKingdom(kingdomID: UUID)
 	//    case collectItem(item: String)
 	//    case combat(enemy: String)
 
@@ -36,6 +39,8 @@ enum MapTileEvent: TileEvent {
 				await CollectCropEvent.collectCrop()
 			case .useStation:
 				await UseStationEvent.useStation()
+			case let .editKingdom(kingdomID):
+				await EditKingdomEvent.editKingdom(kingdomID: kingdomID)
 		}
 	}
 }

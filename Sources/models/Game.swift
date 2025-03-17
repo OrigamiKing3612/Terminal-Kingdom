@@ -226,6 +226,11 @@ actor Game {
 	func getKingdom(for npc: NPC) async -> Kingdom? {
 		kingdoms.first { $0.npcsInKindom.contains(npc.id) }
 	}
+
+	func renameKingdom(id: UUID, name: String) async {
+		guard let index = kingdoms.firstIndex(where: { $0.id == id }) else { return }
+		kingdoms[index].name = name
+	}
 }
 
 // TODO: update because Game is not codable
