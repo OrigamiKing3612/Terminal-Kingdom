@@ -9,9 +9,20 @@ enum CustomDoorEvent {
 		var options: [MessageOption] = [
 			.init(label: "Go Inside", action: { await goInside(tile: tile, mapID: mapID) }),
 		]
-		if tile.isPartOfPlayerVillage {
-			options.append(.init(label: "Upgrade", action: { upgrade(tile: tile) }))
+
+		let x = await Game.shared.player.position.x
+		let y = await Game.shared.player.position.y
+		let building = await Game.shared.hasKingdomBuilding(x: x, y: y)
+		if let building {
+			if await building.canBeUpgraded() {
+				options.append(.init(label: "Upgrade", action: { await upgrade(building: building) }))
+			} else {
+				await MessageBox.message("You don't have enough materials to upgrade this building", speaker: .dev)
+			}
+		} else {
+			await MessageBox.message("You can't upgrade this building", speaker: .dev)
 		}
+
 		options.append(.init(label: "Quit", action: {}))
 		let selectedOption = await MessageBox.messageWithOptions("What would you like to do?", speaker: .game, options: options)
 		await selectedOption.action()
@@ -21,7 +32,12 @@ enum CustomDoorEvent {
 		await MapBox.setMapType(.custom(mapID: mapID))
 	}
 
-	static func upgrade(tile _: DoorTile) {
-		// TODO: upgrade building
+	static func upgrade(building: Building) async {
+		var newBuilding = building
+		await newBuilding.upgrade()
+		let kingdomID = await Game.shared.getKingdomID(buildingID: building.id)
+		if let kingdomID {
+			await Game.shared.updateKingdomBuilding(kingdomID: kingdomID, buildingID: building.id, newBuilding: newBuilding)
+		}
 	}
 }

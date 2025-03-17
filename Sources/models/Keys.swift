@@ -33,6 +33,7 @@ enum Keys {
 				if await Game.shared.player.canBuild, await MapBox.mapType != .mining {
 					#if DEBUG
 						_ = await Game.shared.player.collect(item: .init(type: .lumber), count: 100)
+						_ = await Game.shared.player.collect(item: .init(type: .stone), count: 100)
 						_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))), count: 1)
 					#endif
 					await InventoryBox.setSelectedBuildItemIndex(0)

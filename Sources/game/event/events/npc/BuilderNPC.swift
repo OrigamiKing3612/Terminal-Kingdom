@@ -14,10 +14,7 @@ struct BuilderNPC: TalkableNPC {
 				if !kingdom.hasCastle {
 					await buildCastle(npc: npc, kingdom: kingdom)
 				} else {
-					let options: [MessageOption] = [
-						.init(label: "Quit") {},
-					]
-					await MessageBox.messageWithOptions("What can I do for you?", speaker: .npc(name: npc.name, job: npc.job), options: options).action()
+					await talkNormally(kingdom: kingdom, npc)
 				}
 			} else {
 				await MessageBox.message("I don't know what to do (2)", speaker: .npc(name: npc.name, job: npc.job))
@@ -25,7 +22,16 @@ struct BuilderNPC: TalkableNPC {
 		}
 	}
 
-	static func buildCastle(npc: NPC, kingdom: Kingdom) async {
+	private static func talkNormally(kingdom: Kingdom, _ npc: NPC) async {
+		let building = await Game.shared.getKingdomNPCBuilding(kingdom.id, npcInBuilding: npc.id)
+		let options: [MessageOption] = [
+			.init(label: "Quit") {},
+		]
+		// if building
+		await MessageBox.messageWithOptions("What can I do for you?", speaker: .npc(name: npc.name, job: npc.job), options: options).action()
+	}
+
+	private static func buildCastle(npc: NPC, kingdom: Kingdom) async {
 		if kingdom.data.contains(.gettingStuffToBuildCastle) {
 			await MessageBox.message("You are back! Would you like to start working on your castle?", speaker: .npc(name: npc.name, job: npc.job))
 			let options: [MessageOption] = [

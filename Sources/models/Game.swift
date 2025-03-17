@@ -240,6 +240,45 @@ actor Game {
 		}
 		return nil
 	}
+
+	func getKingdomNPCBuilding(_: UUID, npcInBuilding: UUID) async -> Building? {
+		if let index = kingdoms.firstIndex(where: { $0.npcsInKindom.contains(npcInBuilding) }) { // must be in the kingdom
+			if let buildingIndex = kingdoms[index].buildings.firstIndex(where: { $0.id == npcInBuilding }) {
+				return kingdoms[index].buildings[buildingIndex]
+			}
+		}
+		return nil
+	}
+
+	func hasKingdomBuilding(x: Int, y: Int) async -> Building? {
+		for kingdom in kingdoms {
+			for building in kingdom.buildings {
+				if building.x == x, building.y == y {
+					return building
+				}
+			}
+		}
+		return nil
+	}
+
+	func updateKingdomBuilding(kingdomID: UUID, buildingID: UUID, newBuilding: Building) async {
+		if let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) {
+			if let buildingIndex = kingdoms[index].buildings.firstIndex(where: { $0.id == buildingID }) {
+				kingdoms[index].buildings[buildingIndex] = newBuilding
+			}
+		}
+	}
+
+	func getKingdomID(buildingID: UUID) async -> UUID? {
+		for kingdom in kingdoms {
+			for building in kingdom.buildings {
+				if building.id == buildingID {
+					return kingdom.id
+				}
+			}
+		}
+		return nil
+	}
 }
 
 // TODO: update because Game is not codable
