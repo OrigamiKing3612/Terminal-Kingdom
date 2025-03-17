@@ -21,6 +21,7 @@ actor Game {
 	private(set) var map: [[MapTile]] = []
 	private(set) var hasStartedCropQueue: Bool = false
 	private(set) var hasStartedNPCQueue: Bool = false
+	private(set) var resitrictBuilding: (Bool, TilePosition) = (false, TilePosition(x: 0, y: 0, mapType: .mainMap))
 	// Don't save
 	private(set) var isInInventoryBox: Bool = false
 	private(set) var isBuilding: Bool = false
@@ -230,6 +231,10 @@ actor Game {
 	func renameKingdom(id: UUID, name: String) async {
 		guard let index = kingdoms.firstIndex(where: { $0.id == id }) else { return }
 		kingdoms[index].name = name
+	}
+
+	func setRestrictBuilding(_ newResitrictBuilding: (Bool, TilePosition)) async {
+		resitrictBuilding = newResitrictBuilding
 	}
 }
 

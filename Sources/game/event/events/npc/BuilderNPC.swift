@@ -54,6 +54,7 @@ struct BuilderNPC: TalkableNPC {
 				await MessageBox.message("Let me know when you are done!", speaker: .npc(name: npc.name, job: npc.job))
 				await Game.shared.addKingdomData(.buildingCastle, npcInKindom: npc.id)
 				await Game.shared.removeKingdomData(.gettingStuffToBuildCastle, npcInKindom: npc.id)
+				await Game.shared.setRestrictBuilding((true, .init(x: Game.shared.player.position.x, y: Game.shared.player.position.y, mapType: .mainMap)))
 			} else {
 				await MessageBox.message("Ok, let me know when you are ready to start building!", speaker: .npc(name: npc.name, job: npc.job))
 			}
@@ -69,6 +70,7 @@ struct BuilderNPC: TalkableNPC {
 					await MessageBox.message("Great! Your castle is now complete!", speaker: .npc(name: npc.name, job: npc.job))
 					await Game.shared.removeKingdomData(.buildingCastle, npcInKindom: npc.id)
 					await Game.shared.setKingdomCastle(kingdomID: kingdom.id)
+					await Game.shared.setRestrictBuilding((false, .init(x: 0, y: 0, mapType: .mainMap)))
 				} else {
 					await MessageBox.message("You haven't placed your castle door yet.", speaker: .npc(name: npc.name, job: npc.job))
 				}
