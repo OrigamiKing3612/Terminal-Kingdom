@@ -35,6 +35,10 @@ enum SVBuilderNPC: StartingVillageNPC {
 				await stage6()
 			case 7:
 				await stage7()
+			case 8:
+				await stage8()
+			case 9:
+				await stage9()
 			default:
 				break
 		}
@@ -286,6 +290,24 @@ enum SVBuilderNPC: StartingVillageNPC {
 					await getStage()
 				}
 		}
+	}
+
+	static func stage8() async {
+		await Game.shared.player.setCanBuild(true)
+		await MessageBox.message("You can now build when ever you want! But remember that you can only break pieces that you place. Also we don't accually need that that house; since you built it, why don't you keep it!", speaker: .builder)
+		await Game.shared.player.setBuilderSkillLevel(.nine)
+		// TODO: check if the player has enough stats
+		await MessageBox.message("I also think you are ready to make your own village! Come back to me when you are ready.", speaker: .builder)
+		await Game.shared.stages.builder.next()
+	}
+
+	static func stage9() async {
+		// TODO: check if the player has enough stats
+		await MessageBox.message("So, you are ready to go create your own kingdom! You will need this.", speaker: .builder)
+		_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))))
+		await MessageBox.message("Go and have fun!!", speaker: .builder)
+		await Game.shared.player.setBuilderSkillLevel(.nine)
+		await Game.shared.stages.builder.next()
 	}
 }
 
