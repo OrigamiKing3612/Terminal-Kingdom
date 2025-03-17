@@ -17,11 +17,13 @@ enum Keys {
 				await MapBox.setMapType(.mine)
 				await MapBox.setBuildingMapPlayer(x: 2, y: 2)
 				await MapBox.mapBox()
-			#if DEBUG
-				case .o:
+			// #if DEBUG
+			case .o:
+				if await Game.shared.player.name == "testing" {
 					let tile = await MapBox.mapType.map.tilePlayerIsOn as! MapTile
 					await MessageBox.message("\(tile)", speaker: .dev)
-			#endif
+				}
+			// #endif
 			case .zero:
 				Screen.clear()
 				Screen.initialize()
@@ -31,11 +33,13 @@ enum Keys {
 				await InventoryBox.sides()
 			case .b:
 				if await Game.shared.player.canBuild, await MapBox.mapType != .mining {
-					#if DEBUG
+					// #if DEBUG
+					if await Game.shared.player.name == "testing" {
 						_ = await Game.shared.player.collect(item: .init(type: .lumber), count: 100)
 						_ = await Game.shared.player.collect(item: .init(type: .stone), count: 100)
 						_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))), count: 1)
-					#endif
+					}
+					// #endif
 					await InventoryBox.setSelectedBuildItemIndex(0)
 					await Game.shared.setIsBuilding(true)
 					await MapBox.sides()
