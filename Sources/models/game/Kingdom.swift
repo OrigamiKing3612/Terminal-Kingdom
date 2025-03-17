@@ -59,6 +59,14 @@ struct Kingdom: Codable, Identifiable, Hashable, Equatable {
 			return false
 		}
 	}
+
+	func contains(x: Int, y: Int) -> Bool {
+		let center = hasCastle ? getCastle() : buildings.first { $0.type == .builder }
+		guard let building = center else { return false }
+		let dx = x - building.x
+		let dy = y - building.y
+		return dx * dx + dy * dy <= radius * radius
+	}
 }
 
 enum KingdomData: Codable, Hashable {

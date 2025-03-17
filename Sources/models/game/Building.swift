@@ -16,14 +16,7 @@ struct Building: Codable, Equatable, Hashable, Identifiable {
 	}
 
 	func canBeUpgraded() async -> Bool {
-		let upgrades: [Int: BuildingUpgrade] = type.upgrades
-		guard !upgrades.isEmpty else {
-			return false
-		}
-		guard let upgrade = upgrades[level + 1] else {
-			return false
-		}
-		let costs = upgrade.cost
+		guard let costs = getCostsForNextUpgrade() else { return false }
 		for cost in costs {
 			if await !Game.shared.player.has(item: cost.item, count: cost.count) {
 				return false
@@ -34,15 +27,19 @@ struct Building: Codable, Equatable, Hashable, Identifiable {
 
 	mutating func upgrade() async {
 		if await canBeUpgraded() {
-			let upgrades: [Int: BuildingUpgrade] = type.upgrades
-			guard let upgrade = upgrades[level + 1] else {
-				return
-			}
-			let costs = upgrade.cost
+			guard let costs = getCostsForNextUpgrade() else { return }
 			for cost in costs {
 				await Game.shared.player.removeItem(item: cost.item, count: cost.count)
 			}
 			level += 1
 		}
+	}
+
+	private func getCostsForNextUpgrade() -> [ItemAmount]? {
+		let upgrades: [Int: BuildingUpgrade] = type.upgrades
+		guard let upgrade = upgrades[level + 1] else {
+			return nil
+		}
+		return upgrade.cost
 	}
 }

@@ -9,7 +9,7 @@ struct BuilderNPC: TalkableNPC {
 				await Game.shared.addKingdomData(.gettingStuffToBuildCastle, npcInKindom: npc.id)
 			}
 		} else {
-			let kingdom = await Game.shared.kingdoms.first { $0.npcsInKindom.contains(npc.id) }
+			let kingdom = await Game.shared.getKingdom(for: npc)
 			if let kingdom {
 				if !kingdom.hasCastle {
 					await buildCastle(npc: npc, kingdom: kingdom)
@@ -22,14 +22,24 @@ struct BuilderNPC: TalkableNPC {
 		}
 	}
 
-	private static func talkNormally(kingdom: Kingdom, _ npc: NPC) async {
-		let building = await Game.shared.getKingdomNPCBuilding(kingdom.id, npcInBuilding: npc.id)
+	private static func talkNormally(kingdom _: Kingdom, _ npc: NPC) async {
+		// let building = await Game.shared.getKingdomNPCBuilding(kingdom.id, npcInBuilding: npc.id)
+		let options: [MessageOption] = [
+			.init(label: "Quit") {},
+			.init(label: "Can you make a door?", action: makeDoor),
+		]
+		await MessageBox.messageWithOptions("What can I do for you?", speaker: .npc(name: npc.name, job: npc.job), options: options).action()
+	}
+
+	private static func makeDoor() async {
 		let options: [MessageOption] = [
 			.init(label: "Quit") {},
 		]
-		// if building
-		await MessageBox.messageWithOptions("What can I do for you?", speaker: .npc(name: npc.name, job: npc.job), options: options).action()
+		//! TODO: add all the doors
+		await MessageBox.messageWithOptions("Yes, I can. Which one would you like?", speaker: .game, options: options).action()
 	}
+
+	private static func getDoor() async {}
 
 	private static func buildCastle(npc: NPC, kingdom: Kingdom) async {
 		if kingdom.data.contains(.gettingStuffToBuildCastle) {
