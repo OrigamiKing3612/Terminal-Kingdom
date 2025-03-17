@@ -1,6 +1,6 @@
 import Foundation
 
-//! TODO: could this be better?
+// TODO: could this be better?
 actor MapBoxActor {
 	nonisolated(unsafe) static var shared = MapBoxActor()
 	var mainMap: MainMap?

@@ -22,7 +22,7 @@ struct BuildingMap: MapBoxMap {
 
 	init(_ mapType: MapType) async {
 		self.mapType = mapType
-		//! TODO: Clean up
+		// TODO: Clean up
 		switch mapType {
 			case let .custom(mapID):
 				self.grid = await Game.shared.maps.customMaps.filter { $0.id == mapID }[0].grid

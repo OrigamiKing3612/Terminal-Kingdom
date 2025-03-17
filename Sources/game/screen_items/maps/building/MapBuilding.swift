@@ -21,7 +21,7 @@ enum MapBuilding {
 		}
 	}
 
-	//! TODO: Put anything that can happen later in a Task
+	// TODO: Put anything that can happen later in a Task
 	static func destory(grid: inout [[MapTile]], x: Int, y: Int) async {
 		if grid[y][x].type.isBuildable {
 			await removeNormally(grid: &grid, x: x, y: y)

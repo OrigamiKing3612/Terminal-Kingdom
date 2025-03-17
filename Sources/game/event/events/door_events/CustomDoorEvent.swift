@@ -16,13 +16,8 @@ enum CustomDoorEvent {
 		if let building {
 			if await building.canBeUpgraded() {
 				options.append(.init(label: "Upgrade", action: { await upgrade(building: building) }))
-			} else {
-				await MessageBox.message("You don't have enough materials to upgrade this building", speaker: .dev)
 			}
-		} else {
-			await MessageBox.message("You can't upgrade this building", speaker: .dev)
 		}
-
 		options.append(.init(label: "Quit", action: {}))
 		let selectedOption = await MessageBox.messageWithOptions("What would you like to do?", speaker: .game, options: options)
 		await selectedOption.action()

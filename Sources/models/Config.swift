@@ -1,6 +1,6 @@
 import Foundation
 
-//! TODO: async load and save
+// TODO: async load and save
 struct Config {
 	static let configFile: String = "config.json"
 	var useNerdFont: Bool = false

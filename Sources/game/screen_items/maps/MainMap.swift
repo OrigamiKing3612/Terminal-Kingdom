@@ -154,7 +154,6 @@ struct MainMap: MapBoxMap {
 	}
 
 	mutating func setShowKingdomLines(_ show: Bool) async {
-		// await MessageBox.message("Kingdom lines are \(show ? "on" : "off")", speaker: .dev)
 		showKingdomLines = show
 		await map()
 	}
