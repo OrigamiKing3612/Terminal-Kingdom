@@ -1,11 +1,7 @@
 import Foundation
 
 actor FarmStages {
-	#if DEBUG
-		private(set) var stageNumber = 5
-	#else
-		private(set) var stageNumber = 0
-	#endif
+	private(set) var stageNumber = 0
 	private(set) var stage1AxeUUIDToRemove: UUID?
 	private(set) var stage2SeedUUIDToRemove: UUID?
 	private(set) var stage4ClayUUIDToRemove: [UUID]?

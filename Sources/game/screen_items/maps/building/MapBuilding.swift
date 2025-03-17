@@ -97,23 +97,29 @@ enum MapBuilding {
 					do {
 						let (doorPosition, buildingPerimeter) = try await CreateCustomMap.checkDoor(tile: tile, grid: grid, x: x, y: y)
 						let map = await CreateCustomMap.createCustomMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.type)
-						let customMap = try CustomMap(grid: map)
-						if let customMap {
+						guard let customMap = try CustomMap(grid: map) else {
+							await MessageBox.message("An error occurred while creaing map", speaker: .game)
+							return
+						}
+
+						// Success
+						if tile.type == .builder {
 							await Game.shared.addMap(map: customMap)
 							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor, biome: grid[y][x].biome)
 							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
-							if tile.type == .builder {
-								await startKingdom(grid: &grid, x: x, y: y, doorPosition: doorPosition)
-							} else {
-								if let kingdomID = await Game.shared.isInsideKingdom(x: x, y: y) {
-									await Game.shared.addKingdomBuilding(.init(type: tile.type, x: x, y: y), kingdomID: kingdomID)
-								} else {
-									//! TODO: This should be done. I think the if inside kingdom needs to be done earlier
-								}
+							await startKingdom(grid: &grid, x: x, y: y, doorPosition: doorPosition)
+						} else {
+							guard let kingdomID = await Game.shared.isInsideKingdom(x: x, y: y) else {
+								await MessageBox.message("You have to be inside of a kingdom to place this door", speaker: .game)
+								return
 							}
-							if await Game.shared.stages.builder.stage5Stages == .buildHouse {
-								await Game.shared.stages.builder.setStage5HasBuiltHouse(true)
-							}
+							await Game.shared.addMap(map: customMap)
+							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor, biome: grid[y][x].biome)
+							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
+							await Game.shared.addKingdomBuilding(.init(type: tile.type, x: x, y: y), kingdomID: kingdomID)
+						}
+						if await Game.shared.stages.builder.stage5Stages == .buildHouse {
+							await Game.shared.stages.builder.setStage5HasBuiltHouse(true)
 						}
 					} catch {
 						await MessageBox.message("An error occurred: \(error.localizedDescription)", speaker: .game)

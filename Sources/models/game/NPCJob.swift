@@ -70,7 +70,7 @@ enum SalesmanType: Codable {
 	case buy, sell, help
 }
 
-//! TODO: can this be jobs?
+// TODO: can this be jobs?
 // TODO: Give them names?
 enum StartingVillageNPCTileTypes {
 	case blacksmith

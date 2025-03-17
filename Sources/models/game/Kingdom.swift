@@ -7,8 +7,7 @@ struct Kingdom: Codable, Identifiable, Hashable, Equatable {
 	var npcsInKindom: [UUID]
 	var hasCastle: Bool = false
 	var data: [KingdomData] = []
-	// private(set) var radius: Int = 50
-	private(set) var radius: Int = 20
+	private(set) var radius: Int = 40
 	var castleID: UUID? = nil
 
 	init(id: UUID = UUID(), name: String, buildings: [Building], npcsInKindom: [UUID] = []) {
