@@ -41,10 +41,6 @@ enum NPCJob: Codable, Hashable, Equatable {
 			case .farmer_helper: "Farmer Helper"
 		}
 	}
-
-	var queueName: String {
-		"\(render.lowercased().replacingOccurrences(of: " ", with: "_"))"
-	}
 }
 
 enum MessageSpeakers {

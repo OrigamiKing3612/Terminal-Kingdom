@@ -34,17 +34,81 @@ struct NPCTile: Codable, Hashable, Equatable {
 		let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
 
 		if case let .npc(tile: tile) = npcTile.type, let positionToWalkTo = tile.npc.positionToWalkTo {
+			// Reached the destination
 			if positionToWalkTo == .init(x: position.x, y: position.y, mapType: position.mapType) {
 				await Game.shared.removeNPC(position)
-				var npcNew = tile
-				npcNew.npc.removePostion()
-				await MapBox.updateTile(newTile: MapTile(
-					type: .npc(tile: npcNew),
-					isWalkable: npcTile.isWalkable,
-					event: npcTile.event,
-					biome: npcTile.biome
-				), thisOnlyWorksOnMainMap: true, x: position.x, y: position.y)
-				return
+				if case let .door(doorTile) = position.oldTile.type {
+					if case let .custom(mapID, _) = doorTile.type {
+						// TODO: fix this when multidoors in custom maps
+						guard let customMapIndex = await Game.shared.maps.customMaps.firstIndex(where: { $0.id == mapID }) else { return }
+						let grid = await Game.shared.maps.customMaps[customMapIndex].grid
+
+						let doorX: Int, doorY: Int
+						for (yIndex, y) in grid.enumerated() {
+							if let xIndex = y.firstIndex(where: { if case .door = $0.type { true } else { false }}) {
+								// Restore the door tile
+								await MapBox.updateTile(newTile: MapTile(
+									type: .door(tile: doorTile),
+									isWalkable: npcTile.isWalkable,
+									event: npcTile.event,
+									biome: npcTile.biome
+								),
+								thisOnlyWorksOnMainMap: true, x: position.x, y: position.y)
+								var doorPosition: DoorPosition = .bottom
+								if yIndex == 0 {
+									doorPosition = .top
+								} else if yIndex == grid.count - 1 {
+									doorPosition = .bottom
+								} else if xIndex == 0 {
+									doorPosition = .left
+								} else if xIndex == grid[yIndex].count - 1 {
+									doorPosition = .right
+								}
+								doorX = xIndex
+								doorY = yIndex
+								let npcX: Int
+								let npcY: Int
+								switch doorPosition {
+									case .left:
+										npcX = xIndex + 1
+										npcY = yIndex + 1
+									case .right:
+										npcX = xIndex - 1
+										npcY = yIndex - 1
+									case .top:
+										npcX = xIndex - 1
+										npcY = yIndex + 1
+									case .bottom:
+										npcX = xIndex + 1
+										npcY = yIndex - 1
+								}
+
+								var newGrid = await Game.shared.maps.customMaps[customMapIndex].grid
+								newGrid[npcY][npcX] = MapTile(
+									type: .npc(tile: tile),
+									isWalkable: npcTile.isWalkable,
+									event: npcTile.event,
+									biome: npcTile.biome
+								)
+								await Game.shared.maps.updateCustomMap(at: customMapIndex, with: newGrid)
+								break
+							}
+						}
+
+					} else {}
+					// put npc in the custom map
+					return
+				} else {
+					var npcNew = tile
+					npcNew.npc.removePostion()
+					await MapBox.updateTile(newTile: MapTile(
+						type: .npc(tile: npcNew),
+						isWalkable: npcTile.isWalkable,
+						event: npcTile.event,
+						biome: npcTile.biome
+					), thisOnlyWorksOnMainMap: true, x: position.x, y: position.y)
+					return
+				}
 			}
 			let newNpcPosition = await NPCMoving.move(
 				target: positionToWalkTo,

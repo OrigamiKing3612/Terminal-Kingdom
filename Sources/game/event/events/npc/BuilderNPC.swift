@@ -35,7 +35,6 @@ struct BuilderNPC: TalkableNPC {
 		let options: [MessageOption] = [
 			.init(label: "Quit") {},
 		]
-		//! TODO: add all the doors
 		await MessageBox.messageWithOptions("Yes, I can. Which one would you like?", speaker: .game, options: options).action()
 	}
 
@@ -51,7 +50,6 @@ struct BuilderNPC: TalkableNPC {
 			let option = await MessageBox.messageWithOptions("What can I do for you?", speaker: .npc(name: npc.name, job: npc.job), options: options)
 			if option.label == options[1].label {
 				await Game.shared.player.setCanBuild(true)
-				//! TODO: remove the castle(.top) from this
 				_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .castle(side: .top))), canBeSold: false))
 				await MessageBox.message("Let me know when you are done!", speaker: .npc(name: npc.name, job: npc.job))
 				await Game.shared.addKingdomData(.buildingCastle, npcInKindom: npc.id)
