@@ -32,9 +32,10 @@ enum Keys {
 				await Game.shared.setIsInInventoryBox(true)
 				await InventoryBox.sides()
 			case .b:
-				if await (Game.shared.player.canBuild || Game.shared.player.name == "testing"), await MapBox.mapType != .mining {
+				let name = await Game.shared.player.name == "testing"
+				if await (Game.shared.player.canBuild || name), await MapBox.mapType != .mining {
 					// #if DEBUG
-					if await Game.shared.player.name == "testing" {
+					if name {
 						_ = await Game.shared.player.collect(item: .init(type: .lumber), count: 100)
 						_ = await Game.shared.player.collect(item: .init(type: .stone), count: 100)
 						_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))), count: 1)
