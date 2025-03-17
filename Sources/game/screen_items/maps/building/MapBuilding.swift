@@ -21,7 +21,7 @@ enum MapBuilding {
 		}
 	}
 
-	//! TODO: Put anything that can happen later in a Task
+	// TODO: Put anything that can happen later in a Task
 	static func destory(grid: inout [[MapTile]], x: Int, y: Int) async {
 		if grid[y][x].type.isBuildable {
 			await removeNormally(grid: &grid, x: x, y: y)
@@ -54,6 +54,13 @@ enum MapBuilding {
 						Task {
 							if let id {
 								await Game.shared.removeMap(mapID: id)
+							}
+						}
+						if case .castle = doorType {
+							Task {
+								guard let building = await Game.shared.hasKingdomBuilding(x: x, y: y) else { return }
+								guard let kingdom = await Game.shared.getKingdom(buildingID: building.id) else { return }
+								await Game.shared.removeKingdom(id: kingdom.id)
 							}
 						}
 						return .door(tile: .init(type: .custom(mapID: nil, doorType: doorType)))
@@ -90,17 +97,29 @@ enum MapBuilding {
 					do {
 						let (doorPosition, buildingPerimeter) = try await CreateCustomMap.checkDoor(tile: tile, grid: grid, x: x, y: y)
 						let map = await CreateCustomMap.createCustomMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.type)
-						let customMap = try CustomMap(grid: map)
-						if let customMap {
+						guard let customMap = try CustomMap(grid: map) else {
+							await MessageBox.message("An error occurred while creaing map", speaker: .game)
+							return
+						}
+
+						// Success
+						if tile.type == .builder {
 							await Game.shared.addMap(map: customMap)
 							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor, biome: grid[y][x].biome)
 							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
-							if tile.type == .builder {
-								await Game.shared.createKingdom(.init(buildings: [.init(x: x, y: y, type: .builder)]))
+							await startKingdom(grid: &grid, x: x, y: y, doorPosition: doorPosition)
+						} else {
+							guard let kingdomID = await Game.shared.isInsideKingdom(x: x, y: y) else {
+								await MessageBox.message("You have to be inside of a kingdom to place this door", speaker: .game)
+								return
 							}
-							if await Game.shared.stages.builder.stage5Stages == .buildHouse {
-								await Game.shared.stages.builder.setStage5HasBuiltHouse(true)
-							}
+							await Game.shared.addMap(map: customMap)
+							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor, biome: grid[y][x].biome)
+							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
+							await Game.shared.addKingdomBuilding(.init(type: tile.type, x: x, y: y), kingdomID: kingdomID)
+						}
+						if await Game.shared.stages.builder.stage5Stages == .buildHouse {
+							await Game.shared.stages.builder.setStage5HasBuiltHouse(true)
 						}
 					} catch {
 						await MessageBox.message("An error occurred: \(error.localizedDescription)", speaker: .game)
@@ -128,6 +147,31 @@ enum MapBuilding {
 			case .chest: return .chest
 			default: return nil
 		}
+	}
+
+	private static func startKingdom(grid: inout [[MapTile]], x: Int, y: Int, doorPosition: DoorPosition) async {
+		guard await MapBox.mapType == .mainMap else {
+			await MessageBox.message("You can't start a kingdom here.", speaker: .game)
+			return
+		}
+		let kingdom = await Kingdom(name: "\(Game.shared.player.name)'s Kingdom", buildings: [.init(type: .builder, x: x, y: y)])
+		await Game.shared.createKingdom(kingdom)
+		await MessageBox.message("A builder should be coming any minute now.", speaker: .player)
+
+		let npcStartX = 235
+		let npcStartY = 122
+		let oldTile = await MapBox.mainMap.grid[npcStartY][npcStartX]
+		let positionToWalkTo = switch doorPosition {
+			case .left: TilePosition(x: x, y: y, mapType: .mainMap)
+			case .right: TilePosition(x: x, y: y, mapType: .mainMap)
+			case .top: TilePosition(x: x, y: y, mapType: .mainMap)
+			case .bottom: TilePosition(x: x, y: y, mapType: .mainMap)
+		}
+		let tilePosition = NPCPosition(x: npcStartX, y: npcStartY, mapType: .mainMap, oldTile: oldTile)
+		let npcTile = NPCTile(npc: NPC(job: .builder, positionToWalkTo: positionToWalkTo, tilePosition: tilePosition, kingdomID: kingdom.id))
+		let npcMapTile = MapTile(type: .npc(tile: npcTile), event: .talkToNPC, biome: .plains)
+
+		grid[npcStartY][npcStartX] = npcMapTile
 	}
 }
 

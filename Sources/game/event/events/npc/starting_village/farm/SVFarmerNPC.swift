@@ -1,8 +1,6 @@
-enum FarmerNPC {
+enum SVFarmerNPC: StartingVillageNPC {
 	static func talk() async {
-		if await Game.shared.startingVillageChecks.firstTimes.hasTalkedToFarmer == false {
-			await Game.shared.startingVillageChecks.setHasTalkedToFarmer()
-		}
+		await NPC.setTalkedTo()
 		await getStage()
 	}
 

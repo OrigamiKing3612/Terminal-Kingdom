@@ -1,6 +1,6 @@
 import Foundation
 
-//! TODO: could this be better?
+// TODO: could this be better?
 actor MapBoxActor {
 	nonisolated(unsafe) static var shared = MapBoxActor()
 	var mainMap: MainMap?
@@ -143,5 +143,11 @@ actor MapBoxActor {
 		var map = buildingMap
 		map!.setPlayer(x: x, y: y)
 		buildingMap = map
+	}
+
+	func setKingdomLines(_ value: Bool) async {
+		var map = mainMap
+		await map!.setShowKingdomLines(value)
+		mainMap = map
 	}
 }

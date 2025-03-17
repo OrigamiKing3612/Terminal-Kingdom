@@ -2,7 +2,7 @@ import Foundation
 
 actor Game {
 	static var shared = Game()
-	nonisolated static let version = "0.0.1-alpha_2"
+	nonisolated static let version = "0.0.1-alpha_3"
 	var config: Config = .init()
 	var player = PlayerCharacter()
 	var startingVillageChecks: StartingVillageChecks = .init()
@@ -12,12 +12,16 @@ actor Game {
 	private(set) var kingdoms: [Kingdom] = []
 	private(set) var messages: [String] = []
 	private(set) var crops: Set<TilePosition> = []
-	private(set) var npcs: Set<NPCPosition> = []
+	private(set) var movingNpcs: Set<NPCPosition> = [] {
+		didSet {} // TODO: for some reason this is fixing where the NPCs are not moving
+	}
+
 	private(set) var hasInited: Bool = false
 	private(set) var isTypingInMessageBox: Bool = false
 	private(set) var map: [[MapTile]] = []
 	private(set) var hasStartedCropQueue: Bool = false
 	private(set) var hasStartedNPCQueue: Bool = false
+	private(set) var resitrictBuilding: (Bool, TilePosition) = (false, TilePosition(x: 0, y: 0, mapType: .mainMap))
 	// Don't save
 	private(set) var isInInventoryBox: Bool = false
 	private(set) var isBuilding: Bool = false
@@ -76,16 +80,16 @@ actor Game {
 			await startNPCMovingQueue()
 			hasStartedNPCQueue = true
 		}
-		npcs.insert(position)
+		movingNpcs.insert(position)
 	}
 
 	func updateNPC(oldPosition: NPCPosition, newPosition: NPCPosition) async {
-		npcs.remove(oldPosition)
+		movingNpcs.remove(oldPosition)
 		await addNPC(newPosition)
 	}
 
 	func removeNPC(_ position: NPCPosition) async {
-		npcs.remove(position)
+		movingNpcs.remove(position)
 	}
 
 	func setHasStartedNPCMovingQueue(_ newHasStartedNPCMovingQueue: Bool) async {
@@ -153,10 +157,84 @@ actor Game {
 		kingdoms.removeAll(where: { $0.id == id })
 	}
 
-	func addKingdomBuilding(_ building: BuildingPosition, kingdomID: UUID) async {
-		if let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) {
-			kingdoms[index].buildings.append(building)
+	func addKingdomBuilding(_ building: Building, kingdomID: UUID) async {
+		guard let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) else { return }
+		kingdoms[index].buildings.append(building)
+	}
+
+	func addKingdomNPC(_ uuid: UUID, kingdomID: UUID) async {
+		guard let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) else { return }
+		kingdoms[index].npcsInKindom.append(uuid)
+	}
+
+	func addKingdomData(_ data: KingdomData, npcInKindom: UUID) async {
+		guard let index = kingdoms.firstIndex(where: { $0.npcsInKindom.contains(npcInKindom) }) else { return }
+		kingdoms[index].data.append(data)
+	}
+
+	func removeKingdomData(_ data: KingdomData, npcInKindom: UUID) async {
+		guard let index = kingdoms.firstIndex(where: { $0.npcsInKindom.contains(npcInKindom) }) else { return }
+		return kingdoms[index].data.removeAll(where: { $0 == data })
+	}
+
+	func setKingdomCastle(kingdomID: UUID) async {
+		guard let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) else { return }
+		return kingdoms[index].setHasCastle()
+	}
+
+	func removeKingdomCastle(kingdomID: UUID) async {
+		guard let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) else { return }
+		kingdoms[index].removeCastle()
+	}
+
+	func getKingdomCastle(kingdomID: UUID) async -> Building? {
+		kingdoms.first(where: { $0.id == kingdomID })?.getCastle()
+	}
+
+	func isInsideKingdom(x: Int, y: Int) async -> UUID? {
+		for kingdom in kingdoms where kingdom.contains(x: x, y: y) {
+			return kingdom.id
 		}
+		return nil
+	}
+
+	func getKingdom(id: UUID) async -> Kingdom? {
+		kingdoms.first { $0.id == id }
+	}
+
+	func getKingdomBuilding(for npc: NPC, kingdomID: UUID) async -> Building? {
+		kingdoms.first(where: { $0.id == kingdomID })?.buildings.first { $0.id == npc.id }
+	}
+
+	func getKingdomBuilding(for npc: NPC) async -> Building? {
+		kingdoms.first(where: { $0.npcsInKindom.contains(npc.id) })?.buildings.first { $0.id == npc.id }
+	}
+
+	func hasKingdomBuilding(x: Int, y: Int) async -> Building? {
+		kingdoms.lazy.flatMap(\.buildings).first { $0.x == x && $0.y == y }
+	}
+
+	func updateKingdomBuilding(kingdomID: UUID, buildingID: UUID, newBuilding: Building) async {
+		guard let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) else { return }
+		guard let buildingIndex = kingdoms[index].buildings.firstIndex(where: { $0.id == buildingID }) else { return }
+		kingdoms[index].buildings[buildingIndex] = newBuilding
+	}
+
+	func getKingdom(buildingID: UUID) async -> Kingdom? {
+		kingdoms.first { $0.buildings.contains { $0.id == buildingID } }
+	}
+
+	func getKingdom(for npc: NPC) async -> Kingdom? {
+		kingdoms.first { $0.npcsInKindom.contains(npc.id) }
+	}
+
+	func renameKingdom(id: UUID, name: String) async {
+		guard let index = kingdoms.firstIndex(where: { $0.id == id }) else { return }
+		kingdoms[index].name = name
+	}
+
+	func setRestrictBuilding(_ newResitrictBuilding: (Bool, TilePosition)) async {
+		resitrictBuilding = newResitrictBuilding
 	}
 }
 

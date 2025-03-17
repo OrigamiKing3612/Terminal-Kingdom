@@ -50,7 +50,6 @@ enum TerminalInput {
 	}
 
 	// Read a single key press
-	//! TODO: make this async so the program "pauses" until a key is pressed
 	static func readKey() -> KeyboardKeys {
 		#if os(Windows)
 			WindowsTerminalInput.readKey()

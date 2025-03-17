@@ -52,6 +52,30 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
 		}
 	}
 
+	var upgrades: [Int: BuildingUpgrade] {
+		switch self {
+			// case .blacksmith:
+			case .builder:
+				BuilderUpgrades.upgrades
+			// case .carpenter:
+			// case .castle(_):
+			// case .farm(_):
+			// case .hospital(_):
+			// case .house:
+			// case .hunting_area:
+			// case .inventor:
+			// case .mine:
+			// case .potter:
+			// case .restaurant:
+			// case .shop:
+			// case .stable:
+			case let .custom(_, doorType):
+				doorType.upgrades
+			default:
+				[:]
+		}
+	}
+
 	var coordinatesForStartingVillageBuildings: (x: Int, y: Int) {
 		// All in MainMap
 		switch self {

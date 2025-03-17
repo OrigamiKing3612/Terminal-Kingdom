@@ -168,8 +168,21 @@ actor PlayerCharacter {
 	}
 
 	func setPlayerPosition(x: Int, y: Int) async {
-		position.x = x
-		position.y = y
+		if await Game.shared.resitrictBuilding.0 {
+			let midPosition = await Game.shared.resitrictBuilding.1
+
+			let distanceX = abs(x - midPosition.x)
+			let distanceY = abs(y - midPosition.y)
+			if (distanceX + distanceY) < 20 {
+				position.x = x
+				position.y = y
+			} else {
+				await MessageBox.message("I shouldn't build this far away from my builder...", speaker: .player)
+			}
+		} else {
+			position.x = x
+			position.y = y
+		}
 	}
 
 	func setPlayerPosition(addX: Int) {

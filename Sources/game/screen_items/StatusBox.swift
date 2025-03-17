@@ -6,12 +6,17 @@ enum StatusBox {
 		}
 	}
 
+	private(set) nonisolated(unsafe) static var showKingdomInfo: Bool = false
+
 	static var playerInfoStartX: Int { startX + 2 }
 	static var playerInfoEndX: Int { endX }
 	static var playerInfoStartY: Int { startY + 1 }
 
 	static var questAreaStartX: Int { startX + 2 }
 	private(set) nonisolated(unsafe) static var questAreaStartY: Int = startY + 1
+
+	static var kingdomInfoAreaStartX: Int { startX + 2 }
+	private(set) nonisolated(unsafe) static var kingdomInfoAreaStartY: Int = startY + 2
 
 	static func questBoxUpdate() {
 		updateQuestBox = true
@@ -23,6 +28,14 @@ enum StatusBox {
 		await sides()
 		await playerInfoArea()
 		await questArea()
+		if showKingdomInfo {
+			if let id = await Game.shared.isInsideKingdom(x: Game.shared.player.position.x, y: Game.shared.player.position.y) {
+				let kingdom = await Game.shared.getKingdom(id: id)
+				await kingdomInfo(kingdom!) // We already know there is a kingdom
+			}
+		}
+		// TODO: this shouldn't be here. It should be in move player
+		await position()
 	}
 
 	static func playerInfoArea() async {
@@ -72,6 +85,28 @@ enum StatusBox {
 			Screen.print(x: questAreaStartX + 1, y: currentY, line)
 			currentY += 1
 		}
+		kingdomInfoAreaStartY = currentY + 1
+	}
+
+	static func kingdomInfo(_ kingdom: Kingdom) async {
+		Screen.print(x: kingdomInfoAreaStartX, y: kingdomInfoAreaStartY, "\(kingdom.name):".styled(with: .bold))
+		let maxVisibleLines = height - 2
+		var renderedLines: [String] = []
+		for (index, quest) in await quests.enumerated() {
+			let number = "\(index + 1)".styled(with: .bold)
+			let text = await "\(number). \(quest.label)"
+			renderedLines.append(contentsOf: text.wrappedWithStyles(toWidth: width - 2))
+		}
+
+		if renderedLines.count > maxVisibleLines {
+			renderedLines = Array(renderedLines.suffix(maxVisibleLines))
+		}
+
+		var currentY = kingdomInfoAreaStartY + 1
+		for line in renderedLines {
+			Screen.print(x: kingdomInfoAreaStartX + 1, y: currentY, line)
+			currentY += 1
+		}
 	}
 
 	static func sides() async {
@@ -116,6 +151,13 @@ enum StatusBox {
 	static func updateLastQuest(newQuest: Quest) async {
 		await Game.shared.player.updateLastQuest(newQuest: newQuest)
 		await statusBox()
+	}
+
+	static func setShowKingdomInfo(_ newValue: Bool) async {
+		showKingdomInfo = newValue
+		Task {
+			await statusBox()
+		}
 	}
 }
 

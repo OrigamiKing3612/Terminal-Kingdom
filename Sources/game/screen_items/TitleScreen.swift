@@ -162,7 +162,7 @@ struct TitleScreen {
 	}
 
 	mutating func settings() async {
-		//! TODO: reload config after saving so this isn't async
+		// TODO: reload config after saving so this isn't async
 		config = await Config.load()
 		let text = "Settings"
 		let x = middleX

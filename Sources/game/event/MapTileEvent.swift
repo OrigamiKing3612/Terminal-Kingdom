@@ -1,3 +1,5 @@
+import Foundation
+
 enum MapTileEvent: TileEvent {
 	case openDoor
 	case chopTree
@@ -5,6 +7,7 @@ enum MapTileEvent: TileEvent {
 	case talkToNPC
 	case collectCrop
 	case useStation
+	case editKingdom(kingdomID: UUID)
 	//    case collectItem(item: String)
 	//    case combat(enemy: String)
 
@@ -28,45 +31,16 @@ enum MapTileEvent: TileEvent {
 				}
 			case .talkToNPC:
 				if case let .npc(tile: tile) = await MapBox.tilePlayerIsOn.type {
-					await tile.talk()
+					await tile.npc.talk()
 				} else if case .shopStandingArea = await MapBox.tilePlayerIsOn.type {
-					await SalesmanNPC.talk()
+					await SVSalesmanNPC.talk()
 				}
 			case .collectCrop:
 				await CollectCropEvent.collectCrop()
 			case .useStation:
 				await UseStationEvent.useStation()
-		}
-	}
-
-	var name: String {
-		get async {
-			switch self {
-				case .openDoor:
-					if case let .door(tile: doorTile) = await MapBox.tilePlayerIsOn.type {
-						"openDoor(\(doorTile.type.name))"
-					} else {
-						"openDoor on non door"
-					}
-				case .chopTree:
-					"chopTree"
-				case .startMining:
-					"startMining"
-				case .talkToNPC:
-					if case let .npc(tile: tile) = await MapBox.tilePlayerIsOn.type {
-						"talkToNPC(\(tile.type.render))"
-					} else {
-						"talkToNPC on non npc"
-					}
-				case .collectCrop:
-					"collectCrop"
-				case .useStation:
-					if case let .station(station: station) = await MapBox.tilePlayerIsOn.type {
-						"useStation(\(station.type.render))"
-					} else {
-						"useStation on non station"
-					}
-			}
+			case let .editKingdom(kingdomID):
+				await EditKingdomEvent.editKingdom(kingdomID: kingdomID)
 		}
 	}
 }

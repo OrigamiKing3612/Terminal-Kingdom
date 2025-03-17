@@ -17,11 +17,13 @@ enum Keys {
 				await MapBox.setMapType(.mine)
 				await MapBox.setBuildingMapPlayer(x: 2, y: 2)
 				await MapBox.mapBox()
-			#if DEBUG
-				case .o:
+			// #if DEBUG
+			case .o:
+				if await Game.shared.player.name == "testing" {
 					let tile = await MapBox.mapType.map.tilePlayerIsOn as! MapTile
 					await MessageBox.message("\(tile)", speaker: .dev)
-			#endif
+				}
+			// #endif
 			case .zero:
 				Screen.clear()
 				Screen.initialize()
@@ -31,14 +33,18 @@ enum Keys {
 				await InventoryBox.sides()
 			case .b:
 				if await Game.shared.player.canBuild, await MapBox.mapType != .mining {
-					#if DEBUG
+					// #if DEBUG
+					if await Game.shared.player.name == "testing" {
 						_ = await Game.shared.player.collect(item: .init(type: .lumber), count: 100)
+						_ = await Game.shared.player.collect(item: .init(type: .stone), count: 100)
 						_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))), count: 1)
-					#endif
+					}
+					// #endif
 					await InventoryBox.setSelectedBuildItemIndex(0)
 					await Game.shared.setIsBuilding(true)
 					await MapBox.sides()
 					await InventoryBox.inventoryBox()
+					await MapBox.showKingdomLines(true)
 				}
 			case .W:
 				await MessageBox.lineUp()
@@ -47,9 +53,13 @@ enum Keys {
 			#if DEBUG
 				case .t:
 					let p = await Game.shared.player.position
-					await MapBox.updateTile(newTile: .init(type: .npc(tile: .init(type: .builder, positionToWalkTo: .init(x: p.x, y: p.y - 10, mapType: .mainMap), tilePosition: .init(x: p.x, y: p.y, mapType: .mainMap, oldTile: .init(type: .cactus, biome: .plains)))), event: .talkToNPC, biome: .plains))
-					_ = await Game.shared.player.collect(item: .init(type: .lumber), count: 1000)
-					_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))))
+					if await !(Game.shared.kingdoms.isEmpty) {
+						await MapBox.updateTile(newTile: MapTile(type: .npc(tile: NPCTile(npc: NPC(positionToWalkTo: .init(x: p.x, y: p.y - 10, mapType: .mainMap), tilePosition: NPCPosition(x: p.x, y: p.y, mapType: .mainMap, oldTile: .init(type: .cactus, biome: .plains)), kingdomID: Game.shared.kingdoms[0].id))), event: .talkToNPC, biome: .plains))
+					}
+				case .u:
+					if await !(Game.shared.kingdoms.isEmpty) {
+						await MessageBox.message("\(Game.shared.kingdoms[0])", speaker: .dev)
+					}
 			#endif
 			default:
 				#if DEBUG
@@ -67,6 +77,7 @@ enum Keys {
 				InventoryBox.showBuildHelp = false
 				await MapBox.mapBox()
 				await InventoryBox.inventoryBox()
+				await MapBox.showKingdomLines(false)
 			case .w where await Game.shared.config.wasdKeys, .up where await Game.shared.config.arrowKeys, .k where await Game.shared.config.vimKeys:
 				await MapBox.movePlayer(.up)
 			case .a where await Game.shared.config.wasdKeys, .left where await Game.shared.config.arrowKeys, .h where await Game.shared.config.vimKeys:

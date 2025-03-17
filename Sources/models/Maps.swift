@@ -19,6 +19,11 @@ actor Maps {
 	private(set) var shop: [[MapTile]] = []
 	private(set) var stable: [[MapTile]] = []
 
+	func updateCustomMap(at index: Int, with grid: [[MapTile]]) async {
+		guard index < customMaps.count else { return }
+		customMaps[index].updateGrid(grid)
+	}
+
 	func addMap(map: CustomMap) async {
 		customMaps.append(map)
 	}
@@ -88,7 +93,7 @@ actor Maps {
 			case .castle:
 				return castle
 			case .custom:
-				print("Custom Map should not be put here")
+				print("Custom Map should not be put here (9)")
 				exit(9)
 			case .farm:
 				return farm
@@ -129,9 +134,12 @@ actor Maps {
 				carpenter[y][x] = tile
 			case .castle:
 				castle[y][x] = tile
-			case .custom:
-				print("Custom Map should not be put here")
-				exit(10)
+			case let .custom(mapID: id):
+				guard let customMapIndex = customMaps.firstIndex(where: { $0.id == id }) else {
+					print("Custom Map not found (10)")
+					exit(10)
+				}
+				await updateCustomMap(at: customMapIndex, with: customMaps[customMapIndex].grid)
 			case .farm:
 				farm[y][x] = tile
 			case .hospital:
