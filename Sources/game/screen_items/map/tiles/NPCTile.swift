@@ -43,7 +43,6 @@ struct NPCTile: Codable, Hashable, Equatable {
 						guard let customMapIndex = await Game.shared.maps.customMaps.firstIndex(where: { $0.id == mapID }) else { return }
 						let grid = await Game.shared.maps.customMaps[customMapIndex].grid
 
-						let doorX: Int, doorY: Int
 						for (yIndex, y) in grid.enumerated() {
 							if let xIndex = y.firstIndex(where: { if case .door = $0.type { true } else { false }}) {
 								// Restore the door tile
@@ -64,8 +63,6 @@ struct NPCTile: Codable, Hashable, Equatable {
 								} else if xIndex == grid[yIndex].count - 1 {
 									doorPosition = .right
 								}
-								doorX = xIndex
-								doorY = yIndex
 								let npcX: Int
 								let npcY: Int
 								switch doorPosition {
