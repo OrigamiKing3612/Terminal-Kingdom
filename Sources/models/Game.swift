@@ -9,6 +9,7 @@ actor Game {
 	var stages: Stages = .init()
 	var mapGen: MapGen = .init()
 	var maps: Maps = .init()
+	// TODO: make this not an array beucase the player will have one kingdom with different villages
 	private(set) var kingdoms: [Kingdom] = []
 	private(set) var messages: [String] = []
 	private(set) var crops: Set<TilePosition> = []
