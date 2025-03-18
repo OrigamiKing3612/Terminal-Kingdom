@@ -106,9 +106,7 @@ actor MapBoxActor {
 	}
 
 	func updateMainMapTile(x: Int, y: Int) async {
-		var map = mainMap
-		await map!.updateTile(x: x, y: y)
-		mainMap = map
+		await mainMap!.updateTile(x: x, y: y)
 	}
 
 	func buildingMap() async {
@@ -118,9 +116,7 @@ actor MapBoxActor {
 	}
 
 	func updateBuildingMapTile(x: Int, y: Int) async {
-		var map = buildingMap
-		await map!.updateTile(x: x, y: y)
-		buildingMap = map
+		await buildingMap!.updateTile(x: x, y: y)
 	}
 
 	func miningMap() async {

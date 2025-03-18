@@ -89,15 +89,15 @@ struct BuildingMap: MapBoxMap {
 		await render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
 	}
 
-	mutating func updateTile(x: Int, y: Int) async {
-		let viewportWidth = MapBox.width
+	func updateTile(x: Int, y: Int) async {
+		let viewportWidth = MapBox.width + 1
 		let viewportHeight = MapBox.height
 		let startX = player.x - viewportWidth / 2
 		let startY = player.y - viewportHeight / 2
 
 		if x >= startX, x < startX + viewportWidth, y >= startY, y < startY + viewportHeight {
-			let screenX = x - startX + MapBox.startX
-			let screenY = y - startY + MapBox.startY
+			let screenX = x /* - startX */ + MapBox.startX
+			let screenY = y /* - startY */ + MapBox.startY
 			await Screen.print(x: screenX, y: screenY, grid[y][x].type.render())
 		}
 	}
@@ -118,14 +118,13 @@ struct BuildingMap: MapBoxMap {
 		let endY = min(grid.count, startY + viewportHeight)
 
 		for (screenY, mapY) in (startY ..< endY).enumerated() {
-			var rowString = ""
-			for mapX in startX ..< endX {
+			let rowString = await (startX ..< endX).asyncMap { mapX in
 				if mapX == playerX, mapY == playerY {
-					rowString += await MapTileType.player.render()
+					await MapTileType.player.render()
 				} else {
-					rowString += await grid[mapY][mapX].type.render()
+					await grid[mapY][mapX].type.render()
 				}
-			}
+			}.joined()
 			Screen.print(x: MapBox.startX, y: MapBox.startY + screenY, rowString)
 		}
 	}

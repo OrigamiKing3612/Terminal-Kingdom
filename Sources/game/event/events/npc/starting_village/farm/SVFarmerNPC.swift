@@ -52,10 +52,10 @@ enum SVFarmerNPC: StartingVillageNPC {
 					fallthrough
 				} else {
 					if let id = await Game.shared.stages.farm.stage1AxeUUIDToRemove, await !Game.shared.player.has(id: id) {
-						await MessageBox.message("Uh oh, looks like you lost your axe. Here is a new one.", speaker: .builder)
+						await MessageBox.message("Uh oh, looks like you lost your axe. Here is a new one.", speaker: .farmer)
 						await Game.shared.stages.farm.setStage1AxeUUIDsToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init(durability: 1)), canBeSold: false)))
 					}
-					await MessageBox.message("You are almost there, but you still need to get \(abs(Game.shared.player.getCount(of: .lumber) - 20)) lumber.", speaker: .builder)
+					await MessageBox.message("You are almost there, but you still need to get a tree seed.", speaker: .farmer)
 				}
 			case .done:
 				await Game.shared.stages.farm.next()

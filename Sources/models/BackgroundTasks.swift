@@ -55,6 +55,9 @@ enum BackgroundTasks {
 								let isInsideFarm2 = await MapBox.mapType == .farm(type: .farm_area)
 								if isInsideFarm || isInsideFarm2 {
 									await MapBox.setMapGridTile(x: position.x, y: position.y, tile: .init(type: .pot(tile: newPotTile), isWalkable: tile.isWalkable, event: tile.event, biome: tile.biome), mapType: position.mapType)
+									if newPotTile.cropTile.stage != pot.cropTile.stage {
+										await MapBox.buildingMap.updateTile(x: position.x, y: position.y)
+									}
 								} else {
 									await Game.shared.maps.updateMap(mapType: .farm(type: .main), x: position.x, y: position.y, tile: .init(type: .pot(tile: newPotTile), isWalkable: tile.isWalkable, event: tile.event, biome: tile.biome))
 								}

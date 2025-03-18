@@ -81,12 +81,12 @@ struct MainMap: MapBoxMap {
 		let b = await oldY != y
 		if a || b {
 			await map()
-			await StatusBox.position()
 			if await Game.shared.isInsideKingdom(x: x, y: y) != nil {
 				await StatusBox.setShowKingdomInfo(true)
 			} else {
 				await StatusBox.setShowKingdomInfo(false)
 			}
+			await StatusBox.position()
 		}
 	}
 
@@ -112,7 +112,7 @@ struct MainMap: MapBoxMap {
 
 	// TODO: make this one tile and use it twice. Also update existing full redraws
 	// TODO: rename to rerender tile
-	mutating func updateTile(x: Int, y: Int) async {
+	func updateTile(x: Int, y: Int) async {
 		let viewportWidth = MapBox.width
 		let viewportHeight = MapBox.height
 		let startX = await player.x - viewportWidth / 2

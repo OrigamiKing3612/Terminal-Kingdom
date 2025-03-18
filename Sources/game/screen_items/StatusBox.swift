@@ -34,8 +34,6 @@ enum StatusBox {
 				await kingdomInfo(kingdom!) // We already know there is a kingdom
 			}
 		}
-		// TODO: this shouldn't be here. It should be in move player
-		await position()
 	}
 
 	static func playerInfoArea() async {
@@ -150,9 +148,11 @@ enum StatusBox {
 	}
 
 	static func setShowKingdomInfo(_ newValue: Bool) async {
-		showKingdomInfo = newValue
-		Task {
-			await statusBox()
+		if showKingdomInfo != newValue {
+			showKingdomInfo = newValue
+			Task {
+				await statusBox()
+			}
 		}
 	}
 }
