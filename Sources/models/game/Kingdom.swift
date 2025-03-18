@@ -9,12 +9,27 @@ struct Kingdom: Codable, Identifiable, Hashable, Equatable {
 	var data: [KingdomData] = []
 	private(set) var radius: Int = 40
 	var castleID: UUID? = nil
+	var foodCount: Int = 0
+	var foodIncome: Int {
+		var totalPots = 0
+		let farms = buildings.filter { $0.type == .farm(type: .main) } as! [FarmBuilding]
+		for farm in farms {
+			totalPots += farm.pots
+		}
+		return totalPots
+	}
 
 	init(id: UUID = UUID(), name: String, buildings: [Building], npcsInKindom: [UUID] = []) {
 		self.id = id
 		self.buildings = buildings
 		self.npcsInKindom = npcsInKindom
 		self.name = name
+	}
+
+	mutating func tick() {
+		if buildings.contains(where: { $0.type == .farm(type: .main) }) {
+			// foodCount += 1
+		}
 	}
 
 	mutating func addData(_ data: KingdomData) {
