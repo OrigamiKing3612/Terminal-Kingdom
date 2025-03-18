@@ -2,7 +2,7 @@ import Foundation
 
 enum MapBuilding {
 	static func build(grid: inout [[MapTile]], x: Int, y: Int) async {
-		if grid[y][x].type != .plain {
+		if !grid[y][x].type.isPlainLike {
 			await MessageBox.message("You can't build here.", speaker: .game)
 			return
 		}

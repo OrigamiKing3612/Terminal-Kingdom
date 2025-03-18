@@ -65,6 +65,13 @@ enum MapTileType: TileType {
 		}
 	}
 
+	var isPlainLike: Bool {
+		switch self {
+			case .plain, .snow: true
+			default: false
+		}
+	}
+
 	func render() async -> String {
 		switch self {
 			case .plain: " "
