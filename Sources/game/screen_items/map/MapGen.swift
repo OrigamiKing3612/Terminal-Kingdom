@@ -155,7 +155,16 @@ actor MapGen {
 						#if DEBUG
 							MapTile(type: .playerStart, isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
 						#else
-							MapTile(type: .biomeTOBEGENERATED(type: biome), isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
+							if case let .biomeTOBEGENERATED(type: preBiome) = oldTile.type {
+								if isInOkBiomes {
+									MapTile(type: .biomeTOBEGENERATED(type: biome), isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
+								} else {
+									MapTile(type: .biomeTOBEGENERATED(type: preBiome), isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
+								}
+							} else {
+								MapTile(type: oldTile.type, isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
+							}
+
 						#endif
 					} else {
 						MapTile(type: oldTile.type, isWalkable: oldTile.isWalkable, event: oldTile.event, biome: biome)
