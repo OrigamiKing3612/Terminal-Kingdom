@@ -77,6 +77,10 @@ enum MessageBox {
 		await message(text, speaker: speaker.render)
 	}
 
+	static func message(_ text: String, speaker: NPC) async {
+		await message(text, speaker: .npc(name: speaker.name, job: speaker.job))
+	}
+
 	private static func message(_ text: String, speaker: String) async {
 		// clear()
 		scrollOffset = 0

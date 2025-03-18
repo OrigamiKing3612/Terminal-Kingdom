@@ -135,6 +135,45 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
 				return (x: 1000, y: 1000)
 		}
 	}
+
+	var price: DoorPrice {
+		switch self {
+			case .blacksmith:
+				.init(items: [.init(item: .lumber, count: 20)])
+			case .builder:
+				.init(items: [.init(item: .lumber, count: 10), .init(item: .iron, count: 1)])
+			case .carpenter:
+				.init(items: [.init(item: .lumber, count: 10), .init(item: .iron, count: 1)])
+			case .castle:
+				.init(items: [.init(item: .coin, count: 100_000)])
+			case let .custom(_, doorType):
+				doorType.price
+			case .farm:
+				.init(items: [.init(item: .lumber, count: 10), .init(item: .tree_seed, count: 5)])
+			case .hospital:
+				.init(items: [.init(item: .lumber, count: 20), .init(item: .potato, count: 10)])
+			case .house:
+				.init(items: [.init(item: .lumber, count: 10)])
+			case .hunting_area:
+				.init(items: [.init(item: .lumber, count: 10), .init(item: .sword, count: 1)])
+			case .inventor:
+				.init(items: [.init(item: .lumber, count: 30), .init(item: .iron, count: 10)])
+			case .mine:
+				.init(items: [.init(item: .lumber, count: 10)])
+			case .potter:
+				.init(items: [.init(item: .lumber, count: 10), .init(item: .clay, count: 2)])
+			case .restaurant:
+				.init(items: [.init(item: .lumber, count: 10), .init(item: .iron, count: 1)])
+			case .shop:
+				.init(items: [.init(item: .lumber, count: 15)])
+			case .stable:
+				.init(items: [.init(item: .lumber, count: 10)])
+		}
+	}
+}
+
+struct DoorPrice: Codable {
+	var items: [ItemAmount]
 }
 
 enum FarmDoors: Codable, Equatable, Hashable {

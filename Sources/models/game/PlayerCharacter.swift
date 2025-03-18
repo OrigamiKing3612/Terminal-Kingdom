@@ -22,6 +22,7 @@ actor PlayerCharacter {
 		private(set) var mapType: MapType = .castle(side: .left)
 		private(set) var canBuild: Bool = false
 	#endif
+	private(set) var unlockedDoors: [DoorTileTypes] = [.builder, .house, .farm(type: .main)]
 	var stats: Stats = .init()
 
 	func setName(_ name: String) {
@@ -30,6 +31,15 @@ actor PlayerCharacter {
 
 	func has(item: ItemType) -> Bool {
 		items.contains { $0.type == item }
+	}
+
+	func has(items list: [ItemAmount]) -> Bool {
+		for item in list {
+			if items.filter({ $0.type == item.item }).count < item.count {
+				return false
+			}
+		}
+		return true
 	}
 
 	func hasPickaxe() -> Bool {
@@ -236,6 +246,17 @@ actor PlayerCharacter {
 
 	func setCanBuild(_ newCanBuild: Bool) {
 		canBuild = newCanBuild
+	}
+
+	func unlockDoor(_ door: DoorTileTypes) {
+		guard !unlockedDoors.contains(door) else { return }
+		// guard door != .custom else { return }
+		guard door != .castle(side: .top) else { return }
+		unlockedDoors.append(door)
+	}
+
+	func removeDoor(_ door: DoorTileTypes) {
+		unlockedDoors.removeAll(where: { $0 == door })
 	}
 }
 

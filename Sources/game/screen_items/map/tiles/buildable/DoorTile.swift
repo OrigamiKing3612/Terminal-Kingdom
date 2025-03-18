@@ -33,7 +33,7 @@ struct DoorTile: BuildableTile, Hashable {
 				}
 			}
 		}
-		return "D".styled(with: [.bold, .brown])
+		return await (Game.shared.config.useNerdFont ? "󰠚" : "D").styled(with: [.bold, .brown])
 	}
 }
 

@@ -6,6 +6,7 @@ struct NPC: Codable, Hashable, Equatable {
 	let isStartingVillageNPC: Bool
 	var hasTalkedToBefore: Bool
 	var job: NPCJob?
+	// skill level
 	// let age: Int
 	let gender: Gender
 	private(set) var positionToWalkTo: TilePosition?
@@ -44,7 +45,7 @@ struct NPC: Codable, Hashable, Equatable {
 	static func generateRandomName(for gender: Gender) -> String {
 		let maleNames = [
 			"Adam", "Ben", "Caleb", "Daniel", "Eric",
-			"Felix", "Greg", "Henry", "Isaac", "Jack",
+			"Felix", "Greg", "Craig", "Isaac", "Jack",
 			"Kyle", "Leo", "Matt", "Nate", "Owen",
 			"Paul", "Quinn", "Ryan", "Sam", "Tom",
 			"Victor", "Theo", "Jim", "Eli", "Mark",
