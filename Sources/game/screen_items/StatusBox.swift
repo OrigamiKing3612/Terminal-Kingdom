@@ -93,6 +93,7 @@ enum StatusBox {
 		let maxVisibleLines = height - 2
 		var renderedLines: [String] = []
 		renderedLines.append(contentsOf: "  Population: \(kingdom.npcsInKindom.count)".wrappedWithStyles(toWidth: width - 2))
+		renderedLines.append(contentsOf: "  Food Income: \(kingdom.foodIncome)".wrappedWithStyles(toWidth: width - 2))
 
 		if renderedLines.count > maxVisibleLines {
 			renderedLines = Array(renderedLines.suffix(maxVisibleLines))

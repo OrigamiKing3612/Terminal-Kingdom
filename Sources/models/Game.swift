@@ -236,6 +236,11 @@ actor Game {
 	func setRestrictBuilding(_ newResitrictBuilding: (Bool, TilePosition)) async {
 		resitrictBuilding = newResitrictBuilding
 	}
+
+	func removeKingdomNPC(in kingdomID: UUID, npcID: UUID) async {
+		guard let index = kingdoms.firstIndex(where: { $0.id == kingdomID }) else { return }
+		kingdoms[index].npcsInKindom.removeAll(where: { $0 == npcID })
+	}
 }
 
 // TODO: update because Game is not codable

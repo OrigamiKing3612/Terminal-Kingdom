@@ -1,3 +1,5 @@
+import Foundation
+
 enum Keys {
 	static func normal(key: KeyboardKeys) async {
 		switch key {
@@ -36,11 +38,6 @@ enum Keys {
 				await InventoryBox.sides()
 			case .b:
 				if await (Game.shared.player.canBuild), await MapBox.mapType != .mining {
-					#if DEBUG
-						_ = await Game.shared.player.collect(item: .init(type: .lumber), count: 100)
-						_ = await Game.shared.player.collect(item: .init(type: .stone), count: 100)
-						_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))), count: 1)
-					#endif
 					await InventoryBox.setSelectedBuildItemIndex(0)
 					await Game.shared.setIsBuilding(true)
 					await MapBox.sides()
@@ -59,8 +56,25 @@ enum Keys {
 					}
 				case .u:
 					if await !(Game.shared.kingdoms.isEmpty) {
-						await MessageBox.message("\(Game.shared.kingdoms[0])", speaker: .dev)
+						await MessageBox.message(" \(Game.shared.kingdoms[0])", speaker: .dev)
+						do {
+							let jsonEncoder = JSONEncoder()
+							jsonEncoder.outputFormatting = .prettyPrinted
+							let JSON = try await jsonEncoder.encode(Game.shared.kingdoms)
+							let (_, dir, _) = Config.locations()
+							try JSON.write(to: dir.appendingPathComponent("kingdoms.json"))
+							await MessageBox.message(" done", speaker: .dev)
+						} catch {
+							await MessageBox.message("Error outputing kingdoms", speaker: .game)
+						}
 					}
+				case .g:
+					_ = await Game.shared.player.collect(item: .init(type: .lumber), count: 100)
+					_ = await Game.shared.player.collect(item: .init(type: .stone), count: 100)
+					_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))), count: 1)
+					_ = await Game.shared.player.collect(item: .init(type: .pickaxe(type: .init(durability: 100))), count: 1)
+					_ = await Game.shared.player.collect(item: .init(type: .axe(type: .init(durability: 100))), count: 1)
+					_ = await Game.shared.player.collect(item: .init(type: .pot), count: 1)
 			#endif
 			default:
 				#if DEBUG
