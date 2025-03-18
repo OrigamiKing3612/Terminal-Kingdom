@@ -119,13 +119,15 @@ enum MapBox {
 	}
 
 	static func build() async {
-		switch await mapType {
-			case .mainMap:
-				await MapBoxActor.shared.mainMapBuild()
-			case .mining:
-				break
-			default:
-				await MapBoxActor.shared.buildingMapBuild()
+		if await Game.shared.player.items.count(where: { $0.type.isBuildable }) > 0 {
+			switch await mapType {
+				case .mainMap:
+					await MapBoxActor.shared.mainMapBuild()
+				case .mining:
+					break
+				default:
+					await MapBoxActor.shared.buildingMapBuild()
+			}
 		}
 	}
 
