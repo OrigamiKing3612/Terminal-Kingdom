@@ -46,9 +46,9 @@ struct MainMap: MapBoxMap {
 		for (screenY, mapY) in (startY ..< endY).enumerated() {
 			var rowString = await (startX ..< endX).asyncMap { mapX in
 				if mapX == playerX, mapY == playerY {
-					MapTileType.player.render()
+					await MapTileType.player.render()
 				} else {
-					grid[mapY][mapX].type.render()
+					await grid[mapY][mapX].type.render()
 				}
 			}.joined()
 			Screen.print(x: MapBox.startX, y: MapBox.startY + screenY, rowString)
