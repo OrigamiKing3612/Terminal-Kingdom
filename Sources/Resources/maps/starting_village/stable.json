@@ -31,16 +31,6 @@
       "isWalkable" : false
     },
     {
-      "tileType" : {
-        "building" : {
-          "tile" : {
-            "isPlacedByPlayer" : false
-          }
-        }
-      },
-      "isWalkable" : false
-    },
-    {
       "isWalkable" : false,
       "tileType" : {
         "building" : {
@@ -61,14 +51,24 @@
       "isWalkable" : false
     },
     {
-      "isWalkable" : false,
       "tileType" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      }
+      },
+      "isWalkable" : false
+    },
+    {
+      "tileType" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      },
+      "isWalkable" : false
     }
   ],
   [
@@ -81,30 +81,6 @@
         }
       },
       "isWalkable" : false
-    },
-    {
-      "tileType" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
-      "tileType" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
-    },
-    {
-      "tileType" : {
-        "plain" : {
-
-        }
-      },
-      "isWalkable" : true
     },
     {
       "isWalkable" : true,
@@ -123,14 +99,38 @@
       }
     },
     {
-      "isWalkable" : false,
+      "tileType" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "tileType" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
+      "tileType" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
+    },
+    {
       "tileType" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      }
+      },
+      "isWalkable" : false
     }
   ],
   [
@@ -145,12 +145,12 @@
       "isWalkable" : false
     },
     {
+      "isWalkable" : true,
       "tileType" : {
         "plain" : {
 
         }
-      },
-      "isWalkable" : true
+      }
     },
     {
       "tileType" : {
@@ -185,26 +185,26 @@
       "isWalkable" : true
     },
     {
-      "isWalkable" : true,
+      "event" : {
+        "openDoor" : {
+
+        }
+      },
       "tileType" : {
         "door" : {
           "tile" : {
-            "isPartOfPlayerVillage" : false,
+            "isPlacedByPlayer" : false,
             "tileType" : {
               "stable" : {
 
               }
             },
             "level" : 1,
-            "isPlacedByPlayer" : false
+            "isPartOfPlayerVillage" : false
           }
         }
       },
-      "event" : {
-        "openDoor" : {
-
-        }
-      }
+      "isWalkable" : true
     }
   ],
   [
@@ -217,6 +217,22 @@
           }
         }
       }
+    },
+    {
+      "isWalkable" : true,
+      "tileType" : {
+        "plain" : {
+
+        }
+      }
+    },
+    {
+      "tileType" : {
+        "plain" : {
+
+        }
+      },
+      "isWalkable" : true
     },
     {
       "tileType" : {
@@ -243,44 +259,18 @@
       }
     },
     {
-      "isWalkable" : true,
-      "tileType" : {
-        "plain" : {
-
-        }
-      }
-    },
-    {
-      "isWalkable" : true,
-      "tileType" : {
-        "plain" : {
-
-        }
-      }
-    },
-    {
-      "isWalkable" : false,
       "tileType" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      }
+      },
+      "isWalkable" : false
     }
   ],
   [
     {
-      "isWalkable" : false,
-      "tileType" : {
-        "building" : {
-          "tile" : {
-            "isPlacedByPlayer" : false
-          }
-        }
-      }
-    },
-    {
       "tileType" : {
         "building" : {
           "tile" : {
@@ -301,14 +291,14 @@
       "isWalkable" : false
     },
     {
-      "isWalkable" : false,
       "tileType" : {
         "building" : {
           "tile" : {
             "isPlacedByPlayer" : false
           }
         }
-      }
+      },
+      "isWalkable" : false
     },
     {
       "isWalkable" : false,
@@ -319,6 +309,16 @@
           }
         }
       }
+    },
+    {
+      "tileType" : {
+        "building" : {
+          "tile" : {
+            "isPlacedByPlayer" : false
+          }
+        }
+      },
+      "isWalkable" : false
     },
     {
       "tileType" : {

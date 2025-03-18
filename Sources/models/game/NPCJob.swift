@@ -42,6 +42,13 @@ enum NPCJob: Codable, Hashable, Equatable {
 			case .farmer_helper: "Farmer Helper"
 		}
 	}
+
+	var isHelper: Bool {
+		switch self {
+			case .blacksmith_helper, .mine_helper, .carpenter_helper, .builder_helper, .farmer_helper: true
+			default: false
+		}
+	}
 }
 
 enum MessageSpeakers {

@@ -41,7 +41,7 @@ struct CropTile: Codable, Hashable, Equatable {
 					case .seed:
 						await Game.shared.config.useNerdFont ? "" : "s"
 					case .sprout:
-						await Game.shared.config.useNerdFont ? "" : "t"
+						await (Game.shared.config.useNerdFont ? "" : "t").styled(with: .green)
 					case .mature:
 						await MapTileType.tree.render()
 				}

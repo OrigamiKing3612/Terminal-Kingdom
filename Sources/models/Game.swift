@@ -19,14 +19,14 @@ actor Game {
 	private(set) var hasInited: Bool = false
 	private(set) var isTypingInMessageBox: Bool = false
 	private(set) var map: [[MapTile]] = []
-	private(set) var hasStartedCropQueue: Bool = false
-	private(set) var hasStartedNPCQueue: Bool = false
 	private(set) var resitrictBuilding: (Bool, TilePosition) = (false, TilePosition(x: 0, y: 0, mapType: .mainMap))
 	// Don't save
 	private(set) var isInInventoryBox: Bool = false
 	private(set) var isBuilding: Bool = false
 	var horizontalLine: String { config.useNerdFont ? "─" : "=" }
 	var verticalLine: String { config.useNerdFont ? "│" : "|" }
+	private(set) var hasStartedCropQueue: Bool = false
+	private(set) var hasStartedNPCQueue: Bool = false
 
 	//     private(set) var map = MapGen.generateFullMap()
 
@@ -63,11 +63,8 @@ actor Game {
 
 	func addCrop(_ position: TilePosition) async {
 		// TODO: cancel the crop queue if crops is empty and remove a crop position if it is fully grown
-		if !hasStartedCropQueue {
-			await startCropQueue()
-			hasStartedCropQueue = true
-		}
 		crops.insert(position)
+		BackgroundTasks.startCropQueue()
 	}
 
 	func removeCrop(_ position: TilePosition) async {
@@ -76,11 +73,8 @@ actor Game {
 
 	func addNPC(_ position: NPCPosition) async {
 		// TODO: cancel the crop queue if crops is empty and remove a crop position if it is fully grown
-		if !hasStartedNPCQueue {
-			await startNPCMovingQueue()
-			hasStartedNPCQueue = true
-		}
 		movingNpcs.insert(position)
+		BackgroundTasks.startNPCMovingQueue()
 	}
 
 	func updateNPC(oldPosition: NPCPosition, newPosition: NPCPosition) async {
