@@ -88,11 +88,11 @@ actor MapGen {
 						case .snow, .tundra:
 							let rand = Int.random(in: 1 ... 10)
 							if rand == 2 || rand == 3 {
-								map[y][x] = MapTile(type: .snow_tree, isWalkable: true, biome: type)
+								map[y][x] = MapTile(type: .snow_tree, isWalkable: true, event: .chopTree, biome: type)
 							} else if rand == 1 {
 								map[y][x] = MapTile(type: .ice, isWalkable: true, biome: type)
 							} else {
-								map[y][x] = MapTile(type: .snow, isWalkable: true, event: .chopTree, biome: type)
+								map[y][x] = MapTile(type: .snow, isWalkable: true, biome: type)
 							}
 						case .volcano:
 							let rand = Int.random(in: 1 ... 10)
