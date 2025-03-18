@@ -81,8 +81,10 @@ struct NPCTile: Codable, Hashable, Equatable {
 								}
 
 								var newGrid = await Game.shared.maps.customMaps[customMapIndex].grid
+								var newTile = tile
+								newTile.npc.removePostion()
 								newGrid[npcY][npcX] = MapTile(
-									type: .npc(tile: tile),
+									type: .npc(tile: newTile),
 									isWalkable: npcTile.isWalkable,
 									event: npcTile.event,
 									biome: npcTile.biome
