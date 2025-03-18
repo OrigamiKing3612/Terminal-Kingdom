@@ -156,7 +156,7 @@ enum SVFarmerNPC: StartingVillageNPC {
 	static func stage5() async {
 		switch await Game.shared.stages.farm.stage5Stages {
 			case .notStarted:
-				await MessageBox.message("Now that you have the clay, you can take it to the potter and get a pot.", speaker: .farmer)
+				await MessageBox.message("Now that you have the clay, you can take it to the potter and get 5 pots.", speaker: .farmer)
 				await Game.shared.stages.farm.setStage5ClayUUIDsToRemove(Game.shared.player.collect(item: .init(type: .clay, canBeSold: false), count: 10))
 				await Game.shared.stages.farm.setStage5Stages(.collect)
 				await StatusBox.quest(.farm5)

@@ -44,14 +44,13 @@ struct MainMap: MapBoxMap {
 		let endY = min(grid.count, startY + viewportHeight)
 
 		for (screenY, mapY) in (startY ..< endY).enumerated() {
-			var rowString = ""
-			for mapX in startX ..< endX {
+			var rowString = await (startX ..< endX).asyncMap { mapX in
 				if mapX == playerX, mapY == playerY {
-					await rowString += MapTileType.player.render()
+					MapTileType.player.render()
 				} else {
-					await rowString += grid[mapY][mapX].type.render()
+					grid[mapY][mapX].type.render()
 				}
-			}
+			}.joined()
 			Screen.print(x: MapBox.startX, y: MapBox.startY + screenY, rowString)
 		}
 	}

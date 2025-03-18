@@ -81,7 +81,7 @@ func newGame() async {
 
 func startNPCMovingQueue() async {
 	// TODO: Make sure this isn't run twice
-	Task.detached(priority: .background) {
+	Task(priority: .background) {
 		while true {
 			let npcPositions = await Game.shared.movingNpcs
 			if npcPositions.isEmpty {
@@ -99,7 +99,7 @@ func startNPCMovingQueue() async {
 
 func startCropQueue() async {
 	// TODO: building maps?
-	Task.detached(priority: .background) {
+	Task(priority: .background) {
 		while true {
 			if await Game.shared.crops.isEmpty {
 				await Game.shared.setHasStartedCropQueue(false)
