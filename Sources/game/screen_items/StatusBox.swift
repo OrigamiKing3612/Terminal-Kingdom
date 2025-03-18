@@ -92,11 +92,7 @@ enum StatusBox {
 		Screen.print(x: kingdomInfoAreaStartX, y: kingdomInfoAreaStartY, "\(kingdom.name):".styled(with: .bold))
 		let maxVisibleLines = height - 2
 		var renderedLines: [String] = []
-		for (index, quest) in await quests.enumerated() {
-			let number = "\(index + 1)".styled(with: .bold)
-			let text = await "\(number). \(quest.label)"
-			renderedLines.append(contentsOf: text.wrappedWithStyles(toWidth: width - 2))
-		}
+		renderedLines.append(contentsOf: "  Population: \(kingdom.npcsInKindom.count)".wrappedWithStyles(toWidth: width - 2))
 
 		if renderedLines.count > maxVisibleLines {
 			renderedLines = Array(renderedLines.suffix(maxVisibleLines))
