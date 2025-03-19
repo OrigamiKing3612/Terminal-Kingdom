@@ -36,13 +36,19 @@ class HelpPopUp: PopUp {
 
 	private func drawBorders(x: Int, endY: Int) async {
 		longestXLine += 2
+		let verticalLine = await Game.shared.verticalLine
+		let horizontalLine = await Game.shared.horizontalLine
+		let topLeftCorner = await Game.shared.topLeftCorner
+		let topRightCorner = await Game.shared.topRightCorner
+		let bottomLeftCorner = await Game.shared.bottomLeftCorner
+		let bottomRightCorner = await Game.shared.bottomRightCorner
+
 		for y in 0 ... endY + 1 {
-			await Screen.print(x: x - (longestXLine / 2), y: 0 + y, Game.shared.verticalLine)
+			Screen.print(x: x - (longestXLine / 2) - 1, y: 1 + y, verticalLine)
 
-			await Screen.print(x: x + (longestXLine / 2) - 1, y: 0 + y, Game.shared.verticalLine)
+			Screen.print(x: x + (longestXLine / 2) + 1, y: 1 + y, verticalLine)
 		}
-		await Screen.print(x: x - (longestXLine / 2), y: 0, String(repeating: Game.shared.horizontalLine, count: longestXLine))
-
-		await Screen.print(x: x - (longestXLine / 2), y: endY + 2, String(repeating: Game.shared.horizontalLine, count: longestXLine))
+		Screen.print(x: x - (longestXLine / 2) - 1, y: 0, topLeftCorner + String(repeating: horizontalLine, count: longestXLine + 1) + topRightCorner)
+		Screen.print(x: x - (longestXLine / 2) - 1, y: endY + 2, bottomLeftCorner + String(repeating: horizontalLine, count: longestXLine + 1) + bottomRightCorner)
 	}
 }

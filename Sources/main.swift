@@ -29,11 +29,12 @@ func showTitleScreen() async {
 			await showTitleScreen()
 		}
 	} else if option == .settingsOption {
-		await option.action(screen: &screen)
-		await showTitleScreen()
+		await Screen.popUp(SettingsPopUp()) {
+			await showTitleScreen()
+		}
 	} else {
 		await Screen.initializeBoxes()
-		await option.action(screen: &screen)
+		await option.action()
 	}
 }
 
