@@ -41,7 +41,7 @@ class Logger {
 			}
 
 			let timestamp = ISO8601DateFormatter().string(from: Date())
-			let logMessage = "\(timestamp) \(level.value) \(message)\n"
+			let logMessage = "[\(level.value)] [\(timestamp)] : \(message)\n"
 
 			if let data = logMessage.data(using: .utf8), let fileHandle = try? FileHandle(forWritingTo: logFileURL) {
 				fileHandle.seekToEndOfFile()
