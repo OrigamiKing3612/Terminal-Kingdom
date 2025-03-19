@@ -25,9 +25,9 @@ func showTitleScreen() async {
 	let option = await screen.show()
 	Screen.clear()
 	if option == .helpOption {
-		await option.action(screen: &screen)
-		_ = TerminalInput.readKey()
-		await showTitleScreen()
+		await Screen.popUp(HelpPopUp()) {
+			await showTitleScreen()
+		}
 	} else if option == .settingsOption {
 		await option.action(screen: &screen)
 		await showTitleScreen()
