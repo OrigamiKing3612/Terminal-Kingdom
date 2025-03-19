@@ -1,3 +1,5 @@
+import Foundation
+
 struct MainMap: MapBoxMap {
 	var grid: [[MapTile]]
 	var showKingdomLines: Bool = false
@@ -81,7 +83,7 @@ struct MainMap: MapBoxMap {
 		let b = await oldY != y
 		if a || b {
 			await map()
-			if await Game.shared.isInsideKingdom(x: x, y: y) != nil {
+			if await Game.shared.kingdom.isInsideVillage(x: x, y: y) != nil {
 				await StatusBox.setShowKingdomInfo(true)
 			} else {
 				await StatusBox.setShowKingdomInfo(false)
@@ -158,13 +160,13 @@ struct MainMap: MapBoxMap {
 	}
 
 	private mutating func renderKingdomLines() async {
-		let kingdoms: [Kingdom] = await Game.shared.kingdoms
+		let villages: [Village] = await Game.shared.kingdom.villages.values.map(\.self)
 
-		for kingdom in kingdoms {
-			if let castle = kingdom.getCastle() {
+		for village in villages {
+			if let castle = await village.getCastle() {
 				let x = castle.x
 				let y = castle.y
-				let radius = kingdom.radius
+				let radius = await village.radius
 				let viewportWidth = MapBox.width
 				let viewportHeight = MapBox.height
 				let startX = await player.x - viewportWidth / 2

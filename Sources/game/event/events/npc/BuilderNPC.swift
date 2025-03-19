@@ -6,15 +6,15 @@ struct BuilderNPC: TalkableNPC {
 			await NPC.setTalkedTo {
 				await MessageBox.message("Hello, I'm \(npc.name)! I can help you with building. Let's start! Go get all of the materials you need and then we can build your castle!", speaker: .npc(name: npc.name, job: npc.job))
 				await Game.shared.player.setCanBuild(false)
-				await Game.shared.addKingdomData(.gettingStuffToBuildCastle, npcInKindom: npc.id)
+				await Game.shared.kingdom.addVillageData(.gettingStuffToBuildCastle, npcInVillage: npc.id)
 			}
 		} else {
-			let kingdom = await Game.shared.getKingdom(for: npc)
-			if let kingdom {
-				if !kingdom.hasCastle {
-					await buildCastle(npc: npc, kingdom: kingdom)
+			let village = await Game.shared.kingdom.getVillage(for: npc)
+			if let village {
+				if await !village.hasCastle {
+					await buildCastle(npc: npc, village: village)
 				} else {
-					await talkNormally(kingdom: kingdom, npc)
+					await talkNormally(village: village, npc)
 				}
 			} else {
 				await MessageBox.message("I don't know what to do (2)", speaker: .npc(name: npc.name, job: npc.job))
@@ -22,8 +22,8 @@ struct BuilderNPC: TalkableNPC {
 		}
 	}
 
-	private static func talkNormally(kingdom _: Kingdom, _ npc: NPC) async {
-		// let building = await Game.shared.getKingdomNPCBuilding(kingdom.id, npcInBuilding: npc.id)
+	private static func talkNormally(village _: Village, _ npc: NPC) async {
+		// let building = await Game.shared.getKingdomNPCBuilding(village.id, npcInBuilding: npc.id)
 		let options: [MessageOption] = [
 			.init(label: "Quit") {},
 			.init(label: "Can you make a door?", action: { await makeDoor(npc: npc) }),
@@ -56,8 +56,8 @@ struct BuilderNPC: TalkableNPC {
 		await MessageBox.messageWithOptions("Do you have the items?", speaker: .npc(name: npc.name, job: npc.job), options: options).action()
 	}
 
-	private static func buildCastle(npc: NPC, kingdom: Kingdom) async {
-		if kingdom.data.contains(.gettingStuffToBuildCastle) {
+	private static func buildCastle(npc: NPC, village: Village) async {
+		if await village.data.contains(.gettingStuffToBuildCastle) {
 			await MessageBox.message("You are back! Would you like to start working on your castle?", speaker: .npc(name: npc.name, job: npc.job))
 			let options: [MessageOption] = [
 				.init(label: "Quit", action: {}),
@@ -68,13 +68,13 @@ struct BuilderNPC: TalkableNPC {
 				await Game.shared.player.setCanBuild(true)
 				_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .castle(side: .top))), canBeSold: false))
 				await MessageBox.message("Let me know when you are done!", speaker: .npc(name: npc.name, job: npc.job))
-				await Game.shared.addKingdomData(.buildingCastle, npcInKindom: npc.id)
-				await Game.shared.removeKingdomData(.gettingStuffToBuildCastle, npcInKindom: npc.id)
+				await Game.shared.kingdom.addVillageData(.buildingCastle, npcInVillage: npc.id)
+				await Game.shared.kingdom.removeVillageData(.gettingStuffToBuildCastle, npcInVillage: npc.id)
 				await Game.shared.setRestrictBuilding((true, .init(x: Game.shared.player.position.x, y: Game.shared.player.position.y, mapType: .mainMap)))
 			} else {
 				await MessageBox.message("Ok, let me know when you are ready to start building!", speaker: .npc(name: npc.name, job: npc.job))
 			}
-		} else if kingdom.data.contains(.buildingCastle) {
+		} else if await village.data.contains(.buildingCastle) {
 			await MessageBox.message("You are back! Would you like to continue working on your castle?", speaker: .npc(name: npc.name, job: npc.job))
 			let options: [MessageOption] = [
 				.init(label: "I'm still working", action: {}),
@@ -84,8 +84,8 @@ struct BuilderNPC: TalkableNPC {
 			if option.label == options[1].label {
 				if await !Game.shared.player.has(item: .door(tile: .init(type: .castle(side: .top)))) {
 					await MessageBox.message("Great! Your castle is now complete!", speaker: .npc(name: npc.name, job: npc.job))
-					await Game.shared.removeKingdomData(.buildingCastle, npcInKindom: npc.id)
-					await Game.shared.setKingdomCastle(kingdomID: kingdom.id)
+					await Game.shared.kingdom.removeVillageData(.buildingCastle, npcInVillage: npc.id)
+					await Game.shared.kingdom.setVillageCastle(villageID: village.id)
 					await Game.shared.setRestrictBuilding((false, .init(x: 0, y: 0, mapType: .mainMap)))
 				} else {
 					await MessageBox.message("You haven't placed your castle door yet.", speaker: .npc(name: npc.name, job: npc.job))

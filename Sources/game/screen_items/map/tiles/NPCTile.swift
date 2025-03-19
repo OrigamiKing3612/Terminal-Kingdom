@@ -6,7 +6,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 
 	init(id: UUID = UUID()) {
 		self.id = id
-		self.npc = .init(isStartingVillageNPC: false, kingdomID: id)
+		self.npc = .init(isStartingVillageNPC: false, villageID: id)
 	}
 
 	init(id: UUID = UUID(), npc: NPC) {

@@ -28,10 +28,11 @@ enum StatusBox {
 		await sides()
 		await playerInfoArea()
 		await questArea()
+		#warning("REDO")
 		if showKingdomInfo {
-			if let id = await Game.shared.isInsideKingdom(x: Game.shared.player.position.x, y: Game.shared.player.position.y) {
-				let kingdom = await Game.shared.getKingdom(id: id)
-				await kingdomInfo(kingdom!) // We already know there is a kingdom
+			if let id = await Game.shared.kingdom.isInsideVillage(x: Game.shared.player.position.x, y: Game.shared.player.position.y) {
+				let village = await Game.shared.kingdom.get(villageID: id)
+				await kingdomInfo(village!) // We already know there is a kingdom
 			}
 		}
 	}
@@ -86,11 +87,11 @@ enum StatusBox {
 		kingdomInfoAreaStartY = currentY + 1
 	}
 
-	static func kingdomInfo(_ kingdom: Kingdom) async {
-		Screen.print(x: kingdomInfoAreaStartX, y: kingdomInfoAreaStartY, "\(kingdom.name):".styled(with: .bold))
+	static func kingdomInfo(_ village: Village) async {
+		await Screen.print(x: kingdomInfoAreaStartX, y: kingdomInfoAreaStartY, "\(village.name):".styled(with: .bold))
 		let maxVisibleLines = height - 2
 		var renderedLines: [String] = []
-		renderedLines.append(contentsOf: "  Population: \(kingdom.npcsInKindom.count)".wrappedWithStyles(toWidth: width - 2))
+		await renderedLines.append(contentsOf: "  Population: \(village.npcsInVillage.count)".wrappedWithStyles(toWidth: width - 2))
 
 		if renderedLines.count > maxVisibleLines {
 			renderedLines = Array(renderedLines.suffix(maxVisibleLines))
