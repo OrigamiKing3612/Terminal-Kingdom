@@ -96,7 +96,7 @@ struct MainMap: MapBoxMap {
 				if let (startX, startY) = MapTile.findTilePosition(of: .playerStart, in: grid) {
 					await Game.shared.player.setPlayerPosition(x: startX, y: startY)
 				} else {
-					print("Error: Could not find playerStart tile in the grid.")
+					Logger.warning("Could not find playerStart tile in the grid.")
 				}
 				hasFoundPlayerStart = true
 			}

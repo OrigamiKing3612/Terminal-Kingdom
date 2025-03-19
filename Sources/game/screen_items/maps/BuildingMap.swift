@@ -27,8 +27,7 @@ struct BuildingMap: MapBoxMap {
 			case let .custom(mapID):
 				self.grid = await Game.shared.maps.customMaps.filter { $0.id == mapID }[0].grid
 			case .mainMap, .mining:
-				print("Error: Could not find map for \(mapType)")
-				exit(8)
+				Logger.error("Main Map or Mining Map should not be put here", code: .mainMapInBuildingMap)
 			default:
 				self.grid = await StaticMaps.buildingMap(mapType: mapType)
 		}
@@ -79,7 +78,7 @@ struct BuildingMap: MapBoxMap {
 			player.x = startX
 			player.y = startY
 		} else {
-			print("Error: Could not find playerStart tile in the building grid.")
+			Logger.warning("Could not find playerStart tile in the building grid.")
 		}
 	}
 

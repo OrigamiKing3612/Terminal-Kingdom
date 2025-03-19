@@ -35,7 +35,7 @@ enum UnixTerminalInput {
 			} else if buffer[0] >= 32, buffer[0] <= 126 { // Printable characters
 				return KeyboardKeys(rawValue: String(UnicodeScalar(buffer[0]))) ?? .unknown
 			}
-
+			Logger.warning("Unknown key: \(buffer[0])")
 			return .unknown
 		}
 	#endif

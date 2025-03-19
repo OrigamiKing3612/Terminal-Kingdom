@@ -12,7 +12,6 @@ enum TerminalInput {
 		private nonisolated(unsafe) static var originalTermios = termios()
 	#endif
 
-	// Enable raw mode
 	static func enableRawMode() {
 		#if os(Windows)
 			var mode: DWORD = 0
@@ -21,24 +20,19 @@ enum TerminalInput {
 			SetConsoleMode(hStdin, mode & ~DWORD(ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT))
 		#else
 			var raw = termios()
-			tcgetattr(STDIN_FILENO, &originalTermios) // Get current terminal attributes
+			tcgetattr(STDIN_FILENO, &originalTermios)
 			raw = originalTermios
 			#if os(Linux)
-				raw.c_lflag &= ~UInt32(ECHO | ICANON) // Disable echo and canonical mode
+				raw.c_lflag &= ~UInt32(ECHO | ICANON)
 			#else
-				raw.c_lflag &= ~UInt(ECHO | ICANON) // Disable echo and canonical mode
+				raw.c_lflag &= ~UInt(ECHO | ICANON)
 			#endif
-			tcsetattr(STDIN_FILENO, TCSANOW, &raw) // Apply raw mode
+			tcsetattr(STDIN_FILENO, TCSANOW, &raw)
 		#endif
 	}
 
-	// Restore original terminal attributes
 	static func restoreOriginalMode() {
 		#if os(Windows)
-			// var mode: DWORD = 0
-			// let hStdin = GetStdHandle(STD_INPUT_HANDLE)
-			// GetConsoleMode(hStdin, &mode)
-			// SetConsoleMode(hStdin, Int32(DWORD(mode | ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT)))
 			let handle = GetStdHandle(STD_INPUT_HANDLE)
 			var mode: DWORD = 0
 			GetConsoleMode(handle, &mode)
@@ -49,7 +43,6 @@ enum TerminalInput {
 		#endif
 	}
 
-	// Read a single key press
 	static func readKey() -> KeyboardKeys {
 		#if os(Windows)
 			WindowsTerminalInput.readKey()

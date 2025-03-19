@@ -7,7 +7,7 @@ enum BackgroundTasks {
 			guard await !Game.shared.hasStartedNPCQueue else { return }
 			await Game.shared.setHasStartedNPCMovingQueue(true)
 
-			// await MessageBox.message("NPCs are moving", speaker: .dev)
+			Logger.debug("Started NPC task")
 
 			while true {
 				let npcPositions = await Game.shared.movingNpcs
@@ -21,7 +21,8 @@ enum BackgroundTasks {
 				}
 				try? await Task.sleep(nanoseconds: 500_000_000) // .5 seconds
 			}
-			// await MessageBox.message("NPCs are done moving", speaker: .dev)
+
+			Logger.debug("Ended NPC task")
 		}
 	}
 
@@ -31,7 +32,7 @@ enum BackgroundTasks {
 			guard await !Game.shared.hasStartedCropQueue else { return }
 			await Game.shared.setHasStartedCropQueue(true)
 
-			// await MessageBox.message("Crops are Growing", speaker: .dev)
+			Logger.debug("Started crops task")
 
 			while true {
 				if await Game.shared.crops.isEmpty {
@@ -78,7 +79,7 @@ enum BackgroundTasks {
 				}
 				try? await Task.sleep(for: .seconds(1))
 			}
-			// await MessageBox.message("Crops are done growing", speaker: .dev)
+			Logger.debug("Ended crops task")
 		}
 	}
 }

@@ -9,6 +9,7 @@ struct Config {
 	var arrowKeys: Bool = false
 	var wasdKeys: Bool = true
 	var icons: ConfigIcons = .init()
+	var maxLogLevel: LogLevel = .info
 
 	init() {}
 
@@ -33,7 +34,7 @@ struct Config {
 			let data = try JSONDecoder().decode(Config.self, from: Data(contentsOf: file))
 			return data
 		} catch {
-			print("Error: Could not read config file. Creating a new one.")
+			Logger.warning("Could not read config file. Creating a new one.")
 			return await write(config: Config())
 		}
 	}
@@ -52,8 +53,7 @@ struct Config {
 			try data.write(to: file)
 			return config
 		} catch {
-			print("Error: Could not write config file at \(file). \(error)")
-			exit(1)
+			Logger.error("Could not write config file at \(file). \(error)", code: .config(.writeError))
 		}
 	}
 
@@ -80,6 +80,7 @@ struct Config {
 			case characterIcon
 			case buildingIcon
 			case selectedIcon
+			case maxLogLevel
 		}
 
 		init(from decoder: any Decoder) throws {
@@ -95,12 +96,10 @@ struct Config {
 				if icon.count == 1 {
 					return icon
 				} else {
-					print("Error: icon for \(key) must be a single character.")
-					exit(-2)
+					Logger.error("Error: icon for \(key) must be a single character.", code: .config(.singleKey))
 				}
 			} else {
-				print("Error: icon for \(key) not found.")
-				exit(-1)
+				Logger.error("Error: icon for \(key) not found.", code: .config(.missingKey))
 			}
 		}
 	}
@@ -114,6 +113,7 @@ extension Config: Codable {
 		try container.encode(arrowKeys, forKey: .arrowKeys)
 		try container.encode(wasdKeys, forKey: .wasdKeys)
 		try container.encode(icons, forKey: .icons)
+		try container.encode(maxLogLevel, forKey: .maxLogLevel)
 	}
 
 	enum CodingKeys: CodingKey {
@@ -122,6 +122,7 @@ extension Config: Codable {
 		case arrowKeys
 		case wasdKeys
 		case icons
+		case maxLogLevel
 	}
 
 	init(from decoder: any Decoder) throws {
@@ -131,5 +132,6 @@ extension Config: Codable {
 		self.arrowKeys = try container.decode(Bool.self, forKey: .arrowKeys)
 		self.wasdKeys = try container.decode(Bool.self, forKey: .wasdKeys)
 		self.icons = try container.decode(ConfigIcons.self, forKey: .icons)
+		self.maxLogLevel = try container.decode(LogLevel.self, forKey: .maxLogLevel)
 	}
 }

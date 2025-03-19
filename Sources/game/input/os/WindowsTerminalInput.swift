@@ -48,6 +48,7 @@ enum WindowsTerminalInput {
 				default: return .unknown
 			}
 
+			Logger.warning("Unknown key: \(vkCode)")
 			return .unknown
 		}
 	#endif

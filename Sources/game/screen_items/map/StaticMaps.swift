@@ -21,12 +21,10 @@ enum StaticMaps {
 				let data = try Data(contentsOf: fileURL)
 				return try JSONDecoder().decode([[MapTile]].self, from: data)
 			} catch {
-				print("Error loading or decoding JSON: \(error)")
-				exit(1)
+				Logger.error("Error decoding JSON: \(error)", code: .json(.decodingError))
 			}
 		} else {
-			print("Could not find the \(fileName) map json file.")
-			exit(1)
+			Logger.error("Could not find the \(fileName) map json file.", code: .fileNotFound)
 		}
 	}
 

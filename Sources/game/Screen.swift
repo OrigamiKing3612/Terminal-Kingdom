@@ -22,9 +22,9 @@ enum Screen {
 		if let terminalSize = getTerminalSize() {
 			columns = terminalSize.columns
 			rows = terminalSize.rows
+			Logger.info("Terminal size: \(columns)x\(rows)")
 		} else {
-			Swift.print("Error: Could not determine terminal size.")
-			exit(123)
+			Logger.error("Error: Could not determine terminal size.", code: .couldNotDetermineTerminalSize)
 		}
 	}
 
@@ -81,8 +81,6 @@ enum Screen {
 	}
 
 	static func print(x: Int, y: Int, _ text: String) {
-		// let x = max(1, min(x, columns))
-		// let y = max(1, min(y, rows))
 		Screen.print(x: .int(x), y: .int(y), text)
 	}
 

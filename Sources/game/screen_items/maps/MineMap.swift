@@ -20,7 +20,7 @@ struct MineMap: MapBoxMap {
 			player.x = startX
 			player.y = startY
 		} else {
-			print("Error: Could not find playerStart tile in the mine grid.")
+			Logger.warning("Could not find playerStart tile in the mine grid.")
 		}
 	}
 

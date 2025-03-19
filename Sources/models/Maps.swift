@@ -50,8 +50,7 @@ actor Maps {
 				if let index = customMaps.firstIndex(where: { $0.id == id }) {
 					customMaps[index].updateGrid(map)
 				} else {
-					print("Custom Map not found")
-					exit(12)
+					Logger.error("Custom Map not found (1)", code: .customMapNotFound)
 				}
 			case .farm:
 				farm = map
@@ -64,13 +63,11 @@ actor Maps {
 			case .inventor:
 				inventor = map
 			case .mainMap:
-				print("Main Map should not be put here")
-				exit(11)
+				Logger.error("Main Map should not be put here (1)", code: .mainMapInMaps)
 			case .mine:
 				mine = map
 			case .mining:
-				print("Mining Map should not be put here")
-				exit(11)
+				Logger.error("Mining Map should not be put here (1)", code: .miningMapInMaps)
 			case .potter:
 				potter = map
 			case .restaurant:
@@ -85,42 +82,39 @@ actor Maps {
 	func getMapType(mapType: MapType) async -> [[MapTile]] {
 		switch mapType {
 			case .blacksmith:
-				return blacksmith
+				blacksmith
 			case .builder:
-				return builder
+				builder
 			case .carpenter:
-				return carpenter
+				carpenter
 			case .castle:
-				return castle
+				castle
 			case .custom:
-				print("Custom Map should not be put here (9)")
-				exit(9)
+				Logger.error("Custom Map should not be put here (2)", code: .customMapInMaps)
 			case .farm:
-				return farm
+				farm
 			case .hospital:
-				return hospital
+				hospital
 			case .house:
-				return house
+				house
 			case .hunting_area:
-				return hunting_area
+				hunting_area
 			case .inventor:
-				return inventor
+				inventor
 			case .mainMap:
-				print("Main Map should not be put here")
-				exit(9)
+				Logger.error("Main Map should not be put here (2)", code: .mainMapInMaps)
 			case .mine:
-				return mine
+				mine
 			case .mining:
-				print("Mining Map should not be put here")
-				exit(9)
+				Logger.error("Mining Map should not be put here (2)", code: .miningMapInMaps)
 			case .potter:
-				return potter
+				potter
 			case .restaurant:
-				return restaurant
+				restaurant
 			case .shop:
-				return shop
+				shop
 			case .stable:
-				return stable
+				stable
 		}
 	}
 
@@ -136,8 +130,7 @@ actor Maps {
 				castle[y][x] = tile
 			case let .custom(mapID: id):
 				guard let customMapIndex = customMaps.firstIndex(where: { $0.id == id }) else {
-					print("Custom Map not found (10)")
-					exit(10)
+					Logger.error("Custom Map not found (3)", code: .customMapNotFound)
 				}
 				await updateCustomMap(at: customMapIndex, with: customMaps[customMapIndex].grid)
 			case .farm:
@@ -151,13 +144,11 @@ actor Maps {
 			case .inventor:
 				inventor[y][x] = tile
 			case .mainMap:
-				mainMap[y][x] = tile
-				exit(9)
+				Logger.error("Main Map should not be put here (3)", code: .mainMapInMaps)
 			case .mine:
 				mine[y][x] = tile
 			case .mining:
-				print("Mining Map should not be put here")
-				exit(10)
+				Logger.error("Mining Map should not be put here (3)", code: .miningMapInMaps)
 			case .potter:
 				potter[y][x] = tile
 			case .restaurant:

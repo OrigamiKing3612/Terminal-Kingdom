@@ -1,5 +1,7 @@
 import Foundation
 
+Logger.initialize()
+
 Screen.clear()
 Screen.Cursor.moveToTop()
 

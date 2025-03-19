@@ -35,8 +35,9 @@ actor Game {
 
 	func initGame() async {
 		hasInited = true
-		map = await mapGen.generateFullMap()
 		config = await Config.load()
+		Logger.info("Max Log Level: \(config.maxLogLevel)")
+		map = await mapGen.generateFullMap()
 	}
 
 	func setIsTypingInMessageBox(_ newIsTypingInMessageBox: Bool) async {
