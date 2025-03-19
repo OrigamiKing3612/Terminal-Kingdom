@@ -1,73 +1,134 @@
 import Foundation
 
-struct Kingdom: Codable, Identifiable, Hashable, Equatable {
+actor Kingdom: Hashable, Equatable, Identifiable {
 	let id: UUID
 	var name: String
-	var buildings: [Building]
-	var npcsInKindom: [UUID]
-	var hasCastle: Bool = false
-	var data: [KingdomData] = []
-	private(set) var radius: Int = 40
-	var castleID: UUID? = nil
+	private(set) var villages: [UUID: Village] = [:]
 
-	init(id: UUID = UUID(), name: String, buildings: [Building], npcsInKindom: [UUID] = []) {
+	init(id: UUID = UUID()) {
 		self.id = id
-		self.buildings = buildings
-		self.npcsInKindom = npcsInKindom
+		self.name = "Kingdom"
+		Task {
+			await self.set(name: "\(Game.shared.player.name)'s Kingdom")
+		}
+	}
+
+	func create(village: Village) async {
+		villages[village.id] = village
+	}
+
+	func remove(village: Village) async {
+		villages.removeValue(forKey: village.id)
+	}
+
+	func get(villageID: UUID) async -> Village? {
+		villages[villageID]
+	}
+
+	func set(name: String) async {
 		self.name = name
 	}
 
-	mutating func addData(_ data: KingdomData) {
-		self.data.append(data)
+	func add(building: Building, villageID: UUID) async {
+		await villages[villageID]?.add(building: building)
 	}
 
-	mutating func removeData(_ data: KingdomData) {
-		self.data.removeAll { $0 == data }
+	func add(npcID: UUID, villageID: UUID) async {
+		await villages[villageID]?.add(npc: npcID)
 	}
 
-	mutating func setHasCastle() {
-		hasCastle = true
-		let castleID = getCastle()?.id
-		if let castleID {
-			self.castleID = castleID
-		}
-	}
-
-	mutating func removeCastle() {
-		hasCastle = false
-		castleID = nil
-	}
-
-	func getCastle() -> Building? {
-		guard hasCastle else {
-			return nil
-		}
-		// index 1 should be castle beucase it is the second building added
-		if case .castle = buildings[1].type {
-			return buildings[1]
-		}
-
-		// Otherwise, search for any castle
-		return buildings.first { b in
-			// if case let .custom(_, doorType: doorType) = b.type {
-			if case .castle = b.type {
-				// if case .castle = doorType {
-				return true
-				// }
+	func addVillageData(_ data: VillageData, npcInVillage: UUID) async {
+		for village in villages.values {
+			if await village.has(npcID: npcInVillage) {
+				await village.add(data: data)
+				break
 			}
-			return false
 		}
 	}
 
-	func contains(x: Int, y: Int) -> Bool {
-		let center = hasCastle ? getCastle() : buildings.first { $0.type == .builder }
-		guard let building = center else { return false }
-		let dx = x - building.x
-		let dy = y - building.y
-		return dx * dx + dy * dy <= radius * radius
+	func removeVillageData(_ data: VillageData, npcInVillage: UUID) async {
+		for village in villages.values {
+			if await village.has(npcID: npcInVillage) {
+				await village.remove(data: data)
+				break
+			}
+		}
 	}
-}
 
-enum KingdomData: Codable, Hashable {
-	case buildingCastle, gettingStuffToBuildCastle
+	func setVillageCastle(villageID: UUID) async {
+		await villages[villageID]?.setHasCastle()
+	}
+
+	func removeVillageCastle(villageID: UUID) async {
+		await villages[villageID]?.removeCastle()
+	}
+
+	func getVillageCastle(villageID: UUID) async -> Building? {
+		await villages[villageID]?.getCastle()
+	}
+
+	func isInsideVillage(x: Int, y: Int) async -> UUID? {
+		for village in villages.values where await village.contains(x: x, y: y) {
+			return village.id
+		}
+		return nil
+	}
+
+	func getVillageBuilding(for npc: NPC, villageID: UUID) async -> Building? {
+		await villages[villageID]?.buildings.values.first { $0.id == npc.id }
+	}
+
+	func getVillageBuilding(for npc: NPC) async -> Building? {
+		for village in villages.values {
+			if await village.npcsInVillage.contains(npc.id) {
+				return await village.buildings.values.first { $0.id == npc.id }
+			}
+		}
+		return nil
+	}
+
+	func hasVillageBuilding(x: Int, y: Int) async -> Building? {
+		for village in villages.values {
+			for building in await village.buildings.values {
+				if building.x == x, building.y == y {
+					return building
+				}
+			}
+		}
+		return nil
+	}
+
+	func updateVillageBuilding(villageID: UUID, buildingID: UUID, newBuilding: Building) async {
+		await villages[villageID]?.update(buildingID: buildingID, newBuilding: newBuilding)
+	}
+
+	func getVillage(buildingID: UUID) async -> Village? {
+		for village in villages.values {
+			if await village.buildings[buildingID] != nil {
+				return village
+			}
+		}
+		return nil
+	}
+
+	func getVillage(for npc: NPC) async -> Village? {
+		for village in villages.values {
+			if await village.npcsInVillage.contains(npc.id) {
+				return village
+			}
+		}
+		return nil
+	}
+
+	func renameVillage(id: UUID, name: String) async {
+		await villages[id]?.set(name: name)
+	}
+
+	nonisolated func hash(into hasher: inout Hasher) {
+		hasher.combine(id)
+	}
+
+	static func == (lhs: Kingdom, rhs: Kingdom) -> Bool {
+		lhs.id == rhs.id
+	}
 }
