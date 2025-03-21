@@ -56,15 +56,15 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 	}
 
 	func setVillageCastle(villageID: UUID) async {
-		await villages[villageID]?.setHasCastle()
+		await villages[villageID]?.setHasCourthouse()
 	}
 
 	func removeVillageCastle(villageID: UUID) async {
-		await villages[villageID]?.removeCastle()
+		await villages[villageID]?.removeCourthouse()
 	}
 
 	func getVillageCastle(villageID: UUID) async -> Building? {
-		await villages[villageID]?.getCastle()
+		await villages[villageID]?.getCourthouse()
 	}
 
 	func isInsideVillage(x: Int, y: Int) async -> UUID? {

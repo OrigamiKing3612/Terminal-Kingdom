@@ -5,11 +5,10 @@ actor Village: Hashable, Identifiable, Equatable {
 	var name: String
 	private(set) var buildings: [UUID: Building] = [:]
 	var npcsInVillage: Set<UUID> = []
-	var hasCastle: Bool = false
+	var hasCourthouse: Bool = false
 	var data: [VillageData] = []
 	private(set) var radius: Int = 40
-	// TODO: make the village have its own center
-	var castleID: UUID?
+	var courthouseID: UUID?
 
 	init(id: UUID = UUID(), name: String, buildings: [Building], npcsInVillage: Set<UUID> = []) {
 		self.id = id
@@ -26,25 +25,25 @@ actor Village: Hashable, Identifiable, Equatable {
 		self.data.removeAll { $0 == data }
 	}
 
-	func setHasCastle() {
-		hasCastle = true
-		let castleID = getCastle()?.id
-		if let castleID {
-			self.castleID = castleID
+	func setHasCourthouse() {
+		hasCourthouse = true
+		let courthouseID = getCourthouse()?.id
+		if let courthouseID {
+			self.courthouseID = courthouseID
 		}
 	}
 
-	func removeCastle() {
-		hasCastle = false
-		castleID = nil
+	func removeCourthouse() {
+		hasCourthouse = false
+		courthouseID = nil
 	}
 
-	func getCastle() -> Building? {
-		buildings.values.first { $0.type == .castle(side: .top) }
+	func getCourthouse() -> Building? {
+		buildings.values.first { $0.type == .courthouse }
 	}
 
 	func contains(x: Int, y: Int) async -> Bool {
-		let center = hasCastle ? getCastle() : buildings.values.first { $0.type == .builder }
+		let center = hasCourthouse ? getCourthouse() : buildings.values.first { $0.type == .builder }
 		guard let building = center else { return false }
 		let dx = x - building.x
 		let dy = y - building.y
@@ -91,10 +90,6 @@ actor Village: Hashable, Identifiable, Equatable {
 		self.name = name
 	}
 
-	// func getIndex(npc: UUID) async -> Int? {
-	// 	npcsInVillage.firstIndex(of: npc)
-	// }
-
 	func has(npcID: UUID) -> Bool {
 		npcsInVillage.contains(npcID)
 	}
@@ -113,5 +108,5 @@ actor Village: Hashable, Identifiable, Equatable {
 }
 
 enum VillageData: Codable, Hashable {
-	case buildingCastle, gettingStuffToBuildCastle
+	case buildingCourthouse, gettingStuffToBuildCourthouse
 }

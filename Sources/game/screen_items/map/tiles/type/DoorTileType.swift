@@ -15,6 +15,7 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
 	case carpenter
 	case restaurant
 	case potter
+	case courthouse
 	indirect case custom(mapID: UUID?, doorType: DoorTileTypes)
 
 	var name: String {
@@ -47,6 +48,8 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
 				"Restaurant"
 			case .potter:
 				"Potter"
+			case .courthouse:
+				"Courthouse"
 			case let .custom(_, doorType: doorType):
 				doorType.name
 		}
@@ -130,6 +133,9 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
 			case .potter:
 				print("potter coordinatesForStartingVillageBuildings not set")
 				return (x: 1000, y: 1000)
+			case .courthouse:
+				print("courthouse coordinatesForStartingVillageBuildings not set")
+				return (x: 1000, y: 1000)
 			case .custom:
 				print("custom coordinatesForStartingVillageBuildings not set")
 				return (x: 1000, y: 1000)
@@ -168,6 +174,8 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
 				.init(items: [.init(item: .lumber, count: 15)])
 			case .stable:
 				.init(items: [.init(item: .lumber, count: 10)])
+			case .courthouse:
+				.init(items: [.init(item: .lumber, count: 20), .init(item: .coin, count: 100)])
 		}
 	}
 }
