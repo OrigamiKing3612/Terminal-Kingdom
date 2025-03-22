@@ -146,15 +146,26 @@ enum CreateCustomMap {
 			}
 		}
 		if case .castle = doorType {
+			if doorPosition == .top {
+				map[doorY + 2][doorX] = await .init(type: .desk(tile: .init(isPlacedByPlayer: false)), isWalkable: true, event: .editKingdom, biome: Game.shared.getBiomeAtPlayerPosition())
+			} else if doorPosition == .right {
+				map[doorY][doorX - 2] = await .init(type: .desk(tile: .init(isPlacedByPlayer: false)), isWalkable: true, event: .editKingdom, biome: Game.shared.getBiomeAtPlayerPosition())
+			} else if doorPosition == .left {
+				map[doorY][doorX + 2] = await .init(type: .desk(tile: .init(isPlacedByPlayer: false)), isWalkable: true, event: .editKingdom, biome: Game.shared.getBiomeAtPlayerPosition())
+			} else if doorPosition == .bottom {
+				map[doorY - 2][doorX] = await .init(type: .desk(tile: .init(isPlacedByPlayer: false)), isWalkable: true, event: .editKingdom, biome: Game.shared.getBiomeAtPlayerPosition())
+			}
+		}
+		if case .courthouse = doorType {
 			if let villageID = await Game.shared.kingdom.isInsideVillage(x: Game.shared.player.position.x, y: Game.shared.player.position.y) {
 				if doorPosition == .top {
-					map[doorY + 2][doorX] = await .init(type: .desk(tile: .init(isPlacedByPlayer: false)), isWalkable: true, event: .editKingdom(villageID: villageID), biome: Game.shared.getBiomeAtPlayerPosition())
+					map[doorY + 2][doorX] = await .init(type: .desk(tile: .init(isPlacedByPlayer: false)), isWalkable: true, event: .editVillage(villageID: villageID), biome: Game.shared.getBiomeAtPlayerPosition())
 				} else if doorPosition == .right {
-					map[doorY][doorX - 2] = await .init(type: .desk(tile: .init(isPlacedByPlayer: false)), isWalkable: true, event: .editKingdom(villageID: villageID), biome: Game.shared.getBiomeAtPlayerPosition())
+					map[doorY][doorX - 2] = await .init(type: .desk(tile: .init(isPlacedByPlayer: false)), isWalkable: true, event: .editVillage(villageID: villageID), biome: Game.shared.getBiomeAtPlayerPosition())
 				} else if doorPosition == .left {
-					map[doorY][doorX + 2] = await .init(type: .desk(tile: .init(isPlacedByPlayer: false)), isWalkable: true, event: .editKingdom(villageID: villageID), biome: Game.shared.getBiomeAtPlayerPosition())
+					map[doorY][doorX + 2] = await .init(type: .desk(tile: .init(isPlacedByPlayer: false)), isWalkable: true, event: .editVillage(villageID: villageID), biome: Game.shared.getBiomeAtPlayerPosition())
 				} else if doorPosition == .bottom {
-					map[doorY - 2][doorX] = await .init(type: .desk(tile: .init(isPlacedByPlayer: false)), isWalkable: true, event: .editKingdom(villageID: villageID), biome: Game.shared.getBiomeAtPlayerPosition())
+					map[doorY - 2][doorX] = await .init(type: .desk(tile: .init(isPlacedByPlayer: false)), isWalkable: true, event: .editVillage(villageID: villageID), biome: Game.shared.getBiomeAtPlayerPosition())
 				}
 			}
 		}

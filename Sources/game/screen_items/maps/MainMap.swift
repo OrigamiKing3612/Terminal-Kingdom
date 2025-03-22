@@ -163,9 +163,9 @@ struct MainMap: MapBoxMap {
 		let villages: [Village] = await Game.shared.kingdom.villages.values.map(\.self)
 
 		for village in villages {
-			if let castle = await village.getCastle() {
-				let x = castle.x
-				let y = castle.y
+			if let courthouse = await village.getCourthouse() {
+				let x = courthouse.x
+				let y = courthouse.y
 				let radius = await village.radius
 				let viewportWidth = MapBox.width
 				let viewportHeight = MapBox.height

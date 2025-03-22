@@ -1,4 +1,6 @@
-enum BuilderDoorEvent: DoorEvent {
+import Foundation
+
+struct CourthouseDoorEvent: DoorEvent {
 	static func open(tile: DoorTile) async {
 		var options: [MessageOption] = [
 			.init(label: "Go Inside", action: { await goInside(tile: tile) }),
@@ -9,6 +11,6 @@ enum BuilderDoorEvent: DoorEvent {
 	}
 
 	static func goInside(tile _: DoorTile) async {
-		await MapBox.setMapType(.builder)
+		Logger.warning("\(#fileID) \(#function) This shouldn't have been called. (This will should always be called inside of custom door event)")
 	}
 }

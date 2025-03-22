@@ -1,4 +1,4 @@
-enum MineDoorEvent {
+enum MineDoorEvent: DoorEvent {
 	static func open(tile: DoorTile) async {
 		var options: [MessageOption] = [
 			.init(label: "Go Inside", action: { await goInside(tile: tile) }),

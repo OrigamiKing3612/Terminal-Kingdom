@@ -1,4 +1,4 @@
-enum PotterAreaDoorEvent {
+enum PotterAreaDoorEvent: DoorEvent {
 	static func open(tile: DoorTile) async {
 		let options: [MessageOption] = [
 			.init(label: "Go Inside", action: { await goInside(tile: tile) }),
