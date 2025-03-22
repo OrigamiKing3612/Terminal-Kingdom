@@ -41,9 +41,14 @@ enum MapTileEvent: TileEvent {
 			case .useStation:
 				await UseStationEvent.useStation()
 			case let .editVillage(villageID):
-				await EditVillageEvent.editVillage(villageID: villageID)
+				guard let village = await Game.shared.kingdom.get(villageID: villageID) else { return }
+				await Screen.popUp(EditVillagePopUp(village: village)) {
+					await MapBox.mapBox()
+				}
 			case .editKingdom:
-				await EditKingdomEvent.editKingdom()
+				await Screen.popUp(EditKingdomPopUp()) {
+					await MapBox.mapBox()
+				}
 		}
 	}
 }

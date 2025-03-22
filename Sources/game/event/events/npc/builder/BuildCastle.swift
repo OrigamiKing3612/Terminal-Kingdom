@@ -45,7 +45,7 @@ enum BuildCastle {
 		let option = await MessageBox.messageWithOptions("You are back! Are you done working on your your castle?", speaker: .npc(name: npc.name, job: npc.job), options: options)
 		if option.label == options[1].label {
 			if await !Game.shared.player.has(item: .door(tile: .init(type: .castle(side: .top)))) {
-				await MessageBox.message("Great! Your castle is now complete!", speaker: .npc(name: npc.name, job: npc.job))
+				await MessageBox.message("Great! Your castle is now complete! Come back to me when you want to build the courthouse!", speaker: .npc(name: npc.name, job: npc.job))
 				await Game.shared.kingdom.data.setCastleStage(.done)
 				await Game.shared.setRestrictBuilding((false, .init(x: 0, y: 0, mapType: .mainMap)))
 			} else {

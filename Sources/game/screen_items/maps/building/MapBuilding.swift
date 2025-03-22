@@ -51,11 +51,11 @@ enum MapBuilding {
 			case let .door(tile: doorTile):
 				await placeTile(tile: doorTile, name: "\(doorTile.type.name) Door") {
 					if case let .custom(mapID: id, doorType: doorType) = doorTile.type {
-						Task {
+						Task.detached {
 							if let id {
 								await Game.shared.removeMap(mapID: id)
 							}
-							if case .castle = doorType {
+							if case .courthouse = doorType {
 								guard let building = await Game.shared.kingdom.hasVillageBuilding(x: x, y: y) else { return }
 								guard let village = await Game.shared.kingdom.getVillage(buildingID: building.id) else { return }
 								await Game.shared.kingdom.remove(village: village)

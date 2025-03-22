@@ -23,8 +23,14 @@ actor Game {
 	// Don't save
 	private(set) var isInInventoryBox: Bool = false
 	private(set) var isBuilding: Bool = false
+
+	// TODO: config?
 	var horizontalLine: String { config.useNerdFont ? "─" : "=" }
 	var verticalLine: String { config.useNerdFont ? "│" : "|" }
+	var topLeftCorner: String { config.useNerdFont ? "┌" : "=" }
+	var topRightCorner: String { config.useNerdFont ? "┐" : "=" }
+	var bottomLeftCorner: String { config.useNerdFont ? "└" : "=" }
+	var bottomRightCorner: String { config.useNerdFont ? "┘" : "=" }
 	private(set) var hasStartedCropQueue: Bool = false
 	private(set) var hasStartedNPCQueue: Bool = false
 

@@ -103,6 +103,12 @@ enum Screen {
 		Cursor.move(to: placementX, placementY)
 		Swift.print(text)
 	}
+
+	static func popUp(_ popUp: PopUp, after: () async -> Void) async {
+		// Screen.clear()
+		await popUp.render()
+		await after()
+	}
 }
 
 extension MapBox {

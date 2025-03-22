@@ -4,7 +4,7 @@ enum BuildCourthouse {
 	static func buildCourthouse(npc: NPC, village: Village) async -> Bool {
 		switch await village.data.courthouseStage {
 			case .notStarted:
-				await MessageBox.message("Hello, I'm \(npc.name)! I can help you with building. Let's start! Go get all of the materials you need and then we can build the courthouse!", speaker: .npc(name: npc.name, job: npc.job))
+				await MessageBox.message("Go get all of the materials you need and then we can build the courthouse!", speaker: .npc(name: npc.name, job: npc.job))
 				await Game.shared.player.setCanBuild(false)
 				await Game.shared.kingdom.villages[village.id]?.data.setCourthouseStage(.gettingStuff)
 				return true

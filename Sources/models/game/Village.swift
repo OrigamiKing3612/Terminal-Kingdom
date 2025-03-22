@@ -72,6 +72,9 @@ actor Village: Hashable, Identifiable, Equatable {
 
 	func set(name: String) async {
 		self.name = name
+		Task.detached {
+			await StatusBox.statusBox()
+		}
 	}
 
 	func has(npcID: UUID) -> Bool {
