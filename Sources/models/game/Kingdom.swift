@@ -48,24 +48,6 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 		castle = nil
 	}
 
-	func addVillageData(_ data: VillageData, npcInVillage: UUID) async {
-		for village in villages.values {
-			if await village.has(npcID: npcInVillage) {
-				await village.add(data: data)
-				break
-			}
-		}
-	}
-
-	func removeVillageData(_ data: VillageData, npcInVillage: UUID) async {
-		for village in villages.values {
-			if await village.has(npcID: npcInVillage) {
-				await village.remove(data: data)
-				break
-			}
-		}
-	}
-
 	func setVillageCourthouse(villageID: UUID) async {
 		await villages[villageID]?.setHasCourthouse()
 	}

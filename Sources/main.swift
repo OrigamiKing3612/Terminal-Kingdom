@@ -53,6 +53,7 @@ func endProgram() {
 	//    }
 	TerminalInput.restoreOriginalMode()
 	Screen.clear()
+	Screen.Cursor.moveToTop()
 	exit(0)
 }
 

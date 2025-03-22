@@ -3,26 +3,18 @@ import Foundation
 actor Village: Hashable, Identifiable, Equatable {
 	let id: UUID
 	var name: String
-	private(set) var buildings: [UUID: Building] = [:]
 	var npcsInVillage: Set<UUID> = []
-	var data: [VillageData] = []
-	private(set) var radius: Int = 40
+	var data: VillageData = .init()
 	var hasCourthouse: Bool = false
 	var courthouseID: UUID?
+	private(set) var buildings: [UUID: Building] = [:]
+	private(set) var radius: Int = 40
 
 	init(id: UUID = UUID(), name: String, buildings: [Building], npcsInVillage: Set<UUID> = []) {
 		self.id = id
 		self.npcsInVillage = npcsInVillage
 		self.buildings = Dictionary(uniqueKeysWithValues: buildings.map { ($0.id, $0) })
 		self.name = name
-	}
-
-	func addData(_ data: VillageData) {
-		self.data.append(data)
-	}
-
-	func removeData(_ data: VillageData) {
-		self.data.removeAll { $0 == data }
 	}
 
 	func setHasCourthouse() {
@@ -78,14 +70,6 @@ actor Village: Hashable, Identifiable, Equatable {
 		npcsInVillage.remove(npcID)
 	}
 
-	func add(data: VillageData) async {
-		self.data.append(data)
-	}
-
-	func remove(data: VillageData) async {
-		self.data.removeAll { $0 == data }
-	}
-
 	func set(name: String) async {
 		self.name = name
 	}
@@ -107,6 +91,14 @@ actor Village: Hashable, Identifiable, Equatable {
 	}
 }
 
-enum VillageData: Codable, Hashable {
-	case buildingCourthouse, gettingStuffToBuildCourthouse
+actor VillageData {
+	private(set) var courthouseStage: CourthouseStage = .notStarted
+
+	enum CourthouseStage: String, Codable {
+		case notStarted, building, gettingStuff, done
+	}
+
+	func setCourthouseStage(_ newStage: CourthouseStage) {
+		courthouseStage = newStage
+	}
 }

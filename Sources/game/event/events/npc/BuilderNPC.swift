@@ -4,14 +4,15 @@ struct BuilderNPC: TalkableNPC {
 	static func talk(npc: NPC) async {
 		if !npc.hasTalkedToBefore { await NPC.setTalkedTo() }
 
-		await BuildCastle.buildCastle(npc: npc)
+		if await BuildCastle.buildCastle(npc: npc) {
+			return
+		}
 
 		guard let village = await Game.shared.kingdom.getVillage(for: npc) else { return }
-		if await !village.hasCourthouse {
-			await BuildCourthouse.buildCourthouse(npc: npc, village: village)
-		} else {
-			await talkNormally(village: village, npc)
+		if await BuildCourthouse.buildCourthouse(npc: npc, village: village) {
+			return
 		}
+		await talkNormally(village: village, npc)
 	}
 
 	private static func talkNormally(village _: Village, _ npc: NPC) async {

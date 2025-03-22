@@ -1,21 +1,21 @@
 import Foundation
 
 enum BuildCastle {
-	static func buildCastle(npc: NPC) async {
+	static func buildCastle(npc: NPC) async -> Bool {
 		switch await Game.shared.kingdom.data.castleStage {
 			case .notStarted:
 				await MessageBox.message("Hello, I'm \(npc.name)! I can help you with building. Let's start! Go get all of the materials you need and then we can build your castle!", speaker: .npc(name: npc.name, job: npc.job))
 				await Game.shared.player.setCanBuild(false)
 				await Game.shared.kingdom.data.setCastleStage(.gettingStuff)
-				return
+				return true
 			case .gettingStuff:
-				await BuildCastle.gettingStuff(npc: npc)
-				return
+				await gettingStuff(npc: npc)
+				return true
 			case .building:
-				await BuildCastle.building(npc: npc)
-				return
+				await building(npc: npc)
+				return true
 			case .done:
-				break
+				return false
 		}
 	}
 
@@ -42,7 +42,7 @@ enum BuildCastle {
 			.init(label: "I'm still working", action: {}),
 			.init(label: "I'm done!", action: {}),
 		]
-		let option = await MessageBox.messageWithOptions("You are back! Are you done working on your courthouse?", speaker: .npc(name: npc.name, job: npc.job), options: options)
+		let option = await MessageBox.messageWithOptions("You are back! Are you done working on your your castle?", speaker: .npc(name: npc.name, job: npc.job), options: options)
 		if option.label == options[1].label {
 			if await !Game.shared.player.has(item: .door(tile: .init(type: .castle(side: .top)))) {
 				await MessageBox.message("Great! Your castle is now complete!", speaker: .npc(name: npc.name, job: npc.job))
