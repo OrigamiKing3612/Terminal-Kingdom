@@ -141,9 +141,9 @@ actor MapBoxActor {
 		buildingMap = map
 	}
 
-	func setKingdomLines(_ value: Bool) async {
+	func setVillageLines(_ value: Bool) async {
 		var map = mainMap
-		await map!.setShowKingdomLines(value)
+		await map!.setShowVillageLines(value)
 		mainMap = map
 	}
 }

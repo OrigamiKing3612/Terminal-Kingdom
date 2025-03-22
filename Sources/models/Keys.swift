@@ -45,7 +45,7 @@ enum Keys {
 					await Game.shared.setIsBuilding(true)
 					await MapBox.sides()
 					await InventoryBox.inventoryBox()
-					await MapBox.showKingdomLines(true)
+					await MapBox.showVillageLines(true)
 				}
 			case .W:
 				await MessageBox.lineUp()
@@ -58,9 +58,7 @@ enum Keys {
 						await MapBox.updateTile(newTile: MapTile(type: .npc(tile: NPCTile(npc: NPC(positionToWalkTo: .init(x: p.x, y: p.y - 10, mapType: .mainMap), tilePosition: NPCPosition(x: p.x, y: p.y, mapType: .mainMap, oldTile: .init(type: .cactus, biome: .plains)), villageID: Game.shared.kingdom.villages.first!.key))), event: .talkToNPC, biome: .plains))
 					}
 				case .u:
-					if await !(Game.shared.kingdom.villages.isEmpty) {
-						await MessageBox.message("\(Game.shared.kingdom.villages.first!.value)", speaker: .dev)
-					}
+					await MessageBox.message("\(Game.shared.kingdom.print)", speaker: .dev)
 			#endif
 			default:
 				#if DEBUG
@@ -78,7 +76,7 @@ enum Keys {
 				InventoryBox.showBuildHelp = false
 				await MapBox.mapBox()
 				await InventoryBox.inventoryBox()
-				await MapBox.showKingdomLines(false)
+				await MapBox.showVillageLines(false)
 			case .w where await Game.shared.config.wasdKeys, .up where await Game.shared.config.arrowKeys, .k where await Game.shared.config.vimKeys:
 				await MapBox.movePlayer(.up)
 			case .a where await Game.shared.config.wasdKeys, .left where await Game.shared.config.arrowKeys, .h where await Game.shared.config.vimKeys:

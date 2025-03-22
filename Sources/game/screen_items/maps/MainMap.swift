@@ -2,7 +2,7 @@ import Foundation
 
 struct MainMap: MapBoxMap {
 	var grid: [[MapTile]]
-	var showKingdomLines: Bool = false
+	var showVillageLines: Bool = false
 
 	var player: Player {
 		get async { await Game.shared.player.position }
@@ -84,9 +84,9 @@ struct MainMap: MapBoxMap {
 		if a || b {
 			await map()
 			if await Game.shared.kingdom.isInsideVillage(x: x, y: y) != nil {
-				await StatusBox.setShowKingdomInfo(true)
+				await StatusBox.setShowVillageInfo(true)
 			} else {
-				await StatusBox.setShowKingdomInfo(false)
+				await StatusBox.setShowVillageInfo(false)
 			}
 			await StatusBox.position()
 		}
@@ -107,8 +107,8 @@ struct MainMap: MapBoxMap {
 		let viewportWidth = MapBox.width
 		let viewportHeight = MapBox.height
 		await render(playerX: player.x, playerY: player.y, viewportWidth: viewportWidth, viewportHeight: viewportHeight)
-		if showKingdomLines {
-			await renderKingdomLines()
+		if showVillageLines {
+			await renderVillageLines()
 		}
 	}
 
@@ -154,18 +154,18 @@ struct MainMap: MapBoxMap {
 		await MapBuilding.destory(grid: &grid, x: player.x, y: player.y)
 	}
 
-	mutating func setShowKingdomLines(_ show: Bool) async {
-		showKingdomLines = show
+	mutating func setShowVillageLines(_ show: Bool) async {
+		showVillageLines = show
 		await map()
 	}
 
-	private mutating func renderKingdomLines() async {
+	private mutating func renderVillageLines() async {
 		let villages: [Village] = await Game.shared.kingdom.villages.values.map(\.self)
 
 		for village in villages {
-			if let castle = await village.getCastle() {
-				let x = castle.x
-				let y = castle.y
+			if let courthouse = await village.getCourthouse() {
+				let x = courthouse.x
+				let y = courthouse.y
 				let radius = await village.radius
 				let viewportWidth = MapBox.width
 				let viewportHeight = MapBox.height

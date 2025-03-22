@@ -18,6 +18,7 @@ enum OpenDoorEvent {
 				case .carpenter: await CarpenterDoorEvent.open(tile: doorTile)
 				case .restaurant: await RestaurantDoorEvent.open(tile: doorTile)
 				case .potter: await PotterAreaDoorEvent.open(tile: doorTile)
+				case .courthouse: await CourthouseDoorEvent.open(tile: doorTile)
 				case let .custom(mapID: mapID, doorType: doorType): await CustomDoorEvent.open(tile: doorTile, mapID: mapID, doorType: doorType)
 			}
 		}
