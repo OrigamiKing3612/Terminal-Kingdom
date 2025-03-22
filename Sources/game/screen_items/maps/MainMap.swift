@@ -84,9 +84,9 @@ struct MainMap: MapBoxMap {
 		if a || b {
 			await map()
 			if await Game.shared.kingdom.isInsideVillage(x: x, y: y) != nil {
-				await StatusBox.setShowKingdomInfo(true)
+				await StatusBox.setShowVillageInfo(true)
 			} else {
-				await StatusBox.setShowKingdomInfo(false)
+				await StatusBox.setShowVillageInfo(false)
 			}
 			await StatusBox.position()
 		}
