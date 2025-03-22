@@ -58,9 +58,7 @@ enum Keys {
 						await MapBox.updateTile(newTile: MapTile(type: .npc(tile: NPCTile(npc: NPC(positionToWalkTo: .init(x: p.x, y: p.y - 10, mapType: .mainMap), tilePosition: NPCPosition(x: p.x, y: p.y, mapType: .mainMap, oldTile: .init(type: .cactus, biome: .plains)), villageID: Game.shared.kingdom.villages.first!.key))), event: .talkToNPC, biome: .plains))
 					}
 				case .u:
-					if await !(Game.shared.kingdom.villages.isEmpty) {
-						await MessageBox.message("\(Game.shared.kingdom.villages.first!.value)", speaker: .dev)
-					}
+					await MessageBox.message("\(Game.shared.kingdom.print)", speaker: .dev)
 			#endif
 			default:
 				#if DEBUG

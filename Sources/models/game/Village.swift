@@ -5,9 +5,9 @@ actor Village: Hashable, Identifiable, Equatable {
 	var name: String
 	private(set) var buildings: [UUID: Building] = [:]
 	var npcsInVillage: Set<UUID> = []
-	var hasCourthouse: Bool = false
 	var data: [VillageData] = []
 	private(set) var radius: Int = 40
+	var hasCourthouse: Bool = false
 	var courthouseID: UUID?
 
 	init(id: UUID = UUID(), name: String, buildings: [Building], npcsInVillage: Set<UUID> = []) {

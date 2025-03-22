@@ -106,6 +106,11 @@ enum MapBuilding {
 							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor, biome: grid[y][x].biome)
 							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
 							await startKingdom(grid: &grid, x: x, y: y, doorPosition: doorPosition)
+						} else if case .castle = tile.type {
+							await Game.shared.addMap(map: customMap)
+							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor, biome: grid[y][x].biome)
+							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
+							await Game.shared.kingdom.set(castle: .init(type: tile.type, x: x, y: y))
 						} else {
 							guard let villageID = await Game.shared.kingdom.isInsideVillage(x: x, y: y) else {
 								await MessageBox.message("You have to be inside of a village to place this door", speaker: .game)
