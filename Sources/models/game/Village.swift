@@ -3,13 +3,12 @@ import Foundation
 actor Village: Hashable, Identifiable, Equatable {
 	let id: UUID
 	var name: String
-	private(set) var buildings: [UUID: Building] = [:]
 	var npcsInVillage: Set<UUID> = []
-	var hasCastle: Bool = false
-	var data: [VillageData] = []
+	var data: VillageData = .init()
+	var hasCourthouse: Bool = false
+	var courthouseID: UUID?
+	private(set) var buildings: [UUID: Building] = [:]
 	private(set) var radius: Int = 40
-	// TODO: make the village have its own center
-	var castleID: UUID?
 
 	init(id: UUID = UUID(), name: String, buildings: [Building], npcsInVillage: Set<UUID> = []) {
 		self.id = id
@@ -18,33 +17,25 @@ actor Village: Hashable, Identifiable, Equatable {
 		self.name = name
 	}
 
-	func addData(_ data: VillageData) {
-		self.data.append(data)
-	}
-
-	func removeData(_ data: VillageData) {
-		self.data.removeAll { $0 == data }
-	}
-
-	func setHasCastle() {
-		hasCastle = true
-		let castleID = getCastle()?.id
-		if let castleID {
-			self.castleID = castleID
+	func setHasCourthouse() {
+		hasCourthouse = true
+		let courthouseID = getCourthouse()?.id
+		if let courthouseID {
+			self.courthouseID = courthouseID
 		}
 	}
 
-	func removeCastle() {
-		hasCastle = false
-		castleID = nil
+	func removeCourthouse() {
+		hasCourthouse = false
+		courthouseID = nil
 	}
 
-	func getCastle() -> Building? {
-		buildings.values.first { $0.type == .castle(side: .top) }
+	func getCourthouse() -> Building? {
+		buildings.values.first { $0.type == .courthouse }
 	}
 
 	func contains(x: Int, y: Int) async -> Bool {
-		let center = hasCastle ? getCastle() : buildings.values.first { $0.type == .builder }
+		let center = hasCourthouse ? getCourthouse() : buildings.values.first { $0.type == .builder }
 		guard let building = center else { return false }
 		let dx = x - building.x
 		let dy = y - building.y
@@ -79,21 +70,9 @@ actor Village: Hashable, Identifiable, Equatable {
 		npcsInVillage.remove(npcID)
 	}
 
-	func add(data: VillageData) async {
-		self.data.append(data)
-	}
-
-	func remove(data: VillageData) async {
-		self.data.removeAll { $0 == data }
-	}
-
 	func set(name: String) async {
 		self.name = name
 	}
-
-	// func getIndex(npc: UUID) async -> Int? {
-	// 	npcsInVillage.firstIndex(of: npc)
-	// }
 
 	func has(npcID: UUID) -> Bool {
 		npcsInVillage.contains(npcID)
@@ -112,6 +91,14 @@ actor Village: Hashable, Identifiable, Equatable {
 	}
 }
 
-enum VillageData: Codable, Hashable {
-	case buildingCastle, gettingStuffToBuildCastle
+actor VillageData {
+	private(set) var courthouseStage: CourthouseStage = .notStarted
+
+	enum CourthouseStage: String, Codable {
+		case notStarted, building, gettingStuff, done
+	}
+
+	func setCourthouseStage(_ newStage: CourthouseStage) {
+		courthouseStage = newStage
+	}
 }

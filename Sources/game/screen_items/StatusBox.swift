@@ -6,7 +6,7 @@ enum StatusBox {
 		}
 	}
 
-	private(set) nonisolated(unsafe) static var showKingdomInfo: Bool = false
+	private(set) nonisolated(unsafe) static var showVillageInfo: Bool = false
 
 	static var playerInfoStartX: Int { startX + 2 }
 	static var playerInfoEndX: Int { endX }
@@ -15,8 +15,8 @@ enum StatusBox {
 	static var questAreaStartX: Int { startX + 2 }
 	private(set) nonisolated(unsafe) static var questAreaStartY: Int = startY + 1
 
-	static var kingdomInfoAreaStartX: Int { startX + 2 }
-	private(set) nonisolated(unsafe) static var kingdomInfoAreaStartY: Int = startY + 2
+	static var villageInfoAreaStartX: Int { startX + 2 }
+	private(set) nonisolated(unsafe) static var villageInfoAreaStartY: Int = startY + 2
 
 	static func questBoxUpdate() {
 		updateQuestBox = true
@@ -28,11 +28,10 @@ enum StatusBox {
 		await sides()
 		await playerInfoArea()
 		await questArea()
-		#warning("REDO")
-		if showKingdomInfo {
+		if showVillageInfo {
 			if let id = await Game.shared.kingdom.isInsideVillage(x: Game.shared.player.position.x, y: Game.shared.player.position.y) {
 				let village = await Game.shared.kingdom.get(villageID: id)
-				await kingdomInfo(village!) // We already know there is a kingdom
+				await villageInfo(village!) // We already know there is a village
 			}
 		}
 	}
@@ -84,11 +83,11 @@ enum StatusBox {
 			Screen.print(x: questAreaStartX + 1, y: currentY, line)
 			currentY += 1
 		}
-		kingdomInfoAreaStartY = currentY + 1
+		villageInfoAreaStartY = currentY + 1
 	}
 
-	static func kingdomInfo(_ village: Village) async {
-		await Screen.print(x: kingdomInfoAreaStartX, y: kingdomInfoAreaStartY, "\(village.name):".styled(with: .bold))
+	static func villageInfo(_ village: Village) async {
+		await Screen.print(x: villageInfoAreaStartX, y: villageInfoAreaStartY, "\(village.name):".styled(with: .bold))
 		let maxVisibleLines = height - 2
 		var renderedLines: [String] = []
 		await renderedLines.append(contentsOf: "  Population: \(village.npcsInVillage.count)".wrappedWithStyles(toWidth: width - 2))
@@ -97,9 +96,9 @@ enum StatusBox {
 			renderedLines = Array(renderedLines.suffix(maxVisibleLines))
 		}
 
-		var currentY = kingdomInfoAreaStartY + 1
+		var currentY = villageInfoAreaStartY + 1
 		for line in renderedLines {
-			Screen.print(x: kingdomInfoAreaStartX + 1, y: currentY, line)
+			Screen.print(x: villageInfoAreaStartX + 1, y: currentY, line)
 			currentY += 1
 		}
 	}
@@ -148,9 +147,9 @@ enum StatusBox {
 		await statusBox()
 	}
 
-	static func setShowKingdomInfo(_ newValue: Bool) async {
-		if showKingdomInfo != newValue {
-			showKingdomInfo = newValue
+	static func setShowVillageInfo(_ newValue: Bool) async {
+		if showVillageInfo != newValue {
+			showVillageInfo = newValue
 			Task {
 				await statusBox()
 			}

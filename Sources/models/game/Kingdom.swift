@@ -3,6 +3,9 @@ import Foundation
 actor Kingdom: Hashable, Equatable, Identifiable {
 	let id: UUID
 	var name: String
+	var hasCastle: Bool { castle != nil }
+	var castle: Building?
+	var data: KingdomData = .init()
 	private(set) var villages: [UUID: Village] = [:]
 
 	init(id: UUID = UUID()) {
@@ -37,34 +40,24 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 		await villages[villageID]?.add(npc: npcID)
 	}
 
-	func addVillageData(_ data: VillageData, npcInVillage: UUID) async {
-		for village in villages.values {
-			if await village.has(npcID: npcInVillage) {
-				await village.add(data: data)
-				break
-			}
-		}
+	func set(castle: Building) {
+		self.castle = castle
 	}
 
-	func removeVillageData(_ data: VillageData, npcInVillage: UUID) async {
-		for village in villages.values {
-			if await village.has(npcID: npcInVillage) {
-				await village.remove(data: data)
-				break
-			}
-		}
+	func removeCastle() {
+		castle = nil
 	}
 
-	func setVillageCastle(villageID: UUID) async {
-		await villages[villageID]?.setHasCastle()
+	func setVillageCourthouse(villageID: UUID) async {
+		await villages[villageID]?.setHasCourthouse()
 	}
 
-	func removeVillageCastle(villageID: UUID) async {
-		await villages[villageID]?.removeCastle()
+	func removeVillageCourthouse(villageID: UUID) async {
+		await villages[villageID]?.removeCourthouse()
 	}
 
-	func getVillageCastle(villageID: UUID) async -> Building? {
-		await villages[villageID]?.getCastle()
+	func getVillageCourthouse(villageID: UUID) async -> Building? {
+		await villages[villageID]?.getCourthouse()
 	}
 
 	func isInsideVillage(x: Int, y: Int) async -> UUID? {
@@ -132,3 +125,37 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 		lhs.id == rhs.id
 	}
 }
+
+actor KingdomData {
+	private(set) var castleStage: CastleStages = .notStarted
+
+	enum CastleStages: CaseIterable, Hashable, Equatable {
+		case notStarted
+		case gettingStuff
+		case building
+		case done
+	}
+
+	func setCastleStage(_ newStage: CastleStages) {
+		castleStage = newStage
+	}
+}
+
+#if DEBUG
+	extension Kingdom {
+		var print: String {
+			get async {
+				let villagesPrint = await villages.values.asyncMap { await "\($0.print)" }.joined(separator: ", ")
+				return "Kingdom(id: \(id), name: \(name), hasCastle: \(hasCastle), castle: \(String(describing: castle)), villages: [\(villagesPrint)])"
+			}
+		}
+	}
+
+	extension Village {
+		var print: String {
+			get async {
+				"Village(id: \(id), name: \(name), buildings: [\(buildings.values.map { "\($0)" }.joined(separator: ", "))], npcsInVillage: \(npcsInVillage), data: \(data))"
+			}
+		}
+	}
+#endif

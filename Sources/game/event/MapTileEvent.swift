@@ -7,7 +7,8 @@ enum MapTileEvent: TileEvent {
 	case talkToNPC
 	case collectCrop
 	case useStation
-	case editKingdom(villageID: UUID)
+	case editKingdom
+	case editVillage(villageID: UUID)
 	//    case collectItem(item: String)
 	//    case combat(enemy: String)
 
@@ -39,8 +40,10 @@ enum MapTileEvent: TileEvent {
 				await CollectCropEvent.collectCrop()
 			case .useStation:
 				await UseStationEvent.useStation()
-			case let .editKingdom(villageID):
-				await EditKingdomEvent.editKingdom(villageID: villageID)
+			case let .editVillage(villageID):
+				await EditVillageEvent.editVillage(villageID: villageID)
+			case .editKingdom:
+				await EditKingdomEvent.editKingdom()
 		}
 	}
 }

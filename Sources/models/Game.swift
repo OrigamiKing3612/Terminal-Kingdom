@@ -143,6 +143,10 @@ actor Game {
 	func setRestrictBuilding(_ newResitrictBuilding: (Bool, TilePosition)) async {
 		resitrictBuilding = newResitrictBuilding
 	}
+
+	func renameKingdom(newName: String) async {
+		await kingdom.set(name: newName)
+	}
 }
 
 // TODO: update because Game is not codable
