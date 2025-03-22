@@ -9,24 +9,22 @@ class SettingsPopUp: PopUp {
 		// TODO: reload config after saving so this isn't async
 		config = await Config.load()
 		let text = "Settings"
-		let x = SettingsPopUp.middleX
 		let y = 3
 		while true {
-			longestXLine = 0
 			Screen.clear()
-			Screen.print(x: x - (text.count / 2), y: y, text.styled(with: .bold))
+			Screen.print(x: Self.middleX - (text.count / 2), y: y, text.styled(with: .bold))
 			var lastIndex = SettingsScreenOptions.allCases.count - 1
 			var yStart = 3 + y
 			for (index, option) in SettingsScreenOptions.allCases.enumerated() {
-				yStart = await printSettingsOption(x: x, y: yStart, index: index, text: option.label, configOption: option.configOption(config))
+				yStart = await print(y: yStart, index: index, text: option.label, configOption: option.configOption(config))
 				lastIndex = index
 			}
 
 			let skip = lastIndex + 1
-			yStart = await printSettingsOption(x: x, y: yStart + 1, index: lastIndex + 2, text: "Save and Quit", configOption: "")
-			yStart = await printSettingsOption(x: x, y: yStart, index: lastIndex + 3, text: "Quit", configOption: "")
+			yStart = await print(y: yStart + 1, index: lastIndex + 2, text: "Save and Quit", configOption: "")
+			yStart = await print(y: yStart, index: lastIndex + 3, text: "Quit", configOption: "")
 
-			await drawBorders(x: SettingsPopUp.middleX, endY: yStart + 2)
+			await drawBorders(endY: yStart + 2, longestXLine: longestXLine)
 
 			let key = TerminalInput.readKey()
 			switch key {
@@ -56,35 +54,17 @@ class SettingsPopUp: PopUp {
 		}
 	}
 
-	private func printSettingsOption(x: Int, y: Int, index: Int, text: String, configOption: String) async -> Int {
+	private func print(y: Int, index: Int, text: String, configOption: String) async -> Int {
 		let isSelected = selectedSettingOptionIndex == index
 		let configOptionToPrint = configOption == "" ? "" : ": \(configOption)"
 		let textToPrint = await "\(isSelected ? "\(Game.shared.config.icons.selectedIcon) " : "  ")\(text)\(configOptionToPrint)"
 
-		Screen.print(x: x - (textToPrint.withoutStyles.count / 2), y: y, textToPrint.styled(with: .bold, styledIf: isSelected))
+		Screen.print(x: Self.middleX - (textToPrint.withoutStyles.count / 2), y: y, textToPrint.styled(with: .bold, styledIf: isSelected))
 
 		if textToPrint.withoutStyles.count > longestXLine {
 			longestXLine = textToPrint.withoutStyles.count
 		}
 		return y + 1
-	}
-
-	private func drawBorders(x: Int, endY: Int) async {
-		longestXLine += 3
-		let verticalLine = await Game.shared.verticalLine
-		let horizontalLine = await Game.shared.horizontalLine
-		let topLeftCorner = await Game.shared.topLeftCorner
-		let topRightCorner = await Game.shared.topRightCorner
-		let bottomLeftCorner = await Game.shared.bottomLeftCorner
-		let bottomRightCorner = await Game.shared.bottomRightCorner
-
-		for y in 0 ... endY + 1 {
-			Screen.print(x: x - (longestXLine / 2) - 1, y: 1 + y, verticalLine)
-
-			Screen.print(x: x + (longestXLine / 2) + 1, y: 1 + y, verticalLine)
-		}
-		Screen.print(x: x - (longestXLine / 2) - 1, y: 0, topLeftCorner + String(repeating: horizontalLine, count: longestXLine + 1) + topRightCorner)
-		Screen.print(x: x - (longestXLine / 2) - 1, y: endY + 2, bottomLeftCorner + String(repeating: horizontalLine, count: longestXLine + 1) + bottomRightCorner)
 	}
 }
 

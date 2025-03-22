@@ -105,7 +105,7 @@ enum Screen {
 	}
 
 	static func popUp(_ popUp: PopUp, after: () async -> Void) async {
-		Screen.clear()
+		// Screen.clear()
 		await popUp.render()
 		await after()
 	}

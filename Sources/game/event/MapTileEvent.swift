@@ -43,7 +43,9 @@ enum MapTileEvent: TileEvent {
 			case let .editVillage(villageID):
 				await EditVillageEvent.editVillage(villageID: villageID)
 			case .editKingdom:
-				await EditKingdomEvent.editKingdom()
+				await Screen.popUp(EditKingdomPopUp()) {
+					await MapBox.mapBox()
+				}
 		}
 	}
 }

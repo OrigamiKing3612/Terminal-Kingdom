@@ -11,9 +11,6 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 	init(id: UUID = UUID()) {
 		self.id = id
 		self.name = "Kingdom"
-		Task {
-			await self.set(name: "\(Game.shared.player.name)'s Kingdom")
-		}
 	}
 
 	func create(village: Village) async {
