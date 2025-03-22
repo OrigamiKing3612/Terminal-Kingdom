@@ -209,10 +209,10 @@ enum MapBox {
 		await Game.shared.player.setPlayerPosition(x: position.x, y: position.y)
 	}
 
-	static func showKingdomLines(_ value: Bool) async {
+	static func showVillageLines(_ value: Bool) async {
 		switch await mapType {
 			case .mainMap:
-				await MapBoxActor.shared.setKingdomLines(value)
+				await MapBoxActor.shared.setVillageLines(value)
 			default:
 				break
 		}
