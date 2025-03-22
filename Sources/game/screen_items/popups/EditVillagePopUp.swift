@@ -1,16 +1,20 @@
 import Foundation
 
-class EditKingdomPopUp: PopUp {
+class EditVillagePopUp: PopUp {
 	var longestXLine: Int = 0
 	private nonisolated(unsafe) var selectedIndex = 0
 	private var isEditing = false
 	private var input = ""
+	private var village: Village
+
+	init(village: Village) {
+		self.village = village
+	}
 
 	func render() async {
-		let kingdom = await Game.shared.kingdom
-		let text = await "Editing \(kingdom.name)"
+		let text = await "Editing \(village.name)"
 		longestXLine = text.count
-		let x = EditKingdomPopUp.middleX
+		let x = EditVillagePopUp.middleX
 		let y = 3
 		Screen.print(x: x - (text.count / 2), y: y, text.styled(with: .bold))
 
@@ -22,7 +26,7 @@ class EditKingdomPopUp: PopUp {
 			var yStart = y + 3
 			let options: [MessageOption] = [
 				.init(label: "Rename", action: {
-					self.input = await kingdom.name
+					self.input = await self.village.name
 					self.isEditing = true
 				}),
 			]
@@ -88,7 +92,7 @@ class EditKingdomPopUp: PopUp {
 				}
 			} else if key == .enter {
 				if !input.isEmpty {
-					await Game.shared.renameKingdom(newName: input)
+					await Game.shared.kingdom.renameVillage(id: village.id, name: input)
 				}
 				isEditing = false
 				return
