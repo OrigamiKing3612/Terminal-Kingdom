@@ -148,6 +148,7 @@ enum MapBuilding {
 			case .bed: return .bed(tile: .init(isPlacedByPlayer: true))
 			case .desk: return .desk(tile: .init(isPlacedByPlayer: true))
 			case .chest: return .chest
+			case .pot: return .pot(tile: .init(cropTile: .init(type: .none)))
 			default: return nil
 		}
 	}
