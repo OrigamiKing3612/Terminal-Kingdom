@@ -36,17 +36,20 @@ enum Keys {
 				await InventoryBox.sides()
 			case .b:
 				if await (Game.shared.player.canBuild), await MapBox.mapType != .mining {
-					#if DEBUG
-						_ = await Game.shared.player.collect(item: .init(type: .lumber), count: 100)
-						_ = await Game.shared.player.collect(item: .init(type: .stone), count: 100)
-						_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))), count: 1)
-					#endif
 					await InventoryBox.setSelectedBuildItemIndex(0)
 					await Game.shared.setIsBuilding(true)
 					await MapBox.sides()
 					await InventoryBox.inventoryBox()
 					await MapBox.showVillageLines(true)
 				}
+			#if DEBUG
+				case .g:
+					_ = await Game.shared.player.collect(item: .init(type: .lumber), count: 100)
+					_ = await Game.shared.player.collect(item: .init(type: .stone), count: 100)
+					_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))), count: 1)
+					_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .farm(type: .main)))), count: 1)
+					_ = await Game.shared.player.collect(item: .init(type: .pot), count: 1)
+			#endif
 			case .W:
 				await MessageBox.lineUp()
 			case .S:
