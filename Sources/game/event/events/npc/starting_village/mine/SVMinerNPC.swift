@@ -314,7 +314,7 @@ enum SVMinerNPC: StartingVillageNPC {
 				await Game.shared.stages.mine.setStage7ItemUUIDsToRemove(uuids1 + uuids2 + uuids3)
 				await Game.shared.stages.mine.setStage7Stages(.upgrade)
 			case .upgrade:
-				await MessageBox.message("You haven't upgraded the mine yet. You need to walk up to the door and select upgrade.", speaker: .miner)
+				await MessageBox.message("You haven't upgraded the mine yet. You need to walk up to the building's door and select upgrade.", speaker: .miner)
 			case .upgraded:
 				await MessageBox.message("Now that you have upgraded the mine, you can go to level 3! There you can find gold.", speaker: .miner)
 				await Game.shared.stages.mine.setStage7Stages(.done)
