@@ -9,13 +9,7 @@ enum MapBuilding {
 
 		let selectedItem = await InventoryBox.buildableItems[InventoryBox.selectedBuildItemIndex]
 		if await Game.shared.player.has(item: selectedItem.type, count: selectedItem.type == .lumber ? 5 : 1) {
-			if await Game.shared.stages.builder.stage5Stages == .buildHouse {
-				await BuildForBuilderStage5.build(grid: &grid, x: x, y: y)
-			} else if await Game.shared.stages.builder.stage7Stages == .buildInside, case .custom(mapID: _) = await MapBox.mapType {
-				await BuildForBuilderStage7.build(grid: &grid, x: x, y: y)
-			} else {
-				await buildNormally(grid: &grid, x: x, y: y)
-			}
+			await buildNormally(grid: &grid, x: x, y: y)
 		} else {
 			await MessageBox.message("You don't have enough items to build", speaker: .game)
 		}
@@ -103,6 +97,7 @@ enum MapBuilding {
 							await Game.shared.addMap(map: customMap)
 							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor, biome: grid[y][x].biome)
 							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
+							await Game.shared.stages.builder.setStage5HasBuiltHouse(true)
 							return
 						}
 						// Success
@@ -153,6 +148,9 @@ enum MapBuilding {
 				} else {
 					grid[y][x] = MapTile(type: itemTypeToMapTileType(selectedItem.type)!, biome: grid[y][x].biome)
 					await Game.shared.player.removeItem(item: selectedItem.type, count: 1)
+					if await Game.shared.stages.builder.stage7Stages == .buildInside, await MapBox.mapType != .mainMap {
+						await Game.shared.stages.builder.setStage7HasBuiltInside(true)
+					}
 				}
 			}
 		}
@@ -208,34 +206,33 @@ extension Int {
 	}
 }
 
-private enum BuildForBuilderStage5 {
-	static func build(grid: inout [[MapTile]], x: Int, y: Int) async {
-		var buildingsPlaced: Int { Game.shared.stages.builder.stage5BuildingsPlaced }
-		if buildingsPlaced == 0 {
-			await MapBuilding.buildNormally(grid: &grid, x: x, y: y)
-			await Game.shared.stages.builder.setStage5LastBuildingPlaced(.init(x: x, y: y))
-		} else {
-			// let lastBuildingPlaced = await Game.shared.stages.builder.stage5LastBuildingPlaced
-			// if let lastBuildingPlaced {
-			// if x.isWithInOneOf(lastBuildingPlaced.x), y.isWithInOneOf(lastBuildingPlaced.y) {
-			await MapBuilding.buildNormally(grid: &grid, x: x, y: y)
-			await Game.shared.stages.builder.setStage5LastBuildingPlaced(.init(x: x, y: y))
-			// } else {
-			// 	await MessageBox.message("To build a house, you should only build next to the last building you placed.", speaker: .game)
-			// 	return
-			// }
-			// } else {
-			// 	await MessageBox.message("You haven't placed a building?", speaker: .game)
-			// 	return
-			// }
-		}
-	}
-}
+// private enum BuildForBuilderStage5 {
+// 	static func build(grid: inout [[MapTile]], x: Int, y: Int) async {
+// 		var buildingsPlaced: Int { Game.shared.stages.builder.stage5BuildingsPlaced }
+// 		if buildingsPlaced == 0 {
+// 			await MapBuilding.buildNormally(grid: &grid, x: x, y: y)
+// 			await Game.shared.stages.builder.setStage5LastBuildingPlaced(.init(x: x, y: y))
+// 		} else {
+// 			// let lastBuildingPlaced = await Game.shared.stages.builder.stage5LastBuildingPlaced
+// 			// if let lastBuildingPlaced {
+// 			// if x.isWithInOneOf(lastBuildingPlaced.x), y.isWithInOneOf(lastBuildingPlaced.y) {
+// 			await MapBuilding.buildNormally(grid: &grid, x: x, y: y)
+// 			await Game.shared.stages.builder.setStage5LastBuildingPlaced(.init(x: x, y: y))
+// 			// } else {
+// 			// 	await MessageBox.message("To build a house, you should only build next to the last building you placed.", speaker: .game)
+// 			// 	return
+// 			// }
+// 			// } else {
+// 			// 	await MessageBox.message("You haven't placed a building?", speaker: .game)
+// 			// 	return
+// 			// }
+// 		}
+// 	}
+// }
 
 private enum BuildForBuilderStage7 {
 	static func build(grid: inout [[MapTile]], x: Int, y: Int) async {
 		// This will only be called inside of a house.
 		await MapBuilding.buildNormally(grid: &grid, x: x, y: y)
-		await Game.shared.stages.builder.setStage7HasBuiltInside(true)
 	}
 }
