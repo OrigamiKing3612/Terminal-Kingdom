@@ -99,7 +99,12 @@ enum MapBuilding {
 							await MessageBox.message("An error occurred while creaing map", speaker: .game)
 							return
 						}
-
+						if await Game.shared.stages.builder.stage5Stages == .buildHouse {
+							await Game.shared.addMap(map: customMap)
+							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor, biome: grid[y][x].biome)
+							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
+							return
+						}
 						// Success
 						if tile.type == .builder {
 							await Game.shared.addMap(map: customMap)
