@@ -39,7 +39,7 @@ enum InventoryBox {
 			await Screen.print(x: startX, y: y, Game.shared.verticalLine.styled(with: [.bold, .yellow], styledIf: Game.shared.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
 			await Screen.print(x: endX, y: y, Game.shared.verticalLine.styled(with: [.bold, .yellow], styledIf: Game.shared.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
 		}
-		await Screen.print(x: startX, y: endY, String(repeating: Game.shared.horizontalLine, count: width).styled(with: [.bold, .yellow], styledIf: Game.shared.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
+		await Screen.print(x: startX, y: endY, "\(Game.shared.bottomLeftCorner)\(String(repeating: Game.shared.horizontalLine, count: width))".styled(with: [.bold, .yellow], styledIf: Game.shared.isInInventoryBox).styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
 	}
 
 	static func inventoryBox() async {

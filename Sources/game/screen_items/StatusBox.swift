@@ -1,11 +1,5 @@
 enum StatusBox {
 	private(set) nonisolated(unsafe) static var updateQuestBox = false
-	static var quests: [Quest] {
-		get async {
-			await Game.shared.player.quests
-		}
-	}
-
 	private(set) nonisolated(unsafe) static var showVillageInfo: Bool = false
 
 	static var playerInfoStartX: Int { startX + 2 }
@@ -29,10 +23,9 @@ enum StatusBox {
 		await playerInfoArea()
 		await questArea()
 		if showVillageInfo {
-			if let id = await Game.shared.kingdom.isInsideVillage(x: Game.shared.player.position.x, y: Game.shared.player.position.y) {
-				let village = await Game.shared.kingdom.get(villageID: id)
-				await villageInfo(village!) // We already know there is a village
-			}
+			guard let id = await Game.shared.kingdom.isInsideVillage(x: Game.shared.player.position.x, y: Game.shared.player.position.y) else { return }
+			guard let village = await Game.shared.kingdom.get(villageID: id) else { return }
+			await villageInfo(village)
 		}
 	}
 
@@ -68,7 +61,7 @@ enum StatusBox {
 		Screen.print(x: questAreaStartX, y: questAreaStartY, "Quests:".styled(with: .bold))
 		let maxVisibleLines = height - 2
 		var renderedLines: [String] = []
-		for (index, quest) in await quests.enumerated() {
+		for (index, quest) in await Game.shared.player.quests.enumerated() {
 			let number = "\(index + 1)".styled(with: .bold)
 			let text = await "\(number). \(quest.label)"
 			renderedLines.append(contentsOf: text.wrappedWithStyles(toWidth: width - 2))
@@ -91,6 +84,7 @@ enum StatusBox {
 		let maxVisibleLines = height - 2
 		var renderedLines: [String] = []
 		await renderedLines.append(contentsOf: "  Population: \(village.npcsInVillage.count)".wrappedWithStyles(toWidth: width - 2))
+		await renderedLines.append(contentsOf: "  Food Count: \(village.foodIncome)".wrappedWithStyles(toWidth: width - 2))
 
 		if renderedLines.count > maxVisibleLines {
 			renderedLines = Array(renderedLines.suffix(maxVisibleLines))
@@ -104,7 +98,7 @@ enum StatusBox {
 	}
 
 	static func sides() async {
-		await Screen.print(x: startX, y: startY, String(repeating: Game.shared.horizontalLine, count: width + 1))
+		await Screen.print(x: startX, y: startY, Game.shared.topLeftCorner + String(repeating: Game.shared.horizontalLine, count: width))
 		for y in (startY + 1) ..< endY {
 			await Screen.print(x: startX, y: y, Game.shared.verticalLine)
 			await Screen.print(x: endX, y: y, Game.shared.verticalLine)

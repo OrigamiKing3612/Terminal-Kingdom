@@ -63,7 +63,7 @@ enum MapBox {
 	}
 
 	static func sides() async {
-		await Screen.print(x: startX, y: startY - 1, String(repeating: Game.shared.horizontalLine, count: width + 1).styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
+		await Screen.print(x: startX, y: startY - 1, "\(String(repeating: Game.shared.horizontalLine, count: width))\(Game.shared.topRightCorner)".styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
 		for y in startY ..< (endY + 1) {
 			await Screen.print(x: startX - 1, y: y, Game.shared.verticalLine.styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))
 			await Screen.print(x: endX, y: y, Game.shared.verticalLine.styled(with: [.bold, .blue], styledIf: Game.shared.isBuilding))

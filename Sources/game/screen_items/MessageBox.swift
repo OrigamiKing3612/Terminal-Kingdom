@@ -47,7 +47,7 @@ enum MessageBox {
 			await Screen.print(x: startX, y: y, Game.shared.verticalLine)
 			await Screen.print(x: endX, y: y, Game.shared.verticalLine)
 		}
-		await Screen.print(x: startX, y: endY, String(repeating: Game.shared.horizontalLine, count: width + 1))
+		await Screen.print(x: startX, y: endY, String(repeating: Game.shared.horizontalLine, count: width) + Game.shared.bottomRightCorner)
 	}
 
 	static func clear() {

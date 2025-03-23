@@ -1,4 +1,4 @@
-enum Quest: Codable, Equatable {
+enum Quest: Codable, Equatable, Hashable {
 	case chopLumber(count: Int = 10, for: String? = nil)
 
 	// MARK: Blacksmith
