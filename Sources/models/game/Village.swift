@@ -100,6 +100,13 @@ actor Village: Hashable, Identifiable, Equatable {
 		buildings[buildingID] = newBuilding
 	}
 
+	func addPot(buildingID: UUID) async {
+		if var building = buildings[buildingID] as? FarmBuilding {
+			await building.addPot()
+			buildings[buildingID] = building
+		}
+	}
+
 	nonisolated func hash(into hasher: inout Hasher) {
 		hasher.combine(id)
 	}
