@@ -3,7 +3,7 @@ import Foundation
 // TODO: run on load
 enum BackgroundTasks {
 	static func startNPCMovingQueue() {
-		Task(priority: .background) {
+		Task.detached(priority: .background) {
 			guard await !Game.shared.hasStartedNPCQueue else { return }
 			await Game.shared.setHasStartedNPCMovingQueue(true)
 
@@ -17,7 +17,9 @@ enum BackgroundTasks {
 				}
 
 				for position in npcPositions {
-					await NPCTile.move(position: position)
+					if await Game.shared.player.mapType == position.mapType {
+						await NPCTile.move(position: position)
+					}
 				}
 				try? await Task.sleep(nanoseconds: 500_000_000) // .5 seconds
 			}
@@ -28,7 +30,7 @@ enum BackgroundTasks {
 
 	static func startCropQueue() {
 		// TODO: building maps?
-		Task(priority: .background) {
+		Task.detached(priority: .background) {
 			guard await !Game.shared.hasStartedCropQueue else { return }
 			await Game.shared.setHasStartedCropQueue(true)
 

@@ -33,6 +33,8 @@ struct NPCTile: Codable, Hashable, Equatable {
 	}
 
 	static func move(position: NPCPosition) async {
+		// Logger.debug("\(#function) \(#file):\(#line): Moving NPC from \(position.x), \(position.y)")
+		#warning("bug, when the npc trys to move when you enter another map and this is still running")
 		let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
 
 		if case let .npc(tile: tile) = npcTile.type, let positionToWalkTo = tile.npc.positionToWalkTo {
