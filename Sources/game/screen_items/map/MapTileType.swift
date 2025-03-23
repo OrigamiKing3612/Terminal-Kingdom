@@ -67,7 +67,7 @@ enum MapTileType: TileType {
 
 	var isPlainLike: Bool {
 		switch self {
-			case .plain, .snow: true
+			case .plain, .snow, .sand, .path: true
 			default: false
 		}
 	}
