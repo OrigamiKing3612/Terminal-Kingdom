@@ -1,18 +1,22 @@
 import Foundation
 
-struct Building: Codable, Equatable, Hashable, Identifiable {
-	let id: UUID
-	let x: Int
-	let y: Int
-	let type: DoorTileTypes
-	private(set) var level: Int
+protocol BuildingProtocol: Codable, Equatable, Hashable, Identifiable, Sendable {
+	var id: UUID { get }
+	var x: Int { get }
+	var y: Int { get }
+	var type: DoorTileTypes { get }
+	var level: Int { get set }
 
+	init(id: UUID, type: DoorTileTypes, x: Int, y: Int)
+
+	func canBeUpgraded() async -> Bool
+	func getCostsForNextUpgrade() -> [ItemAmount]?
+	mutating func upgrade() async
+}
+
+extension BuildingProtocol {
 	init(id: UUID = UUID(), type: DoorTileTypes, x: Int, y: Int) {
-		self.id = id
-		self.type = type
-		self.level = 1
-		self.x = x
-		self.y = y
+		self.init(id: id, type: type, x: x, y: y)
 	}
 
 	func canBeUpgraded() async -> Bool {
@@ -35,11 +39,19 @@ struct Building: Codable, Equatable, Hashable, Identifiable {
 		}
 	}
 
-	private func getCostsForNextUpgrade() -> [ItemAmount]? {
+	func getCostsForNextUpgrade() -> [ItemAmount]? {
 		let upgrades: [Int: BuildingUpgrade] = type.upgrades
 		guard let upgrade = upgrades[level + 1] else {
 			return nil
 		}
 		return upgrade.cost
+	}
+
+	static func == (lhs: Self, rhs: Self) -> Bool {
+		lhs.id == rhs.id
+	}
+
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(id)
 	}
 }

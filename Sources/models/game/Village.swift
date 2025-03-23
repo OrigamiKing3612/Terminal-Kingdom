@@ -7,14 +7,29 @@ actor Village: Hashable, Identifiable, Equatable {
 	var data: VillageData = .init()
 	var hasCourthouse: Bool = false
 	var courthouseID: UUID?
-	private(set) var buildings: [UUID: Building] = [:]
+	private(set) var buildings: [UUID: any BuildingProtocol] = [:]
 	private(set) var radius: Int = 40
+	var foodCount: Int = 0
+	var foodIncome: Int {
+		var totalPots = 0
+		let farms = buildings.values.filter { $0.type == .farm(type: .main) } as! [FarmBuilding]
+		for farm in farms {
+			totalPots += farm.pots
+		}
+		return totalPots
+	}
 
-	init(id: UUID = UUID(), name: String, buildings: [Building], npcsInVillage: Set<UUID> = []) {
+	init(id: UUID = UUID(), name: String, buildings: [any BuildingProtocol], npcsInVillage: Set<UUID> = []) {
 		self.id = id
 		self.npcsInVillage = npcsInVillage
 		self.buildings = Dictionary(uniqueKeysWithValues: buildings.map { ($0.id, $0) })
 		self.name = name
+	}
+
+	func tick() {
+		if buildings.values.contains(where: { $0.type == .farm(type: .main) }) {
+			// foodCount += 1
+		}
 	}
 
 	func setHasCourthouse() {
@@ -30,7 +45,7 @@ actor Village: Hashable, Identifiable, Equatable {
 		courthouseID = nil
 	}
 
-	func getCourthouse() -> Building? {
+	func getCourthouse() -> (any BuildingProtocol)? {
 		buildings.values.first { $0.type == .courthouse }
 	}
 
@@ -42,11 +57,11 @@ actor Village: Hashable, Identifiable, Equatable {
 		return dx * dx + dy * dy <= radius * radius
 	}
 
-	func add(building: Building) async {
+	func add(building: any BuildingProtocol) async {
 		buildings[building.id] = building
 	}
 
-	func remove(building: Building) async {
+	func remove(building: any BuildingProtocol) async {
 		buildings.removeValue(forKey: building.id)
 	}
 
@@ -81,8 +96,15 @@ actor Village: Hashable, Identifiable, Equatable {
 		npcsInVillage.contains(npcID)
 	}
 
-	func update(buildingID: UUID, newBuilding: Building) async {
+	func update(buildingID: UUID, newBuilding: any BuildingProtocol) async {
 		buildings[buildingID] = newBuilding
+	}
+
+	func addPot(buildingID: UUID) async {
+		if var building = buildings[buildingID] as? FarmBuilding {
+			await building.addPot()
+			buildings[buildingID] = building
+		}
 	}
 
 	nonisolated func hash(into hasher: inout Hasher) {

@@ -99,7 +99,12 @@ enum MapBuilding {
 							await MessageBox.message("An error occurred while creaing map", speaker: .game)
 							return
 						}
-
+						if await Game.shared.stages.builder.stage5Stages == .buildHouse {
+							await Game.shared.addMap(map: customMap)
+							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor, biome: grid[y][x].biome)
+							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
+							return
+						}
 						// Success
 						if tile.type == .builder {
 							await Game.shared.addMap(map: customMap)
@@ -119,7 +124,11 @@ enum MapBuilding {
 							await Game.shared.addMap(map: customMap)
 							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor, biome: grid[y][x].biome)
 							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
-							await Game.shared.kingdom.add(building: .init(type: tile.type, x: x, y: y), villageID: villageID)
+							if tile.type == .farm(type: .main) {
+								await Game.shared.kingdom.add(building: FarmBuilding(type: tile.type, x: x, y: y), villageID: villageID)
+							} else {
+								await Game.shared.kingdom.add(building: Building(type: tile.type, x: x, y: y), villageID: villageID)
+							}
 						}
 						if await Game.shared.stages.builder.stage5Stages == .buildHouse {
 							await Game.shared.stages.builder.setStage5HasBuiltHouse(true)
@@ -127,6 +136,20 @@ enum MapBuilding {
 					} catch {
 						await MessageBox.message("An error occurred: \(error.localizedDescription)", speaker: .game)
 					}
+				} else if case .pot = selectedItem.type {
+					let playerX = await Game.shared.player.position.x
+					let playerY = await Game.shared.player.position.y
+					guard let villageID = await Game.shared.kingdom.isInsideVillage(x: playerX, y: playerY) else {
+						await MessageBox.message("You have to be inside of a village to place this pot", speaker: .game)
+						return
+					}
+					guard let building = await Game.shared.kingdom.hasVillageBuilding(x: playerX, y: playerY) as? FarmBuilding else {
+						await MessageBox.message("You have to be inside of a building to place this pot", speaker: .game)
+						return
+					}
+					await Game.shared.kingdom.villages[villageID]?.addPot(buildingID: building.id)
+					grid[y][x] = MapTile(type: .pot(tile: .init(cropTile: .init(type: .none))), biome: grid[y][x].biome)
+					await Game.shared.player.removeItem(item: selectedItem.type, count: 1)
 				} else {
 					grid[y][x] = MapTile(type: itemTypeToMapTileType(selectedItem.type)!, biome: grid[y][x].biome)
 					await Game.shared.player.removeItem(item: selectedItem.type, count: 1)
@@ -158,7 +181,7 @@ enum MapBuilding {
 			await MessageBox.message("You can't start a village here.", speaker: .game)
 			return
 		}
-		let village = await Village(name: "\(Game.shared.player.name)'s Village", buildings: [.init(type: .builder, x: x, y: y)])
+		let village = await Village(name: "\(Game.shared.player.name)'s Village", buildings: [Building(type: .builder, x: x, y: y)])
 		await Game.shared.kingdom.create(village: village)
 		await MessageBox.message("A builder should be coming any minute now.", speaker: .player)
 

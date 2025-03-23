@@ -9,8 +9,11 @@ struct NPC: Codable, Hashable, Equatable {
 	// skill level
 	// let age: Int
 	let gender: Gender
+	let villageID: UUID?
 	private(set) var positionToWalkTo: TilePosition?
 	private(set) var attributes: [NPCAttribute] = []
+	private var _hunger: Double = 100
+	private var hunger: Hunger { Hunger.hunger(for: _hunger) }
 
 	init(id: UUID = UUID(), name: String? = nil, gender: Gender? = nil, job: NPCJob? = nil, isStartingVillageNPC: Bool = false, positionToWalkTo: TilePosition? = nil, tilePosition: NPCPosition? = nil, villageID: UUID) {
 		self.id = id
@@ -28,6 +31,25 @@ struct NPC: Codable, Hashable, Equatable {
 		Task {
 			await Game.shared.kingdom.add(npcID: id, villageID: villageID)
 		}
+		self.villageID = villageID
+	}
+
+	mutating func tick() async {
+		// TODO: remove npc
+		guard let villageID else { return }
+		// guard let kingdom = await Game.shared.getKingdom(id: villageID) else { return }
+		_hunger -= 0.1
+
+		if _hunger <= 0 {
+			// if let positionToWalkTo {
+			// await Game.shared.removeNPC()
+			// }
+			await Game.shared.kingdom.villages[villageID]?.remove(npcID: id)
+		}
+	}
+
+	mutating func setHunger(_ newHunger: Double) {
+		_hunger = newHunger
 	}
 
 	mutating func removePostion() {
@@ -151,4 +173,39 @@ enum Gender: String, Codable, CaseIterable {
 
 enum NPCAttribute: Codable, CaseIterable {
 	case needsAttention
+}
+
+enum Hunger: Codable, CaseIterable {
+	case starving
+	case hungry
+	case could_eat
+	case full
+
+	var name: String {
+		switch self {
+			case .starving:
+				"Starving"
+			case .hungry:
+				"Hungry"
+			case .could_eat:
+				"Could Eat"
+			case .full:
+				"Full"
+		}
+	}
+
+	static func hunger(for hunger: Double) -> Hunger {
+		switch hunger {
+			case 0 ..< 25:
+				.starving
+			case 25 ..< 50:
+				.hungry
+			case 50 ..< 75:
+				.could_eat
+			case 75 ..< 100:
+				.full
+			default:
+				.full
+		}
+	}
 }
