@@ -399,7 +399,7 @@ enum SVMinerNPC: StartingVillageNPC {
 			case .goToSalesman:
 				await MessageBox.message("You haven't sold the gold to the \("Salesman".styled(with: .bold)) yet.", speaker: .miner)
 			case .comeBack:
-				await MessageBox.message("Thank you for selling the gold to the \("Salesman".styled(with: .bold)). I want you to keep the coins! Thank you for being a good junior miner!", speaker: .miner)
+				await MessageBox.message("Thank you for selling the gold to the \("Salesman".styled(with: .bold)). I want you to keep the coins! Thank you for being a good apprentice miner!", speaker: .miner)
 				await Game.shared.stages.mine.setStage10Stages(.done)
 				await Game.shared.player.setMiningSkillLevel(.ten)
 				await StatusBox.removeQuest(quest: .mine10)

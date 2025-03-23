@@ -133,7 +133,7 @@ enum Quest: Codable, Equatable, Hashable {
 						case .done:
 							"Farm Stage 4 done"
 					}
-				case .farm5: "Get a pot from the potter."
+				case .farm5: "Get 5 pots from the potter."
 			}
 		}
 	}
