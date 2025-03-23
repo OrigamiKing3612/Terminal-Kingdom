@@ -139,7 +139,7 @@ enum MapBuilding {
 						return
 					}
 					guard let building = await Game.shared.kingdom.hasVillageBuilding(x: playerX, y: playerY) as? FarmBuilding else {
-						await MessageBox.message("You have to be inside of a house to place this pot", speaker: .game)
+						await MessageBox.message("You have to be inside of a building to place this pot", speaker: .game)
 						return
 					}
 					await Game.shared.kingdom.villages[villageID]?.addPot(buildingID: building.id)
