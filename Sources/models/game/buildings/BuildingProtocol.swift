@@ -1,6 +1,6 @@
 import Foundation
 
-protocol BuildingProtocol: Codable, Equatable, Hashable, Identifiable {
+protocol BuildingProtocol: Codable, Equatable, Hashable, Identifiable, Sendable {
 	var id: UUID { get }
 	var x: Int { get }
 	var y: Int { get }

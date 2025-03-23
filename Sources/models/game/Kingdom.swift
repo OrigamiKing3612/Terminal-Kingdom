@@ -29,7 +29,7 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 		self.name = name
 	}
 
-	func add(building: Building, villageID: UUID) async {
+	func add(building: any BuildingProtocol, villageID: UUID) async {
 		await villages[villageID]?.add(building: building)
 	}
 
@@ -53,7 +53,7 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 		await villages[villageID]?.removeCourthouse()
 	}
 
-	func getVillageCourthouse(villageID: UUID) async -> Building? {
+	func getVillageCourthouse(villageID: UUID) async -> (any BuildingProtocol)? {
 		await villages[villageID]?.getCourthouse()
 	}
 
@@ -64,11 +64,11 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 		return nil
 	}
 
-	func getVillageBuilding(for npc: NPC, villageID: UUID) async -> Building? {
+	func getVillageBuilding(for npc: NPC, villageID: UUID) async -> (any BuildingProtocol)? {
 		await villages[villageID]?.buildings.values.first { $0.id == npc.id }
 	}
 
-	func getVillageBuilding(for npc: NPC) async -> Building? {
+	func getVillageBuilding(for npc: NPC) async -> (any BuildingProtocol)? {
 		for village in villages.values {
 			if await village.npcsInVillage.contains(npc.id) {
 				return await village.buildings.values.first { $0.id == npc.id }
@@ -77,7 +77,7 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 		return nil
 	}
 
-	func hasVillageBuilding(x: Int, y: Int) async -> Building? {
+	func hasVillageBuilding(x: Int, y: Int) async -> (any BuildingProtocol)? {
 		for village in villages.values {
 			for building in await village.buildings.values {
 				if building.x == x, building.y == y {
@@ -88,7 +88,7 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 		return nil
 	}
 
-	func updateVillageBuilding(villageID: UUID, buildingID: UUID, newBuilding: Building) async {
+	func updateVillageBuilding(villageID: UUID, buildingID: UUID, newBuilding: any BuildingProtocol) async {
 		await villages[villageID]?.update(buildingID: buildingID, newBuilding: newBuilding)
 	}
 

@@ -27,7 +27,7 @@ enum CustomDoorEvent {
 		await MapBox.setMapType(.custom(mapID: mapID))
 	}
 
-	static func upgrade(building: Building) async {
+	static func upgrade(building: any BuildingProtocol) async {
 		var newBuilding = building
 		await newBuilding.upgrade()
 		guard let kingdom = await Game.shared.kingdom.getVillage(buildingID: building.id) else { return }
