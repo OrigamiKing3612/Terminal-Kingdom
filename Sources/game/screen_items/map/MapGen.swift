@@ -79,8 +79,8 @@ actor MapGen {
 						case .forest:
 							map[y][x] = MapTile(type: .tree, isWalkable: true, event: .chopTree, biome: type)
 						case .plains:
-							let rand = Int.random(in: 1 ... 15)
-							if rand == 2 || rand == 3 {
+							let rand = Int.random(in: 1 ... 23)
+							if rand == 2 {
 								map[y][x] = MapTile(type: .tree, isWalkable: true, event: .chopTree, biome: type)
 							} else {
 								map[y][x] = MapTile(type: .plain, isWalkable: true, biome: type)
