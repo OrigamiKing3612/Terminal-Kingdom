@@ -99,6 +99,7 @@ enum Keys {
 				await InventoryBox.previousBuildItem()
 			case .questionMark:
 				InventoryBox.showBuildHelp.toggle()
+				InventoryBox.setUpdateInventoryBox()
 			default:
 				#if DEBUG
 					await MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
@@ -118,10 +119,11 @@ enum Keys {
 				await InventoryBox.previousInventoryItem()
 			case .down, .tab:
 				await InventoryBox.nextInventoryItem()
-			case .questionMark:
-				InventoryBox.showHelp.toggle()
 			case .d:
 				await InventoryBox.destroyItem()
+			case .questionMark:
+				InventoryBox.showHelp.toggle()
+				InventoryBox.setUpdateInventoryBox()
 			default:
 				#if DEBUG
 					await MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)

@@ -62,7 +62,7 @@ enum InventoryBox {
 			Screen.print(x: startX + 2, y: startY + 1, "Press '\(KeyboardKeys.enter.render)' or '\(KeyboardKeys.space.render)' to build")
 			Screen.print(x: startX + 2, y: startY + 2, "Press '\(KeyboardKeys.e.render)' to destroy")
 			Screen.print(x: startX + 2, y: startY + 3, "Press '\(KeyboardKeys.tab.render)' and '\(KeyboardKeys.back_tab.render)' to cycle items")
-			await Screen.print(x: startX + 2, y: startY + 2, "\(buildableItems.count) buildable items, \(inventoryItems.count) total items, \(selectedBuildItemIndex) selected")
+			await Screen.print(x: startX + 2, y: startY + 4, "\(buildableItems.count) buildable items, \(inventoryItems.count) total items, \(selectedBuildItemIndex) selected")
 		} else if await Game.shared.isBuilding {
 			var alreadyPrinted: [ItemType] = []
 			let buildableItems = await buildableItems.enumerated()
