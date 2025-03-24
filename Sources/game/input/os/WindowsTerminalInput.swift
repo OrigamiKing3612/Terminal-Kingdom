@@ -26,7 +26,7 @@ enum WindowsTerminalInput {
 				case 13: return .enter
 				case 32: return .space
 				case 9:
-					if (GetAsyncKeyState(VK_LSHIFT) & 0x8000) != 0 {
+					if (GetAsyncKeyState(0x10) & 0x8000) != 0 {
 						return .back_tab
 					}
 					return .tab
