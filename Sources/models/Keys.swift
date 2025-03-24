@@ -47,8 +47,8 @@ enum Keys {
 					_ = await Game.shared.player.collect(item: .init(type: .lumber), count: 100)
 					_ = await Game.shared.player.collect(item: .init(type: .stone), count: 100)
 					_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))), count: 1)
-					_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .farm(type: .main)))), count: 1)
-					_ = await Game.shared.player.collect(item: .init(type: .pot), count: 1)
+					// _ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .farm(type: .main)))), count: 1)
+					_ = await Game.shared.player.collect(item: .init(type: .axe(type: .init(durability: 100))), count: 1)
 			#endif
 			case .W:
 				await MessageBox.lineUp()
@@ -99,6 +99,7 @@ enum Keys {
 				await InventoryBox.previousBuildItem()
 			case .questionMark:
 				InventoryBox.showBuildHelp.toggle()
+				InventoryBox.setUpdateInventoryBox()
 			default:
 				#if DEBUG
 					await MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)
@@ -118,10 +119,11 @@ enum Keys {
 				await InventoryBox.previousInventoryItem()
 			case .down, .tab:
 				await InventoryBox.nextInventoryItem()
-			case .questionMark:
-				InventoryBox.showHelp.toggle()
 			case .d:
 				await InventoryBox.destroyItem()
+			case .questionMark:
+				InventoryBox.showHelp.toggle()
+				InventoryBox.setUpdateInventoryBox()
 			default:
 				#if DEBUG
 					await MessageBox.message("You pressed: \(key.rawValue)", speaker: .game)

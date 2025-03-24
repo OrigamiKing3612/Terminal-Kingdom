@@ -1,6 +1,6 @@
 enum UseFurnace {
 	static func use(progress _: FurnaceProgress) async {
-		var options: [MessageOption] = []
+		var options: [MessageOption] = [.init(label: "Quit", action: {})]
 		for Allrecipe in AllRecipes.allCases {
 			let recipe = Allrecipe.recipe
 			if recipe.station != .furnace {
@@ -44,7 +44,6 @@ enum UseFurnace {
 				}))
 			}
 		}
-		options.append(.init(label: "Quit", action: {}))
 		let selectedOption = await MessageBox.messageWithOptions("What would you like to make?", speaker: .game, options: options)
 		await selectedOption.action()
 	}

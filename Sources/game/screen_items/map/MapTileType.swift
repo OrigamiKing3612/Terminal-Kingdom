@@ -20,6 +20,7 @@ enum MapTileType: TileType {
 
 	case stone
 	case lava
+	case mud
 
 	// MARK: Other
 
@@ -67,7 +68,7 @@ enum MapTileType: TileType {
 
 	var isPlainLike: Bool {
 		switch self {
-			case .plain, .snow, .sand, .path: true
+			case .plain, .snow, .sand, .path, .water, .ice: true
 			default: false
 		}
 	}
@@ -102,6 +103,7 @@ enum MapTileType: TileType {
 			case .desk: await Game.shared.config.useNerdFont ? "󱈹" : "D"
 			case .stone: "S".styled(with: .dim)
 			case .lava: "L".styled(with: .red)
+			case .mud: "M".styled(with: .brown)
 		}
 	}
 
@@ -140,6 +142,7 @@ enum MapTileType: TileType {
 			case .desk: "desk"
 			case .stone: "stone"
 			case .lava: "lava"
+			case .mud: "mud"
 		}
 	}
 
@@ -147,6 +150,9 @@ enum MapTileType: TileType {
 		let player = await Game.shared.player.position
 		func isWalkable(x: Int, y: Int) -> Bool {
 			guard x >= 0, y >= 0, y < grid.count, x < grid[y].count else { return false }
+			if case .building = grid[y][x].type {
+				return false
+			}
 			return grid[y][x].isWalkable
 		}
 		switch self {
