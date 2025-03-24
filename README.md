@@ -8,9 +8,7 @@ Almost every building in the starting village has an npc. You can gain skills by
 ## Installation
 ### Downloading a Release
 > [!important]
-> If you are on Windows, you will need to build from source.
-<!-- > If you are on Windows, you will need to install the Swift toolchain. I recommend the `.exe` version. You don't have to install the C compiler stuff for this to work. -->
-<!-- > You can find it [here](https://swift.org/download/). (I hope to fix this one day) -->
+> If you are on Windows, see [this page](https://github.com/OrigamiKing3612/Terminal-Kingdom/wiki/Installing-on-Windows).
 1. Download the newest version from the releases.
 2. Extract the zip file.
 3. Make sure the `TerminalKingdom` executable is in the same directory as the `.resources` (or `.bundle`) directory.
