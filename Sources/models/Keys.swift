@@ -49,6 +49,8 @@ enum Keys {
 					_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))), count: 1)
 					_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .farm(type: .main)))), count: 1)
 					_ = await Game.shared.player.collect(item: .init(type: .pot), count: 1)
+					_ = await Game.shared.player.collect(item: .init(type: .steel), count: 10)
+					_ = await Game.shared.player.collect(item: .init(type: .stick), count: 10)
 			#endif
 			case .W:
 				await MessageBox.lineUp()

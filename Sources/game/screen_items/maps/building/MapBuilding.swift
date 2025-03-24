@@ -86,6 +86,10 @@ enum MapBuilding {
 		} else {
 			if await Game.shared.player.has(item: selectedItem.type, count: 1) {
 				if case let .door(tile: tile) = selectedItem.type {
+					guard await MapBox.mapType == .mainMap else {
+						await MessageBox.message("You can't place a door inside a building.", speaker: .game)
+						return
+					}
 					do {
 						let (doorPosition, buildingPerimeter) = try await CreateCustomMap.checkDoor(tile: tile, grid: grid, x: x, y: y)
 						let map = await CreateCustomMap.createCustomMap(buildingPerimeter: buildingPerimeter, doorPosition: doorPosition, doorType: tile.type)
