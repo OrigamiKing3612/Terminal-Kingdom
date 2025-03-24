@@ -27,7 +27,7 @@ enum WindowsTerminalInput {
 				case 32: return .space
 				case 9:
 					// Check if shift is held down for back-tab
-					if (GetAsyncKeyState(VK_LSHIFT) & 16 != 0) || (GetAsyncKeyState(VK_RSHIFT) & 16 != 0) {
+					if (GetAsyncKeyState(VK_LSHIFT) & 0x8000) != 0 {
 						return .back_tab
 					}
 					return .tab
@@ -35,7 +35,7 @@ enum WindowsTerminalInput {
 				case 0xBF: return .questionMark
 				case 0x30 ... 0x39, 0x41 ... 0x5A:
 					if let scalar = UnicodeScalar(vkCode) {
-						if (GetAsyncKeyState(VK_LSHIFT) & 16 != 0) || (GetAsyncKeyState(VK_RSHIFT) & 16 != 0) {
+						if (GetAsyncKeyState(VK_LSHIFT) & 0x8000) != 0 {
 							return KeyboardKeys(rawValue: String(scalar)) ?? .unknown
 						} else {
 							return KeyboardKeys(rawValue: String(scalar).lowercased()) ?? .unknown
