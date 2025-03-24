@@ -86,13 +86,17 @@ actor PlayerCharacter {
 				case let (.pickaxe, .pickaxe(type)) where type.durability > amount:
 					let newItem = Item(id: item.id, type: .pickaxe(type: .init(durability: type.durability - amount)), canBeSold: item.canBeSold)
 					updateItem(at: index, newItem)
+					return
 				case (.pickaxe, .pickaxe):
 					removeItem(at: index)
+					return
 				case let (.axe, .axe(type)) where type.durability > amount:
 					let newItem = Item(id: item.id, type: .axe(type: .init(durability: type.durability - amount)), canBeSold: item.canBeSold)
 					updateItem(at: index, newItem)
+					return
 				case (.axe, .axe):
 					removeItem(at: index)
+					return
 				default:
 					continue
 			}
