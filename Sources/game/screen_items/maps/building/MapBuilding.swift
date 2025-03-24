@@ -136,17 +136,20 @@ enum MapBuilding {
 						await MessageBox.message("An error occurred: \(error.localizedDescription)", speaker: .game)
 					}
 				} else if case .pot = selectedItem.type {
-					let playerX = await Game.shared.player.position.x
-					let playerY = await Game.shared.player.position.y
-					guard let villageID = await Game.shared.kingdom.isInsideVillage(x: playerX, y: playerY) else {
-						await MessageBox.message("You have to be inside of a village to place this pot", speaker: .game)
-						return
+					if case .custom = await MapBox.mapType {
+						let playerX = await Game.shared.player.position.x
+						let playerY = await Game.shared.player.position.y
+						guard let villageID = await Game.shared.kingdom.isInsideVillage(x: playerX, y: playerY) else {
+							await MessageBox.message("You have to be inside of a village to place this pot", speaker: .game)
+							return
+						}
+						guard let building = await Game.shared.kingdom.hasVillageBuilding(x: playerX, y: playerY) as? FarmBuilding else {
+							await MessageBox.message("You have to be inside of a building to place this pot", speaker: .game)
+							return
+						}
+						await Game.shared.kingdom.villages[villageID]?.addPot(buildingID: building.id)
 					}
-					guard let building = await Game.shared.kingdom.hasVillageBuilding(x: playerX, y: playerY) as? FarmBuilding else {
-						await MessageBox.message("You have to be inside of a building to place this pot", speaker: .game)
-						return
-					}
-					await Game.shared.kingdom.villages[villageID]?.addPot(buildingID: building.id)
+
 					grid[y][x] = MapTile(type: .pot(tile: .init(cropTile: .init(type: .none))), biome: grid[y][x].biome)
 					await Game.shared.player.removeItem(item: selectedItem.type, count: 1)
 				} else {
