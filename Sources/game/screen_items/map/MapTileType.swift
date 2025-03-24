@@ -68,7 +68,7 @@ enum MapTileType: TileType {
 
 	var isPlainLike: Bool {
 		switch self {
-			case .plain, .snow, .sand, .path: true
+			case .plain, .snow, .sand, .path, .water, .ice: true
 			default: false
 		}
 	}
@@ -150,6 +150,9 @@ enum MapTileType: TileType {
 		let player = await Game.shared.player.position
 		func isWalkable(x: Int, y: Int) -> Bool {
 			guard x >= 0, y >= 0, y < grid.count, x < grid[y].count else { return false }
+			if case .building = grid[y][x].type {
+				return false
+			}
 			return grid[y][x].isWalkable
 		}
 		switch self {

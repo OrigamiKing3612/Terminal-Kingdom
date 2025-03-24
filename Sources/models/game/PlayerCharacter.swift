@@ -199,11 +199,8 @@ actor PlayerCharacter {
 		}
 	}
 
-	func setPlayerPosition(addX: Int) {
+	func setPlayerPosition(addX: Int = 0, addY: Int = 0) {
 		position.x += addX
-	}
-
-	func setPlayerPosition(addY: Int) {
 		position.y += addY
 	}
 

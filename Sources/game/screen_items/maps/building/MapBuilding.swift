@@ -80,7 +80,11 @@ enum MapBuilding {
 		let selectedItem = await InventoryBox.buildableItems[InventoryBox.selectedBuildItemIndex]
 		if selectedItem.type == .lumber {
 			if await Game.shared.player.has(item: .lumber, count: 5) {
-				grid[y][x] = MapTile(type: .building(tile: .init(isPlacedByPlayer: true)), biome: grid[y][x].biome)
+				if grid[y][x].type == .water || grid[y][x].type == .ice {
+					grid[y][x] = MapTile(type: .plain, biome: grid[y][x].biome)
+				} else {
+					grid[y][x] = MapTile(type: .building(tile: .init(isPlacedByPlayer: true)), biome: grid[y][x].biome)
+				}
 				await Game.shared.player.removeItem(item: .lumber, count: 5)
 			}
 		} else {
