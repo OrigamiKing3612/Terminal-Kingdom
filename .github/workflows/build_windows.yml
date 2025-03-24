@@ -1,15 +1,15 @@
 name: Build Windows
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - master
-  #   paths-ignore:
-  #     - 'LICENSE'
-  #     - '**.md'
-  #     - '.github/ISSUE_TEMPLATE/**'
-  #     - .github/workflows/build_linux.yml
-  #     - .github/workflows/build_macos.yml
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - 'LICENSE'
+      - '**.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - .github/workflows/build_linux.yml
+      - .github/workflows/build_macos.yml
 defaults:
   run:
     shell: pwsh
