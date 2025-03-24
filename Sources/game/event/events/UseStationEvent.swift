@@ -7,7 +7,7 @@ enum UseStationEvent {
 				case let .furnace(progress: progress): // TODO: use the progress or remove it
 					await UseFurnace.use(progress: progress)
 				case .workbench:
-					await UseWorkstation.use()
+					await UseWorkbench.use()
 			}
 		}
 	}

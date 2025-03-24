@@ -1,6 +1,6 @@
 enum UseAnvil {
 	static func use() async {
-		var options: [MessageOption] = []
+		var options: [MessageOption] = [.init(label: "Quit", action: {})]
 		for Allrecipe in AllRecipes.allCases {
 			let recipe = Allrecipe.recipe
 			if recipe.station != .anvil {
@@ -30,7 +30,6 @@ enum UseAnvil {
 						} else {
 							await Game.shared.player.removeItem(item: ingredient.item, count: ingredient.count)
 						}
-						await Game.shared.player.removeItem(item: ingredient.item, count: ingredient.count)
 					}
 					for result in recipe.result {
 						if await Game.shared.stages.blacksmith.stage6Stages == .makePickaxe {
@@ -46,7 +45,6 @@ enum UseAnvil {
 				}))
 			}
 		}
-		options.append(.init(label: "Quit", action: {}))
 		let selectedOption = await MessageBox.messageWithOptions("What would you like to make?", speaker: .game, options: options)
 		await selectedOption.action()
 	}
