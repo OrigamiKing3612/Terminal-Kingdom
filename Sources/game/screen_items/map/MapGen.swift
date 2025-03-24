@@ -108,13 +108,15 @@ actor MapGen {
 						case .mountain:
 							map[y][x] = MapTile(type: .stone, isWalkable: false, biome: type)
 						case .swamp:
-							let rand = Int.random(in: 1 ... 10)
+							let rand = Int.random(in: 1 ... 15)
 							if rand == 2 || rand == 3 {
 								map[y][x] = MapTile(type: .tree, isWalkable: true, event: .chopTree, biome: type)
 							} else if rand == 1 {
+								map[y][x] = MapTile(type: .plain, isWalkable: true, biome: type)
+							} else if rand == 7 {
 								map[y][x] = MapTile(type: .water, isWalkable: true, biome: type)
 							} else {
-								map[y][x] = MapTile(type: .plain, isWalkable: true, biome: type)
+								map[y][x] = MapTile(type: .mud, isWalkable: true, biome: type)
 							}
 					}
 				}
