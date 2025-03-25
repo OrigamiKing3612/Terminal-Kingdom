@@ -3,13 +3,11 @@ import Foundation
 class HelpPopUp: PopUp {
 	var longestXLine: Int = 0
 	private nonisolated(unsafe) var selectedOptionIndex = 0
+	var title: String = "Help"
 
-	func render() async {
-		let text = "Help"
-		let y = 3
-		Screen.print(x: Self.middleX - (text.count / 2), y: y, text.styled(with: .bold))
-		var yStart = 6
+	func content(y: Int) async {
 		// TODO: change depending on user's config
+		var yStart = y
 		(yStart, longestXLine) = print(y: yStart, "Press \("wasd".styled(with: .bold)) or the \("arrow keys".styled(with: .bold)) to move.")
 		(yStart, longestXLine) = print(y: yStart, "Press \(KeyboardKeys.space.render) or \(KeyboardKeys.enter.render) to interact with the tile you are on. ")
 		(yStart, longestXLine) = print(y: yStart, "Press \(KeyboardKeys.i.render) to open the inventory.")

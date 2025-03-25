@@ -1,29 +1,27 @@
 import Foundation
 
-class EditVillagePopUp: PopUp {
+class EditVillagePopUp: TypablePopup {
 	var longestXLine: Int = 0
 	private nonisolated(unsafe) var selectedIndex = 0
-	private var isEditing = false
-	private var input = ""
 	private var village: Village
+	var isEditing: Bool = false
+	var input: String = ""
+	var title: String
 
-	init(village: Village) {
+	init(village: Village) async {
 		self.village = village
+		self.title = await "Editing \(village.name)"
 	}
 
-	func render() async {
-		let text = await "Editing \(village.name)"
-		longestXLine = text.count
-		let x = EditVillagePopUp.middleX
-		let y = 3
-		Screen.print(x: x - (text.count / 2), y: y, text.styled(with: .bold))
-
+	func content(y: Int) async {
 		while true {
 			if isEditing {
-				await textInput()
+				await textInput {
+					await Game.shared.kingdom.renameVillage(id: village.id, name: input)
+				}
 				continue
 			}
-			var yStart = y + 3
+			var yStart = y
 			let options: [MessageOption] = [
 				.init(label: "Rename", action: {
 					self.input = await self.village.name
@@ -52,7 +50,7 @@ class EditVillagePopUp: PopUp {
 					if selectedIndex == skip {
 						selectedIndex = selectedIndex + 1
 					}
-				case .enter:
+				case .enter, .space:
 					if selectedIndex == lastIndex + 2 {
 						return
 					} else {
@@ -74,33 +72,5 @@ class EditVillagePopUp: PopUp {
 			longestXLine = textToPrint.withoutStyles.count
 		}
 		return y + 1
-	}
-
-	private func textInput() async {
-		while isEditing {
-			let displayText = " \(input) "
-			Screen.print(x: Self.middleX - (displayText.count / 2), y: 9, displayText.styled(with: .bold))
-
-			let key = TerminalInput.readKey()
-			if key.isLetter {
-				input += key.rawValue
-			} else if key == .space {
-				input += " "
-			} else if key == .backspace {
-				if !input.isEmpty {
-					input.removeLast()
-				}
-			} else if key == .enter {
-				if !input.isEmpty {
-					await Game.shared.kingdom.renameVillage(id: village.id, name: input)
-				}
-				isEditing = false
-				return
-			}
-
-			if input.count > 20 {
-				input.removeLast()
-			}
-		}
 	}
 }

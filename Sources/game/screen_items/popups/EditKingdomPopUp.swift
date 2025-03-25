@@ -1,28 +1,30 @@
 import Foundation
 
-class EditKingdomPopUp: PopUp {
+class EditKingdomPopUp: TypablePopup {
 	var longestXLine: Int = 0
 	private nonisolated(unsafe) var selectedIndex = 0
-	private var isEditing = false
-	private var input = ""
+	var isEditing: Bool = false
+	var input: String = ""
+	var title: String
+	var kingdom: Kingdom
 
-	func render() async {
-		let kingdom = await Game.shared.kingdom
-		let text = await "Editing \(kingdom.name)"
-		longestXLine = text.count
-		let x = EditKingdomPopUp.middleX
-		let y = 3
-		Screen.print(x: x - (text.count / 2), y: y, text.styled(with: .bold))
+	init() async {
+		self.kingdom = await Game.shared.kingdom
+		self.title = await "Editing \(kingdom.name)"
+	}
 
+	func content(y: Int) async {
 		while true {
 			if isEditing {
-				await textInput()
+				await textInput {
+					await Game.shared.renameKingdom(newName: input)
+				}
 				continue
 			}
-			var yStart = y + 3
+			var yStart = y
 			let options: [MessageOption] = [
 				.init(label: "Rename", action: {
-					self.input = await kingdom.name
+					self.input = await self.kingdom.name
 					self.isEditing = true
 				}),
 			]
@@ -48,7 +50,7 @@ class EditKingdomPopUp: PopUp {
 					if selectedIndex == skip {
 						selectedIndex = selectedIndex + 1
 					}
-				case .enter:
+				case .enter, .space:
 					if selectedIndex == lastIndex + 2 {
 						return
 					} else {
@@ -70,33 +72,5 @@ class EditKingdomPopUp: PopUp {
 			longestXLine = textToPrint.withoutStyles.count
 		}
 		return y + 1
-	}
-
-	private func textInput() async {
-		while isEditing {
-			let displayText = " \(input) "
-			Screen.print(x: Self.middleX - (displayText.count / 2), y: 9, displayText.styled(with: .bold))
-
-			let key = TerminalInput.readKey()
-			if key.isLetter {
-				input += key.rawValue
-			} else if key == .space {
-				input += " "
-			} else if key == .backspace {
-				if !input.isEmpty {
-					input.removeLast()
-				}
-			} else if key == .enter {
-				if !input.isEmpty {
-					await Game.shared.renameKingdom(newName: input)
-				}
-				isEditing = false
-				return
-			}
-
-			if input.count > 20 {
-				input.removeLast()
-			}
-		}
 	}
 }

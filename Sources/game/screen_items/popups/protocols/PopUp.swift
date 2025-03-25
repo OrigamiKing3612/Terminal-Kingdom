@@ -1,8 +1,9 @@
 import Foundation
 
-protocol PopUp {
+protocol PopUp: AnyObject {
 	var longestXLine: Int { get set }
-	func render() async
+	var title: String { get set }
+	func content(y: Int) async
 }
 
 extension PopUp {
@@ -11,6 +12,13 @@ extension PopUp {
 	nonisolated(unsafe) static var startY: Int { 0 }
 	nonisolated(unsafe) static var middleY: Int { Screen.rows / 2 }
 	nonisolated(unsafe) static var endY: Int { Screen.rows }
+
+	func render() async {
+		longestXLine = title.count
+		let y = 3
+		Screen.print(x: Self.middleX - (title.count / 2), y: y, title.styled(with: .bold))
+		await content(y: y + 3)
+	}
 
 	func drawBorders(endY: Int, longestXLine _longestXLine: Int) async {
 		let x = Self.middleX
@@ -37,9 +45,7 @@ extension PopUp {
 	func print(y: Int, _ text: String) -> (yStart: Int, longestXLine: Int) {
 		var longestXLine = longestXLine
 		Screen.print(x: Self.middleX - (text.withoutStyles.count / 2), y: y, text)
-		if text.withoutStyles.count > longestXLine {
-			longestXLine = text.withoutStyles.count
-		}
+		longestXLine = max(longestXLine, text.withoutStyles.count)
 		return (y + 1, longestXLine)
 	}
 }

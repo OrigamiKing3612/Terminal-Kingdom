@@ -210,14 +210,23 @@ enum MessageBox {
 		return Int(input.trimmingCharacters(in: .whitespacesAndNewlines)) ?? 0
 	}
 
+	static func messageWithOptions(_ text: String, options: [MessageOption]) async {
+		let popUp = OptionsPopUp(title: text, options: options)
+		await Screen.popUp(popUp)
+		await MapBox.mapBox()
+	}
+
+	@available(*, deprecated, message: "Use PopUp instead")
 	static func messageWithOptions(_ text: String, speaker: MessageSpeakers, options: [MessageOption], hideInventoryBox: Bool = true) async -> MessageOption {
 		await messageWithOptions(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox)
 	}
 
+	@available(*, deprecated, message: "Use PopUp instead")
 	static func messageWithOptions(_ text: String, speaker: NPCJob, options: [MessageOption], hideInventoryBox: Bool = true) async -> MessageOption {
 		await messageWithOptions(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox)
 	}
 
+	@available(*, deprecated, message: "Use PopUp instead")
 	private static func messageWithOptions(_ text: String, speaker: String, options: [MessageOption], hideInventoryBox: Bool) async -> MessageOption {
 		guard !options.isEmpty else {
 			return MessageOption(label: "Why did you this?", action: {})

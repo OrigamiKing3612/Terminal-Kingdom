@@ -77,8 +77,7 @@ enum CollectCropEvent {
 			await MapBox.updateTile(newTile: .init(type: .pot(tile: .init(cropTile: .init(type: .tree_seed))), event: .collectCrop, biome: tile.biome))
 			await Game.shared.addCrop(TilePosition(x: MapBox.player.x, y: MapBox.player.y, mapType: MapBox.mapType))
 		})]
-		let selectedOption = await MessageBox.messageWithOptions("Plant Seed", speaker: .game, options: options)
-		await selectedOption.action()
+		await MessageBox.messageWithOptions("Plant Seed", options: options)
 	}
 
 	private static func removeCrop() async {
@@ -87,7 +86,6 @@ enum CollectCropEvent {
 			await Game.shared.removeCrop(TilePosition(x: MapBox.player.x, y: MapBox.player.y, mapType: MapBox.mapType))
 			await MapBox.updateTile(newTile: .init(type: .pot(tile: .init()), event: .collectCrop, biome: tile.biome))
 		})]
-		let selectedOption = await MessageBox.messageWithOptions("Remove Seed", speaker: .game, options: options)
-		await selectedOption.action()
+		await MessageBox.messageWithOptions("Remove Seed", options: options)
 	}
 }

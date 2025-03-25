@@ -12,6 +12,7 @@ enum SVKingNPC: StartingVillageNPC {
 	}
 
 	static func help() async {
+		// TODO: Move to help popup and show it here
 		await MessageBox.message("I'm here to help!", speaker: .king)
 		await MessageBox.message("Normal mode:".styled(with: .bold), speaker: .king)
 		if await Game.shared.config.wasdKeys {
