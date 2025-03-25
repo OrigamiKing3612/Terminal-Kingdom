@@ -45,7 +45,10 @@ enum TerminalInput {
 
 	static func readKey() -> KeyboardKeys {
 		#if os(Windows)
-			WindowsTerminalInput.readKey()
+			let key = WindowsTerminalInput.readKey()
+			Logger.debug("\(key)")
+
+			return key
 		#else
 			UnixTerminalInput.readKey()
 		#endif

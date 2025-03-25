@@ -19,13 +19,20 @@ enum WindowsTerminalInput {
 				ReadConsoleInputW(hStdin, &inputRecord, 1, &eventsRead)
 			} while eventsRead == 0 || inputRecord.EventType != KEY_EVENT || inputRecord.Event.KeyEvent.bKeyDown == false
 
+			let isShiftHeld = (controlState & DWORD(SHIFT_PRESSED)) != 0
+			if isShiftHeld {
+				Logger.debug("Is pressing shift")
+			} else {
+				Logger.debug("Not pressing shift")
+			}
+
 			let vkCode = inputRecord.Event.KeyEvent.wVirtualKeyCode
 			switch vkCode {
-				case 27: return .esc
-				case 8: return .backspace
-				case 13: return .enter
-				case 32: return .space
-				case 9:
+				case 0x1B: return .esc
+				case 0x08: return .backspace
+				case 0x0D: return .enter
+				case 0x20: return .space
+				case 0x09:
 					if (UInt16(GetAsyncKeyState(0x10)) & 0x8000) != 0 {
 						Logger.debug("Shift + Tab")
 						return .back_tab
@@ -37,14 +44,12 @@ enum WindowsTerminalInput {
 				case 0xBF: return .questionMark
 				case 0x30 ... 0x39, 0x41 ... 0x5A:
 					if let scalar = mapVirtualKeyToCharacter(vkCode: vkCode) {
-						// Logger.debug("Pressed letter key")
-						// if (UInt16(GetAsyncKeyState(0x10)) & 0x8000) != 0 {
-						// 	Logger.debug("Is pressing shift")
-						return KeyboardKeys(rawValue: scalar) ?? .unknown
-						// } else {
-						// 	Logger.debug("not pressing shift \(UInt16(GetAsyncKeyState(0x10)))")
-						// 	return KeyboardKeys(rawValue: scalar.lowercased()) ?? .unknown
-						// }
+						Logger.debug("Pressed letter key")
+						if isShiftHeld {
+							return KeyboardKeys(rawValue: scalar) ?? .unknown
+						} else {
+							return KeyboardKeys(rawValue: scalar.lowercased()) ?? .unknown
+						}
 					}
 				case 0x25: return .left
 				case 0x27: return .right
