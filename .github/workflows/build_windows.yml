@@ -10,6 +10,7 @@ on:
       - '.github/ISSUE_TEMPLATE/**'
       - .github/workflows/build_linux.yml
       - .github/workflows/build_macos.yml
+      - 'Sources/game/input/os/UnixTerminalInput.swift'
 defaults:
   run:
     shell: pwsh

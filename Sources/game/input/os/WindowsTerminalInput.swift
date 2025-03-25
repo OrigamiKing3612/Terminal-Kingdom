@@ -26,7 +26,7 @@ enum WindowsTerminalInput {
 				case 13: return .enter
 				case 32: return .space
 				case 9:
-					if (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0 {
+					if (UInt16(GetAsyncKeyState(VK_SHIFT)) & 0x8000) != 0 {
 						Logger.debug("Shift + Tab")
 						return .back_tab
 					}
@@ -38,11 +38,11 @@ enum WindowsTerminalInput {
 				case 0x30 ... 0x39, 0x41 ... 0x5A:
 					if let scalar = UnicodeScalar(vkCode) {
 						Logger.debug("Pressed letter key")
-						if (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0 {
+						if (UInt16(GetAsyncKeyState(VK_SHIFT)) & 0x8000) != 0 {
 							Logger.debug("Is pressing shift")
 							return KeyboardKeys(rawValue: String(scalar).uppercased()) ?? .unknown
 						} else {
-							Logger.debug("not pressing shift \(GetAsyncKeyState(VK_SHIFT))")
+							Logger.debug("not pressing shift \(UInt16(GetAsyncKeyState(VK_SHIFT)))")
 							return KeyboardKeys(rawValue: String(scalar).lowercased()) ?? .unknown
 						}
 					}
