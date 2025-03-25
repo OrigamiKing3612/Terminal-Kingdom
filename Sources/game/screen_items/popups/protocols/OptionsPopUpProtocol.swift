@@ -56,6 +56,10 @@ extension OptionsPopUpProtocol {
 				lastIndex = index
 			}
 
+			if options.isEmpty {
+				selectedOptionIndex = lastIndex + 2
+			}
+
 			let skip = lastIndex + 1
 			yStart = await print(y: yStart + 1, index: lastIndex + 2, "Quit")
 

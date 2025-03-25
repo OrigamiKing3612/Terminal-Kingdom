@@ -216,17 +216,17 @@ enum MessageBox {
 		await MapBox.mapBox()
 	}
 
-	@available(*, deprecated, message: "Use PopUp instead")
 	static func messageWithOptions(_ text: String, speaker: MessageSpeakers, options: [MessageOption], hideInventoryBox: Bool = true) async -> MessageOption {
-		await messageWithOptions(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox)
+		if speaker == .game {
+			Logger.warning("A messageWithOptions with speaker game was used instead of a popup.")
+		}
+		return await messageWithOptions(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox)
 	}
 
-	@available(*, deprecated, message: "Use PopUp instead")
 	static func messageWithOptions(_ text: String, speaker: NPCJob, options: [MessageOption], hideInventoryBox: Bool = true) async -> MessageOption {
 		await messageWithOptions(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox)
 	}
 
-	@available(*, deprecated, message: "Use PopUp instead")
 	private static func messageWithOptions(_ text: String, speaker: String, options: [MessageOption], hideInventoryBox: Bool) async -> MessageOption {
 		guard !options.isEmpty else {
 			return MessageOption(label: "Why did you this?", action: {})
