@@ -10,7 +10,6 @@ enum WindowsTerminalInput {
 			var eventsRead: DWORD = 0
 			let hStdin = GetStdHandle(STD_INPUT_HANDLE)
 
-			// Ensure the handle is valid
 			guard hStdin != INVALID_HANDLE_VALUE else {
 				return .unknown
 			}
@@ -19,14 +18,16 @@ enum WindowsTerminalInput {
 				ReadConsoleInputW(hStdin, &inputRecord, 1, &eventsRead)
 			} while eventsRead == 0 || inputRecord.EventType != KEY_EVENT || inputRecord.Event.KeyEvent.bKeyDown == false
 
+			let vkCode = inputRecord.Event.KeyEvent.wVirtualKeyCode
+			let controlState = keyEvent.dwControlKeyState
 			let isShiftHeld = (controlState & DWORD(SHIFT_PRESSED)) != 0
+
 			if isShiftHeld {
 				Logger.debug("Is pressing shift")
 			} else {
 				Logger.debug("Not pressing shift")
 			}
 
-			let vkCode = inputRecord.Event.KeyEvent.wVirtualKeyCode
 			switch vkCode {
 				case 0x1B: return .esc
 				case 0x08: return .backspace
