@@ -35,8 +35,7 @@ enum WindowsTerminalInput {
 				case 0x0D: return .enter
 				case 0x20: return .space
 				case 0x09:
-					if (UInt16(GetAsyncKeyState(0x10)) & 0x8000) != 0 {
-						Logger.debug("Shift + Tab")
+					if isShiftHeld {
 						return .back_tab
 					}
 
