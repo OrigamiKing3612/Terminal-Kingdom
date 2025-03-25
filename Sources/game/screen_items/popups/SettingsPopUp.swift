@@ -6,11 +6,13 @@ class SettingsPopUp: PopUp {
 	private var config = Config()
 	var startY: Int = 3
 	var title: String = "Settings"
+	var yStart = 0
 
-	func content(yStart: inout Int) async {
+	func content(yStart startY: inout Int) async {
 		// TODO: reload config after saving so this isn't async
 		config = await Config.load()
 		while true {
+			yStart = startY
 			var lastIndex = SettingsScreenOptions.allCases.count - 1
 			for (index, option) in SettingsScreenOptions.allCases.enumerated() {
 				yStart = await print(y: yStart, index: index, text: option.label, configOption: option.configOption(config))
