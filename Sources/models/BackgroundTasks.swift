@@ -21,7 +21,7 @@ enum BackgroundTasks {
 						await NPCTile.move(position: position)
 					}
 				}
-				try? await Task.sleep(nanoseconds: 500_000_000) // .5 seconds
+				try? await Task.sleep(nanoseconds: 200_000_000) // .2 seconds
 			}
 
 			Logger.debug("Ended NPC task")

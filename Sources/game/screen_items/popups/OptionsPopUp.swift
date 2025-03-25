@@ -13,9 +13,11 @@ class OptionsPopUp: OptionsPopUpProtocol {
 		self.options = options.filter { $0.label != "Quit" }
 	}
 
-	func content(yStart: inout Int) async {}
+	func before() async -> Bool {
+		false
+	}
 
-	func input(skip: inout Int, lastIndex: Int) async {
+	func input(skip: Int, lastIndex: Int, shouldExit: inout Bool) async {
 		let key = TerminalInput.readKey()
 		switch key {
 			case .up, .w, .k, .back_tab:
@@ -24,17 +26,16 @@ class OptionsPopUp: OptionsPopUpProtocol {
 					selectedOptionIndex = selectedOptionIndex - 1
 				}
 			case .down, .s, .j, .tab:
-				selectedOptionIndex = min(SettingsScreenOptions.allCases.count - 1 + 3, selectedOptionIndex + 1)
+				selectedOptionIndex = min(options.count - 1 + 2, selectedOptionIndex + 1)
 				if selectedOptionIndex == skip {
 					selectedOptionIndex = selectedOptionIndex + 1
 				}
 			case .enter, .space:
 				if selectedOptionIndex == lastIndex + 2 {
-					return
 				} else {
 					await options[selectedOptionIndex].action()
-					return
 				}
+				shouldExit = true
 			default:
 				break
 		}

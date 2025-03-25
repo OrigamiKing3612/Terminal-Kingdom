@@ -1,75 +1,60 @@
 import Foundation
 
-class EditKingdomPopUp: TypablePopup {
+class EditKingdomPopUp: OptionsPopUpProtocol, TypablePopup {
 	var longestXLine: Int = 0
-	private nonisolated(unsafe) var selectedIndex = 0
 	var isEditing: Bool = false
 	var input: String = ""
 	var title: String
 	var kingdom: Kingdom
+	var selectedOptionIndex: Int = 0
+	var options: [MessageOption]
 
 	init() async {
 		self.kingdom = await Game.shared.kingdom
 		self.title = await "Editing \(kingdom.name)"
+		self.options = []
 	}
 
-	func content(yStart: inout Int) async {
-		while true {
-			if isEditing {
-				await textInput {
-					await Game.shared.renameKingdom(newName: input)
+	private func rename() async {
+		input = await kingdom.name
+		isEditing = true
+	}
+
+	func before() async -> Bool {
+		options = [
+			.init(label: "Rename", action: rename),
+		]
+		if isEditing {
+			await textInput {
+				await Game.shared.renameKingdom(newName: input)
+				isEditing = false
+			}
+			return true
+		}
+		return false
+	}
+
+	func input(skip: Int, lastIndex: Int, shouldExit: inout Bool) async {
+		let key = TerminalInput.readKey()
+		switch key {
+			case .up, .w, .k, .back_tab:
+				selectedOptionIndex = max(0, selectedOptionIndex - 1)
+				if selectedOptionIndex == skip {
+					selectedOptionIndex = selectedOptionIndex - 1
 				}
-				continue
-			}
-			let options: [MessageOption] = [
-				.init(label: "Rename", action: {
-					self.input = await self.kingdom.name
-					self.isEditing = true
-				}),
-			]
-			var lastIndex = options.count - 1
-			for (index, option) in options.enumerated() {
-				yStart = await print(y: yStart, index: index, option.label)
-				lastIndex = index
-			}
-
-			let skip = lastIndex + 1
-			yStart = await print(y: yStart, index: lastIndex + 2, "Quit")
-			await drawBorders(endY: yStart + 2, longestXLine: longestXLine)
-
-			let key = TerminalInput.readKey()
-			switch key {
-				case .up, .w, .k, .back_tab:
-					selectedIndex = max(0, selectedIndex - 1)
-					if selectedIndex == skip {
-						selectedIndex = selectedIndex - 1
-					}
-				case .down, .s, .j, .tab:
-					selectedIndex = min(SettingsScreenOptions.allCases.count - 1 + 3, selectedIndex + 1)
-					if selectedIndex == skip {
-						selectedIndex = selectedIndex + 1
-					}
-				case .enter, .space:
-					if selectedIndex == lastIndex + 2 {
-						return
-					} else {
-						await options[selectedIndex].action()
-					}
-				default:
-					break
-			}
+			case .down, .s, .j, .tab:
+				selectedOptionIndex = min(options.count - 1 + 3, selectedOptionIndex + 1)
+				if selectedOptionIndex == skip {
+					selectedOptionIndex = selectedOptionIndex + 1
+				}
+			case .enter, .space:
+				if selectedOptionIndex == lastIndex + 2 {
+					shouldExit = true
+				} else {
+					await options[selectedOptionIndex].action()
+				}
+			default:
+				break
 		}
-	}
-
-	private func print(y: Int, index: Int, _ text: String) async -> Int {
-		let isSelected = selectedIndex == index
-		let textToPrint = await "\(isSelected ? "\(Game.shared.config.icons.selectedIcon) " : "  ")\(text)"
-
-		Screen.print(x: Self.middleX - (textToPrint.withoutStyles.count / 2), y: y, textToPrint.styled(with: .bold, styledIf: isSelected))
-
-		if textToPrint.withoutStyles.count > longestXLine {
-			longestXLine = textToPrint.withoutStyles.count
-		}
-		return y + 1
 	}
 }

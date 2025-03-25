@@ -4,7 +4,9 @@ protocol OptionsPopUpProtocol: PopUp, AnyObject {
 	var selectedOptionIndex: Int { get set }
 	var options: [MessageOption] { get }
 
-	func input(skip: inout Int, lastIndex: Int) async
+	func content(yStart: inout Int) async
+	func input(skip: Int, lastIndex: Int, shouldExit: inout Bool) async
+	func before() async -> Bool
 }
 
 extension OptionsPopUpProtocol {
@@ -18,23 +20,47 @@ extension OptionsPopUpProtocol {
 		return y + 1
 	}
 
-	func render() async {
+	func content(yStart: inout Int) async {
+		await renderOptions()
+	}
+
+	func renderOptions() async {
 		longestXLine = title.count
+		var popupWidth: Int { longestXLine + 4 }
+		let popupHeight = options.count + 10
+
+		let startX = Self.middleX - (popupWidth / 2)
+
+		for option in options {
+			longestXLine = max(longestXLine, option.label.withoutStyles.count)
+		}
+		for y in 1 ... (1 + popupHeight) {
+			Screen.print(x: startX, y: y, String(repeating: " ", count: popupWidth))
+		}
+
 		var yStart = 3
 		Screen.print(x: Self.middleX - (title.count / 2), y: yStart, title.styled(with: .bold))
-		while true {
+
+		var shouldExit = false
+		while !shouldExit {
 			yStart = 6
-			var lastIndex = SettingsScreenOptions.allCases.count - 1
+
+			if await before() {
+				continue
+			}
+
+			var lastIndex = options.count - 1
 			for (index, option) in options.enumerated() {
 				yStart = await print(y: yStart, index: index, option.label)
 				lastIndex = index
 			}
 
-			var skip = lastIndex + 1
-			yStart = await print(y: yStart, index: lastIndex + 2, "Quit")
+			let skip = lastIndex + 1
+			yStart = await print(y: yStart + 1, index: lastIndex + 2, "Quit")
 
 			await drawBorders(endY: yStart + 2, longestXLine: longestXLine)
-			await input(skip: &skip, lastIndex: lastIndex)
+
+			await input(skip: skip, lastIndex: lastIndex, shouldExit: &shouldExit)
 		}
 	}
 }
