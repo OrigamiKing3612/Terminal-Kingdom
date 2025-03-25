@@ -20,6 +20,15 @@ jobs:
       - name: Build
         run: |
           docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace swift:6.0.3-focal swift build -c release -Xswiftc -static-stdlib
+      - name: Upload Linux Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-build
+          path: |
+            .build/x86_64-unknown-linux-gnu/release/TerminalKingdom_TerminalKingdom
+            .build/x86_64-unknown-linux-gnu/release/TerminalKingdom_TerminalKingdom.resources
+          if-no-files-found: error
+          retention-days: 2
   build_macos:
     strategy:
       fail-fast: true
@@ -34,6 +43,14 @@ jobs:
       - name: Build
         run: |
           swift build -c release
+      - name: Upload macOS Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-build
+          path: |
+            .build/arm64-apple-macosx/release/TerminalKingdom
+            .build/arm64-apple-macosx/release/TerminalKingdom_TerminalKingdom.bundle
+          retention-days: 2
   build_windows:
     strategy:
       fail-fast: true
@@ -50,3 +67,9 @@ jobs:
         shell: pwsh
         run: |
           swift build -c release
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: .build/release/
+          retention-days: 2
