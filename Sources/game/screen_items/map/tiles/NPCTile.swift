@@ -32,7 +32,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 		}
 	}
 
-	static func move(position: NPCPosition) async {
+	static func move(position: NPCMovingPosition) async {
 		// Logger.debug("\(#function) \(#file):\(#line): Moving NPC from \(position.x), \(position.y)")
 		#warning("bug, when the npc trys to move when you enter another map and this is still running")
 		let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
@@ -120,7 +120,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 
 			let currentTile = await MapBox.mapType.map.grid[newNpcPosition.y][newNpcPosition.x] as! MapTile
 
-			let newPosition = NPCPosition(
+			let newPosition = NPCMovingPosition(
 				x: newNpcPosition.x,
 				y: newNpcPosition.y,
 				mapType: position.mapType,

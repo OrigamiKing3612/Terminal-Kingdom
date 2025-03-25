@@ -3,10 +3,10 @@ import Foundation
 actor Village: Hashable, Identifiable, Equatable {
 	let id: UUID
 	var name: String
-	var npcsInVillage: Set<UUID> = []
 	var data: VillageData = .init()
 	var hasCourthouse: Bool = false
 	var courthouseID: UUID?
+	private(set) var npcs: [UUID: NPC] = [:]
 	private(set) var buildings: [UUID: any BuildingProtocol] = [:]
 	private(set) var radius: Int = 40
 	var foodCount: Int = 0
@@ -19,9 +19,9 @@ actor Village: Hashable, Identifiable, Equatable {
 		return totalPots
 	}
 
-	init(id: UUID = UUID(), name: String, buildings: [any BuildingProtocol], npcsInVillage: Set<UUID> = []) {
+	init(id: UUID = UUID(), name: String, buildings: [any BuildingProtocol], npcs: [UUID: NPC] = [:]) {
 		self.id = id
-		self.npcsInVillage = npcsInVillage
+		self.npcs = npcs
 		self.buildings = Dictionary(uniqueKeysWithValues: buildings.map { ($0.id, $0) })
 		self.name = name
 	}
@@ -69,20 +69,24 @@ actor Village: Hashable, Identifiable, Equatable {
 		buildings.removeValue(forKey: buildingID)
 	}
 
-	func add(npc: NPC) async {
-		npcsInVillage.insert(npc.id)
+	func getNPCs() -> [NPC] {
+		Array(npcs.values)
 	}
 
-	func add(npc: UUID) async {
-		npcsInVillage.insert(npc)
+	func getNPC(for position: NPCPosition) -> NPC? {
+		npcs.values.first { $0.position == position }
+	}
+
+	func add(npc: NPC) async {
+		npcs[npc.id] = npc
 	}
 
 	func remove(npc: NPC) async {
-		npcsInVillage.remove(npc.id)
+		npcs.removeValue(forKey: npc.id)
 	}
 
 	func remove(npcID: UUID) async {
-		npcsInVillage.remove(npcID)
+		npcs.removeValue(forKey: npcID)
 	}
 
 	func set(name: String) async {
@@ -93,7 +97,7 @@ actor Village: Hashable, Identifiable, Equatable {
 	}
 
 	func has(npcID: UUID) -> Bool {
-		npcsInVillage.contains(npcID)
+		npcs[npcID] != nil
 	}
 
 	func update(buildingID: UUID, newBuilding: any BuildingProtocol) async {
@@ -105,6 +109,10 @@ actor Village: Hashable, Identifiable, Equatable {
 			await building.addPot()
 			buildings[buildingID] = building
 		}
+	}
+
+	func set(npc: NPC) async {
+		npcs[npc.id] = npc
 	}
 
 	nonisolated func hash(into hasher: inout Hasher) {

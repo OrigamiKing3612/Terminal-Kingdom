@@ -12,7 +12,7 @@ actor Game {
 	var kingdom: Kingdom = .init()
 	private(set) var messages: [String] = []
 	private(set) var crops: Set<TilePosition> = []
-	private(set) var movingNpcs: Set<NPCPosition> = [] {
+	private(set) var movingNpcs: Set<NPCMovingPosition> = [] {
 		didSet {} // TODO: for some reason this is fixing where the NPCs are not moving
 	}
 
@@ -32,6 +32,7 @@ actor Game {
 	var bottomLeftCorner: String { config.useNerdFont ? "└" : "=" }
 	var bottomRightCorner: String { config.useNerdFont ? "┘" : "=" }
 	private(set) var hasStartedCropQueue: Bool = false
+	private(set) var hasStartedNPCMovingQueue: Bool = false
 	private(set) var hasStartedNPCQueue: Bool = false
 
 	//     private(set) var map = MapGen.generateFullMap()
@@ -78,23 +79,27 @@ actor Game {
 		crops.remove(position)
 	}
 
-	func addNPC(_ position: NPCPosition) async {
+	func addNPC(_ position: NPCMovingPosition) async {
 		// TODO: cancel the crop queue if crops is empty and remove a crop position if it is fully grown
 		movingNpcs.insert(position)
 		BackgroundTasks.startNPCMovingQueue()
 	}
 
-	func updateNPC(oldPosition: NPCPosition, newPosition: NPCPosition) async {
+	func updateNPC(oldPosition: NPCMovingPosition, newPosition: NPCMovingPosition) async {
 		movingNpcs.remove(oldPosition)
 		await addNPC(newPosition)
 	}
 
-	func removeNPC(_ position: NPCPosition) async {
+	func removeNPC(_ position: NPCMovingPosition) async {
 		movingNpcs.remove(position)
 	}
 
 	func setHasStartedNPCMovingQueue(_ newHasStartedNPCMovingQueue: Bool) async {
-		hasStartedNPCQueue = newHasStartedNPCMovingQueue
+		hasStartedNPCMovingQueue = newHasStartedNPCMovingQueue
+	}
+
+	func setHasStartedNPCQueue(_ newHasStartedNPCQueue: Bool) async {
+		hasStartedNPCQueue = newHasStartedNPCQueue
 	}
 
 	func setHasStartedCropQueue(_ newHasStartedCropQueue: Bool) async {
@@ -153,6 +158,10 @@ actor Game {
 	func renameKingdom(newName: String) async {
 		await kingdom.set(name: newName)
 	}
+
+	func getNPC(for position: NPCPosition) async -> NPC? {
+		await kingdom.getNPC(for: position)
+	}
 }
 
 // TODO: update because Game is not codable
@@ -174,6 +183,12 @@ struct TilePosition: Codable, Hashable {
 }
 
 struct NPCPosition: Codable, Hashable {
+	var x: Int
+	var y: Int
+	var mapType: MapType
+}
+
+struct NPCMovingPosition: Codable, Hashable {
 	var x: Int
 	var y: Int
 	var mapType: MapType
