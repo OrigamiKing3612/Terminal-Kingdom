@@ -112,7 +112,11 @@ enum Screen {
 
 	static func popUp(_ popUp: PopUp) async {
 		// Screen.clear()
-		await popUp.render()
+		if let optionsPopUp = popUp as? OptionsPopUpProtocol {
+			await optionsPopUp.render()
+		} else {
+			await popUp.render()
+		}
 	}
 }
 

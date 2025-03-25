@@ -3,7 +3,7 @@ import Foundation
 protocol PopUp: AnyObject {
 	var longestXLine: Int { get set }
 	var title: String { get set }
-	func content(y: Int) async
+	func content(yStart: inout Int) async
 }
 
 extension PopUp {
@@ -15,9 +15,10 @@ extension PopUp {
 
 	func render() async {
 		longestXLine = title.count
-		let y = 3
-		Screen.print(x: Self.middleX - (title.count / 2), y: y, title.styled(with: .bold))
-		await content(y: y + 3)
+		var yStart = 3
+		Screen.print(x: Self.middleX - (title.count / 2), y: yStart, title.styled(with: .bold))
+		yStart += 3
+		await content(yStart: &yStart)
 	}
 
 	func drawBorders(endY: Int, longestXLine _longestXLine: Int) async {

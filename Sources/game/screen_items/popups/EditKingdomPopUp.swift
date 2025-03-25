@@ -13,7 +13,7 @@ class EditKingdomPopUp: TypablePopup {
 		self.title = await "Editing \(kingdom.name)"
 	}
 
-	func content(y: Int) async {
+	func content(yStart: inout Int) async {
 		while true {
 			if isEditing {
 				await textInput {
@@ -21,7 +21,6 @@ class EditKingdomPopUp: TypablePopup {
 				}
 				continue
 			}
-			var yStart = y
 			let options: [MessageOption] = [
 				.init(label: "Rename", action: {
 					self.input = await self.kingdom.name
