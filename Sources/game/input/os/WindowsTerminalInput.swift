@@ -23,12 +23,6 @@ enum WindowsTerminalInput {
 			let controlState = keyEvent.dwControlKeyState
 			let isShiftHeld = (controlState & DWORD(SHIFT_PRESSED)) != 0
 
-			if isShiftHeld {
-				Logger.debug("Is pressing shift")
-			} else {
-				Logger.debug("Not pressing shift")
-			}
-
 			switch vkCode {
 				case 0x1B: return .esc
 				case 0x08: return .backspace
@@ -38,14 +32,11 @@ enum WindowsTerminalInput {
 					if isShiftHeld {
 						return .back_tab
 					}
-
-					Logger.debug("Tab")
 					return .tab
 				case 0x2F: return .forward_slash
 				case 0xBF: return .questionMark
 				case 0x30 ... 0x39, 0x41 ... 0x5A:
 					if let scalar = mapVirtualKeyToCharacter(vkCode: vkCode) {
-						Logger.debug("Pressed letter key")
 						if isShiftHeld {
 							return KeyboardKeys(rawValue: scalar) ?? .unknown
 						} else {
