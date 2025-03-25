@@ -10,6 +10,7 @@ protocol OptionsPopUpProtocol: PopUp, AnyObject {
 }
 
 extension OptionsPopUpProtocol {
+	var startY: Int { 3 }
 	func print(y: Int, index: Int, _ text: String) async -> Int {
 		let isSelected = selectedOptionIndex == index
 		let textToPrint = await "\(isSelected ? "\(Game.shared.config.icons.selectedIcon) " : "  ")\(text)"

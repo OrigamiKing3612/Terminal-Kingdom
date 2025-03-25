@@ -1,13 +1,12 @@
 import Foundation
 
-class EditKingdomPopUp: OptionsPopUpProtocol, TypablePopup {
+class EditKingdomPopUp: OptionsPopUpProtocol {
 	var longestXLine: Int = 0
-	var isEditing: Bool = false
-	var input: String = ""
 	var title: String
 	var kingdom: Kingdom
 	var selectedOptionIndex: Int = 0
 	var options: [MessageOption]
+	var startY: Int = 3
 
 	init() async {
 		self.kingdom = await Game.shared.kingdom
@@ -16,21 +15,16 @@ class EditKingdomPopUp: OptionsPopUpProtocol, TypablePopup {
 	}
 
 	private func rename() async {
-		input = await kingdom.name
-		isEditing = true
+		await Screen.popUp(TypingPopUp(title: "Rename \(kingdom.name)", longestXLine: longestXLine, input: kingdom.name, startY: options.count + 16) { input in
+			await Game.shared.renameKingdom(newName: input)
+		})
+		kingdom = await Game.shared.kingdom
 	}
 
 	func before() async -> Bool {
 		options = [
 			.init(label: "Rename", action: rename),
 		]
-		if isEditing {
-			await textInput {
-				await Game.shared.renameKingdom(newName: input)
-				isEditing = false
-			}
-			return true
-		}
 		return false
 	}
 

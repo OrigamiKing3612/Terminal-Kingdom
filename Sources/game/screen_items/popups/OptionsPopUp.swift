@@ -1,6 +1,8 @@
 import Foundation
 
 class OptionsPopUp: OptionsPopUpProtocol {
+	var startY: Int = 3
+
 	var longestXLine: Int = 0
 	var selectedOptionIndex = 0
 

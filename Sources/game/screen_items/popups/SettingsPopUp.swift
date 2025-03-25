@@ -4,6 +4,7 @@ class SettingsPopUp: PopUp {
 	var longestXLine: Int = 0
 	private var selectedOptionIndex = 0
 	private var config = Config()
+	var startY: Int = 3
 	var title: String = "Settings"
 
 	func content(yStart: inout Int) async {

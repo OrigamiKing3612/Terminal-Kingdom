@@ -4,6 +4,7 @@ class HelpPopUp: PopUp {
 	var longestXLine: Int = 0
 	private nonisolated(unsafe) var selectedOptionIndex = 0
 	var title: String = "Help"
+	var startY: Int = 3
 
 	func content(yStart: inout Int) async {
 		// TODO: change depending on user's config
