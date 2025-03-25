@@ -25,11 +25,10 @@ jobs:
         with:
           name: linux-build
           path: |
-            .build/release/
+            .build/x86_64-unknown-linux-gnu/release/TerminalKingdom_TerminalKingdom
+            .build/x86_64-unknown-linux-gnu/release/TerminalKingdom_TerminalKingdom.resources
           if-no-files-found: error
           retention-days: 2
-          exclude: |
-            .build/release/ModuleCache
   build_macos:
     strategy:
       fail-fast: true
@@ -48,7 +47,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: macos-build
-          path: .build/release/
+          path: |
+            .build/arm64-apple-macosx/release/TerminalKingdom
+            .build/arm64-apple-macosx/release/TerminalKingdom_TerminalKingdom.bundle
           retention-days: 2
   build_windows:
     strategy:
