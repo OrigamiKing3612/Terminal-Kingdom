@@ -57,7 +57,7 @@ enum Quest: Codable, Equatable, Hashable {
 					} else {
 						"Go get \(count) lumber"
 					}
-				case .blacksmith1: "Go get iron from the Mine and bring it to the Blacksmith"
+				case .blacksmith1: "Go get iron from the Miner and bring it to the Blacksmith"
 				case .blacksmith2: "Go collect 20 lumber and band bring it to the Blacksmith"
 				case .blacksmith3: "Bring lumber to the Carpenter and bring it back to the Blacksmith"
 				case .blacksmith4: "Get 5 coal from the Miner"

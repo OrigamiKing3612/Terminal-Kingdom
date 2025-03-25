@@ -1,8 +1,10 @@
 import Foundation
 
-protocol PopUp {
+protocol PopUp: AnyObject {
 	var longestXLine: Int { get set }
-	func render() async
+	var title: String { get set }
+	var startY: Int { get set }
+	func content(yStart: inout Int) async
 }
 
 extension PopUp {
@@ -11,6 +13,14 @@ extension PopUp {
 	nonisolated(unsafe) static var startY: Int { 0 }
 	nonisolated(unsafe) static var middleY: Int { Screen.rows / 2 }
 	nonisolated(unsafe) static var endY: Int { Screen.rows }
+
+	func render() async {
+		longestXLine = title.count
+		var yStart = startY
+		Screen.print(x: Self.middleX - (title.count / 2), y: yStart, title.styled(with: .bold))
+		yStart += 3
+		await content(yStart: &yStart)
+	}
 
 	func drawBorders(endY: Int, longestXLine _longestXLine: Int) async {
 		let x = Self.middleX
@@ -25,21 +35,19 @@ extension PopUp {
 		let isOdd = longestXLine % 2 != 0
 		let addedLength = isOdd ? 1 : 0
 
-		for y in 0 ... endY + 1 {
+		for y in startY - 3 ... endY + 1 {
 			Screen.print(x: x - (longestXLine / 2) - 1, y: 1 + y, verticalLine)
 
 			Screen.print(x: x + (longestXLine / 2) + addedLength, y: 1 + y, verticalLine)
 		}
-		Screen.print(x: x - (longestXLine / 2) - 1, y: 0, topLeftCorner + String(repeating: horizontalLine, count: longestXLine) + topRightCorner)
+		Screen.print(x: x - (longestXLine / 2) - 1, y: startY - 3, topLeftCorner + String(repeating: horizontalLine, count: longestXLine) + topRightCorner)
 		Screen.print(x: x - (longestXLine / 2) - 1, y: endY + 2, bottomLeftCorner + String(repeating: horizontalLine, count: longestXLine) + bottomRightCorner)
 	}
 
 	func print(y: Int, _ text: String) -> (yStart: Int, longestXLine: Int) {
 		var longestXLine = longestXLine
 		Screen.print(x: Self.middleX - (text.withoutStyles.count / 2), y: y, text)
-		if text.withoutStyles.count > longestXLine {
-			longestXLine = text.withoutStyles.count
-		}
+		longestXLine = max(longestXLine, text.withoutStyles.count)
 		return (y + 1, longestXLine)
 	}
 }

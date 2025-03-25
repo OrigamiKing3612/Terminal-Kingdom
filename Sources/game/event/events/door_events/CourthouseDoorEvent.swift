@@ -6,8 +6,7 @@ struct CourthouseDoorEvent: DoorEvent {
 			.init(label: "Go Inside", action: { await goInside(tile: tile) }),
 		]
 		options.append(.init(label: "Quit", action: {}))
-		let selectedOption = await MessageBox.messageWithOptions("What would you like to do?", speaker: .game, options: options)
-		await selectedOption.action()
+		await MessageBox.messageWithOptions("What would you like to do?", options: options)
 	}
 
 	static func goInside(tile _: DoorTile) async {

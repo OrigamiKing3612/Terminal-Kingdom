@@ -1,6 +1,11 @@
 enum SVKingNPC: StartingVillageNPC {
 	static func talk() async {
-		await NPC.setTalkedTo(after: firstDialogue)
+		var shouldReturn = false
+		await NPC.setTalkedTo {
+			await firstDialogue()
+			shouldReturn = true
+		}
+		if shouldReturn { return }
 		if await Game.shared.stages.builder.stage4Stages == .talkToKing {
 			await MessageBox.message("Hello \(NPCJob.king.render), I am the builders apprentice, we were wondering if we could build a new house in the village?", speaker: .player)
 			await MessageBox.message("Hello \(Game.shared.player.name)! Yes that is a good idea.", speaker: .king)
@@ -12,33 +17,11 @@ enum SVKingNPC: StartingVillageNPC {
 	}
 
 	static func help() async {
-		await MessageBox.message("I'm here to help!", speaker: .king)
-		await MessageBox.message("Normal mode:".styled(with: .bold), speaker: .king)
-		if await Game.shared.config.wasdKeys {
-			await MessageBox.message("  Use \(KeyboardKeys.w.render)\(KeyboardKeys.a.render)\(KeyboardKeys.s.render)\(KeyboardKeys.d.render) keys to move around", speaker: .king)
-		} else if await Game.shared.config.vimKeys {
-			await MessageBox.message("  Use \(KeyboardKeys.h.render)\(KeyboardKeys.j.render)\(KeyboardKeys.k.render)\(KeyboardKeys.l.render) keys to move around", speaker: .king)
-		} else if await Game.shared.config.arrowKeys {
-			await MessageBox.message("  Use the \("arrow keys".styled(with: .bold)) to move around", speaker: .king)
+		await MapBox.hideMapBox()
+		await Screen.popUp(HelpPopUp(showBuiler: Game.shared.player.canBuild)) {
+			await MapBox.mapBox()
 		}
-		await MessageBox.message("  Press \(KeyboardKeys.space.render) or \(KeyboardKeys.enter.render) to interact with objects", speaker: .king)
-		await MessageBox.message("  Press \(KeyboardKeys.Q.render) to quit", speaker: .king)
-		await MessageBox.message("Inventory mode:".styled(with: [.bold, .yellow]), speaker: .king)
-		await MessageBox.message("  Press \(KeyboardKeys.i.render) to open your inventory", speaker: .king)
-		await MessageBox.message("  Press \(KeyboardKeys.up.render) or \(KeyboardKeys.down.render) to cycle through items", speaker: .king)
-		await MessageBox.message("  Press \(KeyboardKeys.tab.render) and \(KeyboardKeys.back_tab.render) to cycle through items", speaker: .king)
-		await MessageBox.message("  Press \(KeyboardKeys.d.render) to destroy an item", speaker: .king)
-		await MessageBox.message("  Press \(KeyboardKeys.questionMark.render) for help", speaker: .king)
-		if await Game.shared.player.canBuild {
-			await MessageBox.message("Build mode:".styled(with: [.bold, .blue]), speaker: .king)
-			await MessageBox.message("  Press \(KeyboardKeys.b.render) to enter build mode", speaker: .king)
-			await MessageBox.message("  Press \(KeyboardKeys.e.render) to destroy", speaker: .king)
-			await MessageBox.message("  Press \(KeyboardKeys.tab.render) and \(KeyboardKeys.back_tab.render) to cycle through buildable items", speaker: .king)
-			await MessageBox.message("  Press \(KeyboardKeys.questionMark.render) for help", speaker: .king)
-		}
-		await MessageBox.message("Press \(KeyboardKeys.zero.render) to reload the UI", speaker: .king)
-		await MessageBox.message("Press \(KeyboardKeys.esc.render) to exit any mode", speaker: .king)
-		await MessageBox.message("Press \(KeyboardKeys.W.render) or \(KeyboardKeys.S.render) to scroll up and down in the message box", speaker: .king)
+		await MapBox.showMapBox()
 	}
 
 	static func firstDialogue() async {

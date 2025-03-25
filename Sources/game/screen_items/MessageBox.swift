@@ -210,8 +210,17 @@ enum MessageBox {
 		return Int(input.trimmingCharacters(in: .whitespacesAndNewlines)) ?? 0
 	}
 
+	static func messageWithOptions(_ text: String, options: [MessageOption]) async {
+		let popUp = OptionsPopUp(title: text, options: options)
+		await Screen.popUp(popUp)
+		await MapBox.mapBox()
+	}
+
 	static func messageWithOptions(_ text: String, speaker: MessageSpeakers, options: [MessageOption], hideInventoryBox: Bool = true) async -> MessageOption {
-		await messageWithOptions(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox)
+		if speaker == .game {
+			Logger.warning("A messageWithOptions with speaker game was used instead of a popup.")
+		}
+		return await messageWithOptions(text, speaker: speaker.render, options: options, hideInventoryBox: hideInventoryBox)
 	}
 
 	static func messageWithOptions(_ text: String, speaker: NPCJob, options: [MessageOption], hideInventoryBox: Bool = true) async -> MessageOption {

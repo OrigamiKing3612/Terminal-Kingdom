@@ -109,6 +109,10 @@ enum Screen {
 		await popUp.render()
 		await after()
 	}
+
+	static func popUp(_ popUp: PopUp) async {
+		await popUp.render()
+	}
 }
 
 extension MapBox {

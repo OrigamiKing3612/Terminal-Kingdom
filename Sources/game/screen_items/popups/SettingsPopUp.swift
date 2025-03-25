@@ -2,19 +2,18 @@ import Foundation
 
 class SettingsPopUp: PopUp {
 	var longestXLine: Int = 0
-	private nonisolated(unsafe) var selectedSettingOptionIndex = 0
-	private nonisolated(unsafe) var config = Config()
+	private var selectedOptionIndex = 0
+	private var config = Config()
+	var startY: Int = 3
+	var title: String = "Settings"
+	var yStart = 0
 
-	func render() async {
+	func content(yStart startY: inout Int) async {
 		// TODO: reload config after saving so this isn't async
 		config = await Config.load()
-		let text = "Settings"
-		let y = 3
 		while true {
-			Screen.clear()
-			Screen.print(x: Self.middleX - (text.count / 2), y: y, text.styled(with: .bold))
+			yStart = startY
 			var lastIndex = SettingsScreenOptions.allCases.count - 1
-			var yStart = 3 + y
 			for (index, option) in SettingsScreenOptions.allCases.enumerated() {
 				yStart = await print(y: yStart, index: index, text: option.label, configOption: option.configOption(config))
 				lastIndex = index
@@ -29,24 +28,24 @@ class SettingsPopUp: PopUp {
 			let key = TerminalInput.readKey()
 			switch key {
 				case .up, .w, .k, .back_tab:
-					selectedSettingOptionIndex = max(0, selectedSettingOptionIndex - 1)
-					if selectedSettingOptionIndex == skip {
-						selectedSettingOptionIndex = selectedSettingOptionIndex - 1
+					selectedOptionIndex = max(0, selectedOptionIndex - 1)
+					if selectedOptionIndex == skip {
+						selectedOptionIndex = selectedOptionIndex - 1
 					}
 				case .down, .s, .j, .tab:
-					selectedSettingOptionIndex = min(SettingsScreenOptions.allCases.count - 1 + 3, selectedSettingOptionIndex + 1)
-					if selectedSettingOptionIndex == skip {
-						selectedSettingOptionIndex = selectedSettingOptionIndex + 1
+					selectedOptionIndex = min(SettingsScreenOptions.allCases.count - 1 + 3, selectedOptionIndex + 1)
+					if selectedOptionIndex == skip {
+						selectedOptionIndex = selectedOptionIndex + 1
 					}
-				case .enter:
-					if selectedSettingOptionIndex == lastIndex + 2 {
+				case .enter, .space:
+					if selectedOptionIndex == lastIndex + 2 {
 						await config.write()
 						await Game.shared.loadConfig()
 						return
-					} else if selectedSettingOptionIndex == lastIndex + 3 {
+					} else if selectedOptionIndex == lastIndex + 3 {
 						return
 					} else {
-						SettingsScreenOptions.allCases[selectedSettingOptionIndex].action(config: &config)
+						SettingsScreenOptions.allCases[selectedOptionIndex].action(config: &config)
 					}
 				default:
 					break
@@ -55,7 +54,7 @@ class SettingsPopUp: PopUp {
 	}
 
 	private func print(y: Int, index: Int, text: String, configOption: String) async -> Int {
-		let isSelected = selectedSettingOptionIndex == index
+		let isSelected = selectedOptionIndex == index
 		let configOptionToPrint = configOption == "" ? "" : ": \(configOption)"
 		let textToPrint = await "\(isSelected ? "\(Game.shared.config.icons.selectedIcon) " : "  ")\(text)\(configOptionToPrint)"
 

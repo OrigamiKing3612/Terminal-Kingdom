@@ -45,7 +45,6 @@ enum UseAnvil {
 				}))
 			}
 		}
-		let selectedOption = await MessageBox.messageWithOptions("What would you like to make?", speaker: .game, options: options)
-		await selectedOption.action()
+		await MessageBox.messageWithOptions("What would you like to make?", options: options)
 	}
 }

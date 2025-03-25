@@ -51,7 +51,7 @@ enum NPCJob: Codable, Hashable, Equatable {
 	}
 }
 
-enum MessageSpeakers {
+enum MessageSpeakers: Equatable {
 	case player
 	case game
 	case dev
