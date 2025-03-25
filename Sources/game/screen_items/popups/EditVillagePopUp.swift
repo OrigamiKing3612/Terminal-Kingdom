@@ -21,9 +21,12 @@ class EditVillagePopUp: OptionsPopUpProtocol {
 		village = await Game.shared.kingdom.villages[village.id]!
 	}
 
+	private func editNPCs() async {}
+
 	func before() async -> Bool {
 		options = [
 			.init(label: "Rename", action: rename),
+			.init(label: "Edit NPCs", action: editNPCs),
 		]
 		return false
 	}
