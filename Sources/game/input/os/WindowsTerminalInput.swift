@@ -19,6 +19,7 @@ enum WindowsTerminalInput {
 			} while eventsRead == 0 || inputRecord.EventType != KEY_EVENT || inputRecord.Event.KeyEvent.bKeyDown == false
 
 			let vkCode = inputRecord.Event.KeyEvent.wVirtualKeyCode
+			let keyEvent = inputRecord.Event.KeyEvent
 			let controlState = keyEvent.dwControlKeyState
 			let isShiftHeld = (controlState & DWORD(SHIFT_PRESSED)) != 0
 
