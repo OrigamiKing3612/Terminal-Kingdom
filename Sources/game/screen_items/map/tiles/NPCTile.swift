@@ -2,31 +2,34 @@ import Foundation
 
 struct NPCTile: Codable, Hashable, Equatable {
 	let id: UUID
-	var npc: NPC
+	var npcID: UUID
+    var villageID: UUID
+    var npc: NPC? {
+        get async {
+            await Game.shared.kingdom.villages[villageID]?.npcs[npcID]
+        }
+    }
 
-	init(id: UUID = UUID()) {
+	init(id: UUID = UUID(), npcID: UUID, villageID: UUID) {
 		self.id = id
-		self.npc = .init(isStartingVillageNPC: false, villageID: id)
-	}
-
-	init(id: UUID = UUID(), npc: NPC) {
-		self.id = id
-		self.npc = npc
+		self.npcID = npcID
+        self.villageID = villageID
 	}
 
 	static func renderNPC(tile: NPCTile) async -> String {
-		if !tile.npc.hasTalkedToBefore {
-			if let job = tile.npc.job, !job.isHelper {
+        guard let npc = await tile.npc else { return "?" }
+		if !npc.hasTalkedToBefore {
+			if let job = npc.job, !job.isHelper {
 				return "!".styled(with: [.bold, .red])
 			}
 		}
-		switch tile.npc.job {
+		switch npc.job {
 			default:
 				// TODO: Not sure if this will stay
-				if tile.npc.positionToWalkTo != nil {
+				if npc.positionToWalkTo != nil {
 					return await (Game.shared.config.useNerdFont ? "" : "N").styled(with: .bold)
 				} else {
-					let nerdFontSymbol = tile.npc.gender == .male ? "󰙍" : "󰙉"
+					let nerdFontSymbol = npc.gender == .male ? "󰙍" : "󰙉"
 					return await (Game.shared.config.useNerdFont ? nerdFontSymbol : "N").styled(with: .bold)
 				}
 		}
@@ -34,10 +37,10 @@ struct NPCTile: Codable, Hashable, Equatable {
 
 	static func move(position: NPCMovingPosition) async {
 		// Logger.debug("\(#function) \(#file):\(#line): Moving NPC from \(position.x), \(position.y)")
-		#warning("bug, when the npc trys to move when you enter another map and this is still running")
+		#warning("bug, when the npcID trys to move when you enter another map and this is still running")
 		let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
 
-		if case let .npc(tile: tile) = npcTile.type, let positionToWalkTo = tile.npc.positionToWalkTo {
+		if case let .npcID(tile: tile) = npcTile.type, let positionToWalkTo = tile.npcID.positionToWalkTo {
 			// Reached the destination
 			if positionToWalkTo == .init(x: position.x, y: position.y, mapType: position.mapType) {
 				await Game.shared.removeNPC(position)
@@ -86,9 +89,9 @@ struct NPCTile: Codable, Hashable, Equatable {
 
 								var newGrid = await Game.shared.maps.customMaps[customMapIndex].grid
 								var newTile = tile
-								newTile.npc.removePostion()
+								newTile.npcID.removePostion()
 								newGrid[npcY][npcX] = MapTile(
-									type: .npc(tile: newTile),
+									type: .npcID(tile: newTile),
 									isWalkable: npcTile.isWalkable,
 									event: npcTile.event,
 									biome: npcTile.biome
@@ -99,13 +102,13 @@ struct NPCTile: Codable, Hashable, Equatable {
 						}
 
 					} else {}
-					// put npc in the custom map
+					// put npcID in the custom map
 					return
 				} else {
 					var npcNew = tile
-					npcNew.npc.removePostion()
+					npcNew.npcID.removePostion()
 					await MapBox.updateTile(newTile: MapTile(
-						type: .npc(tile: npcNew),
+						type: .npcID(tile: npcNew),
 						isWalkable: npcTile.isWalkable,
 						event: npcTile.event,
 						biome: npcTile.biome
@@ -144,7 +147,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 						x: newNpcPosition.x,
 						y: newNpcPosition.y,
 						tile: MapTile(
-							type: .npc(tile: tile),
+							type: .npcID(tile: tile),
 							isWalkable: npcTile.isWalkable,
 							event: npcTile.event,
 							biome: npcTile.biome
@@ -169,17 +172,17 @@ extension NPCTile {
 	func encode(to encoder: any Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
 		try container.encode(id, forKey: .id)
-		try container.encode(npc, forKey: .npc)
+		try container.encode(npcID, forKey: .npcID)
 	}
 
 	enum CodingKeys: CodingKey {
 		case id
-		case npc
+		case npcID
 	}
 
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		self.id = try container.decode(UUID.self, forKey: .id)
-		self.npc = try container.decode(NPC.self, forKey: .npc)
+		self.npcID = try container.decode(NPC.self, forKey: .npcID)
 	}
 }
