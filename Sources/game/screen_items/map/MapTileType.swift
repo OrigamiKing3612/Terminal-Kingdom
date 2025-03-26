@@ -91,6 +91,9 @@ enum MapTileType: TileType {
 				return await Game.shared.config.icons.characterIcon.styled(with: [.blue, .bold])
 					.styled(with: .highlightYellow, styledIf: tile.type == .sand && use)
 					.styled(with: .highlightBrightWhite, styledIf: tile.type == .snow && use)
+					.styled(with: .highlightBrightCyan, styledIf: tile.type == .ice && use)
+					.styled(with: .highlightBrown, styledIf: tile.type == .mud && use)
+					.styled(with: [.highlightBrightBlue], styledIf: tile.type == .water && use)
 			case .sand:
 				if await Game.shared.config.useHighlightsForPlainLikeTiles {
 					return " ".styled(with: [.yellow, .inverted])

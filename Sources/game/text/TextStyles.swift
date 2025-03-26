@@ -109,6 +109,7 @@ enum TextStyles: String, CaseIterable {
 	case highlightMagenta
 	case highlightCyan
 	case highlightWhite
+	case highlightBrown
 
 	// Bright highlight colors
 	case highlightBrightBlack
@@ -156,6 +157,7 @@ enum TextStyles: String, CaseIterable {
 			case .brightMagenta: "\u{1B}[95m"
 			case .brightCyan: "\u{1B}[96m"
 			case .brightWhite: "\u{1B}[97m"
+			case .highlightBrown: "\u{1B}[48;5;94m"
 			case .highlightBrightBlack: "\u{1B}[100m"
 			case .highlightBrightRed: "\u{1B}[101m"
 			case .highlightBrightGreen: "\u{1B}[102m"
