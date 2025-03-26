@@ -2,6 +2,7 @@ import Foundation
 
 // TODO: async load and save
 struct Config {
+	private(set) nonisolated(unsafe) static var useColors: Bool = true
 	static let configFile: String = "config.json"
 	var useNerdFont: Bool = false
 
@@ -10,6 +11,12 @@ struct Config {
 	var wasdKeys: Bool = true
 	var icons: ConfigIcons = .init()
 	var maxLogLevel: LogLevel = .info
+	nonisolated(unsafe) var useHighlightsForPlainLikeTiles: Bool = false
+	var useColors: Bool = true {
+		didSet {
+			Config.useColors = useColors
+		}
+	}
 
 	init() {}
 
@@ -22,6 +29,10 @@ struct Config {
 
 	mutating func load() async {
 		self = await Config.load()
+	}
+
+	var setUseColors: Void {
+		Self.useColors = useColors
 	}
 
 	static func load() async -> Config {
@@ -114,6 +125,8 @@ extension Config: Codable {
 		try container.encode(wasdKeys, forKey: .wasdKeys)
 		try container.encode(icons, forKey: .icons)
 		try container.encode(maxLogLevel, forKey: .maxLogLevel)
+		try container.encode(useHighlightsForPlainLikeTiles, forKey: .useHighlightsForPlainLikeTiles)
+		try container.encode(useColors, forKey: .useColors)
 	}
 
 	enum CodingKeys: CodingKey {
@@ -123,6 +136,8 @@ extension Config: Codable {
 		case wasdKeys
 		case icons
 		case maxLogLevel
+		case useHighlightsForPlainLikeTiles
+		case useColors
 	}
 
 	init(from decoder: any Decoder) throws {
@@ -133,5 +148,7 @@ extension Config: Codable {
 		self.wasdKeys = try container.decode(Bool.self, forKey: .wasdKeys)
 		self.icons = try container.decode(ConfigIcons.self, forKey: .icons)
 		self.maxLogLevel = try container.decode(LogLevel.self, forKey: .maxLogLevel)
+		self.useHighlightsForPlainLikeTiles = try container.decode(Bool.self, forKey: .useHighlightsForPlainLikeTiles)
+		self.useColors = try container.decode(Bool.self, forKey: .useColors)
 	}
 }

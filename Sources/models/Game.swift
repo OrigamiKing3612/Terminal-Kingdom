@@ -3,13 +3,13 @@ import Foundation
 actor Game {
 	static var shared = Game()
 	nonisolated static let version = "0.0.1-alpha_4"
-	var config: Config = .init()
 	var player = PlayerCharacter()
 	var startingVillageChecks: StartingVillageChecks = .init()
 	var stages: Stages = .init()
 	var mapGen: MapGen = .init()
 	var maps: Maps = .init()
 	var kingdom: Kingdom = .init()
+	private(set) var config: Config = .init()
 	private(set) var messages: [String] = []
 	private(set) var crops: Set<TilePosition> = []
 	private(set) var movingNpcs: Set<NPCMovingPosition> = [] {
@@ -42,6 +42,7 @@ actor Game {
 	func initGame() async {
 		hasInited = true
 		config = await Config.load()
+		config.setUseColors
 		Logger.info("Max Log Level: \(config.maxLogLevel)")
 		map = await mapGen.generateFullMap()
 	}

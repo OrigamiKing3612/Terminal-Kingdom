@@ -74,36 +74,82 @@ enum MapTileType: TileType {
 	}
 
 	func render() async -> String {
+		let tile = await MapBox.tilePlayerIsOn
 		switch self {
-			case .plain: " "
-			case .water: "W".styled(with: .brightBlue)
-			case .path: "P"
-			case .tree: await (Game.shared.config.useNerdFont ? "󰐅" : "T").styled(with: .green)
-			case let .building(tile: buildingTile): await Game.shared.config.icons.buildingIcon.styled(with: .dim, styledIf: Game.shared.isBuilding && buildingTile.isPlacedByPlayer)
-			case .player: await Game.shared.config.icons.characterIcon.styled(with: [.blue, .bold])
-			case .sand: "S".styled(with: .yellow)
-			case let .door(doorTile): await DoorTile.renderDoor(tile: doorTile)
-			case .TOBEGENERATED: "."
-			case .playerStart: " "
-			case .snow: "S".styled(with: .bold)
-			case .snow_tree: await (Game.shared.config.useNerdFont ? "󰐅" : "T").styled(with: .bold)
-			case .cactus: await (Game.shared.config.useNerdFont ? "󰶵" : "C").styled(with: .brightGreen)
-			case .ice: "I".styled(with: .brightCyan)
-			case .fence: await (Game.shared.config.useNerdFont ? "f" : "f").styled(with: .brown)
-			case .gate: "g"
-			case let .crop(crop: cropTile): await CropTile.renderCrop(tile: cropTile)
-			case let .pot(tile: potTile): await PotTile.renderCropInPot(tile: potTile)
-			case let .station(station: station): StationTile.render(tile: station)
-			case .startMining: "M"
-			case let .npc(tile: tile): await NPCTile.renderNPC(tile: tile)
-			case .shopStandingArea(type: _): "."
-			case .biomeTOBEGENERATED(type: _): "/"
-			case .chest /* (tile: _) */: await (Game.shared.config.useNerdFont ? "󰜦" : "C").styled(with: .yellow)
-			case .bed: await Game.shared.config.useNerdFont ? "" : "B"
-			case .desk: await Game.shared.config.useNerdFont ? "󱈹" : "D"
-			case .stone: "S".styled(with: .dim)
-			case .lava: "L".styled(with: .red)
-			case .mud: "M".styled(with: .brown)
+			case .plain: return " "
+			case .water:
+				if await Game.shared.config.useHighlightsForPlainLikeTiles {
+					return " ".styled(with: [.brightBlue, .inverted])
+				} else {
+					return "W".styled(with: .brightBlue)
+				}
+			case .path: return "P"
+			case .tree: return await (Game.shared.config.useNerdFont ? "󰐅" : "T").styled(with: .green)
+			// case let .building(tile: buildingTile): return await "█".styled(with: .dim, styledIf: Game.shared.isBuilding && buildingTile.isPlacedByPlayer)
+			case let .building(tile: buildingTile): return await Game.shared.config.icons.buildingIcon.styled(with: .dim, styledIf: Game.shared.isBuilding && buildingTile.isPlacedByPlayer)
+			case .player:
+				let use = await Game.shared.config.useHighlightsForPlainLikeTiles
+				return await Game.shared.config.icons.characterIcon.styled(with: [.blue, .bold])
+					.styled(with: .highlightYellow, styledIf: tile.type == .sand && use)
+					.styled(with: .highlightBrightWhite, styledIf: tile.type == .snow && use)
+					.styled(with: .highlightBrightCyan, styledIf: tile.type == .ice && use)
+					.styled(with: .highlightBrown, styledIf: tile.type == .mud && use)
+					.styled(with: [.highlightBrightBlue], styledIf: tile.type == .water && use)
+			case .sand:
+				if await Game.shared.config.useHighlightsForPlainLikeTiles {
+					return " ".styled(with: [.yellow, .inverted])
+				} else {
+					return "S".styled(with: .yellow)
+				}
+			case let .door(doorTile): return await DoorTile.renderDoor(tile: doorTile)
+			case .TOBEGENERATED: return "."
+			case .playerStart: return " "
+			case .snow:
+				if await Game.shared.config.useHighlightsForPlainLikeTiles {
+					return " ".styled(with: [.brightWhite, .inverted])
+				} else {
+					return "S".styled(with: .bold)
+				}
+			case .snow_tree: return await (Game.shared.config.useNerdFont ? "󰐅" : "T").styled(with: .brightWhite)
+			case .cactus:
+				let use = await Game.shared.config.useHighlightsForPlainLikeTiles
+				return await (Game.shared.config.useNerdFont ? "󰶵" : "C").styled(with: .brightGreen).styled(with: .highlightYellow, styledIf: use)
+			case .ice:
+				if await Game.shared.config.useHighlightsForPlainLikeTiles {
+					return " ".styled(with: [.brightCyan, .inverted])
+				} else {
+					return "I".styled(with: .brightCyan)
+				}
+			case .fence: return await (Game.shared.config.useNerdFont ? "f" : "f").styled(with: .brown)
+			case .gate: return "g"
+			case let .crop(crop: cropTile): return await CropTile.renderCrop(tile: cropTile)
+			case let .pot(tile: potTile): return await PotTile.renderCropInPot(tile: potTile)
+			case let .station(station: station): return StationTile.render(tile: station)
+			case .startMining: return "M"
+			case let .npc(tile: tile): return await NPCTile.renderNPC(tile: tile)
+			case .shopStandingArea(type: _): return "."
+			case .biomeTOBEGENERATED(type: _): return "/"
+			case .chest /* (tile: _) */: return await (Game.shared.config.useNerdFont ? "󰜦" : "C").styled(with: .yellow)
+			case .bed: return await Game.shared.config.useNerdFont ? "" : "B"
+			case .desk: return await Game.shared.config.useNerdFont ? "󱈹" : "D"
+			case .stone:
+				if await Game.shared.config.useHighlightsForPlainLikeTiles {
+					return " ".styled(with: .highlightBrightBlack)
+				} else {
+					return "S".styled(with: .dim)
+				}
+			case .lava:
+				if await Game.shared.config.useHighlightsForPlainLikeTiles {
+					return " ".styled(with: [.red, .inverted])
+				} else {
+					return "L".styled(with: .red)
+				}
+			case .mud:
+				if await Game.shared.config.useHighlightsForPlainLikeTiles {
+					return " ".styled(with: [.brown, .inverted])
+				} else {
+					return "M".styled(with: .brown)
+				}
 		}
 	}
 
