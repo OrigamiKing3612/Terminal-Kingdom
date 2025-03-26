@@ -89,6 +89,10 @@ actor Village: Hashable, Identifiable, Equatable {
 		npcs.removeValue(forKey: npcID)
 	}
 
+	func removeNPCPosition(npcID: UUID) async {
+		npcs[npcID]?.removePostion()
+	}
+
 	func set(name: String) async {
 		self.name = name
 		Task.detached {

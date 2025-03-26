@@ -2,22 +2,31 @@ import Foundation
 
 struct NPCTile: Codable, Hashable, Equatable {
 	let id: UUID
-	var npcID: UUID
-    var villageID: UUID
-    var npc: NPC? {
-        get async {
-            await Game.shared.kingdom.villages[villageID]?.npcs[npcID]
-        }
-    }
+	let villageID: UUID
+	let npcID: UUID
+	var npc: NPC? {
+		get async {
+			await Game.shared.kingdom.villages[villageID]?.npcs[npcID]
+		}
+	}
 
-	init(id: UUID = UUID(), npcID: UUID, villageID: UUID) {
+	private init(id: UUID = UUID(), npcID: UUID, villageID: UUID) {
 		self.id = id
 		self.npcID = npcID
-        self.villageID = villageID
+		self.villageID = villageID
+	}
+
+	init(id: UUID = UUID(), npc: NPC, villageID: UUID) {
+		self.id = id
+		self.npcID = npc.id
+		self.villageID = villageID
+		Task {
+			await Game.shared.kingdom.villages[villageID]?.add(npc: npc)
+		}
 	}
 
 	static func renderNPC(tile: NPCTile) async -> String {
-        guard let npc = await tile.npc else { return "?" }
+		guard let npc = await tile.npc else { return "?" }
 		if !npc.hasTalkedToBefore {
 			if let job = npc.job, !job.isHelper {
 				return "!".styled(with: [.bold, .red])
@@ -40,7 +49,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 		#warning("bug, when the npcID trys to move when you enter another map and this is still running")
 		let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
 
-		if case let .npcID(tile: tile) = npcTile.type, let positionToWalkTo = tile.npcID.positionToWalkTo {
+		if case let .npc(tile: tile) = npcTile.type, let npc = await tile.npc, let positionToWalkTo = npc.positionToWalkTo {
 			// Reached the destination
 			if positionToWalkTo == .init(x: position.x, y: position.y, mapType: position.mapType) {
 				await Game.shared.removeNPC(position)
@@ -88,10 +97,9 @@ struct NPCTile: Codable, Hashable, Equatable {
 								}
 
 								var newGrid = await Game.shared.maps.customMaps[customMapIndex].grid
-								var newTile = tile
-								newTile.npcID.removePostion()
+								await Game.shared.kingdom.villages[tile.villageID]?.removeNPCPosition(npcID: tile.npcID)
 								newGrid[npcY][npcX] = MapTile(
-									type: .npcID(tile: newTile),
+									type: .npc(tile: .init(id: tile.id, npcID: tile.npcID, villageID: tile.villageID)),
 									isWalkable: npcTile.isWalkable,
 									event: npcTile.event,
 									biome: npcTile.biome
@@ -105,10 +113,9 @@ struct NPCTile: Codable, Hashable, Equatable {
 					// put npcID in the custom map
 					return
 				} else {
-					var npcNew = tile
-					npcNew.npcID.removePostion()
+					await Game.shared.kingdom.villages[tile.villageID]?.removeNPCPosition(npcID: tile.npcID)
 					await MapBox.updateTile(newTile: MapTile(
-						type: .npcID(tile: npcNew),
+						type: .npc(tile: .init(id: tile.id, npcID: tile.npcID, villageID: tile.villageID)),
 						isWalkable: npcTile.isWalkable,
 						event: npcTile.event,
 						biome: npcTile.biome
@@ -147,7 +154,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 						x: newNpcPosition.x,
 						y: newNpcPosition.y,
 						tile: MapTile(
-							type: .npcID(tile: tile),
+							type: .npc(tile: tile),
 							isWalkable: npcTile.isWalkable,
 							event: npcTile.event,
 							biome: npcTile.biome
@@ -173,16 +180,19 @@ extension NPCTile {
 		var container = encoder.container(keyedBy: CodingKeys.self)
 		try container.encode(id, forKey: .id)
 		try container.encode(npcID, forKey: .npcID)
+		try container.encode(villageID, forKey: .villageID)
 	}
 
 	enum CodingKeys: CodingKey {
 		case id
 		case npcID
+		case villageID
 	}
 
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		self.id = try container.decode(UUID.self, forKey: .id)
-		self.npcID = try container.decode(NPC.self, forKey: .npcID)
+		self.npcID = try container.decode(UUID.self, forKey: .npcID)
+		self.villageID = try container.decode(UUID.self, forKey: .villageID)
 	}
 }
