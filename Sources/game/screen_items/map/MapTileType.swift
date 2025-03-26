@@ -85,6 +85,7 @@ enum MapTileType: TileType {
 				}
 			case .path: return "P"
 			case .tree: return await (Game.shared.config.useNerdFont ? "󰐅" : "T").styled(with: .green)
+			// case let .building(tile: buildingTile): return await "█".styled(with: .dim, styledIf: Game.shared.isBuilding && buildingTile.isPlacedByPlayer)
 			case let .building(tile: buildingTile): return await Game.shared.config.icons.buildingIcon.styled(with: .dim, styledIf: Game.shared.isBuilding && buildingTile.isPlacedByPlayer)
 			case .player:
 				let use = await Game.shared.config.useHighlightsForPlainLikeTiles
