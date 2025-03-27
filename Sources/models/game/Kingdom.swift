@@ -33,12 +33,16 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 		await villages[villageID]?.add(building: building)
 	}
 
-	func add(npcID: UUID, villageID: UUID) async {
-		await villages[villageID]?.add(npc: npcID)
+	func add(npc: NPC, villageID: UUID) async {
+		await villages[villageID]?.add(npc: npc)
 	}
 
 	func set(castle: Building) {
 		self.castle = castle
+	}
+
+	func setNPC(villageID: UUID, npc: NPC) async {
+		await villages[villageID]?.set(npc: npc)
 	}
 
 	func removeCastle() {
@@ -70,7 +74,7 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 
 	func getVillageBuilding(for npc: NPC) async -> (any BuildingProtocol)? {
 		for village in villages.values {
-			if await village.npcsInVillage.contains(npc.id) {
+			if await village.npcs.contains(where: { $0.key == npc.id }) {
 				return await village.buildings.values.first { $0.id == npc.id }
 			}
 		}
@@ -103,7 +107,7 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 
 	func getVillage(for npc: NPC) async -> Village? {
 		for village in villages.values {
-			if await village.npcsInVillage.contains(npc.id) {
+			if await village.npcs.contains(where: { $0.key == npc.id }) {
 				return village
 			}
 		}
@@ -112,6 +116,19 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 
 	func renameVillage(id: UUID, name: String) async {
 		await villages[id]?.set(name: name)
+	}
+
+	func getNPC(for position: NPCPosition) async -> NPC? {
+		if let villageID = await isInsideVillage(x: position.x, y: position.y) {
+			return await villages[villageID]?.getNPC(for: position)
+		} else {
+			for village in villages {
+				if let npc = await village.value.getNPC(for: position) {
+					return npc
+				}
+			}
+		}
+		return nil
 	}
 
 	nonisolated func hash(into hasher: inout Hasher) {
@@ -151,7 +168,7 @@ actor KingdomData {
 	extension Village {
 		var print: String {
 			get async {
-				"Village(id: \(id), name: \(name), buildings: [\(buildings.values.map { "\($0)" }.joined(separator: ", "))], npcsInVillage: \(npcsInVillage), data: \(data))"
+				"Village(id: \(id), name: \(name), buildings: [\(buildings.values.map { "\($0)" }.joined(separator: ", "))], npcs: \(npcs), data: \(data))"
 			}
 		}
 	}

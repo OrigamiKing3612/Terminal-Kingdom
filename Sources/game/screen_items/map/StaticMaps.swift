@@ -55,6 +55,25 @@ enum StaticMaps {
 				return .blacksmith
 		}
 	}
+
+	static func fileNameToMapType(fileName: MapFileName) -> MapType {
+		switch fileName {
+			case .castle: .castle(side: .top)
+			case .blacksmith: .blacksmith
+			case .mine: .mine
+			case .shop: .shop
+			case .builder: .builder
+			case .hunting_area: .hunting_area
+			case .inventor: .inventor
+			case .house: .house
+			case .stable: .stable
+			case .farm: .farm(type: .main)
+			case .hospital: .hospital(side: .top)
+			case .carpenter: .carpenter
+			case .restaurant: .restaurant
+			case .potter: .potter
+		}
+	}
 }
 
 enum MapFileName: String, CaseIterable {

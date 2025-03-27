@@ -2,42 +2,58 @@ import Foundation
 
 struct NPCTile: Codable, Hashable, Equatable {
 	let id: UUID
-	var npc: NPC
-
-	init(id: UUID = UUID()) {
-		self.id = id
-		self.npc = .init(isStartingVillageNPC: false, villageID: id)
+	let villageID: UUID?
+	let npcID: UUID
+	var npc: NPC? {
+		get async {
+			if let villageID {
+				await Game.shared.kingdom.villages[villageID]?.npcs[npcID]
+			} else {
+				await Game.shared.startingVillage.npcs[npcID]
+			}
+		}
 	}
 
-	init(id: UUID = UUID(), npc: NPC) {
+	private init(id: UUID = UUID(), npcID: UUID, villageID: UUID) {
 		self.id = id
-		self.npc = npc
+		self.npcID = npcID
+		self.villageID = villageID
+	}
+
+	init(id: UUID = UUID(), npc: NPC, villageID: UUID) {
+		self.id = id
+		self.npcID = npc.id
+		self.villageID = villageID
+		Task {
+			await Game.shared.kingdom.villages[villageID]?.add(npc: npc)
+		}
 	}
 
 	static func renderNPC(tile: NPCTile) async -> String {
-		if !tile.npc.hasTalkedToBefore {
-			if let job = tile.npc.job, !job.isHelper {
+		guard let npc = await tile.npc else { return "?" }
+		if !npc.hasTalkedToBefore {
+			if let job = npc.job, !job.isHelper {
 				return "!".styled(with: [.bold, .red])
 			}
 		}
-		switch tile.npc.job {
+		switch npc.job {
 			default:
 				// TODO: Not sure if this will stay
-				if tile.npc.positionToWalkTo != nil {
+				if npc.positionToWalkTo != nil {
 					return await (Game.shared.config.useNerdFont ? "" : "N").styled(with: .bold)
 				} else {
-					let nerdFontSymbol = tile.npc.gender == .male ? "󰙍" : "󰙉"
+					let nerdFontSymbol = npc.gender == .male ? "󰙍" : "󰙉"
 					return await (Game.shared.config.useNerdFont ? nerdFontSymbol : "N").styled(with: .bold)
 				}
 		}
 	}
 
-	static func move(position: NPCPosition) async {
+	static func move(position: NPCMovingPosition) async {
 		// Logger.debug("\(#function) \(#file):\(#line): Moving NPC from \(position.x), \(position.y)")
-		#warning("bug, when the npc trys to move when you enter another map and this is still running")
+		#warning("bug, when the npcID trys to move when you enter another map and this is still running")
 		let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
 
-		if case let .npc(tile: tile) = npcTile.type, let positionToWalkTo = tile.npc.positionToWalkTo {
+		if case let .npc(tile: tile) = npcTile.type, let npc = await tile.npc, let positionToWalkTo = npc.positionToWalkTo {
 			// Reached the destination
 			if positionToWalkTo == .init(x: position.x, y: position.y, mapType: position.mapType) {
 				await Game.shared.removeNPC(position)
@@ -85,31 +101,37 @@ struct NPCTile: Codable, Hashable, Equatable {
 								}
 
 								var newGrid = await Game.shared.maps.customMaps[customMapIndex].grid
-								var newTile = tile
-								newTile.npc.removePostion()
-								newGrid[npcY][npcX] = MapTile(
-									type: .npc(tile: newTile),
-									isWalkable: npcTile.isWalkable,
-									event: npcTile.event,
-									biome: npcTile.biome
-								)
-								await Game.shared.maps.updateCustomMap(at: customMapIndex, with: newGrid)
-								break
+								if let villageID = tile.villageID {
+									await Game.shared.kingdom.villages[villageID]?.removeNPCPosition(npcID: tile.npcID)
+									newGrid[npcY][npcX] = MapTile(
+										type: .npc(tile: .init(id: tile.id, npcID: tile.npcID, villageID: villageID)),
+										isWalkable: npcTile.isWalkable,
+										event: npcTile.event,
+										biome: npcTile.biome
+									)
+									await Game.shared.maps.updateCustomMap(at: customMapIndex, with: newGrid)
+									break
+								} else {
+									Logger.warning("Moving NPC on Door has no villageID. NPC ID: \(tile.npcID)")
+								}
 							}
 						}
 
 					} else {}
-					// put npc in the custom map
+					// put npcID in the custom map
 					return
 				} else {
-					var npcNew = tile
-					npcNew.npc.removePostion()
-					await MapBox.updateTile(newTile: MapTile(
-						type: .npc(tile: npcNew),
-						isWalkable: npcTile.isWalkable,
-						event: npcTile.event,
-						biome: npcTile.biome
-					), thisOnlyWorksOnMainMap: true, x: position.x, y: position.y)
+					if let villageID = tile.villageID {
+						await Game.shared.kingdom.villages[villageID]?.removeNPCPosition(npcID: tile.npcID)
+						await MapBox.updateTile(newTile: MapTile(
+							type: .npc(tile: .init(id: tile.id, npcID: tile.npcID, villageID: villageID)),
+							isWalkable: npcTile.isWalkable,
+							event: npcTile.event,
+							biome: npcTile.biome
+						), thisOnlyWorksOnMainMap: true, x: position.x, y: position.y)
+					} else {
+						Logger.warning("Moving NPC has no villageID. NPC ID: \(tile.npcID)")
+					}
 					return
 				}
 			}
@@ -120,7 +142,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 
 			let currentTile = await MapBox.mapType.map.grid[newNpcPosition.y][newNpcPosition.x] as! MapTile
 
-			let newPosition = NPCPosition(
+			let newPosition = NPCMovingPosition(
 				x: newNpcPosition.x,
 				y: newNpcPosition.y,
 				mapType: position.mapType,
@@ -169,17 +191,20 @@ extension NPCTile {
 	func encode(to encoder: any Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
 		try container.encode(id, forKey: .id)
-		try container.encode(npc, forKey: .npc)
+		try container.encode(npcID, forKey: .npcID)
+		try container.encode(villageID, forKey: .villageID)
 	}
 
 	enum CodingKeys: CodingKey {
 		case id
-		case npc
+		case npcID
+		case villageID
 	}
 
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		self.id = try container.decode(UUID.self, forKey: .id)
-		self.npc = try container.decode(NPC.self, forKey: .npc)
+		self.npcID = try container.decode(UUID.self, forKey: .npcID)
+		self.villageID = try container.decode(UUID.self, forKey: .villageID)
 	}
 }
