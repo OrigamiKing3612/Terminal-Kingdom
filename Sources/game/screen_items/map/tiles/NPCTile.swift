@@ -2,11 +2,15 @@ import Foundation
 
 struct NPCTile: Codable, Hashable, Equatable {
 	let id: UUID
-	let villageID: UUID
+	let villageID: UUID?
 	let npcID: UUID
 	var npc: NPC? {
 		get async {
-			await Game.shared.kingdom.villages[villageID]?.npcs[npcID]
+			if let villageID {
+				await Game.shared.kingdom.villages[villageID]?.npcs[npcID]
+			} else {
+				await Game.shared.startingVillage.npcs[npcID]
+			}
 		}
 	}
 
@@ -97,15 +101,19 @@ struct NPCTile: Codable, Hashable, Equatable {
 								}
 
 								var newGrid = await Game.shared.maps.customMaps[customMapIndex].grid
-								await Game.shared.kingdom.villages[tile.villageID]?.removeNPCPosition(npcID: tile.npcID)
-								newGrid[npcY][npcX] = MapTile(
-									type: .npc(tile: .init(id: tile.id, npcID: tile.npcID, villageID: tile.villageID)),
-									isWalkable: npcTile.isWalkable,
-									event: npcTile.event,
-									biome: npcTile.biome
-								)
-								await Game.shared.maps.updateCustomMap(at: customMapIndex, with: newGrid)
-								break
+								if let villageID = tile.villageID {
+									await Game.shared.kingdom.villages[villageID]?.removeNPCPosition(npcID: tile.npcID)
+									newGrid[npcY][npcX] = MapTile(
+										type: .npc(tile: .init(id: tile.id, npcID: tile.npcID, villageID: villageID)),
+										isWalkable: npcTile.isWalkable,
+										event: npcTile.event,
+										biome: npcTile.biome
+									)
+									await Game.shared.maps.updateCustomMap(at: customMapIndex, with: newGrid)
+									break
+								} else {
+									Logger.warning("Moving NPC on Door has no villageID. NPC ID: \(tile.npcID)")
+								}
 							}
 						}
 
@@ -113,13 +121,17 @@ struct NPCTile: Codable, Hashable, Equatable {
 					// put npcID in the custom map
 					return
 				} else {
-					await Game.shared.kingdom.villages[tile.villageID]?.removeNPCPosition(npcID: tile.npcID)
-					await MapBox.updateTile(newTile: MapTile(
-						type: .npc(tile: .init(id: tile.id, npcID: tile.npcID, villageID: tile.villageID)),
-						isWalkable: npcTile.isWalkable,
-						event: npcTile.event,
-						biome: npcTile.biome
-					), thisOnlyWorksOnMainMap: true, x: position.x, y: position.y)
+					if let villageID = tile.villageID {
+						await Game.shared.kingdom.villages[villageID]?.removeNPCPosition(npcID: tile.npcID)
+						await MapBox.updateTile(newTile: MapTile(
+							type: .npc(tile: .init(id: tile.id, npcID: tile.npcID, villageID: villageID)),
+							isWalkable: npcTile.isWalkable,
+							event: npcTile.event,
+							biome: npcTile.biome
+						), thisOnlyWorksOnMainMap: true, x: position.x, y: position.y)
+					} else {
+						Logger.warning("Moving NPC has no villageID. NPC ID: \(tile.npcID)")
+					}
 					return
 				}
 			}

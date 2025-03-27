@@ -154,41 +154,43 @@ enum MapTileType: TileType {
 	}
 
 	var name: String {
-		switch self {
-			case .plain: "plain"
-			case .water: "water"
-			case .tree: "tree"
-			case .sand: "sand"
-			case .cactus: "cactus"
-			case .snow: "snow"
-			case .snow_tree: "snow_tree"
-			case .ice: "ice"
-			case .path: "path"
-			case .building: "building"
-			case .player: "player"
-			case let .door(tile): tile.type.name
-			case .TOBEGENERATED: "TOBEGENERATED"
-			case .playerStart: "playerStart"
-			case let .station(station: station): station.type.name
-			case .startMining: "startMining"
-			case .fence: "fence"
-			case .gate: "gate"
-			case let .crop(crop):
-				crop.type.rawValue
-			case let .pot(tile):
-				tile.cropTile.type.rawValue
-			case let .npc(tile):
-				tile.npc?.job?.render ?? "None"
-			case let .shopStandingArea(type):
-				type.rawValue
-			case let .biomeTOBEGENERATED(type: biome):
-				biome.rawValue
-			case .chest: "chest"
-			case .bed: "bed"
-			case .desk: "desk"
-			case .stone: "stone"
-			case .lava: "lava"
-			case .mud: "mud"
+		get async {
+			switch self {
+				case .plain: "plain"
+				case .water: "water"
+				case .tree: "tree"
+				case .sand: "sand"
+				case .cactus: "cactus"
+				case .snow: "snow"
+				case .snow_tree: "snow_tree"
+				case .ice: "ice"
+				case .path: "path"
+				case .building: "building"
+				case .player: "player"
+				case let .door(tile): tile.type.name
+				case .TOBEGENERATED: "TOBEGENERATED"
+				case .playerStart: "playerStart"
+				case let .station(station: station): station.type.name
+				case .startMining: "startMining"
+				case .fence: "fence"
+				case .gate: "gate"
+				case let .crop(crop):
+					crop.type.rawValue
+				case let .pot(tile):
+					tile.cropTile.type.rawValue
+				case let .npc(tile):
+					await tile.npc?.job?.render ?? "None"
+				case let .shopStandingArea(type):
+					type.rawValue
+				case let .biomeTOBEGENERATED(type: biome):
+					biome.rawValue
+				case .chest: "chest"
+				case .bed: "bed"
+				case .desk: "desk"
+				case .stone: "stone"
+				case .lava: "lava"
+				case .mud: "mud"
+			}
 		}
 	}
 

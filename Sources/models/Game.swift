@@ -9,6 +9,7 @@ actor Game {
 	var mapGen: MapGen = .init()
 	var maps: Maps = .init()
 	var kingdom: Kingdom = .init()
+	var startingVillage: StartingVillage = .init()
 	private(set) var config: Config = .init()
 	private(set) var messages: [String] = []
 	private(set) var crops: Set<TilePosition> = []
@@ -45,6 +46,7 @@ actor Game {
 		config.setUseColors
 		Logger.info("Max Log Level: \(config.maxLogLevel)")
 		map = await mapGen.generateFullMap()
+		await startingVillage.setUp()
 	}
 
 	func setIsTypingInMessageBox(_ newIsTypingInMessageBox: Bool) async {

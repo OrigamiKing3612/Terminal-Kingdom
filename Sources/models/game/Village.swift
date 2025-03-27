@@ -119,6 +119,10 @@ actor Village: Hashable, Identifiable, Equatable {
 		npcs[npc.id] = npc
 	}
 
+	func setTalkedTo(npcID: UUID) async {
+		npcs[npcID]?.updateTalkedTo()
+	}
+
 	nonisolated func hash(into hasher: inout Hasher) {
 		hasher.combine(id)
 	}

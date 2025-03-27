@@ -108,11 +108,14 @@ struct NPC: Codable, Hashable, Equatable {
 		guard case let .npc(tile: tile) = mapTile.type else {
 			return
 		}
-		if tile.npc.hasTalkedToBefore == false {
-			var newTile = tile
-			newTile.npc.updateTalkedTo()
-			let newMapTile = MapTile(type: .npc(tile: newTile), isWalkable: mapTile.isWalkable, event: mapTile.event, biome: mapTile.biome)
-			await MapBox.updateTile(newTile: newMapTile)
+		if await tile.npc?.hasTalkedToBefore == false {
+			if let villageID = tile.villageID {
+				await Game.shared.kingdom.villages[villageID]?.setTalkedTo(npcID: tile.npcID)
+			} else {
+				await Game.shared.startingVillage.setTalkedTo(npcID: tile.npcID)
+			}
+			// let newMapTile = MapTile(type: .npc(tile: tile), isWalkable: mapTile.isWalkable, event: mapTile.event, biome: mapTile.biome)
+			// await MapBox.updateTile(newTile: newMapTile)
 			await after()
 		}
 	}
