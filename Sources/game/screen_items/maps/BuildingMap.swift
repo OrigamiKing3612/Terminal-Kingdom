@@ -32,6 +32,9 @@ struct BuildingMap: MapBoxMap {
 				self.grid = await StaticMaps.buildingMap(mapType: mapType)
 		}
 
+		// Put npcs in the NPCManager if not already
+		await addNPCsToManager()
+
 		// Coordinates for inside the building
 		if await Game.shared.player.position.x == 55, await Game.shared.player.position.y == 23 {
 			// Start player in correct spot on start
@@ -183,5 +186,52 @@ struct BuildingMap: MapBoxMap {
 	mutating func setPlayer(x: Int, y: Int) {
 		player.x = x
 		player.y = y
+	}
+
+	func addNPCsToManager() async {
+		var npcs: [UUID] = grid.flatMap { row in
+			row.compactMap { tile in
+				if case let .npc(npcTile) = tile.type {
+					return npcTile.npcID
+				}
+				return nil
+			}
+		}
+		let npcsInManager = await Game.shared.npcs.npcs
+		for npc in npcs {
+			if !npcsInManager.keys.contains(npc) {
+				let job: NPCJob? = switch mapType {
+					case .blacksmith:
+						.blacksmith
+					case .builder:
+						.builder
+					case .carpenter:
+						.carpenter
+					case .castle:
+						.king
+					case .farm:
+						.farmer
+					case .hospital:
+						.doctor
+					case .hunting_area:
+						.hunter
+					case .inventor:
+						.inventor
+					case .mine:
+						.miner
+					case .potter:
+						.potter
+					case .restaurant:
+						.chef
+					case .shop:
+						.salesman(type: .buy)
+					case .stable:
+						.stable_master
+					default:
+						nil
+				}
+				await Game.shared.npcs.add(npc: NPC(id: npc, job: job, villageID: UUID(), position: .init(x: 0, y: 0, mapType: mapType)))
+			}
+		}
 	}
 }
