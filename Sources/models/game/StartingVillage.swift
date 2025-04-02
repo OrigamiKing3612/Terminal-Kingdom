@@ -1,12 +1,13 @@
 import Foundation
 
-actor StartingVillage: Hashable, Identifiable, Equatable {
-	let id: UUID
+actor StartingVillage: Hashable, Equatable {
+	nonisolated var id: UUID {
+		NPCTile.startingVillageID
+	}
+
 	private(set) var npcs: [UUID: NPC] = [:]
 
-	init(id: UUID = UUID()) {
-		self.id = id
-	}
+	init() {}
 
 	func setUp() async {
 		Logger.debug("Setting up starting village")
@@ -18,7 +19,37 @@ actor StartingVillage: Hashable, Identifiable, Equatable {
 			for (y, row) in buildingMap.enumerated() {
 				for (x, tile) in row.enumerated() {
 					if case let .npc(tile: npc) = tile.type {
-						npcs[npc.id] = NPC(id: npc.id, villageID: id, position: .init(x: x, y: y, mapType: mapType))
+						let job: NPCJob? = switch mapType {
+							case .blacksmith:
+								.blacksmith
+							case .builder:
+								.builder
+							case .carpenter:
+								.carpenter
+							case .castle:
+								.king
+							case .farm:
+								.farmer
+							case .hospital:
+								.doctor
+							case .hunting_area:
+								.hunter
+							case .inventor:
+								.inventor
+							case .mine:
+								.miner
+							case .potter:
+								.potter
+							case .restaurant:
+								.chef
+							case .shop:
+								.salesman(type: .buy)
+							case .stable:
+								.stable_master
+							default:
+								nil
+						}
+						npcs[npc.npcID] = NPC(id: npc.npcID, job: job, villageID: id, position: .init(x: x, y: y, mapType: mapType))
 					}
 				}
 			}

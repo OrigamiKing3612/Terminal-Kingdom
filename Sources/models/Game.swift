@@ -165,6 +165,16 @@ actor Game {
 	func getNPC(for position: NPCPosition) async -> NPC? {
 		await kingdom.getNPC(for: position)
 	}
+
+	func getNPC(id: UUID) async -> NPC? {
+		if let npc = await startingVillage.npcs[id] {
+			return npc
+		}
+		if let npc = await kingdom.getVillage(npcID: id)?.npcs[id] {
+			return npc
+		}
+		return nil
+	}
 }
 
 // TODO: update because Game is not codable

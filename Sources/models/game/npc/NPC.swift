@@ -1,6 +1,7 @@
 import Foundation
 
 struct NPC: Codable, Hashable, Equatable {
+	static let startingVillageID = UUID()
 	let id: UUID
 	let position: NPCPosition
 	let name: String
@@ -197,6 +198,7 @@ struct NPC: Codable, Hashable, Equatable {
 		case attributes
 		case hunger
 		case position
+		case startingVillageNPC
 	}
 
 	init(from decoder: any Decoder) throws {
@@ -209,11 +211,17 @@ struct NPC: Codable, Hashable, Equatable {
 		self.job = try container.decodeIfPresent(NPCJob.self, forKey: NPC.CodingKeys.job)
 		self.age = try container.decode(Int.self, forKey: NPC.CodingKeys.age)
 		self.gender = try container.decode(Gender.self, forKey: NPC.CodingKeys.gender)
-		self.villageID = try container.decodeIfPresent(UUID.self, forKey: NPC.CodingKeys.villageID)
 		self.positionToWalkTo = try container.decodeIfPresent(TilePosition.self, forKey: NPC.CodingKeys.positionToWalkTo)
 		self.attributes = try container.decode([NPCAttribute].self, forKey: NPC.CodingKeys.attributes)
 		self._hunger = try container.decode(Double.self, forKey: NPC.CodingKeys.hunger)
 		self.position = try container.decode(NPCPosition.self, forKey: NPC.CodingKeys.position)
+		// self._happiness = try container.decode(Double.self, forKey: NPC.CodingKeys.happiness)
+		let isStartingVillageNPC = try container.decodeIfPresent(Bool.self, forKey: NPC.CodingKeys.startingVillageNPC)
+		if isStartingVillageNPC == true {
+			self.villageID = Self.startingVillageID
+		} else {
+			self.villageID = nil
+		}
 	}
 
 	func encode(to encoder: any Encoder) throws {
@@ -231,6 +239,7 @@ struct NPC: Codable, Hashable, Equatable {
 		try container.encode(attributes, forKey: NPC.CodingKeys.attributes)
 		try container.encode(_hunger, forKey: NPC.CodingKeys.hunger)
 		try container.encode(position, forKey: NPC.CodingKeys.position)
+		// try container.encode(_happiness, forKey: NPC.CodingKeys.happiness)
 	}
 }
 

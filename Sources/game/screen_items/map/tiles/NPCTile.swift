@@ -1,12 +1,14 @@
 import Foundation
 
 struct NPCTile: Codable, Hashable, Equatable {
+	static let startingVillageID = UUID()
 	let id: UUID
 	let villageID: UUID?
 	let npcID: UUID
+	@available(*, deprecated, message: "Use Game.shared.startingVillage.npcs[npcID] instead")
 	var npc: NPC? {
 		get async {
-			if let villageID {
+			if let villageID, await villageID != Game.shared.startingVillage.id {
 				await Game.shared.kingdom.villages[villageID]?.npcs[npcID]
 			} else {
 				await Game.shared.startingVillage.npcs[npcID]
@@ -30,7 +32,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 	}
 
 	static func renderNPC(tile: NPCTile) async -> String {
-		guard let npc = await tile.npc else { return "?" }
+		guard let npc = await Game.shared.getNPC(id: tile.npcID) else { return "?" }
 		if !npc.hasTalkedToBefore {
 			if let job = npc.job, !job.isHelper {
 				return "!".styled(with: [.bold, .red])
@@ -199,12 +201,19 @@ extension NPCTile {
 		case id
 		case npcID
 		case villageID
+		case startingVillageNPC
 	}
 
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		self.id = try container.decode(UUID.self, forKey: .id)
 		self.npcID = try container.decode(UUID.self, forKey: .npcID)
-		self.villageID = try container.decode(UUID.self, forKey: .villageID)
+		// self.villageID = try container.decode(UUID.self, forKey: .villageID)
+		let isStartingVillageNPC = try container.decodeIfPresent(Bool.self, forKey: .startingVillageNPC)
+		if isStartingVillageNPC == true {
+			self.villageID = Self.startingVillageID
+		} else {
+			self.villageID = nil
+		}
 	}
 }

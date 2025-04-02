@@ -114,6 +114,15 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 		return nil
 	}
 
+	func getVillage(npcID: UUID) async -> Village? {
+		for village in villages.values {
+			if await village.npcs.contains(where: { $0.key == npcID }) {
+				return village
+			}
+		}
+		return nil
+	}
+
 	func renameVillage(id: UUID, name: String) async {
 		await villages[id]?.set(name: name)
 	}

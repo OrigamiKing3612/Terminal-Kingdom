@@ -63,7 +63,10 @@ enum Keys {
 					}
 				case .u:
 					// await MessageBox.message("\(Game.shared.kingdom.print)", speaker: .dev)
-					await MessageBox.message("\(Game.shared.player.quests)", speaker: .dev)
+					// await MessageBox.message("\(Game.shared.player.quests)", speaker: .dev)
+					let npcs = await Game.shared.startingVillage.getNPCs()
+					await MessageBox.message("\(npcs)", speaker: .dev)
+					await MessageBox.message("\(Game.shared.startingVillage.id)", speaker: .dev)
 			#endif
 			default:
 				#if DEBUG
