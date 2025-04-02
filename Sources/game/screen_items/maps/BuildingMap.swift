@@ -189,7 +189,7 @@ struct BuildingMap: MapBoxMap {
 	}
 
 	func addNPCsToManager() async {
-		var npcs: [UUID] = grid.flatMap { row in
+		let npcs: [UUID] = grid.flatMap { row in
 			row.compactMap { tile in
 				if case let .npc(npcTile) = tile.type {
 					return npcTile.npcID
