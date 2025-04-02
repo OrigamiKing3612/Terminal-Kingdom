@@ -5,14 +5,9 @@ struct NPCTile: Codable, Hashable, Equatable {
 	let id: UUID
 	let villageID: UUID?
 	let npcID: UUID
-	@available(*, deprecated, message: "Use Game.shared.startingVillage.npcs[npcID] instead")
 	var npc: NPC? {
 		get async {
-			if let villageID, await villageID != Game.shared.startingVillage.id {
-				await Game.shared.kingdom.villages[villageID]?.npcs[npcID]
-			} else {
-				await Game.shared.startingVillage.npcs[npcID]
-			}
+			await Game.shared.getNPC(id: npcID)
 		}
 	}
 
@@ -32,7 +27,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 	}
 
 	static func renderNPC(tile: NPCTile) async -> String {
-		guard let npc = await Game.shared.getNPC(id: tile.npcID) else { return "?" }
+		guard let npc = await tile.npc else { return "?" }
 		if !npc.hasTalkedToBefore {
 			if let job = npc.job, !job.isHelper {
 				return "!".styled(with: [.bold, .red])

@@ -182,6 +182,9 @@ struct NPC: Codable, Hashable, Equatable {
 						break
 				}
 			}
+		} else {
+			// TODO: make no job npcs talk
+			Logger.warning("NPC has no job")
 		}
 	}
 
