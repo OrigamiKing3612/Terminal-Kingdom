@@ -21,6 +21,9 @@ enum Keys {
 				#if DEBUG
 					let tile = await MapBox.mapType.map.tilePlayerIsOn as! MapTile
 					await MessageBox.message("\(tile)", speaker: .dev)
+					if case let .npc(npcTile) = tile.type {
+						await MessageBox.message("\(String(describing: Game.shared.npcs[npcTile.npcID]))", speaker: .dev)
+					}
 				#else
 					if await Game.shared.player.name == "testing" {
 						let tile = await MapBox.mapType.map.tilePlayerIsOn as! MapTile

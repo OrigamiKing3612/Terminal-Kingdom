@@ -230,7 +230,7 @@ struct BuildingMap: MapBoxMap {
 					default:
 						nil
 				}
-				await Game.shared.npcs.add(npc: NPC(id: npc, job: job, villageID: UUID(), position: .init(x: 0, y: 0, mapType: mapType)))
+				await Game.shared.npcs.add(npc: NPC(id: npc, job: job, isStartingVillageNPC: true, villageID: UUID(), position: .init(x: 0, y: 0, mapType: mapType)))
 			}
 		}
 	}
