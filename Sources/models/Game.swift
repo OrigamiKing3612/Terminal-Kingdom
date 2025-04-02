@@ -9,7 +9,8 @@ actor Game {
 	var mapGen: MapGen = .init()
 	var maps: Maps = .init()
 	var kingdom: Kingdom = .init()
-	var startingVillage: StartingVillage = .init()
+	// var startingVillage: StartingVillage = .init()
+	var npcs: NPCManager = .init()
 	private(set) var config: Config = .init()
 	private(set) var messages: [String] = []
 	private(set) var crops: Set<TilePosition> = []

@@ -6,7 +6,7 @@ actor Village: Hashable, Identifiable, Equatable {
 	var data: VillageData = .init()
 	var hasCourthouse: Bool = false
 	var courthouseID: UUID?
-	private(set) var npcs: [UUID: NPC] = [:]
+	private(set) var npcs: [UUID] = []
 	private(set) var buildings: [UUID: any BuildingProtocol] = [:]
 	private(set) var radius: Int = 40
 	var foodCount: Int = 0
@@ -19,7 +19,7 @@ actor Village: Hashable, Identifiable, Equatable {
 		return totalPots
 	}
 
-	init(id: UUID = UUID(), name: String, buildings: [any BuildingProtocol], npcs: [UUID: NPC] = [:]) {
+	init(id: UUID = UUID(), name: String, buildings: [any BuildingProtocol], npcs: [UUID] = []) {
 		self.id = id
 		self.npcs = npcs
 		self.buildings = Dictionary(uniqueKeysWithValues: buildings.map { ($0.id, $0) })
@@ -101,7 +101,7 @@ actor Village: Hashable, Identifiable, Equatable {
 	}
 
 	func has(npcID: UUID) -> Bool {
-		npcs[npcID] != nil
+		npcs.contains(npcID)
 	}
 
 	func update(buildingID: UUID, newBuilding: any BuildingProtocol) async {
@@ -120,7 +120,7 @@ actor Village: Hashable, Identifiable, Equatable {
 	}
 
 	func setTalkedTo(npcID: UUID) async {
-		npcs[npcID]?.updateTalkedTo()
+		await Game.shared.npcs.npcs[npcID]?.updateTalkedTo()
 	}
 
 	nonisolated func hash(into hasher: inout Hasher) {

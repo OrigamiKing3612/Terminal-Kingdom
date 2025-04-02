@@ -3,18 +3,14 @@ import Foundation
 struct NPCTile: Codable, Hashable, Equatable {
 	static let startingVillageID = UUID()
 	let id: UUID
-	let villageID: UUID?
 	let npcID: UUID
 	var npc: NPC? {
-		get async {
-			await Game.shared.getNPC(id: npcID)
-		}
+		get async {}
 	}
 
-	private init(id: UUID = UUID(), npcID: UUID, villageID: UUID) {
+	private init(id: UUID = UUID(), npcID: UUID) {
 		self.id = id
 		self.npcID = npcID
-		self.villageID = villageID
 	}
 
 	init(id: UUID = UUID(), npc: NPC, villageID: UUID) {
