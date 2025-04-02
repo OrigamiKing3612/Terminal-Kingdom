@@ -6,7 +6,7 @@ actor Village: Hashable, Identifiable, Equatable {
 	var data: VillageData = .init()
 	var hasCourthouse: Bool = false
 	var courthouseID: UUID?
-	private(set) var npcs: [UUID] = []
+	private(set) var npcs: [UUID] = [] //! TODO: Make into a set
 	private(set) var buildings: [UUID: any BuildingProtocol] = [:]
 	private(set) var radius: Int = 40
 	var foodCount: Int = 0
@@ -30,6 +30,14 @@ actor Village: Hashable, Identifiable, Equatable {
 		if buildings.values.contains(where: { $0.type == .farm(type: .main) }) {
 			// foodCount += 1
 		}
+	}
+
+	func addNPC(npcID: UUID) async {
+		npcs.append(npcID)
+	}
+
+	func removeNPC(npcID: UUID) async {
+		npcs.removeAll { $0 == npcID }
 	}
 
 	func setHasCourthouse() {
@@ -69,30 +77,6 @@ actor Village: Hashable, Identifiable, Equatable {
 		buildings.removeValue(forKey: buildingID)
 	}
 
-	func getNPCs() -> [NPC] {
-		Array(npcs.values)
-	}
-
-	func getNPC(for position: NPCPosition) -> NPC? {
-		npcs.values.first { $0.position == position }
-	}
-
-	func add(npc: NPC) async {
-		npcs[npc.id] = npc
-	}
-
-	func remove(npc: NPC) async {
-		npcs.removeValue(forKey: npc.id)
-	}
-
-	func remove(npcID: UUID) async {
-		npcs.removeValue(forKey: npcID)
-	}
-
-	func removeNPCPosition(npcID: UUID) async {
-		npcs[npcID]?.removePostion()
-	}
-
 	func set(name: String) async {
 		self.name = name
 		Task.detached {
@@ -113,14 +97,6 @@ actor Village: Hashable, Identifiable, Equatable {
 			await building.addPot()
 			buildings[buildingID] = building
 		}
-	}
-
-	func set(npc: NPC) async {
-		npcs[npc.id] = npc
-	}
-
-	func setTalkedTo(npcID: UUID) async {
-		await Game.shared.npcs.npcs[npcID]?.updateTalkedTo()
 	}
 
 	nonisolated func hash(into hasher: inout Hasher) {

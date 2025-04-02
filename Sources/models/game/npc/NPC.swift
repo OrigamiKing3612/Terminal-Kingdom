@@ -32,9 +32,9 @@ struct NPC: Codable, Hashable, Equatable {
 				await Game.shared.addNPC(tilePosition)
 			}
 		}
-		// Task {
-		// 	await Game.shared.kingdom.add(npcID: id, villageID: villageID)
-		// }
+		Task {
+			await Game.shared.kingdom.add(npcID: id, villageID: villageID)
+		}
 		self.villageID = villageID
 		self.age = age
 		self.position = position
@@ -50,7 +50,8 @@ struct NPC: Codable, Hashable, Equatable {
 			// if let positionToWalkTo {
 			// await Game.shared.removeNPC()
 			// }
-			await Game.shared.kingdom.villages[villageID]?.remove(npcID: id)
+			await Game.shared.kingdom.remove(npcID: id, villageID: villageID)
+			await Game.shared.npcs.remove(npc: id)
 		}
 	}
 
@@ -110,11 +111,7 @@ struct NPC: Codable, Hashable, Equatable {
 			return
 		}
 		if await tile.npc?.hasTalkedToBefore == false {
-			if let villageID = tile.villageID {
-				await Game.shared.kingdom.villages[villageID]?.setTalkedTo(npcID: tile.npcID)
-			} else {
-				await Game.shared.startingVillage.setTalkedTo(npcID: tile.npcID)
-			}
+			await Game.shared.npcs.setTalkedTo(npcID: tile.npcID)
 			// let newMapTile = MapTile(type: .npc(tile: tile), isWalkable: mapTile.isWalkable, event: mapTile.event, biome: mapTile.biome)
 			// await MapBox.updateTile(newTile: newMapTile)
 			await after()

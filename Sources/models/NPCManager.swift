@@ -28,4 +28,16 @@ actor NPCManager {
 	func setTalkedTo(npcID: UUID) async {
 		npcs[npcID]?.updateTalkedTo()
 	}
+
+	func removeNPCPosition(npcID: UUID) async {
+		npcs[npcID]?.removePostion()
+	}
+
+	func getNPC(for position: NPCPosition) -> NPC? {
+		npcs.values.first { $0.position == position }
+	}
+
+	subscript(id: UUID) -> NPC? {
+		npcs[id]
+	}
 }

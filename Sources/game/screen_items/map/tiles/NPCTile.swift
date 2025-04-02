@@ -5,7 +5,9 @@ struct NPCTile: Codable, Hashable, Equatable {
 	let id: UUID
 	let npcID: UUID
 	var npc: NPC? {
-		get async {}
+		get async {
+			await Game.shared.npcs[npcID]
+		}
 	}
 
 	private init(id: UUID = UUID(), npcID: UUID) {
@@ -13,12 +15,11 @@ struct NPCTile: Codable, Hashable, Equatable {
 		self.npcID = npcID
 	}
 
-	init(id: UUID = UUID(), npc: NPC, villageID: UUID) {
+	init(id: UUID = UUID(), npc: NPC) {
 		self.id = id
 		self.npcID = npc.id
-		self.villageID = villageID
 		Task {
-			await Game.shared.kingdom.villages[villageID]?.add(npc: npc)
+			await Game.shared.npcs.add(npc: npc)
 		}
 	}
 
@@ -94,19 +95,15 @@ struct NPCTile: Codable, Hashable, Equatable {
 								}
 
 								var newGrid = await Game.shared.maps.customMaps[customMapIndex].grid
-								if let villageID = tile.villageID {
-									await Game.shared.kingdom.villages[villageID]?.removeNPCPosition(npcID: tile.npcID)
-									newGrid[npcY][npcX] = MapTile(
-										type: .npc(tile: .init(id: tile.id, npcID: tile.npcID, villageID: villageID)),
-										isWalkable: npcTile.isWalkable,
-										event: npcTile.event,
-										biome: npcTile.biome
-									)
-									await Game.shared.maps.updateCustomMap(at: customMapIndex, with: newGrid)
-									break
-								} else {
-									Logger.warning("Moving NPC on Door has no villageID. NPC ID: \(tile.npcID)")
-								}
+								await Game.shared.npcs.removeNPCPosition(npcID: tile.npcID)
+								newGrid[npcY][npcX] = MapTile(
+									type: .npc(tile: .init(id: tile.id, npcID: tile.npcID)),
+									isWalkable: npcTile.isWalkable,
+									event: npcTile.event,
+									biome: npcTile.biome
+								)
+								await Game.shared.maps.updateCustomMap(at: customMapIndex, with: newGrid)
+								break
 							}
 						}
 
@@ -114,17 +111,13 @@ struct NPCTile: Codable, Hashable, Equatable {
 					// put npcID in the custom map
 					return
 				} else {
-					if let villageID = tile.villageID {
-						await Game.shared.kingdom.villages[villageID]?.removeNPCPosition(npcID: tile.npcID)
-						await MapBox.updateTile(newTile: MapTile(
-							type: .npc(tile: .init(id: tile.id, npcID: tile.npcID, villageID: villageID)),
-							isWalkable: npcTile.isWalkable,
-							event: npcTile.event,
-							biome: npcTile.biome
-						), thisOnlyWorksOnMainMap: true, x: position.x, y: position.y)
-					} else {
-						Logger.warning("Moving NPC has no villageID. NPC ID: \(tile.npcID)")
-					}
+					await Game.shared.npcs.removeNPCPosition(npcID: tile.npcID)
+					await MapBox.updateTile(newTile: MapTile(
+						type: .npc(tile: .init(id: tile.id, npcID: tile.npcID)),
+						isWalkable: npcTile.isWalkable,
+						event: npcTile.event,
+						biome: npcTile.biome
+					), thisOnlyWorksOnMainMap: true, x: position.x, y: position.y)
 					return
 				}
 			}
@@ -185,14 +178,12 @@ extension NPCTile {
 		var container = encoder.container(keyedBy: CodingKeys.self)
 		try container.encode(id, forKey: .id)
 		try container.encode(npcID, forKey: .npcID)
-		try container.encode(villageID, forKey: .villageID)
 	}
 
 	enum CodingKeys: CodingKey {
 		case id
 		case npcID
 		case villageID
-		case startingVillageNPC
 	}
 
 	init(from decoder: any Decoder) throws {
@@ -200,11 +191,5 @@ extension NPCTile {
 		self.id = try container.decode(UUID.self, forKey: .id)
 		self.npcID = try container.decode(UUID.self, forKey: .npcID)
 		// self.villageID = try container.decode(UUID.self, forKey: .villageID)
-		let isStartingVillageNPC = try container.decodeIfPresent(Bool.self, forKey: .startingVillageNPC)
-		if isStartingVillageNPC == true {
-			self.villageID = Self.startingVillageID
-		} else {
-			self.villageID = nil
-		}
 	}
 }

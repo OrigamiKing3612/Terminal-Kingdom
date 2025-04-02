@@ -9,7 +9,6 @@ actor Game {
 	var mapGen: MapGen = .init()
 	var maps: Maps = .init()
 	var kingdom: Kingdom = .init()
-	// var startingVillage: StartingVillage = .init()
 	var npcs: NPCManager = .init()
 	private(set) var config: Config = .init()
 	private(set) var messages: [String] = []
@@ -47,7 +46,6 @@ actor Game {
 		config.setUseColors
 		Logger.info("Max Log Level: \(config.maxLogLevel)")
 		map = await mapGen.generateFullMap()
-		await startingVillage.setUp()
 	}
 
 	func setIsTypingInMessageBox(_ newIsTypingInMessageBox: Bool) async {
@@ -163,18 +161,12 @@ actor Game {
 		await kingdom.set(name: newName)
 	}
 
-	func getNPC(for position: NPCPosition) async -> NPC? {
-		await kingdom.getNPC(for: position)
-	}
-
+	// func getNPC(for position: NPCPosition) async -> NPC? {
+	// 	await kingdom.getNPC(for: position)
+	// }
+	//
 	func getNPC(id: UUID) async -> NPC? {
-		if let npc = await startingVillage.npcs[id] {
-			return npc
-		}
-		if let npc = await kingdom.getVillage(npcID: id)?.npcs[id] {
-			return npc
-		}
-		return nil
+		await npcs.get(npc: id)
 	}
 }
 

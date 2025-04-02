@@ -37,21 +37,19 @@ enum BackgroundTasks {
 
 			while true {
 				await withTaskGroup(of: Void.self) { group in
-					for village in await Game.shared.kingdom.villages.values {
-						for npc in await village.npcs.values {
-							group.addTask {
-								var newnpc = npc
-								await newnpc.tick()
-								await Game.shared.kingdom.setNPC(villageID: village.id, npc: newnpc)
-							}
+					for npc in await Game.shared.npcs.npcs.values {
+						group.addTask {
+							var newnpc = npc
+							await newnpc.tick()
+							await Game.shared.npcs.set(npc: newnpc)
 						}
 					}
 				}
-				try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
 			}
-
-			Logger.debug("Ended NPC task")
+			try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
 		}
+
+		Logger.debug("Ended NPC task")
 	}
 
 	static func startCropQueue() {
