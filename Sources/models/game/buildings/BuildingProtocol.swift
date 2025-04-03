@@ -1,17 +1,18 @@
 import Foundation
 
-protocol BuildingProtocol: Codable, Equatable, Hashable, Identifiable, Sendable {
+protocol BuildingProtocol: Equatable, Hashable, Identifiable, Sendable {
 	var id: UUID { get }
 	var x: Int { get }
 	var y: Int { get }
 	var type: DoorTileTypes { get }
-	var level: Int { get set }
 
 	init(id: UUID, type: DoorTileTypes, x: Int, y: Int)
 
 	func canBeUpgraded() async -> Bool
-	func getCostsForNextUpgrade() -> [ItemAmount]?
-	mutating func upgrade() async
+	func getCostsForNextUpgrade() async -> [ItemAmount]?
+	func upgrade() async
+	func setLevel(newLevel: Int) async
+	func getLevel() async -> Int
 }
 
 extension BuildingProtocol {
@@ -20,7 +21,7 @@ extension BuildingProtocol {
 	}
 
 	func canBeUpgraded() async -> Bool {
-		guard let costs = getCostsForNextUpgrade() else { return false }
+		guard let costs = await getCostsForNextUpgrade() else { return false }
 		for cost in costs {
 			if await !Game.shared.player.has(item: cost.item, count: cost.count) {
 				return false
@@ -29,18 +30,19 @@ extension BuildingProtocol {
 		return true
 	}
 
-	mutating func upgrade() async {
+	func upgrade() async {
 		if await canBeUpgraded() {
-			guard let costs = getCostsForNextUpgrade() else { return }
+			guard let costs = await getCostsForNextUpgrade() else { return }
 			for cost in costs {
 				await Game.shared.player.removeItem(item: cost.item, count: cost.count)
 			}
-			level += 1
+			await setLevel(newLevel: getLevel() + 1)
 		}
 	}
 
-	func getCostsForNextUpgrade() -> [ItemAmount]? {
+	func getCostsForNextUpgrade() async -> [ItemAmount]? {
 		let upgrades: [Int: BuildingUpgrade] = type.upgrades
+		let level = await getLevel()
 		guard let upgrade = upgrades[level + 1] else {
 			return nil
 		}

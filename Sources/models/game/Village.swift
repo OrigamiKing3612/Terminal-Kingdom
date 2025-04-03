@@ -11,12 +11,14 @@ actor Village: Hashable, Identifiable, Equatable {
 	private(set) var radius: Int = 40
 	var foodCount: Int = 0
 	var foodIncome: Int {
-		var totalPots = 0
-		let farms = buildings.values.filter { $0.type == .farm(type: .main) } as! [FarmBuilding]
-		for farm in farms {
-			totalPots += farm.pots
+		get async {
+			var totalPots = 0
+			let farms = buildings.values.filter { $0.type == .farm(type: .main) } as! [FarmBuilding]
+			for farm in farms {
+				totalPots += await farm.pots
+			}
+			return totalPots
 		}
-		return totalPots
 	}
 
 	init(id: UUID = UUID(), name: String, buildings: [any BuildingProtocol], npcs: Set<UUID> = []) {
@@ -93,10 +95,7 @@ actor Village: Hashable, Identifiable, Equatable {
 	}
 
 	func addPot(buildingID: UUID) async {
-		if var building = buildings[buildingID] as? FarmBuilding {
-			await building.addPot()
-			buildings[buildingID] = building
-		}
+		await (buildings[buildingID] as? FarmBuilding)?.addPot()
 	}
 
 	nonisolated func hash(into hasher: inout Hasher) {

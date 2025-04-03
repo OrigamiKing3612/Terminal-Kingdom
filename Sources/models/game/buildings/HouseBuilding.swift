@@ -1,12 +1,12 @@
 import Foundation
 
-struct HouseBuilding: BuildingProtocol {
+actor HouseBuilding: BuildingProtocol {
 	let id: UUID
 	let x: Int
 	let y: Int
 	let type: DoorTileTypes
-	var level: Int
-	private(set) var residents: [UUID] = []
+	private var level: Int
+	private(set) var residents: Set<UUID> = []
 
 	init(id: UUID = UUID(), type: DoorTileTypes, x: Int, y: Int) {
 		self.id = id
@@ -16,11 +16,19 @@ struct HouseBuilding: BuildingProtocol {
 		self.y = y
 	}
 
-	mutating func addResident(_ resident: UUID) async {
-		residents.append(resident)
+	func addResident(_ resident: UUID) async {
+		residents.insert(resident)
 	}
 
-	mutating func removeResident(_ resident: UUID) async {
-		residents.removeAll(where: { $0 == resident })
+	func removeResident(_ resident: UUID) async {
+		residents.remove(resident)
+	}
+
+	func getLevel() async -> Int { level }
+	func setLevel(newLevel: Int) async {
+		guard newLevel > 0 else {
+			return
+		}
+		level = newLevel
 	}
 }
