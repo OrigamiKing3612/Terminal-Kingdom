@@ -1,7 +1,9 @@
 import Foundation
 
 struct NPC: Codable, Hashable, Equatable {
+	static let startingVillageID = UUID()
 	let id: UUID
+	let position: NPCPosition
 	let name: String
 	let isStartingVillageNPC: Bool
 	var hasTalkedToBefore: Bool
@@ -13,9 +15,11 @@ struct NPC: Codable, Hashable, Equatable {
 	private(set) var positionToWalkTo: TilePosition?
 	private(set) var attributes: [NPCAttribute] = []
 	private var _hunger: Double = 100
+	private var _happiness: Double = 100
 	private var hunger: Hunger { Hunger.hunger(for: _hunger) }
+	private var happiness: Happiness { Happiness.happiness(for: _happiness) }
 
-	init(id: UUID = UUID(), name: String? = nil, gender: Gender? = nil, job: NPCJob? = nil, isStartingVillageNPC: Bool = false, positionToWalkTo: TilePosition? = nil, tilePosition: NPCPosition? = nil, villageID: UUID, age: Int = Int.random(in: 18 ... 40)) {
+	init(id: UUID = UUID(), name: String? = nil, gender: Gender? = nil, job: NPCJob? = nil, isStartingVillageNPC: Bool = false, positionToWalkTo: TilePosition? = nil, tilePosition: NPCMovingPosition? = nil, villageID: UUID, age: Int = Int.random(in: 18 ... 40), position: NPCPosition) {
 		self.id = id
 		self.gender = gender ?? Gender.allCases.randomElement()!
 		self.name = name ?? Self.generateRandomName(for: self.gender)
@@ -33,19 +37,23 @@ struct NPC: Codable, Hashable, Equatable {
 		}
 		self.villageID = villageID
 		self.age = age
+		self.position = position
 	}
 
 	mutating func tick() async {
+		// Logger.debug("Ticking \(id)")
 		// TODO: remove npc
 		guard let villageID else { return }
+		guard !isStartingVillageNPC else { return }
 		// guard let kingdom = await Game.shared.getKingdom(id: villageID) else { return }
-		_hunger -= 0.1
+		_hunger -= 0.01
 
 		if _hunger <= 0 {
 			// if let positionToWalkTo {
 			// await Game.shared.removeNPC()
 			// }
-			await Game.shared.kingdom.villages[villageID]?.remove(npcID: id)
+			await Game.shared.kingdom.remove(npcID: id, villageID: villageID)
+			await Game.shared.npcs.remove(npc: id)
 		}
 	}
 
@@ -53,7 +61,7 @@ struct NPC: Codable, Hashable, Equatable {
 		_hunger = newHunger
 	}
 
-	mutating func removePostion() {
+	mutating func removePosition() {
 		positionToWalkTo = nil
 	}
 
@@ -104,11 +112,10 @@ struct NPC: Codable, Hashable, Equatable {
 		guard case let .npc(tile: tile) = mapTile.type else {
 			return
 		}
-		if tile.npc.hasTalkedToBefore == false {
-			var newTile = tile
-			newTile.npc.updateTalkedTo()
-			let newMapTile = MapTile(type: .npc(tile: newTile), isWalkable: mapTile.isWalkable, event: mapTile.event, biome: mapTile.biome)
-			await MapBox.updateTile(newTile: newMapTile)
+		if await tile.npc?.hasTalkedToBefore == false {
+			await Game.shared.npcs.setTalkedTo(npcID: tile.npcID)
+			// let newMapTile = MapTile(type: .npc(tile: tile), isWalkable: mapTile.isWalkable, event: mapTile.event, biome: mapTile.biome)
+			// await MapBox.updateTile(newTile: newMapTile)
 			await after()
 		}
 	}
@@ -174,6 +181,9 @@ struct NPC: Codable, Hashable, Equatable {
 						break
 				}
 			}
+		} else {
+			// TODO: make no job npcs talk
+			Logger.warning("NPC has no job")
 		}
 	}
 
@@ -189,6 +199,9 @@ struct NPC: Codable, Hashable, Equatable {
 		case positionToWalkTo
 		case attributes
 		case hunger
+		case happiness
+		case position
+		case startingVillageNPC
 	}
 
 	init(from decoder: any Decoder) throws {
@@ -201,10 +214,17 @@ struct NPC: Codable, Hashable, Equatable {
 		self.job = try container.decodeIfPresent(NPCJob.self, forKey: NPC.CodingKeys.job)
 		self.age = try container.decode(Int.self, forKey: NPC.CodingKeys.age)
 		self.gender = try container.decode(Gender.self, forKey: NPC.CodingKeys.gender)
-		self.villageID = try container.decodeIfPresent(UUID.self, forKey: NPC.CodingKeys.villageID)
 		self.positionToWalkTo = try container.decodeIfPresent(TilePosition.self, forKey: NPC.CodingKeys.positionToWalkTo)
 		self.attributes = try container.decode([NPCAttribute].self, forKey: NPC.CodingKeys.attributes)
 		self._hunger = try container.decode(Double.self, forKey: NPC.CodingKeys.hunger)
+		self.position = try container.decode(NPCPosition.self, forKey: NPC.CodingKeys.position)
+		self._happiness = try container.decode(Double.self, forKey: NPC.CodingKeys.happiness)
+		let isStartingVillageNPC = try container.decodeIfPresent(Bool.self, forKey: NPC.CodingKeys.startingVillageNPC)
+		if isStartingVillageNPC == true {
+			self.villageID = Self.startingVillageID
+		} else {
+			self.villageID = nil
+		}
 	}
 
 	func encode(to encoder: any Encoder) throws {
@@ -221,6 +241,8 @@ struct NPC: Codable, Hashable, Equatable {
 		try container.encodeIfPresent(positionToWalkTo, forKey: NPC.CodingKeys.positionToWalkTo)
 		try container.encode(attributes, forKey: NPC.CodingKeys.attributes)
 		try container.encode(_hunger, forKey: NPC.CodingKeys.hunger)
+		try container.encode(position, forKey: NPC.CodingKeys.position)
+		try container.encode(_happiness, forKey: NPC.CodingKeys.happiness)
 	}
 }
 
@@ -230,39 +252,4 @@ enum Gender: String, Codable, CaseIterable {
 
 enum NPCAttribute: Codable, CaseIterable {
 	case needsAttention
-}
-
-enum Hunger: Codable, CaseIterable {
-	case starving
-	case hungry
-	case could_eat
-	case full
-
-	var name: String {
-		switch self {
-			case .starving:
-				"Starving"
-			case .hungry:
-				"Hungry"
-			case .could_eat:
-				"Could Eat"
-			case .full:
-				"Full"
-		}
-	}
-
-	static func hunger(for hunger: Double) -> Hunger {
-		switch hunger {
-			case 0 ..< 25:
-				.starving
-			case 25 ..< 50:
-				.hungry
-			case 50 ..< 75:
-				.could_eat
-			case 75 ..< 100:
-				.full
-			default:
-				.full
-		}
-	}
 }

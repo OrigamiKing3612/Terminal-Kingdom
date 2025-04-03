@@ -3,6 +3,7 @@ import Foundation
 class Logger {
 	static let maxBackupFiles = 5
 	static let logFileName = "TerminalKingdom.log"
+	private nonisolated(unsafe) static let dateFormatter: ISO8601DateFormatter = .init()
 
 	static var logFileURL: URL {
 		let (_, dir, _) = Config.locations()
@@ -36,17 +37,18 @@ class Logger {
 
 	private static func log(_ message: String, level: LogLevel) {
 		Task {
-			guard await level <= Game.shared.config.maxLogLevel else {
+			guard await level <= Game.shared.config.maxLogLevel || level != .error else {
 				return
 			}
 
-			let timestamp = ISO8601DateFormatter().string(from: Date())
+			let timestamp = dateFormatter.string(from: Date())
 			let logMessage = "[\(level.value)] [\(timestamp)] : \(message)\n"
+			let fileHandle = try FileHandle(forWritingTo: logFileURL)
+			defer { fileHandle.closeFile() }
 
-			if let data = logMessage.data(using: .utf8), let fileHandle = try? FileHandle(forWritingTo: logFileURL) {
+			if let data = logMessage.data(using: .utf8) {
 				fileHandle.seekToEndOfFile()
 				fileHandle.write(data)
-				fileHandle.closeFile()
 			}
 		}
 	}

@@ -21,6 +21,9 @@ enum Keys {
 				#if DEBUG
 					let tile = await MapBox.mapType.map.tilePlayerIsOn as! MapTile
 					await MessageBox.message("\(tile)", speaker: .dev)
+					if case let .npc(npcTile) = tile.type {
+						await MessageBox.message("\(String(describing: Game.shared.npcs[npcTile.npcID]))", speaker: .dev)
+					}
 				#else
 					if await Game.shared.player.name == "testing" {
 						let tile = await MapBox.mapType.map.tilePlayerIsOn as! MapTile
@@ -59,11 +62,13 @@ enum Keys {
 				case .t:
 					let p = await Game.shared.player.position
 					if await !(Game.shared.kingdom.villages.isEmpty) {
-						await MapBox.updateTile(newTile: MapTile(type: .npc(tile: NPCTile(npc: NPC(positionToWalkTo: .init(x: p.x, y: p.y - 10, mapType: .mainMap), tilePosition: NPCPosition(x: p.x, y: p.y, mapType: .mainMap, oldTile: .init(type: .cactus, biome: .plains)), villageID: Game.shared.kingdom.villages.first!.key))), event: .talkToNPC, biome: .plains))
+						// await MapBox.updateTile(newTile: MapTile(type: .npc(tile: NPCTile(npc: NPC(positionToWalkTo: .init(x: p.x, y: p.y - 10, mapType: .mainMap), tilePosition: NPCMovingPosition(x: p.x, y: p.y, mapType: .mainMap, oldTile: .init(type: .cactus, biome: .plains)), villageID: Game.shared.kingdom.villages.first!.key))), event: .talkToNPC, biome: .plains))
 					}
 				case .u:
 					// await MessageBox.message("\(Game.shared.kingdom.print)", speaker: .dev)
-					await MessageBox.message("\(Game.shared.player.quests)", speaker: .dev)
+					// await MessageBox.message("\(Game.shared.player.quests)", speaker: .dev)
+					let npcs = await Game.shared.npcs.npcs
+					await MessageBox.message("\(npcs)", speaker: .dev)
 			#endif
 			default:
 				#if DEBUG

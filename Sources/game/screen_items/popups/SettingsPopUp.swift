@@ -72,6 +72,7 @@ enum SettingsScreenOptions: CaseIterable {
 	case wasdKeysOption
 	case arrowKeysOption
 	case vimKeysOption
+	case useColorsOption
 
 	var label: String {
 		switch self {
@@ -83,6 +84,8 @@ enum SettingsScreenOptions: CaseIterable {
 				"Use Arrow Keys for moving"
 			case .wasdKeysOption:
 				"Use WASD Keys for moving"
+			case .useColorsOption:
+				"Use Colors"
 		}
 	}
 
@@ -96,6 +99,8 @@ enum SettingsScreenOptions: CaseIterable {
 				config.arrowKeys.toggle()
 			case .wasdKeysOption:
 				config.wasdKeys.toggle()
+			case .useColorsOption:
+				config.useColors.toggle()
 		}
 	}
 
@@ -109,6 +114,8 @@ enum SettingsScreenOptions: CaseIterable {
 				config.arrowKeys ? "On" : "Off"
 			case .wasdKeysOption:
 				config.wasdKeys ? "On" : "Off"
+			case .useColorsOption:
+				config.useColors ? "Yes" : "No"
 		}
 	}
 }

@@ -32,9 +32,11 @@ enum MapTileEvent: TileEvent {
 				}
 			case .talkToNPC:
 				if case let .npc(tile: tile) = await MapBox.tilePlayerIsOn.type {
-					await tile.npc.talk()
+					await tile.npc?.talk()
 				} else if case .shopStandingArea = await MapBox.tilePlayerIsOn.type {
 					await SVSalesmanNPC.talk()
+				} else {
+					Logger.warning("No NPC found at this tile")
 				}
 			case .collectCrop:
 				await CollectCropEvent.collectCrop()

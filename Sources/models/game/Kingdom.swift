@@ -33,10 +33,6 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 		await villages[villageID]?.add(building: building)
 	}
 
-	func add(npcID: UUID, villageID: UUID) async {
-		await villages[villageID]?.add(npc: npcID)
-	}
-
 	func set(castle: Building) {
 		self.castle = castle
 	}
@@ -70,7 +66,7 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 
 	func getVillageBuilding(for npc: NPC) async -> (any BuildingProtocol)? {
 		for village in villages.values {
-			if await village.npcsInVillage.contains(npc.id) {
+			if await village.npcs.contains(where: { $0 == npc.id }) {
 				return await village.buildings.values.first { $0.id == npc.id }
 			}
 		}
@@ -103,7 +99,16 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 
 	func getVillage(for npc: NPC) async -> Village? {
 		for village in villages.values {
-			if await village.npcsInVillage.contains(npc.id) {
+			if await village.npcs.contains(where: { $0 == npc.id }) {
+				return village
+			}
+		}
+		return nil
+	}
+
+	func getVillage(npcID: UUID) async -> Village? {
+		for village in villages.values {
+			if await village.npcs.contains(where: { $0 == npcID }) {
 				return village
 			}
 		}
@@ -112,6 +117,14 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 
 	func renameVillage(id: UUID, name: String) async {
 		await villages[id]?.set(name: name)
+	}
+
+	func add(npcID: UUID, villageID: UUID) async {
+		await villages[villageID]?.addNPC(npcID: npcID)
+	}
+
+	func remove(npcID: UUID, villageID: UUID) async {
+		await villages[villageID]?.removeNPC(npcID: npcID)
 	}
 
 	nonisolated func hash(into hasher: inout Hasher) {
@@ -151,7 +164,7 @@ actor KingdomData {
 	extension Village {
 		var print: String {
 			get async {
-				"Village(id: \(id), name: \(name), buildings: [\(buildings.values.map { "\($0)" }.joined(separator: ", "))], npcsInVillage: \(npcsInVillage), data: \(data))"
+				"Village(id: \(id), name: \(name), buildings: [\(buildings.values.map { "\($0)" }.joined(separator: ", "))], npcs: \(npcs), data: \(data))"
 			}
 		}
 	}

@@ -3,10 +3,10 @@ import Foundation
 actor Village: Hashable, Identifiable, Equatable {
 	let id: UUID
 	var name: String
-	var npcsInVillage: Set<UUID> = []
 	var data: VillageData = .init()
 	var hasCourthouse: Bool = false
 	var courthouseID: UUID?
+	private(set) var npcs: Set<UUID> = []
 	private(set) var buildings: [UUID: any BuildingProtocol] = [:]
 	private(set) var radius: Int = 40
 	var foodCount: Int = 0
@@ -19,9 +19,9 @@ actor Village: Hashable, Identifiable, Equatable {
 		return totalPots
 	}
 
-	init(id: UUID = UUID(), name: String, buildings: [any BuildingProtocol], npcsInVillage: Set<UUID> = []) {
+	init(id: UUID = UUID(), name: String, buildings: [any BuildingProtocol], npcs: Set<UUID> = []) {
 		self.id = id
-		self.npcsInVillage = npcsInVillage
+		self.npcs = npcs
 		self.buildings = Dictionary(uniqueKeysWithValues: buildings.map { ($0.id, $0) })
 		self.name = name
 	}
@@ -30,6 +30,14 @@ actor Village: Hashable, Identifiable, Equatable {
 		if buildings.values.contains(where: { $0.type == .farm(type: .main) }) {
 			// foodCount += 1
 		}
+	}
+
+	func addNPC(npcID: UUID) async {
+		npcs.insert(npcID)
+	}
+
+	func removeNPC(npcID: UUID) async {
+		npcs.remove(npcID)
 	}
 
 	func setHasCourthouse() {
@@ -69,22 +77,6 @@ actor Village: Hashable, Identifiable, Equatable {
 		buildings.removeValue(forKey: buildingID)
 	}
 
-	func add(npc: NPC) async {
-		npcsInVillage.insert(npc.id)
-	}
-
-	func add(npc: UUID) async {
-		npcsInVillage.insert(npc)
-	}
-
-	func remove(npc: NPC) async {
-		npcsInVillage.remove(npc.id)
-	}
-
-	func remove(npcID: UUID) async {
-		npcsInVillage.remove(npcID)
-	}
-
 	func set(name: String) async {
 		self.name = name
 		Task.detached {
@@ -93,7 +85,7 @@ actor Village: Hashable, Identifiable, Equatable {
 	}
 
 	func has(npcID: UUID) -> Bool {
-		npcsInVillage.contains(npcID)
+		npcs.contains(npcID)
 	}
 
 	func update(buildingID: UUID, newBuilding: any BuildingProtocol) async {
