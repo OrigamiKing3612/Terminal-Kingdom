@@ -83,7 +83,7 @@ enum StatusBox {
 		await Screen.print(x: villageInfoAreaStartX, y: villageInfoAreaStartY, "\(village.name):".styled(with: .bold))
 		let maxVisibleLines = height - 2
 		var renderedLines: [String] = []
-		await renderedLines.append(contentsOf: "  Population: \(village.npcsInVillage.count)".wrappedWithStyles(toWidth: width - 2))
+		await renderedLines.append(contentsOf: "  Population: \(village.npcs.count)".wrappedWithStyles(toWidth: width - 2))
 		await renderedLines.append(contentsOf: "  Food Count: \(village.foodIncome)".wrappedWithStyles(toWidth: width - 2))
 
 		if renderedLines.count > maxVisibleLines {

@@ -4,10 +4,10 @@ import Foundation
 enum BackgroundTasks {
 	static func startNPCMovingQueue() {
 		Task.detached(priority: .background) {
-			guard await !Game.shared.hasStartedNPCQueue else { return }
+			guard await !Game.shared.hasStartedNPCMovingQueue else { return }
 			await Game.shared.setHasStartedNPCMovingQueue(true)
 
-			Logger.debug("Started NPC task")
+			Logger.debug("Started NPC moving task")
 
 			while true {
 				let npcPositions = await Game.shared.movingNpcs
@@ -24,6 +24,29 @@ enum BackgroundTasks {
 				try? await Task.sleep(nanoseconds: 200_000_000) // .2 seconds
 			}
 
+			Logger.debug("Ended NPC moving task")
+		}
+	}
+
+	static func startNPCQueue() {
+		Task.detached(priority: .background) {
+			guard await !Game.shared.hasStartedNPCQueue else { return }
+			await Game.shared.setHasStartedNPCQueue(true)
+
+			Logger.debug("Started NPC task")
+
+			while true {
+				await withTaskGroup { group in
+					for npc in await Game.shared.npcs.npcs.values where !npc.isStartingVillageNPC {
+						group.addTask {
+							var newnpc = npc
+							await newnpc.tick()
+							await Game.shared.npcs.set(npc: newnpc)
+						}
+					}
+				}
+				try? await Task.sleep(nanoseconds: 10_000_000_000) // 10 second
+			}
 			Logger.debug("Ended NPC task")
 		}
 	}

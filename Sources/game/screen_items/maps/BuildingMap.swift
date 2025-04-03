@@ -32,6 +32,9 @@ struct BuildingMap: MapBoxMap {
 				self.grid = await StaticMaps.buildingMap(mapType: mapType)
 		}
 
+		// Put npcs in the NPCManager if not already
+		await addNPCsToManager()
+
 		// Coordinates for inside the building
 		if await Game.shared.player.position.x == 55, await Game.shared.player.position.y == 23 {
 			// Start player in correct spot on start
@@ -183,5 +186,73 @@ struct BuildingMap: MapBoxMap {
 	mutating func setPlayer(x: Int, y: Int) {
 		player.x = x
 		player.y = y
+	}
+
+	func addNPCsToManager() async {
+		let npcs: [UUID] = grid.flatMap { row in
+			row.compactMap { tile in
+				if case let .npc(npcTile) = tile.type {
+					return npcTile.npcID
+				}
+				return nil
+			}
+		}
+		let npcsInManager = await Game.shared.npcs.npcs
+		var index = 1
+		for npc in npcs {
+			if !npcsInManager.keys.contains(npc) {
+				var job: NPCJob? = nil
+				switch mapType {
+					case .blacksmith:
+						job = .blacksmith
+					case .builder:
+						if index == 1 || index == 2 {
+							job = .builder_helper
+						} else {
+							job = .builder
+						}
+					case .carpenter:
+						if index == 3 {
+							job = .carpenter
+						} else {
+							job = .carpenter_helper
+						}
+					case .castle:
+						job = .king
+					case .farm:
+						if index == 1 {
+							index += 1
+							job = .farmer
+						} else {
+							job = .farmer_helper
+						}
+					case .hospital:
+						job = .doctor
+					case .hunting_area:
+						job = .hunter
+					case .inventor:
+						job = .inventor
+					case .mine:
+						job = .miner
+					case .potter:
+						job = .potter
+					case .restaurant:
+						job = .chef
+					case .shop:
+						if index == 1 {
+							job = .salesman(type: .buy)
+						} else if index == 2 {
+							job = .salesman(type: .sell)
+						} else {
+							job = .salesman(type: .help)
+						}
+					case .stable:
+						job = .stable_master
+					default:
+						job = nil
+				}
+				await Game.shared.npcs.add(npc: NPC(id: npc, job: job, isStartingVillageNPC: true, villageID: UUID(), position: .init(x: 0, y: 0, mapType: mapType)))
+			}
+		}
 	}
 }

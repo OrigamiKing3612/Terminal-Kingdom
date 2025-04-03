@@ -1,43 +1,53 @@
 import Foundation
 
 struct NPCTile: Codable, Hashable, Equatable {
+	static let startingVillageID = UUID()
 	let id: UUID
-	var npc: NPC
+	let npcID: UUID
+	var npc: NPC? {
+		get async {
+			await Game.shared.npcs[npcID]
+		}
+	}
 
-	init(id: UUID = UUID()) {
+	private init(id: UUID = UUID(), npcID: UUID) {
 		self.id = id
-		self.npc = .init(isStartingVillageNPC: false, villageID: id)
+		self.npcID = npcID
 	}
 
 	init(id: UUID = UUID(), npc: NPC) {
 		self.id = id
-		self.npc = npc
+		self.npcID = npc.id
+		Task {
+			await Game.shared.npcs.add(npc: npc)
+		}
 	}
 
 	static func renderNPC(tile: NPCTile) async -> String {
-		if !tile.npc.hasTalkedToBefore {
-			if let job = tile.npc.job, !job.isHelper {
+		guard let npc = await tile.npc else { return "?" }
+		if !npc.hasTalkedToBefore {
+			if let job = npc.job, !job.isHelper {
 				return "!".styled(with: [.bold, .red])
 			}
 		}
-		switch tile.npc.job {
+		switch npc.job {
 			default:
 				// TODO: Not sure if this will stay
-				if tile.npc.positionToWalkTo != nil {
+				if npc.positionToWalkTo != nil {
 					return await (Game.shared.config.useNerdFont ? "" : "N").styled(with: .bold)
 				} else {
-					let nerdFontSymbol = tile.npc.gender == .male ? "󰙍" : "󰙉"
+					let nerdFontSymbol = npc.gender == .male ? "󰙍" : "󰙉"
 					return await (Game.shared.config.useNerdFont ? nerdFontSymbol : "N").styled(with: .bold)
 				}
 		}
 	}
 
-	static func move(position: NPCPosition) async {
+	static func move(position: NPCMovingPosition) async {
 		// Logger.debug("\(#function) \(#file):\(#line): Moving NPC from \(position.x), \(position.y)")
-		#warning("bug, when the npc trys to move when you enter another map and this is still running")
+		#warning("bug, when the npcID trys to move when you enter another map and this is still running")
 		let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
 
-		if case let .npc(tile: tile) = npcTile.type, let positionToWalkTo = tile.npc.positionToWalkTo {
+		if case let .npc(tile: tile) = npcTile.type, let npc = await tile.npc, let positionToWalkTo = npc.positionToWalkTo {
 			// Reached the destination
 			if positionToWalkTo == .init(x: position.x, y: position.y, mapType: position.mapType) {
 				await Game.shared.removeNPC(position)
@@ -85,10 +95,9 @@ struct NPCTile: Codable, Hashable, Equatable {
 								}
 
 								var newGrid = await Game.shared.maps.customMaps[customMapIndex].grid
-								var newTile = tile
-								newTile.npc.removePostion()
+								await Game.shared.npcs.removeNPCPosition(npcID: tile.npcID)
 								newGrid[npcY][npcX] = MapTile(
-									type: .npc(tile: newTile),
+									type: .npc(tile: .init(id: tile.id, npcID: tile.npcID)),
 									isWalkable: npcTile.isWalkable,
 									event: npcTile.event,
 									biome: npcTile.biome
@@ -99,13 +108,12 @@ struct NPCTile: Codable, Hashable, Equatable {
 						}
 
 					} else {}
-					// put npc in the custom map
+					// put npcID in the custom map
 					return
 				} else {
-					var npcNew = tile
-					npcNew.npc.removePostion()
+					await Game.shared.npcs.removeNPCPosition(npcID: tile.npcID)
 					await MapBox.updateTile(newTile: MapTile(
-						type: .npc(tile: npcNew),
+						type: .npc(tile: .init(id: tile.id, npcID: tile.npcID)),
 						isWalkable: npcTile.isWalkable,
 						event: npcTile.event,
 						biome: npcTile.biome
@@ -120,14 +128,14 @@ struct NPCTile: Codable, Hashable, Equatable {
 
 			let currentTile = await MapBox.mapType.map.grid[newNpcPosition.y][newNpcPosition.x] as! MapTile
 
-			let newPosition = NPCPosition(
+			let newPosition = NPCMovingPosition(
 				x: newNpcPosition.x,
 				y: newNpcPosition.y,
 				mapType: position.mapType,
 				oldTile: currentTile
 			)
 
-			await withTaskGroup(of: Void.self) { group in
+			await withTaskGroup { group in
 				group.addTask {
 					// Restore old tile
 					await MapBox.setMapGridTile(
@@ -169,17 +177,17 @@ extension NPCTile {
 	func encode(to encoder: any Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
 		try container.encode(id, forKey: .id)
-		try container.encode(npc, forKey: .npc)
+		try container.encode(npcID, forKey: .npcID)
 	}
 
 	enum CodingKeys: CodingKey {
 		case id
-		case npc
+		case npcID
 	}
 
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		self.id = try container.decode(UUID.self, forKey: .id)
-		self.npc = try container.decode(NPC.self, forKey: .npc)
+		self.npcID = try container.decode(UUID.self, forKey: .npcID)
 	}
 }

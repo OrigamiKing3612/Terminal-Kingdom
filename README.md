@@ -15,7 +15,7 @@ Almost every building in the starting village has an npc. You can gain skills by
 4. Run the `TerminalKingdom` executable.
 
 ### Building from Source
-1. Install the Swift 6.0.3 toolchain from [here](https://swift.org/download/).
+1. Install the Swift 6.1 toolchain from [here](https://swift.org/download/).
     - You can also use the [docker container](https://hub.docker.com/_/swift).
 2. Clone the [repository](https://github.com/OrigamiKing3612/Terminal-Kingdom).
 3. `cd Terminal-Kingdom`

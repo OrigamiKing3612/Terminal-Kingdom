@@ -1,11 +1,10 @@
 struct TitleScreen {
-	private nonisolated(unsafe) var startX: Int { 0 }
-	private nonisolated(unsafe) var middleX: Int { Screen.columns / 2 }
-	private nonisolated(unsafe) var endX: Int { Screen.columns }
-
-	private nonisolated(unsafe) var startY: Int { 0 }
-	private nonisolated(unsafe) var middleY: Int { Screen.rows / 2 }
-	private nonisolated(unsafe) var endY: Int { Screen.rows }
+	private nonisolated var startX: Int { 0 }
+	private nonisolated var middleX: Int { Screen.columns / 2 }
+	private nonisolated var endX: Int { Screen.columns }
+	private nonisolated var startY: Int { 0 }
+	private nonisolated var middleY: Int { Screen.rows / 2 }
+	private nonisolated var endY: Int { Screen.rows }
 
 	private nonisolated(unsafe) var selectedOptionIndex = 0
 
