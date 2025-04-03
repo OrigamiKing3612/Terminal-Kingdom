@@ -183,13 +183,11 @@ extension NPCTile {
 	enum CodingKeys: CodingKey {
 		case id
 		case npcID
-		case villageID
 	}
 
 	init(from decoder: any Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		self.id = try container.decode(UUID.self, forKey: .id)
 		self.npcID = try container.decode(UUID.self, forKey: .npcID)
-		// self.villageID = try container.decode(UUID.self, forKey: .villageID)
 	}
 }

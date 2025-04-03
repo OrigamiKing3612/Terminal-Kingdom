@@ -199,6 +199,7 @@ struct NPC: Codable, Hashable, Equatable {
 		case positionToWalkTo
 		case attributes
 		case hunger
+		case happiness
 		case position
 		case startingVillageNPC
 	}
@@ -217,7 +218,7 @@ struct NPC: Codable, Hashable, Equatable {
 		self.attributes = try container.decode([NPCAttribute].self, forKey: NPC.CodingKeys.attributes)
 		self._hunger = try container.decode(Double.self, forKey: NPC.CodingKeys.hunger)
 		self.position = try container.decode(NPCPosition.self, forKey: NPC.CodingKeys.position)
-		// self._happiness = try container.decode(Double.self, forKey: NPC.CodingKeys.happiness)
+		self._happiness = try container.decode(Double.self, forKey: NPC.CodingKeys.happiness)
 		let isStartingVillageNPC = try container.decodeIfPresent(Bool.self, forKey: NPC.CodingKeys.startingVillageNPC)
 		if isStartingVillageNPC == true {
 			self.villageID = Self.startingVillageID
@@ -241,7 +242,7 @@ struct NPC: Codable, Hashable, Equatable {
 		try container.encode(attributes, forKey: NPC.CodingKeys.attributes)
 		try container.encode(_hunger, forKey: NPC.CodingKeys.hunger)
 		try container.encode(position, forKey: NPC.CodingKeys.position)
-		// try container.encode(_happiness, forKey: NPC.CodingKeys.happiness)
+		try container.encode(_happiness, forKey: NPC.CodingKeys.happiness)
 	}
 }
 
