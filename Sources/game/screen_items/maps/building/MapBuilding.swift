@@ -129,6 +129,8 @@ enum MapBuilding {
 							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
 							if tile.type == .farm(type: .main) {
 								await Game.shared.kingdom.add(building: FarmBuilding(type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .house {
+								await Game.shared.kingdom.add(building: HouseBuilding(type: tile.type, x: x, y: y), villageID: villageID)
 							} else {
 								await Game.shared.kingdom.add(building: Building(type: tile.type, x: x, y: y), villageID: villageID)
 							}

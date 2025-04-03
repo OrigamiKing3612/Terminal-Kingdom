@@ -1,15 +1,14 @@
 import Foundation
 
-actor FarmBuilding: BuildingProtocol {
+actor HouseBuilding: BuildingProtocol {
 	let id: UUID
 	let x: Int
 	let y: Int
 	let type: DoorTileTypes
 	private var level: Int
-	private(set) var pots: Int = 0
+	private(set) var residents: Set<UUID> = []
 
 	init(id: UUID = UUID(), type: DoorTileTypes, x: Int, y: Int) {
-		self.pots = 0
 		self.id = id
 		self.type = type
 		self.level = 1
@@ -17,16 +16,15 @@ actor FarmBuilding: BuildingProtocol {
 		self.y = y
 	}
 
-	func addPot() async {
-		pots += 1
+	func addResident(_ resident: UUID) async {
+		residents.insert(resident)
 	}
 
-	func removePot() async {
-		pots -= 1
+	func removeResident(_ resident: UUID) async {
+		residents.remove(resident)
 	}
 
 	func getLevel() async -> Int { level }
-
 	func setLevel(newLevel: Int) async {
 		guard newLevel > 0 else {
 			return
