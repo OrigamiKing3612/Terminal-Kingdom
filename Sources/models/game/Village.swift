@@ -6,7 +6,7 @@ actor Village: Hashable, Identifiable, Equatable {
 	var data: VillageData = .init()
 	var hasCourthouse: Bool = false
 	var courthouseID: UUID?
-	private(set) var npcs: [UUID] = [] //! TODO: Make into a set
+	private(set) var npcs: Set<UUID> = []
 	private(set) var buildings: [UUID: any BuildingProtocol] = [:]
 	private(set) var radius: Int = 40
 	var foodCount: Int = 0
@@ -19,7 +19,7 @@ actor Village: Hashable, Identifiable, Equatable {
 		return totalPots
 	}
 
-	init(id: UUID = UUID(), name: String, buildings: [any BuildingProtocol], npcs: [UUID] = []) {
+	init(id: UUID = UUID(), name: String, buildings: [any BuildingProtocol], npcs: Set<UUID> = []) {
 		self.id = id
 		self.npcs = npcs
 		self.buildings = Dictionary(uniqueKeysWithValues: buildings.map { ($0.id, $0) })
@@ -33,11 +33,11 @@ actor Village: Hashable, Identifiable, Equatable {
 	}
 
 	func addNPC(npcID: UUID) async {
-		npcs.append(npcID)
+		npcs.insert(npcID)
 	}
 
 	func removeNPC(npcID: UUID) async {
-		npcs.removeAll { $0 == npcID }
+		npcs.remove(npcID)
 	}
 
 	func setHasCourthouse() {

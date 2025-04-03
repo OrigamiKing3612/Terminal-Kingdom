@@ -36,7 +36,7 @@ enum BackgroundTasks {
 			Logger.debug("Started NPC task")
 
 			while true {
-				await withTaskGroup(of: Void.self) { group in
+				await withTaskGroup { group in
 					for npc in await Game.shared.npcs.npcs.values where !npc.isStartingVillageNPC {
 						group.addTask {
 							var newnpc = npc
@@ -47,9 +47,8 @@ enum BackgroundTasks {
 				}
 				try? await Task.sleep(nanoseconds: 10_000_000_000) // 10 second
 			}
+			Logger.debug("Ended NPC task")
 		}
-
-		Logger.debug("Ended NPC task")
 	}
 
 	static func startCropQueue() {

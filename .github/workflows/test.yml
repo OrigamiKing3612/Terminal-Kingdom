@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build
         run: |
-          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace swift:6.0.3-focal swift build -c release -Xswiftc -static-stdlib
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace swift:6.1-focal swift build -c release -Xswiftc -static-stdlib
       - name: Upload Linux Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -39,7 +39,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: SwiftyLab/setup-swift@latest
         with:
-          swift-version: "6.0.3"
+          swift-version: "6.1"
       - name: Build
         run: |
           swift build -c release
@@ -62,7 +62,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: SwiftyLab/setup-swift@latest
         with:
-          swift-version: "6.0.3"
+          swift-version: "6.1"
       - name: Build
         shell: pwsh
         run: |

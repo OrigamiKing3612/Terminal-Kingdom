@@ -33,7 +33,7 @@ actor NPCManager {
 	}
 
 	func removeNPCPosition(npcID: UUID) async {
-		npcs[npcID]?.removePostion()
+		npcs[npcID]?.removePosition()
 	}
 
 	func getNPC(for position: NPCPosition) -> NPC? {

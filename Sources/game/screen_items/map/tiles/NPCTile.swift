@@ -135,7 +135,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 				oldTile: currentTile
 			)
 
-			await withTaskGroup(of: Void.self) { group in
+			await withTaskGroup { group in
 				group.addTask {
 					// Restore old tile
 					await MapBox.setMapGridTile(

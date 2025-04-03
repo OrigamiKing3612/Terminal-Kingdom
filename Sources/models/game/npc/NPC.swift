@@ -41,7 +41,7 @@ struct NPC: Codable, Hashable, Equatable {
 	}
 
 	mutating func tick() async {
-		Logger.debug("Ticking \(id)")
+		// Logger.debug("Ticking \(id)")
 		// TODO: remove npc
 		guard let villageID else { return }
 		guard !isStartingVillageNPC else { return }
@@ -61,7 +61,7 @@ struct NPC: Codable, Hashable, Equatable {
 		_hunger = newHunger
 	}
 
-	mutating func removePostion() {
+	mutating func removePosition() {
 		positionToWalkTo = nil
 	}
 
