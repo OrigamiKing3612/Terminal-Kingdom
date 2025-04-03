@@ -37,7 +37,7 @@ enum BackgroundTasks {
 
 			while true {
 				await withTaskGroup(of: Void.self) { group in
-					for npc in await Game.shared.npcs.npcs.values {
+					for npc in await Game.shared.npcs.npcs.values where !npc.isStartingVillageNPC {
 						group.addTask {
 							var newnpc = npc
 							await newnpc.tick()
@@ -45,8 +45,8 @@ enum BackgroundTasks {
 						}
 					}
 				}
+				try? await Task.sleep(nanoseconds: 10_000_000_000) // 10 second
 			}
-			try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
 		}
 
 		Logger.debug("Ended NPC task")

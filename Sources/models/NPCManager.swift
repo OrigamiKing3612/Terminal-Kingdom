@@ -10,6 +10,9 @@ actor NPCManager {
 	}
 
 	func add(npc: NPC) async {
+		if npcs.isEmpty {
+			BackgroundTasks.startNPCQueue()
+		}
 		npcs[npc.id] = npc
 	}
 

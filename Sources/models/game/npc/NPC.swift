@@ -41,10 +41,12 @@ struct NPC: Codable, Hashable, Equatable {
 	}
 
 	mutating func tick() async {
+		Logger.debug("Ticking \(id)")
 		// TODO: remove npc
 		guard let villageID else { return }
+		guard !isStartingVillageNPC else { return }
 		// guard let kingdom = await Game.shared.getKingdom(id: villageID) else { return }
-		_hunger -= 0.1
+		_hunger -= 0.01
 
 		if _hunger <= 0 {
 			// if let positionToWalkTo {
