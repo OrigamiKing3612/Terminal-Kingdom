@@ -61,3 +61,66 @@ extension Data {
 		}
 	}
 }
+
+extension String: Saveable {
+	func save() async throws(SaveError) -> Data {
+		var data = Data()
+		data.append(contentsOf: utf8)
+		return data
+	}
+}
+
+extension Int: Storeable {
+	func save() async throws(SaveError) -> Data {
+		var data = Data()
+		var value = self
+		// Store the integer as 4 bytes (Int32)
+		for _ in 0 ..< 4 {
+			data.append(UInt8(value & 0xFF))
+			value >>= 8
+		}
+		return data
+	}
+
+	// TODO: test. inline ai.
+	init(from data: Data) throws(LoadError) {
+		guard data.count >= 4 else {
+			throw LoadError.invalidData
+		}
+		self = Int(data[0]) | (Int(data[1]) << 8) | (Int(data[2]) << 16) | (Int(data[3]) << 24)
+	}
+}
+
+extension Array: Saveable where Element: Saveable {
+	func save() async throws(SaveError) -> Data {
+		var data = Data()
+		data.append(UInt8(count))
+		for element in self {
+			try await data.append(element)
+		}
+		return data
+	}
+}
+
+extension Set: Saveable where Element: Saveable {
+	func save() async throws(SaveError) -> Data {
+		var data = Data()
+		data.append(UInt8(count))
+		for element in self {
+			try await data.append(element)
+		}
+		return data
+	}
+}
+
+extension Dictionary: Saveable where Key: Saveable, Value: Saveable {
+	func save() async throws(SaveError) -> Data {
+		var data = Data()
+		data.append(UInt8(count))
+		for (key, value) in self {
+			try await data.append(key)
+			try await data.append(value)
+		}
+		return data
+	}
+}
