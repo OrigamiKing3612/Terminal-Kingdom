@@ -8,11 +8,11 @@ protocol PopUp: AnyObject {
 }
 
 extension PopUp {
-	nonisolated(unsafe) static var startX: Int { 0 }
-	nonisolated(unsafe) static var middleX: Int { Screen.columns / 2 }
-	nonisolated(unsafe) static var startY: Int { 0 }
-	nonisolated(unsafe) static var middleY: Int { Screen.rows / 2 }
-	nonisolated(unsafe) static var endY: Int { Screen.rows }
+	nonisolated static var startX: Int { 0 }
+	nonisolated static var middleX: Int { Screen.columns / 2 }
+	nonisolated static var startY: Int { 0 }
+	nonisolated static var middleY: Int { Screen.rows / 2 }
+	nonisolated static var endY: Int { Screen.rows }
 
 	func render() async {
 		longestXLine = title.count
