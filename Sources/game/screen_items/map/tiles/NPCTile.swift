@@ -125,7 +125,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 				target: positionToWalkTo,
 				current: .init(x: position.x, y: position.y, mapType: position.mapType)
 			)
-
+			guard await MapBox.mapType == position.mapType else { return }
 			let currentTile = await MapBox.mapType.map.grid[newNpcPosition.y][newNpcPosition.x] as! MapTile
 
 			let newPosition = NPCMovingPosition(
