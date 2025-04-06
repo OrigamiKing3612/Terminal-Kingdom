@@ -1,51 +1,107 @@
 import Foundation
 
-// MARK: - Core Protocols
-
 protocol Storeable: Saveable, Loadable {}
+
+extension Storeable {
+	func save() async throws -> Data {
+		var data = Data()
+		let mirror = Mirror(reflecting: self)
+
+		for case let (_, value) in mirror.children {
+			guard let storeableValue = value as? Storeable else {
+				throw SaveError.unknownError
+			}
+			try await data.append(storeableValue)
+		}
+		return data
+	}
+
+	init(from data: Data) throws {
+		var consumedData = data
+		self = try Self.createInstance(using: &consumedData)
+	}
+
+	private static func createInstance(using data: inout Data) throws -> Self {
+		let instance = try Self.createEmptyInstance()
+		let mirror = Mirror(reflecting: instance)
+
+		var copiedData = data
+
+		for case let (label?, value) in mirror.children {
+			guard let type = type(of: value) as? Loadable.Type else {
+				throw LoadError.invalidData
+			}
+			let loadedValue = try type.init(from: copiedData)
+			let propertyData = try loadedValue.save()
+			copiedData = copiedData.dropFirst(propertyData.count)
+
+			try Self.setValue(instance, key: label, value: loadedValue)
+		}
+
+		data = copiedData
+		return instance
+	}
+
+	private static func createEmptyInstance() throws -> Self {
+		guard let empty = (Self.self as? NSObject.Type)?() as? Self else {
+			throw LoadError.unknownError
+		}
+		return empty
+	}
+
+	private static func setValue(_ instance: Self, key: String, value: Any) throws {
+		let mirror = Mirror(reflecting: instance)
+
+		for case let (label?, child) in mirror.children {
+			if label == key {
+				var mutableChild = child
+				mutableChild = value
+			}
+		}
+	}
+}
+
 private enum StoreableUtils {
 	static let fileVersion: UInt8 = 0x01
 }
 
 protocol Saveable {
-	func save() async throws(SaveError) -> Data
+	func save() async throws -> Data
 }
 
 extension Saveable {
-	func save(to url: URL) async throws(SaveError) {
+	func save(to url: URL) async throws {
 		var data = Data()
-		data.append(contentsOf: [0x54, 0x4B, 0x53, StoreableUtils.fileVersion]) // Magic number + version
+		data.append(contentsOf: [0x54, 0x4B, 0x53, StoreableUtils.fileVersion])
 		try await data.append(self)
 		do {
 			try data.write(to: url)
 		} catch {
-			throw SaveError.couldNotWriteFile(error)
+			throw SaveError.couldNotWriteFile
 		}
 	}
 }
 
 protocol Loadable {
-	init(from data: inout Data) throws(LoadError)
+	init(from data: Data) throws
 }
 
 extension Loadable {
-	static func load(from url: URL) throws(LoadError) -> Self {
-		guard var data = try? Data(contentsOf: url) else {
+	static func load(from url: URL) throws -> Self {
+		let data = try? Data(contentsOf: url)
+		guard let data else {
 			throw LoadError.fileNotFound
 		}
 		guard data.starts(with: [0x54, 0x4B, 0x53, StoreableUtils.fileVersion]) else {
 			throw .invalidData
 		}
-		data = data.dropFirst(4) // Remove header
-		return try Self(from: &data)
+		return try Self(from: data.dropFirst(4))
 	}
 }
 
-// MARK: - Errors
-
 enum SaveError: Error {
 	case unknownError
-	case couldNotWriteFile(Error)
+	case couldNotWriteFile
 }
 
 enum LoadError: Error {
@@ -54,127 +110,121 @@ enum LoadError: Error {
 	case unknownError
 }
 
-// MARK: - Data Helpers
-
 extension Data {
-	mutating func append(_ data: some Saveable) async throws(SaveError) {
+	mutating func append(_ data: some Saveable) async throws {
 		try await append(contentsOf: data.save())
 	}
 
-	mutating func append(_ value: String) {
-		let utf8Data = Data(value.utf8)
-		append(UInt16(utf8Data.count).littleEndian)
-		append(utf8Data)
-	}
-
-	mutating func append(_ value: some FixedWidthInteger) {
-		var value = value.littleEndian
-		withUnsafeBytes(of: &value) { append($0) }
-	}
-
-	mutating func append(_ value: Double) {
-		var value = value.bitPattern.littleEndian
-		withUnsafeBytes(of: &value) { append($0) }
-	}
-
-	mutating func append(_ value: Bool) {
-		append(value ? UInt8(1) : UInt8(0))
+	mutating func append(_ string: String) {
+		if let data = string.data(using: .utf8) {
+			append(data)
+		}
 	}
 }
 
-// MARK: - String Extension
-
-extension String: Storeable {
-	func save() async throws(SaveError) -> Data {
+extension String: Saveable {
+	func save() async throws -> Data {
 		var data = Data()
-		try await data.append(self)
+		data.append(contentsOf: utf8)
 		return data
 	}
-
-	init(from data: inout Data) throws(LoadError) {
-		guard data.count >= MemoryLayout<UInt16>.size else { throw LoadError.invalidData }
-		let length = UInt16(littleEndian: data.withUnsafeBytes { $0.load(as: UInt16.self) })
-		data = data.dropFirst(2)
-
-		guard data.count >= length else { throw LoadError.invalidData }
-		self = String(data: data.prefix(Int(length)), encoding: .utf8) ?? ""
-		data = data.dropFirst(Int(length))
-	}
 }
 
-// MARK: - Integer Extensions
-
-extension Int32: Storeable {
-	func save() async throws(SaveError) -> Data {
+extension Int: Storeable {
+	func save() async throws -> Data {
 		withUnsafeBytes(of: littleEndian) { Data($0) }
 	}
 
-	init(from data: inout Data) throws(LoadError) {
-		guard data.count >= MemoryLayout<Int32>.size else { throw LoadError.invalidData }
-		self = data.withUnsafeBytes { $0.load(as: Int32.self) }.littleEndian
-		data = data.dropFirst(MemoryLayout<Int32>.size)
+	init(from data: Data) throws {
+		guard data.count >= MemoryLayout<Int>.size else {
+			throw LoadError.invalidData
+		}
+		self = data.withUnsafeBytes { $0.load(as: Int.self) }.littleEndian
 	}
 }
 
-// MARK: - Double Extension
-
-extension Double: Storeable {
-	func save() async throws(SaveError) -> Data {
+extension Float: Storeable {
+	func save() async throws -> Data {
 		withUnsafeBytes(of: bitPattern.littleEndian) { Data($0) }
 	}
 
-	init(from data: inout Data) throws(LoadError) {
-		guard data.count >= MemoryLayout<UInt64>.size else { throw LoadError.invalidData }
-		let bitPattern = data.withUnsafeBytes { $0.load(as: UInt64.self) }.littleEndian
-		self = Double(bitPattern: bitPattern)
-		data = data.dropFirst(MemoryLayout<UInt64>.size)
+	init(from data: Data) throws {
+		guard data.count >= 4 else { throw LoadError.invalidData }
+		let bitPattern = data.withUnsafeBytes { $0.load(as: UInt32.self) }.littleEndian
+		self = Float(bitPattern: bitPattern)
 	}
 }
 
-// MARK: - Bool Extension
-
 extension Bool: Storeable {
-	func save() async throws(SaveError) -> Data {
+	func save() async throws -> Data {
 		Data([self ? 1 : 0])
 	}
 
-	init(from data: inout Data) throws(LoadError) {
-		guard !data.isEmpty else { throw LoadError.invalidData }
-		self = data.removeFirst() == 1
+	init(from data: Data) throws {
+		guard let first = data.first else { throw LoadError.invalidData }
+		self = first != 0
 	}
 }
 
-// MARK: - UUID Extension
+extension Double: Storeable {
+	func save() async throws -> Data {
+		var value = self
+		return withUnsafeBytes(of: &value) { Data($0) }
+	}
+
+	init(from data: Data) throws {
+		guard data.count == MemoryLayout<Double>.size else {
+			throw LoadError.invalidData
+		}
+		self = data.withUnsafeBytes { $0.load(as: Double.self) }
+	}
+}
+
+extension TimeInterval: Storeable {
+	func save() async throws -> Data {
+		let timeInterval = self
+		return try await timeInterval.save()
+	}
+
+	init(from data: Data) throws {
+		guard data.count >= MemoryLayout<Double>.size else {
+			throw LoadError.invalidData
+		}
+		self = data.withUnsafeBytes { $0.load(as: Double.self) }
+	}
+}
+
+extension Date: Storeable {
+	func save() async throws -> Data {
+		let timeInterval = timeIntervalSince1970
+		return try await timeInterval.save()
+	}
+
+	init(from data: Data) throws {
+		let timeInterval: Double = try Double(from: data)
+		self = Date(timeIntervalSince1970: timeInterval)
+	}
+}
 
 extension UUID: Storeable {
-	func save() async throws(SaveError) -> Data {
-		withUnsafeBytes(of: uuid) { Data($0) }
-	}
-
-	init(from data: inout Data) throws(LoadError) {
-		guard data.count >= MemoryLayout<uuid_t>.size else { throw LoadError.invalidData }
-		self = data.withUnsafeBytes { UUID(uuid: $0.load(as: uuid_t.self)) }
-		data = data.dropFirst(MemoryLayout<uuid_t>.size)
-	}
-}
-
-// MARK: - Collection Extensions
-
-extension Array: Saveable where Element: Saveable {
-	func save() async throws(SaveError) -> Data {
+	func save() async throws -> Data {
 		var data = Data()
-		data.append(UInt32(count).littleEndian)
-		for element in self {
-			try await data.append(element)
-		}
+		data.append(contentsOf: uuid)
 		return data
 	}
+
+	init(from data: Data) throws {
+		guard data.count >= 16 else { throw LoadError.invalidData }
+		let bytes = (data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7],
+		             data[8], data[9], data[10], data[11], data[12], data[13], data[14], data[15])
+		self = UUID(uuid: bytes)
+	}
 }
 
-extension Set: Saveable where Element: Saveable {
-	func save() async throws(SaveError) -> Data {
+extension Array: Saveable where Element: Saveable {
+	func save() async throws -> Data {
 		var data = Data()
-		data.append(UInt32(count).littleEndian)
+		data.append(UInt8(count))
 		for element in self {
 			try await data.append(element)
 		}
@@ -183,9 +233,9 @@ extension Set: Saveable where Element: Saveable {
 }
 
 extension Dictionary: Saveable where Key: Saveable, Value: Saveable {
-	func save() async throws(SaveError) -> Data {
+	func save() async throws -> Data {
 		var data = Data()
-		data.append(UInt32(count).littleEndian)
+		data.append(UInt8(count))
 		for (key, value) in self {
 			try await data.append(key)
 			try await data.append(value)
