@@ -32,9 +32,14 @@ class EditVillagePopUp: OptionsPopUpProtocol {
 		}))
 	}
 
+	private func addNPC() async {
+		await Screen.popUp(AddNPCPopUp(village: village))
+	}
+
 	func before() async -> Bool {
 		options = [
 			.init(label: "Rename", action: rename),
+			.init(label: "Add NPC", action: addNPC),
 			.init(label: "Edit NPCs", action: editNPCs),
 		]
 		return false
