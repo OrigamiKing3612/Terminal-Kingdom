@@ -187,6 +187,15 @@ struct NPC: Codable, Hashable, Equatable {
 		}
 	}
 
+	static func randomNPC(village: Village, count: Int) -> [NPC] {
+		var npcs: [NPC] = []
+		for _ in 0 ..< count {
+			let npc = NPC(villageID: village.id, position: .init(x: 0, y: 0, mapType: .mainMap))
+			npcs.append(npc)
+		}
+		return npcs
+	}
+
 	private enum CodingKeys: CodingKey {
 		case id
 		case name

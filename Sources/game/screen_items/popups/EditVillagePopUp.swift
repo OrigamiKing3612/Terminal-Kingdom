@@ -21,9 +21,26 @@ class EditVillagePopUp: OptionsPopUpProtocol {
 		village = await Game.shared.kingdom.villages[village.id]!
 	}
 
+	private func editNPCs() async {
+		let npcsInVilage: [UUID: NPC] = await Game.shared.npcs.npcs.filter { npc in
+			npc.value.villageID == self.village.id
+		}
+		await Screen.popUp(OptionsPopUp(title: "NPCs", options: npcsInVilage.values.map { npc in
+			MessageOption(label: npc.name, action: {
+				await Screen.popUp(EditNPCPopUp(npc: npc, village: self.village))
+			})
+		}))
+	}
+
+	private func addNPC() async {
+		await Screen.popUp(AddNPCPopUp(village: village))
+	}
+
 	func before() async -> Bool {
 		options = [
 			.init(label: "Rename", action: rename),
+			.init(label: "Add NPC", action: addNPC),
+			.init(label: "Edit NPCs", action: editNPCs),
 		]
 		return false
 	}
