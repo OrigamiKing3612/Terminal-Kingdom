@@ -33,7 +33,9 @@ class EditVillagePopUp: OptionsPopUpProtocol {
 	}
 
 	private func addNPC() async {
-		await Screen.popUp(AddNPCPopUp(village: village))
+		await Screen.popUp(AddNPCPopUp(village: village)) {
+			await MapBox.mapBox()
+		}
 	}
 
 	func before() async -> Bool {

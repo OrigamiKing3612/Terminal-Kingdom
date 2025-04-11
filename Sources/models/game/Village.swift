@@ -35,6 +35,9 @@ actor Village: Hashable, Identifiable, Equatable {
 	}
 
 	func addNPC(npcID: UUID) async {
+		if await !Game.shared.npcs.npcs.keys.contains(npcID) {
+			return
+		}
 		npcs.insert(npcID)
 	}
 
