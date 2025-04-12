@@ -50,7 +50,7 @@ class AddNPCToHousePopUp: OptionsPopUpProtocol {
 					selectedOptionIndex = selectedOptionIndex + 1
 				}
 			case .enter, .space:
-				if selectedOptionIndex == lastIndex + 2 {
+				if selectedOptionIndex == lastIndex + 1 {
 					shouldExit = true
 				} else {
 					await options[selectedOptionIndex].action()

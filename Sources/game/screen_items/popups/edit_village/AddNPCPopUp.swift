@@ -74,11 +74,12 @@ class AddNPCPopUp: PopUp {
 							for (x, tile) in row.enumerated() {
 								if case .plain = tile.type {
 									await Game.shared.npcs.add(npc: npcs[selectedOptionIndex])
-									var newGrid: [[MapTile]] = customMap.grid
+									let newGrid: [[MapTile]] = customMap.grid
 									let oldTile = newGrid[y][x]
-									newGrid[y][x] = .init(type: .npc(tile: .init(npc: npcs[selectedOptionIndex])), event: .talkToNPC, biome: oldTile.biome)
-
-									await Game.shared.maps.updateCustomMap(id: courthouse.id, with: newGrid)
+									let newTile = MapTile(type: .npc(tile: .init(npc: npcs[selectedOptionIndex])), event: .talkToNPC, biome: oldTile.biome)
+									// newGrid[y][x] = .init(type: .npc(tile: .init(npc: npcs[selectedOptionIndex])), event: .talkToNPC, biome: oldTile.biome)
+									await MapBox.updateTile(newTile: newTile, x: x, y: y)
+									// await Game.shared.maps.updateCustomMap(id: courthouse.id, with: newGrid)
 									await Game.shared.kingdom.add(npcID: npcs[selectedOptionIndex].id, villageID: village.id)
 									return
 								}

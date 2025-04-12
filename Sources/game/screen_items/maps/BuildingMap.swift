@@ -79,6 +79,10 @@ struct BuildingMap: MapBoxMap {
 		}
 	}
 
+	mutating func updateTile(newTile: MapTile, x: Int, y: Int) async {
+		grid[y][x] = newTile
+	}
+
 	private mutating func findPayerStart() {
 		if let (startX, startY) = MapTile.findTilePosition(of: .playerStart, in: grid) {
 			player.x = startX

@@ -45,6 +45,12 @@ actor MapBoxActor {
 		mainMap = map
 	}
 
+	func updateBuildingMapTile(newTile: MapTile, x: Int, y: Int) async {
+		var map = buildingMap!
+		await map.updateTile(newTile: newTile, x: x, y: y)
+		buildingMap = map
+	}
+
 	func updateBuildingMapTile(newTile: MapTile) async {
 		buildingMap!.updateTile(newTile: newTile)
 	}
