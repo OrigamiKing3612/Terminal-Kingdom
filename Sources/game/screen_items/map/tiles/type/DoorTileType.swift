@@ -64,7 +64,8 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
 			// case .castle(_):
 			// case .farm(_):
 			// case .hospital(_):
-			// case .house:
+			case .house:
+				HouseUpgrades.upgrades
 			// case .hunting_area:
 			// case .inventor:
 			// case .mine:
