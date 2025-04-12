@@ -47,6 +47,8 @@ class EditKingdomPopUp: OptionsPopUpProtocol {
 				} else {
 					await options[selectedOptionIndex].action()
 				}
+			case .esc:
+				shouldExit = true
 			default:
 				break
 		}

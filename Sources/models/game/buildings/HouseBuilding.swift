@@ -7,6 +7,10 @@ actor HouseBuilding: BuildingProtocol {
 	let type: DoorTileTypes
 	private var level: Int
 	private(set) var residents: Set<UUID> = []
+	let maxLevel: Int = 5
+	var maxResidents: Int {
+		level
+	}
 
 	init(id: UUID = UUID(), type: DoorTileTypes, x: Int, y: Int) {
 		self.id = id
@@ -26,7 +30,7 @@ actor HouseBuilding: BuildingProtocol {
 
 	func getLevel() async -> Int { level }
 	func setLevel(newLevel: Int) async {
-		guard newLevel > 0 else {
+		guard newLevel > level else {
 			return
 		}
 		level = newLevel

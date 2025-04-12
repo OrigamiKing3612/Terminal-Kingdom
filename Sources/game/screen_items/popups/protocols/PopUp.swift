@@ -39,6 +39,7 @@ extension PopUp {
 			Screen.print(x: x - (longestXLine / 2) - 1, y: 1 + y, verticalLine)
 
 			Screen.print(x: x + (longestXLine / 2) + addedLength, y: 1 + y, verticalLine)
+			// Screen.print(x: box1X - 2, y: y + yStart, "\(verticalLine + String(repeating: " ", count: d) + verticalLine)")
 		}
 		Screen.print(x: x - (longestXLine / 2) - 1, y: startY - 3, topLeftCorner + String(repeating: horizontalLine, count: longestXLine) + topRightCorner)
 		Screen.print(x: x - (longestXLine / 2) - 1, y: endY + 2, bottomLeftCorner + String(repeating: horizontalLine, count: longestXLine) + bottomRightCorner)

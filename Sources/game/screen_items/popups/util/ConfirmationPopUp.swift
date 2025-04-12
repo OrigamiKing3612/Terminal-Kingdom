@@ -39,6 +39,8 @@ class ConfirmationPopUp: OptionsPopUpProtocol {
 					await onConfirm()
 				}
 				shouldExit = true
+			case .esc:
+				shouldExit = true
 			default:
 				break
 		}

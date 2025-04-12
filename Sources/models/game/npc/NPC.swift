@@ -95,7 +95,7 @@ struct NPC: Codable, Hashable, Equatable {
 			"Violet", "Wendy", "Zoey", "Ellie", "Claire",
 			"Emily", "Haley", "Isabel", "Katie", "Lila",
 			"Maggie", "Natalie", "Olivia", "Piper", "Hannah",
-			"Rebecca", "Sophie", "Tara", "Ursula", "Vivian",
+			"Rebecca", "Sophie", "Tara", "Lisa", "Vivian",
 			"Caroline", "Alice", "Lily", "Taylor", "Megan",
 			"Ava", "Sophia", "Amelia", "Harper", "Evelyn",
 		]
