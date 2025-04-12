@@ -7,7 +7,6 @@ actor HouseBuilding: BuildingProtocol {
 	let type: DoorTileTypes
 	private var level: Int
 	private(set) var residents: Set<UUID> = []
-	let maxLevel: Int = 5
 	var maxResidents: Int {
 		level
 	}
@@ -21,6 +20,9 @@ actor HouseBuilding: BuildingProtocol {
 	}
 
 	func addResident(_ resident: UUID) async {
+		guard residents.count < maxResidents else {
+			return
+		}
 		residents.insert(resident)
 	}
 

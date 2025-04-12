@@ -17,13 +17,11 @@ class RemoveNPCFromHousePopUp: OptionsPopUpProtocol {
 	}
 
 	func before() async -> Bool {
+		options = []
 		for npcID in await house.residents {
 			if let npc = await Game.shared.npcs.npcs[npcID] {
-				options.append(MessageOption(label: npc.name, action: {
-					await Game.shared.kingdom.villages[self.villageID]?.removeResident(
-						buildingID: self.house.id,
-						npcID: npcID
-					)
+				options.append(MessageOption(label: npc.name, action: { [villageID] in
+					await Game.shared.kingdom.villages[villageID]?.removeResident(buildingID: self.house.id, npcID: npcID)
 				}))
 			}
 		}

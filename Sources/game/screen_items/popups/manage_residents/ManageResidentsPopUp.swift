@@ -30,7 +30,7 @@ class ManageResidentsPopUp: OptionsPopUpProtocol {
 
 	func before() async -> Bool {
 		options = []
-		if await house.residents.count <= house.maxResidents {
+		if await house.residents.count < house.maxResidents {
 			options.append(MessageOption(label: "Add NPC", action: addNPC))
 		}
 		if await house.residents.count > 0 {
