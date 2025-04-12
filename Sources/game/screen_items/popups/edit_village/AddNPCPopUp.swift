@@ -34,15 +34,14 @@ class AddNPCPopUp: PopUp {
 		await selfDrawBorders(box1X: box1X, box3X: box3X)
 		let d = box2X + boxLength / 2 - title.count / 2
 
-		Screen.print(x: d, y: 3, title.styled(with: .bold))
-		Screen.print(x: box1X - 2 + 1, y: 4, "Select an NPC to add to your village")
-		Screen.print(x: box1X - 2 + 1, y: 5, "Press \(KeyboardKeys.esc.render) to leave")
-
 		var shouldExit = false
 		while !shouldExit {
 			if await before() {
 				continue
 			}
+			Screen.print(x: d, y: 3, title.styled(with: .bold))
+			Screen.print(x: box1X - 2 + 1, y: 4, "Select an NPC to add to your village")
+			Screen.print(x: box1X - 2 + 1, y: 5, "Press \(KeyboardKeys.esc.render) to leave")
 
 			await drawNPCBox(x: box1X, npc: npcs[0], index: 0)
 			await drawNPCBox(x: box2X, npc: npcs[1], index: 1)
