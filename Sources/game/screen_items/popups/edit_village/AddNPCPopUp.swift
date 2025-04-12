@@ -62,7 +62,6 @@ class AddNPCPopUp: PopUp {
 				await Game.shared.npcs.add(npc: npcs[selectedOptionIndex])
 				await Game.shared.kingdom.add(npcID: npcs[selectedOptionIndex].id, villageID: village.id)
 				shouldExit = true
-			//! TODO: Add for all other popups
 			case .esc:
 				shouldExit = true
 			default:
