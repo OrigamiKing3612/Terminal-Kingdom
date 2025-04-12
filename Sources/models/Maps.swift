@@ -1,7 +1,7 @@
 import Foundation
 
 actor Maps {
-	var customMaps: [CustomMap] = []
+	var customMaps: [UUID: CustomMap] = [:]
 	private(set) var blacksmith: [[MapTile]] = []
 	private(set) var builder: [[MapTile]] = []
 	private(set) var carpenter: [[MapTile]] = []
@@ -19,21 +19,20 @@ actor Maps {
 	private(set) var shop: [[MapTile]] = []
 	private(set) var stable: [[MapTile]] = []
 
-	func updateCustomMap(at index: Int, with grid: [[MapTile]]) async {
-		guard index < customMaps.count else { return }
-		customMaps[index].updateGrid(grid)
+	func updateCustomMap(id: UUID, with grid: [[MapTile]]) async {
+		customMaps[id]?.updateGrid(grid)
 	}
 
 	func addMap(map: CustomMap) async {
-		customMaps.append(map)
+		customMaps[map.id] = map
 	}
 
 	func removeMap(map: CustomMap) async {
-		customMaps.removeAll(where: { $0.id == map.id })
+		customMaps.removeValue(forKey: map.id)
 	}
 
 	func removeMap(mapID: UUID) async {
-		customMaps.removeAll(where: { $0.id == mapID })
+		customMaps.removeValue(forKey: mapID)
 	}
 
 	func setMap(mapType: MapType, map: [[MapTile]]) async {
@@ -47,11 +46,10 @@ actor Maps {
 			case .castle:
 				castle = map
 			case let .custom(mapID: id):
-				if let index = customMaps.firstIndex(where: { $0.id == id }) {
-					customMaps[index].updateGrid(map)
-				} else {
+				if customMaps[id] == nil {
 					Logger.error("Custom Map not found (1)", code: .customMapNotFound)
 				}
+				customMaps[id]?.updateGrid(map)
 			case .farm:
 				farm = map
 			case .hospital:
@@ -129,10 +127,10 @@ actor Maps {
 			case .castle:
 				castle[y][x] = tile
 			case let .custom(mapID: id):
-				guard let customMapIndex = customMaps.firstIndex(where: { $0.id == id }) else {
+				guard let grid = customMaps[id]?.grid else {
 					Logger.error("Custom Map not found (3)", code: .customMapNotFound)
 				}
-				await updateCustomMap(at: customMapIndex, with: customMaps[customMapIndex].grid)
+				await updateCustomMap(id: id, with: grid)
 			case .farm:
 				farm[y][x] = tile
 			case .hospital:

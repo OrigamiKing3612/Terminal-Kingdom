@@ -68,8 +68,24 @@ class AddNPCPopUp: PopUp {
 					selectedOptionIndex = 0
 				}
 			case .enter, .space:
-				await Game.shared.npcs.add(npc: npcs[selectedOptionIndex])
-				await Game.shared.kingdom.add(npcID: npcs[selectedOptionIndex].id, villageID: village.id)
+				if let courthouse = await Game.shared.kingdom.villages[village.id]?.getCourthouse() {
+					if let customMap = await Game.shared.maps.customMaps[courthouse.id] {
+						for (y, row) in customMap.grid.enumerated() {
+							for (x, tile) in row.enumerated() {
+								if case .plain = tile.type {
+									await Game.shared.npcs.add(npc: npcs[selectedOptionIndex])
+									var newGrid: [[MapTile]] = customMap.grid
+									let oldTile = newGrid[y][x]
+									newGrid[y][x] = .init(type: .npc(tile: .init(npc: npcs[selectedOptionIndex])), event: .talkToNPC, biome: oldTile.biome)
+
+									await Game.shared.maps.updateCustomMap(id: courthouse.id, with: newGrid)
+									await Game.shared.kingdom.add(npcID: npcs[selectedOptionIndex].id, villageID: village.id)
+									return
+								}
+							}
+						}
+					}
+				}
 				shouldExit = true
 			case .esc:
 				shouldExit = true

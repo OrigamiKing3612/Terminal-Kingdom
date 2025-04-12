@@ -54,8 +54,8 @@ struct NPCTile: Codable, Hashable, Equatable {
 				if case let .door(doorTile) = position.oldTile.type {
 					if case let .custom(mapID, _) = doorTile.type {
 						// TODO: fix this when multidoors in custom maps
-						guard let customMapIndex = await Game.shared.maps.customMaps.firstIndex(where: { $0.id == mapID }) else { return }
-						let grid = await Game.shared.maps.customMaps[customMapIndex].grid
+						guard let mapID else { return }
+						guard let grid = await Game.shared.maps.customMaps[mapID]?.grid else { return }
 
 						for (yIndex, y) in grid.enumerated() {
 							if let xIndex = y.firstIndex(where: { if case .door = $0.type { true } else { false }}) {
@@ -94,7 +94,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 										npcY = yIndex - 1
 								}
 
-								var newGrid = await Game.shared.maps.customMaps[customMapIndex].grid
+								var newGrid = grid
 								await Game.shared.npcs.removeNPCPosition(npcID: tile.npcID)
 								newGrid[npcY][npcX] = MapTile(
 									type: .npc(tile: .init(id: tile.id, npcID: tile.npcID)),
@@ -102,7 +102,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 									event: npcTile.event,
 									biome: npcTile.biome
 								)
-								await Game.shared.maps.updateCustomMap(at: customMapIndex, with: newGrid)
+								await Game.shared.maps.updateCustomMap(id: mapID, with: newGrid)
 								break
 							}
 						}

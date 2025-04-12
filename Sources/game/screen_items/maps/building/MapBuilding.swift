@@ -128,11 +128,11 @@ enum MapBuilding {
 							grid[y][x] = MapTile(type: .door(tile: .init(type: .custom(mapID: customMap.id, doorType: tile.type), isPlacedByPlayer: true)), isWalkable: true, event: .openDoor, biome: grid[y][x].biome)
 							await Game.shared.player.removeItem(item: .door(tile: tile), count: 1)
 							if tile.type == .farm(type: .main) {
-								await Game.shared.kingdom.add(building: FarmBuilding(type: tile.type, x: x, y: y), villageID: villageID)
+								await Game.shared.kingdom.add(building: FarmBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
 							} else if tile.type == .house {
-								await Game.shared.kingdom.add(building: HouseBuilding(type: tile.type, x: x, y: y), villageID: villageID)
+								await Game.shared.kingdom.add(building: HouseBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
 							} else {
-								await Game.shared.kingdom.add(building: Building(type: tile.type, x: x, y: y), villageID: villageID)
+								await Game.shared.kingdom.add(building: Building(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
 							}
 						}
 						if await Game.shared.stages.builder.stage5Stages == .buildHouse {

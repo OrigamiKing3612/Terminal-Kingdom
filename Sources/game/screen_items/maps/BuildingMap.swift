@@ -25,7 +25,10 @@ struct BuildingMap: MapBoxMap {
 		// TODO: Clean up
 		switch mapType {
 			case let .custom(mapID):
-				self.grid = await Game.shared.maps.customMaps.filter { $0.id == mapID }[0].grid
+				guard let grid = await Game.shared.maps.customMaps[mapID]?.grid else {
+					Logger.error("Empty Grid", code: .customMapNotFound)
+				}
+				self.grid = grid
 			case .mainMap, .mining:
 				Logger.error("Main Map or Mining Map should not be put here", code: .mainMapInBuildingMap)
 			default:
