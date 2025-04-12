@@ -26,14 +26,23 @@ class SettingsPopUp: PopUp {
 			await drawBorders(endY: yStart + 2, longestXLine: longestXLine)
 
 			let key = TerminalInput.readKey()
+			let totalOptions = SettingsScreenOptions.allCases.count - 1 + 3
 			switch key {
-				case .up, .w, .k, .back_tab:
-					selectedOptionIndex = max(0, selectedOptionIndex - 1)
+				case .up, .left, .w, .k, .h, .back_tab:
+					if selectedOptionIndex > 0 {
+						selectedOptionIndex -= 1
+					} else {
+						selectedOptionIndex = totalOptions
+					}
 					if selectedOptionIndex == skip {
 						selectedOptionIndex = selectedOptionIndex - 1
 					}
-				case .down, .s, .j, .tab:
-					selectedOptionIndex = min(SettingsScreenOptions.allCases.count - 1 + 3, selectedOptionIndex + 1)
+				case .down, .right, .s, .j, .l, .tab:
+					if selectedOptionIndex < totalOptions {
+						selectedOptionIndex += 1
+					} else {
+						selectedOptionIndex = 0
+					}
 					if selectedOptionIndex == skip {
 						selectedOptionIndex = selectedOptionIndex + 1
 					}

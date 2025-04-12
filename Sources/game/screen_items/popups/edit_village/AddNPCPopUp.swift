@@ -53,11 +53,20 @@ class AddNPCPopUp: PopUp {
 
 	func input(shouldExit: inout Bool) async {
 		let key = TerminalInput.readKey()
+		let totalOptions = npcs.count - 1
 		switch key {
-			case .up, .w, .k, .back_tab, .h, .left:
-				selectedOptionIndex = max(0, selectedOptionIndex - 1)
-			case .down, .s, .j, .tab, .l, .right:
-				selectedOptionIndex = min(npcs.count - 1, selectedOptionIndex + 1)
+			case .up, .left, .w, .k, .h, .back_tab:
+				if selectedOptionIndex > 0 {
+					selectedOptionIndex -= 1
+				} else {
+					selectedOptionIndex = totalOptions
+				}
+			case .down, .right, .s, .j, .l, .tab:
+				if selectedOptionIndex < totalOptions {
+					selectedOptionIndex += 1
+				} else {
+					selectedOptionIndex = 0
+				}
 			case .enter, .space:
 				await Game.shared.npcs.add(npc: npcs[selectedOptionIndex])
 				await Game.shared.kingdom.add(npcID: npcs[selectedOptionIndex].id, villageID: village.id)

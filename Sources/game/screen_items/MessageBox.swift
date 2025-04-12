@@ -238,7 +238,7 @@ enum MessageBox {
 		let typingIcon = await Game.shared.config.icons.selectedIcon
 		var newText = text
 		if await !Game.shared.startingVillageChecks.hasUsedMessageWithOptions {
-			newText += " (Use your arrow keys to select an option)".styled(with: .bold)
+			newText += " (Use your moving keys to select an option)".styled(with: .bold)
 			await Game.shared.setHasUsedMessageWithOptions(true)
 		}
 		await message(newText, speaker: speaker)
@@ -262,13 +262,17 @@ enum MessageBox {
 
 			let key = TerminalInput.readKey()
 			switch key {
-				case .up, .left:
+				case .up, .left, .w, .k, .h, .back_tab:
 					if selectedOptionIndex > 0 {
 						selectedOptionIndex -= 1
+					} else {
+						selectedOptionIndex = options.count - 1
 					}
-				case .down, .right:
+				case .down, .right, .s, .j, .l, .tab:
 					if selectedOptionIndex < options.count - 1 {
 						selectedOptionIndex += 1
+					} else {
+						selectedOptionIndex = 0
 					}
 				case .enter, .space:
 					await removeLastMessage()
@@ -276,6 +280,10 @@ enum MessageBox {
 					await showAllBoxes
 					await Game.shared.setIsTypingInMessageBox(false)
 					return options[selectedOptionIndex]
+				case .esc:
+					if let quitOption = options.first(where: { $0.label == "Quit" }) {
+						return quitOption
+					}
 				default:
 					break
 			}
