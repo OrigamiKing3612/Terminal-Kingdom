@@ -18,15 +18,7 @@ class EditNPCPopUp: OptionsPopUpProtocol {
 
 	func before() async -> Bool {
 		options = [
-			// MessageOption(label: "Change Residence", action: {
-			// 	#warning("Change Residence option is not implemented yet.")
-			// await Screen.popUp(ConfirmationPopUp(title: "Remove \(self.npc.name) from \(self.village.name)?", message: "Are you sure you want to remove \(self.npc.name) from the village?") {
-			// 	await Game.shared.kingdom.remove(npcID: self.npc.id, villageID: self.village.id)
-			// 	await Screen.popUp(EditVillagePopUp(village: self.village))
-			// })
-			// }),
 			MessageOption(label: "Remove from Village", action: {
-				#warning("Remove from village option is not tested yet.")
 				await Screen.popUp(ConfirmationPopUp(title: "Remove \(self.npc.name) from \(self.village.name)?", message: "Are you sure you want to remove \(self.npc.name) from the village?") {
 					await Game.shared.kingdom.remove(npcID: self.npc.id, villageID: self.village.id)
 					await Screen.popUp(EditVillagePopUp(village: self.village))

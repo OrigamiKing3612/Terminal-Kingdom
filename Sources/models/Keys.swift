@@ -62,10 +62,10 @@ enum Keys {
 				await MessageBox.lineDown()
 			#if DEBUG
 				case .t:
-					let p = await Game.shared.player.position
-					if await !(Game.shared.kingdom.villages.isEmpty) {
-						// await MapBox.updateTile(newTile: MapTile(type: .npc(tile: NPCTile(npc: NPC(positionToWalkTo: .init(x: p.x, y: p.y - 10, mapType: .mainMap), tilePosition: NPCMovingPosition(x: p.x, y: p.y, mapType: .mainMap, oldTile: .init(type: .cactus, biome: .plains)), villageID: Game.shared.kingdom.villages.first!.key))), event: .talkToNPC, biome: .plains))
-					}
+					// let p = await Game.shared.player.position
+					// if await !(Game.shared.kingdom.villages.isEmpty) {
+					// await MapBox.updateTile(newTile: MapTile(type: .npc(tile: NPCTile(npc: NPC(positionToWalkTo: .init(x: p.x, y: p.y - 10, mapType: .mainMap), tilePosition: NPCMovingPosition(x: p.x, y: p.y, mapType: .mainMap, oldTile: .init(type: .cactus, biome: .plains)), villageID: Game.shared.kingdom.villages.first!.key))), event: .talkToNPC, biome: .plains))
+					// }
 					await Screen.popUp(EditVillagePopUp(village: .init(name: "Test", buildings: []))) {
 						await MapBox.mapBox()
 					}
