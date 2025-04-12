@@ -1,11 +1,11 @@
 import Foundation
 
-struct FarmBuilding: BuildingProtocol {
+actor FarmBuilding: BuildingProtocol {
 	let id: UUID
 	let x: Int
 	let y: Int
 	let type: DoorTileTypes
-	var level: Int
+	private var level: Int
 	private(set) var pots: Int = 0
 
 	init(id: UUID = UUID(), type: DoorTileTypes, x: Int, y: Int) {
@@ -17,11 +17,20 @@ struct FarmBuilding: BuildingProtocol {
 		self.y = y
 	}
 
-	mutating func addPot() async {
+	func addPot() async {
 		pots += 1
 	}
 
-	mutating func removePot() async {
+	func removePot() async {
 		pots -= 1
+	}
+
+	func getLevel() async -> Int { level }
+
+	func setLevel(newLevel: Int) async {
+		guard newLevel > 0 else {
+			return
+		}
+		level = newLevel
 	}
 }

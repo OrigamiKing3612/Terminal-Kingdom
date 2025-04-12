@@ -61,6 +61,14 @@ struct NPC: Codable, Hashable, Equatable {
 		_hunger = newHunger
 	}
 
+	mutating func addHappiness(_ amount: Double) {
+		_happiness += amount
+	}
+
+	mutating func removeHappiness(_ amount: Double) {
+		_happiness -= amount
+	}
+
 	mutating func removePosition() {
 		positionToWalkTo = nil
 	}
@@ -95,7 +103,7 @@ struct NPC: Codable, Hashable, Equatable {
 			"Violet", "Wendy", "Zoey", "Ellie", "Claire",
 			"Emily", "Haley", "Isabel", "Katie", "Lila",
 			"Maggie", "Natalie", "Olivia", "Piper", "Hannah",
-			"Rebecca", "Sophie", "Tara", "Ursula", "Vivian",
+			"Rebecca", "Sophie", "Tara", "Lisa", "Vivian",
 			"Caroline", "Alice", "Lily", "Taylor", "Megan",
 			"Ava", "Sophia", "Amelia", "Harper", "Evelyn",
 		]
@@ -185,6 +193,15 @@ struct NPC: Codable, Hashable, Equatable {
 			// TODO: make no job npcs talk
 			Logger.warning("NPC has no job")
 		}
+	}
+
+	static func randomNPC(village: Village, count: Int) -> [NPC] {
+		var npcs: [NPC] = []
+		for _ in 0 ..< count {
+			let npc = NPC(villageID: village.id, position: .init(x: 0, y: 0, mapType: .mainMap))
+			npcs.append(npc)
+		}
+		return npcs
 	}
 
 	private enum CodingKeys: CodingKey {

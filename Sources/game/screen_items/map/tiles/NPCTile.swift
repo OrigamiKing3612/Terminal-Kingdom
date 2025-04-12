@@ -6,7 +6,9 @@ struct NPCTile: Codable, Hashable, Equatable {
 	let npcID: UUID
 	var npc: NPC? {
 		get async {
-			await Game.shared.npcs[npcID]
+			let npc = await Game.shared.npcs[npcID]
+			assert(npc != nil, "NPC not found for NPCTile with ID: \(id) and npcID: \(npcID)")
+			return npc
 		}
 	}
 
@@ -32,7 +34,6 @@ struct NPCTile: Codable, Hashable, Equatable {
 		}
 		switch npc.job {
 			default:
-				// TODO: Not sure if this will stay
 				if npc.positionToWalkTo != nil {
 					return await (Game.shared.config.useNerdFont ? "" : "N").styled(with: .bold)
 				} else {
@@ -44,7 +45,6 @@ struct NPCTile: Codable, Hashable, Equatable {
 
 	static func move(position: NPCMovingPosition) async {
 		// Logger.debug("\(#function) \(#file):\(#line): Moving NPC from \(position.x), \(position.y)")
-		#warning("bug, when the npcID trys to move when you enter another map and this is still running")
 		let npcTile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
 
 		if case let .npc(tile: tile) = npcTile.type, let npc = await tile.npc, let positionToWalkTo = npc.positionToWalkTo {
@@ -125,7 +125,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 				target: positionToWalkTo,
 				current: .init(x: position.x, y: position.y, mapType: position.mapType)
 			)
-
+			guard await MapBox.mapType == position.mapType else { return }
 			let currentTile = await MapBox.mapType.map.grid[newNpcPosition.y][newNpcPosition.x] as! MapTile
 
 			let newPosition = NPCMovingPosition(

@@ -12,10 +12,13 @@ enum CustomDoorEvent {
 
 		let x = await Game.shared.player.position.x
 		let y = await Game.shared.player.position.y
-		let building = await Game.shared.kingdom.hasVillageBuilding(x: x, y: y)
-		if let building {
+		if let building = await Game.shared.kingdom.hasVillageBuilding(x: x, y: y) {
 			if await building.canBeUpgraded() {
 				options.append(.init(label: "Upgrade", action: { await upgrade(building: building) }))
+			}
+			if let house = building as? HouseBuilding {
+				let villageID = await Game.shared.kingdom.getVillage(x: x, y: y)!.id
+				options.append(.init(label: "Manage Residents", action: { await Screen.popUp(ManageResidentsPopUp(house: house, villageID: villageID)) { await MapBox.mapBox() } }))
 			}
 		}
 		options.append(.init(label: "Quit", action: {}))
@@ -27,7 +30,7 @@ enum CustomDoorEvent {
 	}
 
 	static func upgrade(building: any BuildingProtocol) async {
-		var newBuilding = building
+		let newBuilding = building
 		await newBuilding.upgrade()
 		guard let kingdom = await Game.shared.kingdom.getVillage(buildingID: building.id) else { return }
 		await Game.shared.kingdom.updateVillageBuilding(villageID: kingdom.id, buildingID: building.id, newBuilding: newBuilding)

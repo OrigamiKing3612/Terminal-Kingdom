@@ -1,30 +1,41 @@
 import Foundation
 
-class EditVillagePopUp: OptionsPopUpProtocol {
+class ManageResidentsPopUp: OptionsPopUpProtocol {
 	var longestXLine: Int = 0
-	private var village: Village
+	private var house: HouseBuilding
 	var title: String
 	var selectedOptionIndex = 0
 	var options: [MessageOption]
 	var startY: Int = 3
+	var villageID: UUID
 
-	init(village: Village) async {
-		self.village = village
-		self.title = await "Editing \(village.name)"
+	init(house: HouseBuilding, villageID: UUID) async {
+		self.house = house
+		self.title = "Manage Residents"
 		self.options = []
+		self.villageID = villageID
 	}
 
-	private func rename() async {
-		await Screen.popUp(TypingPopUp(title: "Rename \(village.name)", longestXLine: longestXLine, input: village.name, startY: options.count + 16) { input in
-			await Game.shared.kingdom.renameVillage(id: self.village.id, name: input)
-		})
-		village = await Game.shared.kingdom.villages[village.id]!
+	private func removeNPC() async {
+		await Screen.popUp(RemoveNPCFromHousePopUp(house: house, villageID: villageID)) {
+			await MapBox.mapBox()
+		}
+	}
+
+	private func addNPC() async {
+		await Screen.popUp(AddNPCToHousePopUp(house: house, villageID: villageID)) {
+			await MapBox.mapBox()
+		}
 	}
 
 	func before() async -> Bool {
-		options = [
-			.init(label: "Rename", action: rename),
-		]
+		options = []
+		if await house.residents.count < house.maxResidents {
+			options.append(MessageOption(label: "Add NPC", action: addNPC))
+		}
+		if await house.residents.count > 0 {
+			options.append(MessageOption(label: "Remove NPC", action: removeNPC))
+		}
 		return false
 	}
 
@@ -47,6 +58,8 @@ class EditVillagePopUp: OptionsPopUpProtocol {
 				} else {
 					await options[selectedOptionIndex].action()
 				}
+			case .esc:
+				shouldExit = true
 			default:
 				break
 		}

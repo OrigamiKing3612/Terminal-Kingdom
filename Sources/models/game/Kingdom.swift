@@ -84,6 +84,17 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 		return nil
 	}
 
+	func getVillage(x: Int, y: Int) async -> Village? {
+		for village in villages.values {
+			for building in await village.buildings.values {
+				if building.x == x, building.y == y {
+					return village
+				}
+			}
+		}
+		return nil
+	}
+
 	func updateVillageBuilding(villageID: UUID, buildingID: UUID, newBuilding: any BuildingProtocol) async {
 		await villages[villageID]?.update(buildingID: buildingID, newBuilding: newBuilding)
 	}

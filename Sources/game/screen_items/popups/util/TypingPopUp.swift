@@ -46,6 +46,8 @@ class TypingPopUp: TypablePopup {
 				}
 				isEditing = false
 				return
+			} else if key == .esc {
+				isEditing = false
 			}
 
 			if input.count > 20 {

@@ -1,22 +1,30 @@
 import Foundation
 
-class OptionsPopUp: OptionsPopUpProtocol {
-	var startY: Int = 3
-
+class AddNPCToHousePopUp: OptionsPopUpProtocol {
 	var longestXLine: Int = 0
-	var selectedOptionIndex = 0
-
+	private var house: HouseBuilding
 	var title: String
-	let options: [MessageOption]
+	var selectedOptionIndex = 0
+	var options: [MessageOption]
+	var startY: Int = 3
+	var villageID: UUID
 
-	init(title: String, options: [MessageOption]) {
-		self.title = title
-		self.longestXLine = title.count
-		self.options = options.filter { $0.label != "Quit" }
+	init(house: HouseBuilding, villageID: UUID) async {
+		self.house = house
+		self.title = "Add NPC"
+		self.options = []
+		self.villageID = villageID
 	}
 
 	func before() async -> Bool {
-		false
+		options = await Game.shared.npcs.npcs.values.filter { npc in
+			npc.villageID == villageID
+		}.map { npc in
+			MessageOption(label: npc.name, action: {
+				await Game.shared.kingdom.villages[self.villageID]?.addResident(buildingID: self.house.id, npcID: npc.id)
+			})
+		}
+		return false
 	}
 
 	func input(skip: Int, lastIndex: Int, shouldExit: inout Bool) async {
@@ -28,16 +36,16 @@ class OptionsPopUp: OptionsPopUpProtocol {
 					selectedOptionIndex = selectedOptionIndex - 1
 				}
 			case .down, .s, .j, .tab:
-				selectedOptionIndex = min(options.count - 1 + 2, selectedOptionIndex + 1)
+				selectedOptionIndex = min(options.count - 1 + 3, selectedOptionIndex + 1)
 				if selectedOptionIndex == skip {
 					selectedOptionIndex = selectedOptionIndex + 1
 				}
 			case .enter, .space:
 				if selectedOptionIndex == lastIndex + 2 {
+					shouldExit = true
 				} else {
 					await options[selectedOptionIndex].action()
 				}
-				shouldExit = true
 			case .esc:
 				shouldExit = true
 			default:
