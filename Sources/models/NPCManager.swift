@@ -40,6 +40,14 @@ actor NPCManager {
 		npcs.values.first { $0.position == position }
 	}
 
+	func addHappiness(npcID: UUID, amount: Double) async {
+		npcs[npcID]?.addHappiness(amount)
+	}
+
+	func removeHappiness(npcID: UUID, amount: Double) async {
+		npcs[npcID]?.removeHappiness(amount)
+	}
+
 	subscript(id: UUID) -> NPC? {
 		npcs[id]
 	}

@@ -61,6 +61,14 @@ struct NPC: Codable, Hashable, Equatable {
 		_hunger = newHunger
 	}
 
+	mutating func addHappiness(_ amount: Double) {
+		_happiness += amount
+	}
+
+	mutating func removeHappiness(_ amount: Double) {
+		_happiness -= amount
+	}
+
 	mutating func removePosition() {
 		positionToWalkTo = nil
 	}

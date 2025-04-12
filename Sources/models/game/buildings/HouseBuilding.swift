@@ -24,10 +24,12 @@ actor HouseBuilding: BuildingProtocol {
 			return
 		}
 		residents.insert(resident)
+		await Game.shared.npcs.addHappiness(npcID: resident, amount: 4)
 	}
 
 	func removeResident(_ resident: UUID) async {
 		residents.remove(resident)
+		await Game.shared.npcs.removeHappiness(npcID: resident, amount: 5)
 	}
 
 	func getLevel() async -> Int { level }
