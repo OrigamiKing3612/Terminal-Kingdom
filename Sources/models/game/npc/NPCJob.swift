@@ -1,18 +1,18 @@
 // TODO: Give starting village NPCs names?
 enum NPCJob: Codable, Hashable, Equatable {
+	case lead_blacksmith
 	case blacksmith
-	case blacksmith_helper
+	case lead_miner
 	case miner
-	case mine_helper
+	case lead_carpenter
 	case carpenter
-	case carpenter_helper
+	case lead_farmer
 	case farmer
-	case farmer_helper
+	case lead_builder
+	case builder
 
 	case king
 	case salesman(type: SalesmanType)
-	case builder
-	case builder_helper
 	case hunter
 	case inventor
 	case stable_master
@@ -35,17 +35,17 @@ enum NPCJob: Codable, Hashable, Equatable {
 			case .carpenter: "Carpenter"
 			case .chef: "Chef"
 			case .potter: "Potter"
-			case .blacksmith_helper: "Blacksmith Helper"
-			case .mine_helper: "Miner Helper"
-			case .carpenter_helper: "Carpenter Helper"
-			case .builder_helper: "Builder Helper"
-			case .farmer_helper: "Farmer Helper"
+			case .lead_blacksmith: "Lead Blacksmith"
+			case .lead_miner: "Lead Miner"
+			case .lead_carpenter: "Carpenter"
+			case .lead_builder: "Builder"
+			case .lead_farmer: "Farmer"
 		}
 	}
 
-	var isHelper: Bool {
+	var isNotLead: Bool {
 		switch self {
-			case .blacksmith_helper, .mine_helper, .carpenter_helper, .builder_helper, .farmer_helper: true
+			case .blacksmith, .miner, .carpenter, .builder, .farmer: true
 			default: false
 		}
 	}

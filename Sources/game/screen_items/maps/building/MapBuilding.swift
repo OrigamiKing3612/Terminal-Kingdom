@@ -210,7 +210,7 @@ enum MapBuilding {
 			case .bottom: TilePosition(x: x, y: y, mapType: .mainMap)
 		}
 		let tilePosition = NPCMovingPosition(x: npcStartX, y: npcStartY, mapType: .mainMap, oldTile: oldTile)
-		let npc = NPC(job: .builder, positionToWalkTo: positionToWalkTo, tilePosition: tilePosition, villageID: village.id, position: .init(x: npcStartX, y: npcStartY, mapType: .mainMap))
+		let npc = NPC(job: .lead_builder, positionToWalkTo: positionToWalkTo, tilePosition: tilePosition, villageID: village.id, position: .init(x: npcStartX, y: npcStartY, mapType: .mainMap))
 		let npcTile = NPCTile(npc: npc)
 		let npcMapTile = MapTile(type: .npc(tile: npcTile), event: .talkToNPC, biome: .plains)
 

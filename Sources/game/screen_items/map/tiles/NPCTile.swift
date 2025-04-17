@@ -28,7 +28,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 	static func renderNPC(tile: NPCTile) async -> String {
 		guard let npc = await tile.npc else { return "?" }
 		if !npc.hasTalkedToBefore {
-			if let job = npc.job, !job.isHelper {
+			if let job = npc.job, !job.isNotLead {
 				return "!".styled(with: [.bold, .red])
 			}
 		}
@@ -65,8 +65,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 									isWalkable: npcTile.isWalkable,
 									event: npcTile.event,
 									biome: npcTile.biome
-								),
-								thisOnlyWorksOnMainMap: true, x: position.x, y: position.y)
+								), x: position.x, y: position.y)
 								var doorPosition: DoorPosition = .bottom
 								if yIndex == 0 {
 									doorPosition = .top
@@ -117,7 +116,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 						isWalkable: npcTile.isWalkable,
 						event: npcTile.event,
 						biome: npcTile.biome
-					), thisOnlyWorksOnMainMap: true, x: position.x, y: position.y)
+					), x: position.x, y: position.y)
 					return
 				}
 			}

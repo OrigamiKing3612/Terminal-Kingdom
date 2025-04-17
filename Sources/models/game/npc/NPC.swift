@@ -144,46 +144,46 @@ struct NPC: Codable, Hashable, Equatable {
 		if let job {
 			if isStartingVillageNPC {
 				switch job {
+					case .lead_blacksmith:
+						await SVLeadBlacksmithNPC.talk()
 					case .blacksmith:
 						await SVBlacksmithNPC.talk()
-					case .blacksmith_helper:
-						await SVBlacksmithHelperNPC.talk()
+					case .lead_miner:
+						await SVLeadMinerNPC.talk()
 					case .miner:
 						await SVMinerNPC.talk()
-					case .mine_helper:
-						await SVMineHelperNPC.talk()
+					case .lead_carpenter:
+						await SVLeadCarpenterNPC.talk()
 					case .carpenter:
-						await SVCarpenterNPC.talk()
-					case .carpenter_helper:
 						await SVCarpenterHelperNPC.talk()
 					case .king:
 						await SVKingNPC.talk()
 					case .salesman:
 						await SVSalesmanNPC.talk()
+					case .lead_builder:
+						await SVLeadBuilderNPC.talk()
 					case .builder:
 						await SVBuilderNPC.talk()
-					case .builder_helper:
-						await SVBuilderHelperNPC.talk()
 					case .hunter:
 						await SVHunterNPC.talk()
 					case .inventor:
 						break
 					case .stable_master:
 						break
-					case .farmer:
-						await SVFarmerNPC.talk()
+					case .lead_farmer:
+						await SVLeadFarmerNPC.talk()
 					case .doctor:
 						break
 					case .chef:
 						break
 					case .potter:
 						await SVPotterNPC.talk()
-					case .farmer_helper:
-						await SVFarmerHelperNPC.talk()
+					case .farmer:
+						await SVFarmerNPC.talk()
 				}
 			} else {
 				switch job {
-					case .builder:
+					case .lead_builder:
 						await BuilderNPC.talk(npc: self)
 					default:
 						break

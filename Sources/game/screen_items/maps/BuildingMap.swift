@@ -211,27 +211,27 @@ struct BuildingMap: MapBoxMap {
 				var job: NPCJob? = nil
 				switch mapType {
 					case .blacksmith:
-						job = .blacksmith
+						job = .lead_blacksmith
 					case .builder:
 						if index == 1 || index == 2 {
-							job = .builder_helper
-						} else {
 							job = .builder
+						} else {
+							job = .lead_builder
 						}
 					case .carpenter:
 						if index == 3 {
-							job = .carpenter
+							job = .lead_carpenter
 						} else {
-							job = .carpenter_helper
+							job = .carpenter
 						}
 					case .castle:
 						job = .king
 					case .farm:
 						if index == 1 {
 							index += 1
-							job = .farmer
+							job = .lead_farmer
 						} else {
-							job = .farmer_helper
+							job = .farmer
 						}
 					case .hospital:
 						job = .doctor
@@ -240,7 +240,7 @@ struct BuildingMap: MapBoxMap {
 					case .inventor:
 						job = .inventor
 					case .mine:
-						job = .miner
+						job = .lead_miner
 					case .potter:
 						job = .potter
 					case .restaurant:
