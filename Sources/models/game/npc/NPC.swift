@@ -8,7 +8,7 @@ struct NPC: Codable, Hashable, Equatable {
 	let isStartingVillageNPC: Bool
 	var hasTalkedToBefore: Bool
 	var job: NPCJob?
-	// skill level
+	var skill: Skill
 	let age: Int
 	let gender: Gender
 	let villageID: UUID?
@@ -19,7 +19,7 @@ struct NPC: Codable, Hashable, Equatable {
 	private var hunger: Hunger { Hunger.hunger(for: _hunger) }
 	private var happiness: Happiness { Happiness.happiness(for: _happiness) }
 
-	init(id: UUID = UUID(), name: String? = nil, gender: Gender? = nil, job: NPCJob? = nil, isStartingVillageNPC: Bool = false, positionToWalkTo: TilePosition? = nil, tilePosition: NPCMovingPosition? = nil, villageID: UUID, age: Int = Int.random(in: 18 ... 40), position: NPCPosition) {
+	init(id: UUID = UUID(), name: String? = nil, gender: Gender? = nil, job: NPCJob? = nil, isStartingVillageNPC: Bool = false, positionToWalkTo: TilePosition? = nil, tilePosition: NPCMovingPosition? = nil, villageID: UUID, age: Int = Int.random(in: 18 ... 40), position: NPCPosition, skill: Skill = .init()) {
 		self.id = id
 		self.gender = gender ?? Gender.allCases.randomElement()!
 		self.name = name ?? Self.generateRandomName(for: self.gender)
@@ -38,6 +38,7 @@ struct NPC: Codable, Hashable, Equatable {
 		self.villageID = villageID
 		self.age = age
 		self.position = position
+		self.skill = skill
 	}
 
 	mutating func tick() async {
@@ -198,7 +199,8 @@ struct NPC: Codable, Hashable, Equatable {
 	static func randomNPC(village: Village, count: Int) -> [NPC] {
 		var npcs: [NPC] = []
 		for _ in 0 ..< count {
-			let npc = NPC(villageID: village.id, position: .init(x: 0, y: 0, mapType: .mainMap))
+			let skill = Skill.random()
+			let npc = NPC(villageID: village.id, position: .init(x: 0, y: 0, mapType: .mainMap), skill: skill)
 			npcs.append(npc)
 		}
 		return npcs
@@ -219,6 +221,7 @@ struct NPC: Codable, Hashable, Equatable {
 		case happiness
 		case position
 		case startingVillageNPC
+		case skill
 	}
 
 	init(from decoder: any Decoder) throws {
@@ -242,6 +245,7 @@ struct NPC: Codable, Hashable, Equatable {
 		} else {
 			self.villageID = nil
 		}
+		self.skill = try container.decode(Skill.self, forKey: NPC.CodingKeys.skill)
 	}
 
 	func encode(to encoder: any Encoder) throws {
@@ -260,6 +264,8 @@ struct NPC: Codable, Hashable, Equatable {
 		try container.encode(_hunger, forKey: NPC.CodingKeys.hunger)
 		try container.encode(position, forKey: NPC.CodingKeys.position)
 		try container.encode(_happiness, forKey: NPC.CodingKeys.happiness)
+		try container.encodeIfPresent(villageID, forKey: NPC.CodingKeys.villageID)
+		try container.encode(skill, forKey: NPC.CodingKeys.skill)
 	}
 }
 
