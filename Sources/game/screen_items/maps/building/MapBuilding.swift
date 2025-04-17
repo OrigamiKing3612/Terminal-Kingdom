@@ -131,6 +131,10 @@ enum MapBuilding {
 								await Game.shared.kingdom.add(building: FarmBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
 							} else if tile.type == .house {
 								await Game.shared.kingdom.add(building: HouseBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .mine {
+								await Game.shared.kingdom.add(building: MineBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .blacksmith {
+								await Game.shared.kingdom.add(building: BlacksmithBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
 							} else {
 								await Game.shared.kingdom.add(building: Building(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
 							}
