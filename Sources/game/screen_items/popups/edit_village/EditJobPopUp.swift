@@ -1,6 +1,6 @@
 import Foundation
 
-class EditNPCPopUp: OptionsPopUpProtocol {
+class EditJobPopUp: OptionsPopUpProtocol {
 	var selectedOptionIndex: Int = 0
 	var longestXLine: Int = 0
 	var title: String
@@ -18,23 +18,24 @@ class EditNPCPopUp: OptionsPopUpProtocol {
 
 	func before() async -> Bool {
 		options = []
-		if npc.job == nil {
-			options.append(MessageOption(label: "Assign Job", action: {
-				await Screen.popUp(EditJobPopUp(npc: self.npc, village: self.village))
-			}))
+		var hiringBuildings: [any NPCWorkplace] = []
+
+		for building in await village.buildings.values.compactMap({ $0 as? any NPCWorkplace }) {
+			if await building.isHiring() {
+				hiringBuildings.append(building)
+			}
 		}
-		if npc.job != nil {
-			options.append(MessageOption(label: "Change Job", action: {
-				await Screen.popUp(EditJobPopUp(npc: self.npc, village: self.village))
-			}))
-		}
-		options.append(
-			MessageOption(label: "Remove from Village", action: {
-				await Screen.popUp(ConfirmationPopUp(title: "Remove \(self.npc.name) from \(self.village.name)?", message: "Are you sure you want to remove \(self.npc.name) from the village?") {
-					await Game.shared.kingdom.remove(npcID: self.npc.id, villageID: self.village.id)
-					await Screen.popUp(EditVillagePopUp(village: self.village))
+		if hiringBuildings.isEmpty {
+			options.append(MessageOption(label: "No buildings hiring", action: {}))
+		} else {
+			options.append(contentsOf: hiringBuildings.map { building in
+				MessageOption(label: "\(building.type.name)", action: {
+					await (Game.shared.kingdom.villages[self.village.id]?.buildings[building.id] as? any NPCWorkplace)?.hire(self.npc.id)
+					await Screen.popUp(EditNPCPopUp(npc: self.npc, village: self.village))
 				})
-			}))
+			})
+		}
+
 		return false
 	}
 
