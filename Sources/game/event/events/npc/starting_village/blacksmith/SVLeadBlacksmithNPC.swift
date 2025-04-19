@@ -108,7 +108,7 @@ enum SVLeadBlacksmithNPC: StartingVillageNPC {
 						await MessageBox.message("Uh oh, looks like you lost your axe, here is a new one.", speaker: .lead_blacksmith)
 						await Game.shared.stages.blacksmith.setStage2AxeUUIDToRemove(Game.shared.player.collect(item: .init(type: .axe(type: .init(durability: 5)), canBeSold: false)))
 					}
-					await MessageBox.message("You are almost there, you you still need to get \(abs(Game.shared.player.getCount(of: .clay) - 20)) clay.", speaker: .lead_blacksmith)
+					await MessageBox.message("You are almost there, you still need to get \(abs(Game.shared.player.getCount(of: .clay) - 20)) clay.", speaker: .lead_blacksmith)
 				}
 			case .done:
 				await Game.shared.stages.blacksmith.next()
