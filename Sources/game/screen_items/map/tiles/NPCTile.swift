@@ -28,7 +28,7 @@ struct NPCTile: Codable, Hashable, Equatable {
 	static func renderNPC(tile: NPCTile) async -> String {
 		guard let npc = await tile.npc else { return "?" }
 		if !npc.hasTalkedToBefore {
-			if let job = npc.job, !job.isNotLead {
+			if let job = npc.job, job.isLead {
 				return "!".styled(with: [.bold, .red])
 			}
 		}

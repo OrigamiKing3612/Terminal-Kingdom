@@ -43,9 +43,9 @@ enum NPCJob: Codable, Hashable, Equatable {
 		}
 	}
 
-	var isNotLead: Bool {
+	var isLead: Bool {
 		switch self {
-			case .blacksmith, .miner, .carpenter, .builder, .farmer: true
+			case .lead_blacksmith, .lead_miner, .lead_carpenter, .lead_builder, .lead_farmer: true
 			default: false
 		}
 	}
