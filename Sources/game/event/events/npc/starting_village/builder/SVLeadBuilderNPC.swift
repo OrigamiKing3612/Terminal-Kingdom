@@ -176,7 +176,7 @@ enum SVLeadBuilderNPC: StartingVillageNPC {
 			case .comeBack:
 				await MessageBox.message("I see that you've talked to the king. What did he say?", speaker: .lead_builder)
 				await MessageBox.message("He said we can build a new house!", speaker: .player)
-				await MessageBox.message("Nice! Lets get started right away!", speaker: .lead_builder)
+				await MessageBox.message("Nice! Let's get started right away!", speaker: .lead_builder)
 				await Game.shared.stages.builder.setStage4Stages(.done)
 				await Game.shared.player.setBuilderSkillLevel(.four)
 				await StatusBox.removeQuest(quest: .builder4)
