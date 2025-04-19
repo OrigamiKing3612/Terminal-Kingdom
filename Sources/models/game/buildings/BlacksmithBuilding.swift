@@ -1,16 +1,18 @@
 import Foundation
 
-actor FarmBuilding: BuildingProtocol, NPCWorkplace {
+actor BlacksmithBuilding: BuildingProtocol, NPCWorkplace {
 	let id: UUID
 	let x: Int
 	let y: Int
 	let type: DoorTileTypes
 	private var level: Int
 	private var workers: Set<UUID> = []
-	private(set) var pots: Int = 0
+	private(set) var furnaces: Int = 0
+	private(set) var anvils: Int = 0
 
 	init(id: UUID = UUID(), type: DoorTileTypes, x: Int, y: Int) {
-		self.pots = 0
+		self.furnaces = 0
+		self.anvils = 0
 		self.id = id
 		self.type = type
 		self.level = 1
@@ -18,12 +20,20 @@ actor FarmBuilding: BuildingProtocol, NPCWorkplace {
 		self.y = y
 	}
 
-	func addPot() async {
-		pots += 1
+	func addFurnace() async {
+		furnaces += 1
 	}
 
-	func removePot() async {
-		pots -= 1
+	func removeFurnace() async {
+		furnaces -= 1
+	}
+
+	func addAnvil() async {
+		anvils += 1
+	}
+
+	func removeAnvil() async {
+		anvils -= 1
 	}
 
 	func getLevel() async -> Int { level }

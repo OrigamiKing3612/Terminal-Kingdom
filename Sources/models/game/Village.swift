@@ -43,6 +43,18 @@ actor Village: Hashable, Identifiable, Equatable {
 
 	func removeNPC(npcID: UUID) async {
 		npcs.remove(npcID)
+		for building in buildings.values {
+			if let houseBuilding = building as? HouseBuilding {
+				if await houseBuilding.residents.contains(npcID) {
+					await houseBuilding.removeResident(npcID)
+				}
+			}
+			if let workplace = building as? any NPCWorkplace {
+				if await workplace.getWorkers().contains(npcID) {
+					await workplace.fire(npcID)
+				}
+			}
+		}
 	}
 
 	func setHasCourthouse() {
