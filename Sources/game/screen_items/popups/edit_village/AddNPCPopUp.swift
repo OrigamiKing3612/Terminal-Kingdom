@@ -10,8 +10,8 @@ class AddNPCPopUp: PopUp {
 	let npcs: [NPC]
 	// let options: [MessageOption]
 	let village: Village
-	let boxLength = 20
-	let boxHeight = 10
+	let boxLength = 30
+	let boxHeight = 15
 
 	init(village: Village) {
 		self.title = "Add NPC"
@@ -111,6 +111,16 @@ class AddNPCPopUp: PopUp {
 
 		Screen.print(x: x + 1, y: yStart + 2, "\(npc.name):".styled(with: .bold))
 		Screen.print(x: x + 1, y: yStart + 3, "Age: \(npc.age)")
+		let skills = npc.skill.allSkills().filter { $0.1 != .none }
+		if !skills.isEmpty {
+			Screen.print(x: x + 1, y: yStart + 4, "Skill:")
+			var skillY = 5
+			for (skillName, skillLevel) in skills {
+				Screen.print(x: x + 2, y: yStart + skillY, "\(skillName): \(skillLevel.name)")
+				skillY += 1
+			}
+		}
+		// Screen.print(x: x, y: yStart + 6, "")
 	}
 
 	func selfDrawBorders(box1X: Int, box3X: Int) async {

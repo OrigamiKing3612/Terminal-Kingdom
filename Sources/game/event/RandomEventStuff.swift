@@ -1,8 +1,8 @@
 enum RandomEventStuff {
 	static func teachToChopLumber(by choppingLumberTeachingDoorTypes: ChoppingLumberTeachingDoorTypes) async {
 		let speaker: NPCJob = switch choppingLumberTeachingDoorTypes {
-			case .builder: .builder
-			case .miner: .miner
+			case .lead_builder: .lead_builder
+			case .lead_miner: .lead_miner
 		}
 		switch await Game.shared.startingVillageChecks.hasBeenTaughtToChopLumber {
 			case .no:

@@ -35,7 +35,7 @@ enum StartingVillageChecksStages: Codable, Equatable {
 }
 
 enum ChoppingLumberTeachingDoorTypes: String, Codable, Equatable {
-	case builder, miner
+	case lead_builder, lead_miner
 
 	var name: String {
 		rawValue.capitalized

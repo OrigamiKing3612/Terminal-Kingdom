@@ -131,6 +131,24 @@ enum MapBuilding {
 								await Game.shared.kingdom.add(building: FarmBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
 							} else if tile.type == .house {
 								await Game.shared.kingdom.add(building: HouseBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .mine {
+								await Game.shared.kingdom.add(building: MineBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .blacksmith {
+								await Game.shared.kingdom.add(building: BlacksmithBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .carpenter {
+								await Game.shared.kingdom.add(building: CarpenterBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .hunting_area {
+								await Game.shared.kingdom.add(building: HuntingAreaBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .stable {
+								await Game.shared.kingdom.add(building: StableBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .potter {
+								await Game.shared.kingdom.add(building: PotterBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .restaurant {
+								await Game.shared.kingdom.add(building: RestaurantBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .hospital(side: .top) {
+								await Game.shared.kingdom.add(building: HospitalBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .shop {
+								await Game.shared.kingdom.add(building: ShopBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
 							} else {
 								await Game.shared.kingdom.add(building: Building(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
 							}
@@ -206,7 +224,7 @@ enum MapBuilding {
 			case .bottom: TilePosition(x: x, y: y, mapType: .mainMap)
 		}
 		let tilePosition = NPCMovingPosition(x: npcStartX, y: npcStartY, mapType: .mainMap, oldTile: oldTile)
-		let npc = NPC(job: .builder, positionToWalkTo: positionToWalkTo, tilePosition: tilePosition, villageID: village.id, position: .init(x: npcStartX, y: npcStartY, mapType: .mainMap))
+		let npc = NPC(job: .lead_builder, positionToWalkTo: positionToWalkTo, tilePosition: tilePosition, villageID: village.id, position: .init(x: npcStartX, y: npcStartY, mapType: .mainMap))
 		let npcTile = NPCTile(npc: npc)
 		let npcMapTile = MapTile(type: .npc(tile: npcTile), event: .talkToNPC, biome: .plains)
 
