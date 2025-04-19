@@ -49,7 +49,7 @@ actor Village: Hashable, Identifiable, Equatable {
 					await houseBuilding.removeResident(npcID)
 				}
 			}
-			if let workplace = building as? NPCWorkplace {
+			if let workplace = building as? any NPCWorkplace {
 				if await workplace.getWorkers().contains(npcID) {
 					await workplace.fire(npcID)
 				}
