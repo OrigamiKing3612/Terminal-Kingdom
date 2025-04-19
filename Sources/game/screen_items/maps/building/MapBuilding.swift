@@ -135,6 +135,20 @@ enum MapBuilding {
 								await Game.shared.kingdom.add(building: MineBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
 							} else if tile.type == .blacksmith {
 								await Game.shared.kingdom.add(building: BlacksmithBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .carpenter {
+								await Game.shared.kingdom.add(building: CarpenterBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .hunting_area {
+								await Game.shared.kingdom.add(building: HuntingAreaBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .stable {
+								await Game.shared.kingdom.add(building: StableBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .potter {
+								await Game.shared.kingdom.add(building: PotterBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .restaurant {
+								await Game.shared.kingdom.add(building: RestaurantBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .hospital(side: .top) {
+								await Game.shared.kingdom.add(building: HospitalBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
+							} else if tile.type == .shop {
+								await Game.shared.kingdom.add(building: ShopBuilding(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
 							} else {
 								await Game.shared.kingdom.add(building: Building(id: customMap.id, type: tile.type, x: x, y: y), villageID: villageID)
 							}
