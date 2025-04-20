@@ -107,6 +107,7 @@ enum ExitCode {
 	case fileNotFound
 	case config(ConfigErrorCode)
 	case json(JsonError)
+	case kingWorking
 
 	enum JsonError {
 		case decodingError
@@ -139,6 +140,7 @@ enum ExitCode {
 					case .encodingError: -7
 				}
 			case .mainMapInBuildingMap: 5
+			case .kingWorking: 6
 		}
 	}
 }

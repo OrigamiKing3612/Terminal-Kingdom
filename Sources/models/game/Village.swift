@@ -28,9 +28,15 @@ actor Village: Hashable, Identifiable, Equatable {
 		self.name = name
 	}
 
-	func tick() {
+	func tick() async {
 		if buildings.values.contains(where: { $0.type == .farm(type: .main) }) {
-			// foodCount += 1
+			var newFoodCount = 0
+			for farm in buildings.values where farm.type == .farm(type: .main) {
+				if let farm = farm as? FarmBuilding {
+					newFoodCount += await farm.pots
+				}
+			}
+			foodCount = newFoodCount
 		}
 	}
 
