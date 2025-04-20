@@ -16,7 +16,7 @@ enum DoorTileTypes: Codable, Equatable, Hashable {
 	case restaurant
 	case potter
 	case courthouse
-	indirect case custom(mapID: UUID?, doorType: DoorTileTypes)
+	indirect case custom(mapID: UUID?, doorType: DoorTileTypes) //! TODO: move the ?
 
 	var name: String {
 		switch self {

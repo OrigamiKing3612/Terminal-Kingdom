@@ -13,5 +13,4 @@ enum FarmerTasks: Codable, Hashable {
 	case plant
 	case wait
 	case harvest
-	case collect
 }

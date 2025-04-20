@@ -108,6 +108,9 @@ enum ExitCode {
 	case config(ConfigErrorCode)
 	case json(JsonError)
 	case kingWorking
+	case noJobNoTask
+	case taskMismatch
+	case noDoorTile
 
 	enum JsonError {
 		case decodingError
@@ -141,6 +144,9 @@ enum ExitCode {
 				}
 			case .mainMapInBuildingMap: 5
 			case .kingWorking: 6
+			case .noJobNoTask: 7
+			case .taskMismatch: 8
+			case .noDoorTile: 9
 		}
 	}
 }

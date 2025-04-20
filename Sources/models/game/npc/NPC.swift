@@ -88,6 +88,10 @@ struct NPC: Codable, Hashable, Equatable {
 		positionToWalkTo = nil
 	}
 
+	mutating func setPositionToWalkTo(_ position: TilePosition) {
+		positionToWalkTo = position
+	}
+
 	mutating func addAttribute(_ attribute: NPCAttribute) {
 		attributes.append(attribute)
 	}
@@ -135,7 +139,7 @@ struct NPC: Codable, Hashable, Equatable {
 		guard case let .npc(tile: tile) = mapTile.type else {
 			return
 		}
-		if await tile.npc?.hasTalkedToBefore == false {
+		if await tile.npc.hasTalkedToBefore == false {
 			await Game.shared.npcs.setTalkedTo(npcID: tile.npcID)
 			// let newMapTile = MapTile(type: .npc(tile: tile), isWalkable: mapTile.isWalkable, event: mapTile.event, biome: mapTile.biome)
 			// await MapBox.updateTile(newTile: newMapTile)

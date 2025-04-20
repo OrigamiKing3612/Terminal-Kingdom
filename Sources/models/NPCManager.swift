@@ -52,6 +52,10 @@ actor NPCManager {
 		npcs[npcID]?.job = nil
 	}
 
+	// func updateNP MapType(npcID: UUID, newMapType: MapType) async {
+	// 	npcs[npcID]?. = newMapType
+	// }
+
 	subscript(id: UUID) -> NPC? {
 		npcs[id]
 	}

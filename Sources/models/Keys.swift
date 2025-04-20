@@ -66,10 +66,23 @@ enum Keys {
 					// if await !(Game.shared.kingdom.villages.isEmpty) {
 					// await MapBox.updateTile(newTile: MapTile(type: .npc(tile: NPCTile(npc: NPC(positionToWalkTo: .init(x: p.x, y: p.y - 10, mapType: .mainMap), tilePosition: NPCMovingPosition(x: p.x, y: p.y, mapType: .mainMap, oldTile: .init(type: .cactus, biome: .plains)), villageID: Game.shared.kingdom.villages.first!.key))), event: .talkToNPC, biome: .plains))
 					// }
-					await Screen.popUp(EditVillagePopUp(village: .init(name: "Test", buildings: []))) {
-						await MapBox.mapBox()
+					// await Screen.popUp(EditVillagePopUp(village: .init(name: "Test", buildings: []))) {
+					// 	await MapBox.mapBox()
+					// }
+					let mapType = await MapBox.mapType
+					switch mapType {
+						default:
+							for (y, row) in await MapBox.buildingMap.grid.enumerated() {
+								for (x, tile) in row.enumerated() {
+									if case let .npc(npcTile) = tile.type {
+										var newNPC = await npcTile.npc
+										newNPC.setPositionToWalkTo(.init(x: 250, y: 125, mapType: .mainMap))
+										await MapBox.updateTile(newTile: .init(type: .npc(tile: .init(npc: newNPC)), biome: tile.biome), x: x, y: y)
+									}
+								}
+							}
 					}
-				case .u:
+					case .u:
 					// await MessageBox.message("\(Game.shared.kingdom.print)", speaker: .dev)
 					// await MessageBox.message("\(Game.shared.player.quests)", speaker: .dev)
 					let npcs = await Game.shared.npcs.npcs

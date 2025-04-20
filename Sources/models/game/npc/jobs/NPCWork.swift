@@ -47,6 +47,15 @@ enum NPCWork {
 	}
 
 	private static func noJob(npc: inout NPC) async {
-		//
+		guard case let .nojob(noJobTasks) = npc.task else {
+			Logger.error("NPC has no job and no task", code: .noJobNoTask)
+		}
+		switch noJobTasks {
+			case .idle:
+				// await NPCIdle.idle(npc: &npc)
+				break
+			case .moveTo:
+				break
+		}
 	}
 }
