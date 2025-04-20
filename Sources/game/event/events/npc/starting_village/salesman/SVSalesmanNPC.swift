@@ -61,7 +61,7 @@ enum SVSalesmanNPC: StartingVillageNPC {
 
 	private static func buy() async {
 		var leaveShop = false
-		var options: [MessageOption] = [
+		let options: [MessageOption] = [
 			.init(label: "Leave", action: { leaveShop = true }),
 		]
 		// for skillLevel in AllSkillLevels.allCases {

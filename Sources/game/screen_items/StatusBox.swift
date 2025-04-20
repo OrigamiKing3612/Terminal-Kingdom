@@ -34,7 +34,7 @@ enum StatusBox {
 			await Screen.print(x: playerInfoStartX, y: playerInfoStartY, "\(Game.shared.player.name):".styled(with: .bold))
 		}
 		var yValueToPrint = playerInfoStartY + 1
-		let longestSkillName = SkillLevel.allCases.map(\.name.count).max() ?? 0
+		// let longestSkillName = SkillLevel.allCases.map(\.name.count).max() ?? 0
 		let skills = await Game.shared.player.stats.skill.allSkills()
 
 		for skill in skills {
