@@ -68,23 +68,19 @@ class AddNPCPopUp: PopUp {
 					selectedOptionIndex = 0
 				}
 			case .enter, .space:
-				if let courthouse = await Game.shared.kingdom.villages[village.id]?.getCourthouse() {
-					if let customMap = await Game.shared.maps.customMaps[courthouse.id] {
-						for (y, row) in customMap.grid.enumerated() {
-							for (x, tile) in row.enumerated() {
-								if case .plain = tile.type {
-									await Game.shared.npcs.add(npc: npcs[selectedOptionIndex])
-									let newGrid: [[MapTile]] = customMap.grid
-									let oldTile = newGrid[y][x]
-									let newTile = MapTile(type: .npc(tile: .init(npc: npcs[selectedOptionIndex])), event: .talkToNPC, biome: oldTile.biome)
-									// newGrid[y][x] = .init(type: .npc(tile: .init(npc: npcs[selectedOptionIndex])), event: .talkToNPC, biome: oldTile.biome)
-									await MapBox.updateTile(newTile: newTile, x: x, y: y)
-									// await Game.shared.maps.updateCustomMap(id: courthouse.id, with: newGrid)
-									await Game.shared.kingdom.add(npcID: npcs[selectedOptionIndex].id, villageID: village.id)
-									return
-								}
-							}
-						}
+				guard let courthouse = await Game.shared.kingdom.villages[village.id]?.getCourthouse() else { return }
+				guard let customMap = await Game.shared.maps.customMaps[courthouse.id] else { return }
+
+				for (y, row) in customMap.grid.enumerated() {
+					for (x, tile) in row.enumerated() {
+						if case .plain = tile.type { continue }
+						await Game.shared.npcs.add(npc: npcs[selectedOptionIndex])
+						let oldTile = customMap.grid[y][x]
+						let newTile = MapTile(type: .npc(tile: .init(npc: npcs[selectedOptionIndex])), event: .talkToNPC, biome: oldTile.biome)
+						await MapBox.updateTile(newTile: newTile, x: x, y: y)
+						await Game.shared.kingdom.add(npcID: npcs[selectedOptionIndex].id, villageID: village.id)
+						shouldExit = true
+						return
 					}
 				}
 				shouldExit = true

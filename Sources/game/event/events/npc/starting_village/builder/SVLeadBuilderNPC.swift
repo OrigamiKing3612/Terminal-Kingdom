@@ -83,7 +83,6 @@ enum SVLeadBuilderNPC: StartingVillageNPC {
 						await Game.shared.player.removeItems(ids: ids)
 					}
 					await Game.shared.stages.builder.setStage1Stages(.done)
-					await Game.shared.player.setBuilderSkillLevel(.one)
 					await StatusBox.removeQuest(quest: .builder1)
 					fallthrough
 				} else {
@@ -111,7 +110,7 @@ enum SVLeadBuilderNPC: StartingVillageNPC {
 						await Game.shared.player.removeItem(id: id)
 					}
 					await Game.shared.player.removeItem(item: .lumber, count: 20)
-					await Game.shared.player.setBuilderSkillLevel(.two)
+					await Game.shared.player.setBuildingSkillLevel(.novice)
 					await Game.shared.stages.builder.setStage2Stages(.done)
 					await StatusBox.removeQuest(quest: .builder2)
 					fallthrough
@@ -151,7 +150,6 @@ enum SVLeadBuilderNPC: StartingVillageNPC {
 						await Game.shared.player.removeItem(id: id)
 					}
 					await Game.shared.stages.builder.setStage3Stages(.done)
-					await Game.shared.player.setBuilderSkillLevel(.three)
 					await StatusBox.removeQuest(quest: .builder3)
 					fallthrough
 				} else {
@@ -178,7 +176,7 @@ enum SVLeadBuilderNPC: StartingVillageNPC {
 				await MessageBox.message("He said we can build a new house!", speaker: .player)
 				await MessageBox.message("Nice! Let's get started right away!", speaker: .lead_builder)
 				await Game.shared.stages.builder.setStage4Stages(.done)
-				await Game.shared.player.setBuilderSkillLevel(.four)
+				await Game.shared.player.setBuildingSkillLevel(.apprentice)
 				await StatusBox.removeQuest(quest: .builder4)
 				fallthrough
 			case .done:
@@ -204,7 +202,6 @@ enum SVLeadBuilderNPC: StartingVillageNPC {
 				if await Game.shared.stages.builder.stage5HasBuiltHouse {
 					await MessageBox.message("Nice, you have built the house!", speaker: .lead_builder)
 					await Game.shared.stages.builder.setStage5Stages(.done)
-					await Game.shared.player.setBuilderSkillLevel(.five)
 					await StatusBox.removeQuest(quest: .builder5)
 					if let ids = await Game.shared.stages.builder.stage5ItemsToBuildHouseUUIDsToRemove {
 						await Game.shared.player.removeItems(ids: ids)
@@ -240,7 +237,7 @@ enum SVLeadBuilderNPC: StartingVillageNPC {
 						await Game.shared.player.removeItem(id: id)
 					}
 					await Game.shared.player.removeItem(item: .lumber, count: 30)
-					await Game.shared.player.setBuilderSkillLevel(.six)
+					await Game.shared.player.setBuildingSkillLevel(.journeyman)
 					await Game.shared.stages.builder.setStage6Stages(.done)
 					await StatusBox.removeQuest(quest: .builder6)
 					fallthrough
@@ -274,7 +271,6 @@ enum SVLeadBuilderNPC: StartingVillageNPC {
 				if await Game.shared.stages.builder.stage7HasBuiltInside {
 					await MessageBox.message("Looks like you are done!", speaker: .lead_builder)
 					await Game.shared.stages.builder.setStage7Stages(.done)
-					await Game.shared.player.setBuilderSkillLevel(.seven)
 					await StatusBox.removeQuest(quest: .builder7)
 					if let ids = await Game.shared.stages.builder.stage7ItemsToBuildInsideUUIDsToRemove {
 						await Game.shared.player.removeItems(ids: ids)
@@ -295,7 +291,7 @@ enum SVLeadBuilderNPC: StartingVillageNPC {
 	static func stage8() async {
 		await Game.shared.player.setCanBuild(true)
 		await MessageBox.message("You can now build when ever you want! But remember that you can only break pieces that you place. Also we don't accually need that that house; since you built it, why don't you keep it!", speaker: .lead_builder)
-		await Game.shared.player.setBuilderSkillLevel(.nine)
+		await Game.shared.player.setBuildingSkillLevel(.expert)
 		// TODO: check if the player has enough stats
 		await MessageBox.message("I also think you are ready to make your own village! Come back to me when you are ready.", speaker: .lead_builder)
 		await Game.shared.stages.builder.next()
@@ -306,7 +302,7 @@ enum SVLeadBuilderNPC: StartingVillageNPC {
 		await MessageBox.message("So, you are ready to go create your own kingdom! You will need this.", speaker: .lead_builder)
 		_ = await Game.shared.player.collect(item: .init(type: .door(tile: .init(type: .builder))))
 		await MessageBox.message("Go and have fun!!", speaker: .lead_builder)
-		await Game.shared.player.setBuilderSkillLevel(.nine)
+		await Game.shared.player.setBuildingSkillLevel(.master)
 		await Game.shared.stages.builder.next()
 	}
 }

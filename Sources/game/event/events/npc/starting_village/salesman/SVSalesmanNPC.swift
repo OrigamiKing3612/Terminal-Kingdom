@@ -64,9 +64,9 @@ enum SVSalesmanNPC: StartingVillageNPC {
 		var options: [MessageOption] = [
 			.init(label: "Leave", action: { leaveShop = true }),
 		]
-		for skillLevel in AllSkillLevels.allCases {
-			await addOptionsForSkill(options: &options, skillLevel: skillLevel)
-		}
+		// for skillLevel in AllSkillLevels.allCases {
+		// 	await addOptionsForSkill(options: &options, skillLevel: skillLevel)
+		// }
 		if options.count <= 1 {
 			await MessageBox.message("There are no items are available to buy right now. Come back when you have more skills.", speaker: .salesman(type: .buy))
 			return
@@ -133,20 +133,20 @@ extension SVSalesmanNPC {
 		}
 	}
 
-	private static func addOptionsForSkill(options: inout [MessageOption], skillLevel: AllSkillLevels) async {
-		if await Game.shared.startingVillageChecks.hasBeenTaughtToChopLumber == .yes {
-			await buyOption(options: &options, item: .lumber)
-		}
-		switch await (skillLevel, skillLevel.stat) {
-			case (.miningSkillLevel, .one):
-				await buyOption(options: &options, item: .pickaxe(type: .init()))
-				await buyOption(options: &options, item: .stone)
-			// TODO: press on item, and see a buy 1, buy 2, buy 5, buy 10...
-			// TODO: Add more stuff here
-			default:
-				break
-		}
-	}
+	// private static func addOptionsForSkill(options: inout [MessageOption], skillLevel: AllSkillLevels) async {
+	// 	if await Game.shared.startingVillageChecks.hasBeenTaughtToChopLumber == .yes {
+	// 		await buyOption(options: &options, item: .lumber)
+	// 	}
+	// 	switch await (skillLevel, skillLevel.stat) {
+	// 		case (.miningSkillLevel, .one):
+	// 			await buyOption(options: &options, item: .pickaxe(type: .init()))
+	// 			await buyOption(options: &options, item: .stone)
+	// 		// TODO: press on item, and see a buy 1, buy 2, buy 5, buy 10...
+	// 		// TODO: Add more stuff here
+	// 		default:
+	// 			break
+	// 	}
+	// }
 
 	private static func buyOption(options: inout [MessageOption], item: ItemType) async {
 		if let price = item.price {

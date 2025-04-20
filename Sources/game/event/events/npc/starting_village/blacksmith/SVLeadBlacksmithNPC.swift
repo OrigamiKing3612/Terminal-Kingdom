@@ -72,7 +72,6 @@ enum SVLeadBlacksmithNPC: StartingVillageNPC {
 					}
 					await StatusBox.removeQuest(quest: .blacksmith1)
 					await Game.shared.stages.blacksmith.setStage1Stages(.done)
-					await Game.shared.player.setBlacksmithSkillLevel(.one)
 					fallthrough
 				} else {
 					await MessageBox.message("Somehow do don't have iron.", speaker: .lead_blacksmith)
@@ -100,7 +99,7 @@ enum SVLeadBlacksmithNPC: StartingVillageNPC {
 					}
 					await Game.shared.player.removeItem(item: .lumber, count: 20)
 					await StatusBox.removeQuest(quest: .blacksmith2)
-					await Game.shared.player.setBlacksmithSkillLevel(.two)
+					await Game.shared.player.setBlacksmithingSkillLevel(.novice)
 					await Game.shared.stages.blacksmith.setStage2Stages(.done)
 					fallthrough
 				} else {
@@ -134,7 +133,6 @@ enum SVLeadBlacksmithNPC: StartingVillageNPC {
 					if let sticksUUIDs = await Game.shared.stages.blacksmith.stage3LumberUUIDsToRemove {
 						await Game.shared.player.removeItems(ids: sticksUUIDs)
 					}
-					await Game.shared.player.setBlacksmithSkillLevel(.three)
 					await Game.shared.stages.blacksmith.setStage3Stages(.done)
 					fallthrough
 				}
@@ -161,7 +159,7 @@ enum SVLeadBlacksmithNPC: StartingVillageNPC {
 					if let coalUUIDs = await Game.shared.stages.blacksmith.stage4CoalUUIDsToRemove {
 						await Game.shared.player.removeItems(ids: coalUUIDs)
 					}
-					await Game.shared.player.setBlacksmithSkillLevel(.four)
+					await Game.shared.player.setBlacksmithingSkillLevel(.apprentice)
 					await Game.shared.stages.blacksmith.setStage4Stages(.done)
 					fallthrough
 				}
@@ -189,7 +187,6 @@ enum SVLeadBlacksmithNPC: StartingVillageNPC {
 					await MessageBox.message("Yay! You made your first Pickaxe!", speaker: .lead_blacksmith)
 					await StatusBox.removeQuest(quest: .blacksmith5)
 					await Game.shared.player.removeItems(ids: Game.shared.stages.blacksmith.stage5SteelUUIDsToRemove)
-					await Game.shared.player.setBlacksmithSkillLevel(.five)
 					await Game.shared.stages.blacksmith.setStage5Stages(.done)
 					fallthrough
 				}
@@ -223,7 +220,7 @@ enum SVLeadBlacksmithNPC: StartingVillageNPC {
 					if let id = await Game.shared.stages.blacksmith.stage6PickaxeUUIDToRemove {
 						await Game.shared.player.removeItem(id: id)
 					}
-					await Game.shared.player.setBlacksmithSkillLevel(.six)
+					await Game.shared.player.setBlacksmithingSkillLevel(.journeyman)
 					await Game.shared.stages.blacksmith.setStage6Stages(.done)
 					fallthrough
 				} else {
@@ -253,7 +250,6 @@ enum SVLeadBlacksmithNPC: StartingVillageNPC {
 			case .comeBack:
 				await MessageBox.message("Yay! You made your first sword!", speaker: .lead_blacksmith)
 				await StatusBox.removeQuest(quest: .blacksmith7)
-				await Game.shared.player.setBlacksmithSkillLevel(.seven)
 				await Game.shared.stages.blacksmith.setStage7Stages(.done)
 				fallthrough
 			case .done:
@@ -277,7 +273,7 @@ enum SVLeadBlacksmithNPC: StartingVillageNPC {
 			case .comeBack:
 				await MessageBox.message("Yay!", speaker: .lead_blacksmith)
 				await StatusBox.removeQuest(quest: .blacksmith8)
-				await Game.shared.player.setBlacksmithSkillLevel(.eight)
+				await Game.shared.player.setBlacksmithingSkillLevel(.expert)
 				if let ids = await Game.shared.stages.blacksmith.stage8MaterialsToRemove {
 					await Game.shared.player.removeItems(ids: ids)
 				}
@@ -304,7 +300,7 @@ enum SVLeadBlacksmithNPC: StartingVillageNPC {
 				await MessageBox.message("I want you to keep these coins. I have one more thing I want to give you.", speaker: .lead_blacksmith)
 				await Game.shared.stages.blacksmith.setStage9Stages(.done)
 				await StatusBox.removeQuest(quest: .blacksmith9)
-				await Game.shared.player.setBlacksmithSkillLevel(.nine)
+				await Game.shared.player.setBlacksmithingSkillLevel(.master)
 				fallthrough
 			case .done:
 				await Game.shared.stages.blacksmith.next()

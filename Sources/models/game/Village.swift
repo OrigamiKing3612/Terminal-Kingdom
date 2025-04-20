@@ -123,6 +123,13 @@ actor Village: Hashable, Identifiable, Equatable {
 		await building.removeResident(npcID)
 	}
 
+	func removeJob(npcID: UUID, buildingID: UUID) async {
+		if let building = buildings[buildingID] as? any NPCWorkplace {
+			await building.fire(npcID)
+		}
+		await Game.shared.npcs.removeJob(npcID: npcID)
+	}
+
 	nonisolated func hash(into hasher: inout Hasher) {
 		hasher.combine(id)
 	}

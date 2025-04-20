@@ -138,6 +138,10 @@ actor Kingdom: Hashable, Equatable, Identifiable {
 		await villages[villageID]?.removeNPC(npcID: npcID)
 	}
 
+	func removeJob(npcID: UUID, villageID: UUID) async {
+		await villages[villageID]?.removeJob(npcID: npcID, buildingID: npcID)
+	}
+
 	nonisolated func hash(into hasher: inout Hasher) {
 		hasher.combine(id)
 	}

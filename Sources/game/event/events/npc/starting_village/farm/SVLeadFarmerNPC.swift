@@ -48,7 +48,6 @@ enum SVLeadFarmerNPC: StartingVillageNPC {
 					await Game.shared.player.removeItem(item: .tree_seed)
 					await Game.shared.stages.farm.setStage1Stages(.done)
 					await StatusBox.removeQuest(quest: .farm1)
-					await Game.shared.player.setFarmingSkillLevel(.one)
 					fallthrough
 				} else {
 					if let id = await Game.shared.stages.farm.stage1AxeUUIDToRemove, await !Game.shared.player.has(id: id) {
@@ -78,7 +77,7 @@ enum SVLeadFarmerNPC: StartingVillageNPC {
 				await MessageBox.message("Great job! Now it can start growing!", speaker: .lead_farmer)
 				await Game.shared.stages.farm.setStage2Stages(.done)
 				await StatusBox.removeQuest(quest: .farm2)
-				await Game.shared.player.setFarmingSkillLevel(.two)
+				await Game.shared.player.setFarmingSkillLevel(.novice)
 				fallthrough
 			case .done:
 				await Game.shared.stages.farm.next()
@@ -100,7 +99,6 @@ enum SVLeadFarmerNPC: StartingVillageNPC {
 				await MessageBox.message("Great job!", speaker: .lead_farmer)
 				await Game.shared.stages.farm.setStage3Stages(.done)
 				await StatusBox.removeQuest(quest: .farm3)
-				await Game.shared.player.setFarmingSkillLevel(.three)
 				fallthrough
 			case .done:
 				await Game.shared.stages.farm.next()
@@ -136,7 +134,7 @@ enum SVLeadFarmerNPC: StartingVillageNPC {
 
 					await Game.shared.stages.farm.setStage4Stages(.done)
 					await StatusBox.removeQuest(quest: .farm4)
-					await Game.shared.player.setFarmingSkillLevel(.four)
+					await Game.shared.player.setFarmingSkillLevel(.apprentice)
 					fallthrough
 				} else {
 					if await Game.shared.stages.farm.stage4Stages.canGetClay {
@@ -168,7 +166,6 @@ enum SVLeadFarmerNPC: StartingVillageNPC {
 					await Game.shared.player.removeItem(item: .pot)
 					await Game.shared.stages.farm.setStage5Stages(.done)
 					await StatusBox.removeQuest(quest: .farm5)
-					await Game.shared.player.setFarmingSkillLevel(.five)
 					fallthrough
 				} else {
 					await MessageBox.message("You haven't gotten all the pots yet.", speaker: .lead_farmer)
@@ -185,7 +182,7 @@ enum SVLeadFarmerNPC: StartingVillageNPC {
 		switch await Game.shared.stages.farm.stage6Stages {
 			case .notStarted:
 				await MessageBox.message("I wanted to tell you that you can use the backyard part of my farm to plant your own stuff!", speaker: .lead_farmer)
-				await Game.shared.player.setFarmingSkillLevel(.six)
+				await Game.shared.player.setFarmingSkillLevel(.master) // .journeyman is here
 				await Game.shared.stages.farm.setStage6Stages(.done)
 				fallthrough
 			case .done:

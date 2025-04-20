@@ -48,6 +48,10 @@ actor NPCManager {
 		npcs[npcID]?.removeHappiness(amount)
 	}
 
+	func removeJob(npcID: UUID) async {
+		npcs[npcID]?.job = nil
+	}
+
 	subscript(id: UUID) -> NPC? {
 		npcs[id]
 	}

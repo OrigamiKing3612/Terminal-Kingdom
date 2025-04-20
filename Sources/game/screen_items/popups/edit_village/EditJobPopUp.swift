@@ -35,6 +35,9 @@ class EditJobPopUp: OptionsPopUpProtocol {
 				})
 			})
 		}
+		options.append(MessageOption(label: "Remove Job", action: {
+			await Game.shared.kingdom.removeJob(npcID: self.npc.id, villageID: self.village.id)
+		}))
 
 		return false
 	}

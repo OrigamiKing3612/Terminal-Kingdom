@@ -85,6 +85,50 @@ struct Skill: Codable {
 		cooking = cooking.getNext
 	}
 
+	mutating func setBlacksmithing(_ newValue: SkillLevel) {
+		blacksmithing = newValue
+	}
+
+	mutating func setMining(_ newValue: SkillLevel) {
+		mining = newValue
+	}
+
+	mutating func setCarpentry(_ newValue: SkillLevel) {
+		carpentry = newValue
+	}
+
+	mutating func setFarming(_ newValue: SkillLevel) {
+		farming = newValue
+	}
+
+	mutating func setBuilding(_ newValue: SkillLevel) {
+		building = newValue
+	}
+
+	mutating func setSales(_ newValue: SkillLevel) {
+		sales = newValue
+	}
+
+	mutating func setHunting(_ newValue: SkillLevel) {
+		hunting = newValue
+	}
+
+	mutating func setInventing(_ newValue: SkillLevel) {
+		inventing = newValue
+	}
+
+	mutating func setCaretaking(_ newValue: SkillLevel) {
+		caretaking = newValue
+	}
+
+	mutating func setMedicine(_ newValue: SkillLevel) {
+		medicine = newValue
+	}
+
+	mutating func setCooking(_ newValue: SkillLevel) {
+		cooking = newValue
+	}
+
 	static func random() -> Self {
 		var skills = Array(1 ... 11)
 		let a = skills.remove(at: Int.random(in: 0 ..< skills.count))

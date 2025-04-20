@@ -34,19 +34,19 @@ enum StatusBox {
 			await Screen.print(x: playerInfoStartX, y: playerInfoStartY, "\(Game.shared.player.name):".styled(with: .bold))
 		}
 		var yValueToPrint = playerInfoStartY + 1
-		let longestSkillName = AllSkillLevels.allCases.map(\.name.count).max() ?? 0
-		for skillLevel in AllSkillLevels.allCases {
-			if await skillLevel.stat.rawValue > 0 {
-				var count = ""
-				let statRawValue = await skillLevel.stat.rawValue
-				for _ in 0 ..< statRawValue {
-					count += "#"
-				}
-				let spaces = String(repeating: " ", count: longestSkillName - skillLevel.name.count)
-				Screen.print(x: playerInfoStartX + 1, y: yValueToPrint, "\(skillLevel.name): \(spaces)\(count)")
-				yValueToPrint += 1
-			}
+		let longestSkillName = SkillLevel.allCases.map(\.name.count).max() ?? 0
+		let skills = await Game.shared.player.stats.skill.allSkills()
+
+		for skill in skills {
+			let name = skill.0
+			let value = skill.1
+			if value == .none { continue }
+			// let spaces = String(repeating: " ", count: longestSkillName - value.count)
+			// Screen.print(x: playerInfoStartX + 1, y: yValueToPrint, "\(name): \(spaces)\(value)")
+			Screen.print(x: playerInfoStartX + 1, y: yValueToPrint, "\(name): \(value)")
+			yValueToPrint += 1
 		}
+
 		questAreaStartY = yValueToPrint + 1
 	}
 
