@@ -214,6 +214,7 @@ struct BuildingMap: MapBoxMap {
 						job = .lead_blacksmith
 					case .builder:
 						if index == 1 || index == 2 {
+							index += 1
 							job = .builder
 						} else {
 							job = .lead_builder
