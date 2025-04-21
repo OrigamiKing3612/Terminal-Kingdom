@@ -188,7 +188,11 @@ struct TilePosition: Codable, Hashable {
 	var mapType: MapType
 }
 
-typealias NPCPosition = TilePosition
+struct NPCPosition: Codable, Hashable {
+	var x: Int
+	var y: Int
+	var mapType: MapType
+}
 
 struct NPCMovingPosition: Codable, Hashable {
 	var x: Int
