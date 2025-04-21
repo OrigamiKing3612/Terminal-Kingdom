@@ -132,50 +132,158 @@ extension NPCTile {
 		let tileNPCisOn = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
 		if case let .npc(tile: npcTile) = tileNPCisOn.type, let positionToWalkTo = await npcTile.npc.positionToWalkTo {
 			if await isDestinationInCurrentMap(destination: positionToWalkTo, mapType: position.mapType) {
-				await moveToDestination(currentPosition: position, destination: positionToWalkTo, npcTile: npcTile, tileNPCisOn: tileNPCisOn)
+				await moveTo(destination: positionToWalkTo, currentPosition: position, npcTile: npcTile, tileNPCisOn: tileNPCisOn)
 			} else {
-				await moveToDoor(position: position, npcTile: npcTile)
+				await moveToDoor(position: position, npcTile: npcTile, tileNPCisOn: tileNPCisOn)
 			}
 		}
 	}
 
 	static func isDestinationInCurrentMap(destination: NPCPosition, mapType: MapType) async -> Bool {
 		assert(mapType != .mining, "NPCs should not be moving in the mining map")
+		guard destination.mapType == mapType else { return false } // skip awaiting if unnecessary
+
 		let x = await destination.x < mapType.grid[0].count
 		let y = await destination.y < mapType.grid.count
 		return destination.mapType == mapType && destination.x > 0 && x && destination.y >= 0 && y
 	}
 
-	static func moveToDestination(currentPosition: NPCMovingPosition, destination: NPCPosition, npcTile: NPCTile, tileNPCisOn: MapTile) async {
+	static func moveTo(destination: NPCPosition, currentPosition: NPCMovingPosition, npcTile: NPCTile, tileNPCisOn: MapTile) async {
 		guard await isDestinationInCurrentMap(destination: destination, mapType: currentPosition.mapType) else { return }
 
-		let currentTile = await MapBox.mapType.map.grid[currentPosition.y][currentPosition.x] as! MapTile
-		let destinationTile = await MapBox.mapType.map.grid[destination.y][destination.x] as! MapTile
+		var currentPosition = currentPosition
+		var currentTileNPCisOn = tileNPCisOn
 
-		// Check if destination is valid (e.g., not a door, walkable, etc.)
-		guard destinationTile.isWalkable else { return }
+		// while currentPosition.x != destination.x || currentPosition.y != destination.y {
+		let nextStep = await nextStepToward(target: destination, current: currentPosition)
 
-		// Move the NPC on the map
-		await MapBox.setMapGridTile(x: destination.x, y: destination.y, tile: .init(type: .npc(tile: npcTile), biome: tileNPCisOn.biome), mapType: currentPosition.mapType)
-		await MapBox.setMapGridTile(x: currentPosition.x, y: currentPosition.y, tile: destinationTile, mapType: currentPosition.mapType)
+		let destinationTile = await MapBox.mapType.map.grid[nextStep.y][nextStep.x] as! MapTile
 
-		// Update NPC position
-		let currentMovingTile = NPCMovingPosition(x: currentPosition.x, y: currentPosition.y, mapType: currentPosition.mapType, oldTile: currentTile)
-		let destinationMovingTile = NPCMovingPosition(x: destination.x, y: destination.y, mapType: destination.mapType, oldTile: destinationTile)
-		await Game.shared.updateNPC(oldPosition: currentMovingTile, newPosition: destinationMovingTile)
+		guard destinationTile.isWalkable else {
+			Logger.warning("NPC can't walk to destination, blocked at \(nextStep)")
+			return
+		}
+		// Restore old tile
+		await MapBox.setMapGridTile(
+			x: currentPosition.x,
+			y: currentPosition.y,
+			tile: currentPosition.oldTile,
+			mapType: currentPosition.mapType
+		)
+
+		// Update new tile to NPC
+		await MapBox.setMapGridTile(
+			x: nextStep.x,
+			y: nextStep.y,
+			tile: MapTile(
+				type: .npc(tile: npcTile),
+				isWalkable: currentTileNPCisOn.isWalkable,
+				event: currentTileNPCisOn.event,
+				biome: currentTileNPCisOn.biome
+			),
+			mapType: currentPosition.mapType
+		)
+
+		let newCurrentTile = await MapBox.mapType.map.grid[nextStep.y][nextStep.x] as! MapTile
+
+		let newPosition = NPCMovingPosition(
+			x: nextStep.x,
+			y: nextStep.y,
+			mapType: currentPosition.mapType,
+			oldTile: newCurrentTile
+		)
+
+		await Game.shared.updateNPC(oldPosition: currentPosition, newPosition: newPosition)
+
+		await MapBox.updateTwoTiles(x1: currentPosition.x, y1: currentPosition.y, x2: currentPosition.x, y2: currentPosition.y)
+
+		// let currentMovingTile = NPCMovingPosition(x: currentPosition.x, y: currentPosition.y, mapType: currentPosition.mapType, oldTile: currentTile)
+		// let destinationMovingTile = NPCMovingPosition(x: nextStep.x, y: nextStep.y, mapType: destination.mapType, oldTile: destinationTile)
+
+		// Update current info for next step
+		currentPosition = NPCMovingPosition(x: nextStep.x, y: nextStep.y, mapType: destination.mapType, oldTile: destinationTile)
+		currentTileNPCisOn = destinationTile
+
+		// await Task.sleep(100_000_000) // 100ms between moves (optional for animation)
+		Logger.info("NPC is moving to \(nextStep)")
+		// }
 	}
 
-	static func moveToDoor(position: NPCMovingPosition, npcTile: NPCTile) async {
-		guard let doorTile = await findDoorTileForPosition(position) else {
+	static func nextStepToward(target toTilePosition: TilePosition, current: NPCMovingPosition) async -> NPCPosition {
+		struct Position: Equatable, Hashable {
+			var x: Int
+			var y: Int
+		}
+
+		let targetPosition = Position(x: toTilePosition.x, y: toTilePosition.y)
+		let currentPosition = Position(x: current.x, y: current.y)
+		let map = await MapBox.mapType.map.grid
+
+		let directions = [(0, 1), (0, -1), (1, 0), (-1, 0)] // Up, Down, Right, Left
+		var openSet: [(Position, Int)] = [(currentPosition, 0)] // (Position, cost)
+		var cameFrom: [Position: Position] = [:]
+		var gScore: [Position: Int] = [currentPosition: 0]
+
+		while !openSet.isEmpty {
+			openSet.sort { $0.1 < $1.1 } // Sort by cost
+			let (currentNode, _) = openSet.removeFirst()
+
+			if currentNode == targetPosition { // Reached the goal
+				var node: Position? = targetPosition
+				var path: [Position] = []
+
+				while let n = node, n != currentPosition {
+					path.append(n)
+					node = cameFrom[n]
+				}
+				if let next = path.reversed().first {
+					return NPCPosition(x: next.x, y: next.y, mapType: current.mapType)
+				} else {
+					return NPCPosition(x: currentPosition.x, y: currentPosition.y, mapType: current.mapType)
+				}
+			}
+
+			for (dx, dy) in directions {
+				let neighbor = Position(x: currentNode.x + dx, y: currentNode.y + dy)
+
+				if neighbor.x < 0 || neighbor.y < 0 || neighbor.x >= map[0].count || neighbor.y >= map.count {
+					continue
+				}
+
+				let neighborTile = map[neighbor.y][neighbor.x] as! MapTile
+
+				if case .building = neighborTile.type {
+					continue
+				}
+
+				let tentativeGScore = gScore[currentNode]! + 1
+				if tentativeGScore < (gScore[neighbor] ?? Int.max) {
+					cameFrom[neighbor] = currentNode
+					gScore[neighbor] = tentativeGScore
+					openSet.append((neighbor, tentativeGScore))
+				}
+			}
+		}
+
+		return NPCPosition(x: currentPosition.x, y: currentPosition.y, mapType: current.mapType)
+	}
+
+	static func moveToDoor(position: NPCMovingPosition, npcTile: NPCTile, tileNPCisOn: MapTile) async {
+		// can assume that the door is in the same map as the NPC and destination is not in the same map
+		guard let (doorTile, doorPosition) = await findDoorTileForPosition(position) else {
 			Logger.error("No door tile found for position \(position)", code: .noDoorTile)
 		}
-		await switchMaps(from: position, doorTile: doorTile, npcTile: npcTile)
+		if case .door = tileNPCisOn.type {
+			await switchMaps(from: position, doorTile: doorTile, npcTile: npcTile)
+		} else {
+			await moveTo(destination: doorPosition, currentPosition: position, npcTile: npcTile, tileNPCisOn: tileNPCisOn)
+		}
 	}
 
-	static func findDoorTileForPosition(_ position: NPCMovingPosition) async -> DoorTile? {
+	static func findDoorTileForPosition(_ position: NPCMovingPosition) async -> (doorTile: DoorTile, position: NPCPosition)? {
 		let tile = await MapBox.mapType.map.grid[position.y][position.x] as! MapTile
 		if case let .door(tile: doorTile) = tile.type {
-			return doorTile
+			return (doorTile, NPCPosition(x: position.x, y: position.y, mapType: position.mapType))
 		}
 		return nil
 	}
