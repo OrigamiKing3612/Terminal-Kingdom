@@ -107,6 +107,8 @@ enum ExitCode {
 	case fileNotFound
 	case config(ConfigErrorCode)
 	case json(JsonError)
+	case potteryNotImplemented
+	case kingWorking
 
 	enum JsonError {
 		case decodingError
@@ -139,6 +141,8 @@ enum ExitCode {
 					case .encodingError: -7
 				}
 			case .mainMapInBuildingMap: 5
+			case .potteryNotImplemented: 6
+			case .kingWorking: 7
 		}
 	}
 }

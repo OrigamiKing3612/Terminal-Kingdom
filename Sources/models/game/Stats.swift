@@ -19,47 +19,47 @@ extension PlayerCharacter {
 		stats.setMineLevel(level)
 	}
 
-	func setBlacksmithingSkillLevel(_ newValue: SkillLevel) {
+	func setBlacksmithingSkillLevel(_ newValue: SkillProgress.SkillLevel) {
 		stats.skill.setBlacksmithing(newValue)
 	}
 
-	func setMiningSkillLevel(_ newValue: SkillLevel) {
+	func setMiningSkillLevel(_ newValue: SkillProgress.SkillLevel) {
 		stats.skill.setMining(newValue)
 	}
 
-	func setCarpentrySkillLevel(_ newValue: SkillLevel) {
+	func setCarpentrySkillLevel(_ newValue: SkillProgress.SkillLevel) {
 		stats.skill.setCarpentry(newValue)
 	}
 
-	func setFarmingSkillLevel(_ newValue: SkillLevel) {
+	func setFarmingSkillLevel(_ newValue: SkillProgress.SkillLevel) {
 		stats.skill.setFarming(newValue)
 	}
 
-	func setBuildingSkillLevel(_ newValue: SkillLevel) {
+	func setBuildingSkillLevel(_ newValue: SkillProgress.SkillLevel) {
 		stats.skill.setBuilding(newValue)
 	}
 
-	func setSalesSkillLevel(_ newValue: SkillLevel) {
+	func setSalesSkillLevel(_ newValue: SkillProgress.SkillLevel) {
 		stats.skill.setSales(newValue)
 	}
 
-	func setHuntingSkillLevel(_ newValue: SkillLevel) {
+	func setHuntingSkillLevel(_ newValue: SkillProgress.SkillLevel) {
 		stats.skill.setHunting(newValue)
 	}
 
-	func setInventingSkillLevel(_ newValue: SkillLevel) {
+	func setInventingSkillLevel(_ newValue: SkillProgress.SkillLevel) {
 		stats.skill.setInventing(newValue)
 	}
 
-	func setCaretakingSkillLevel(_ newValue: SkillLevel) {
+	func setCaretakingSkillLevel(_ newValue: SkillProgress.SkillLevel) {
 		stats.skill.setCaretaking(newValue)
 	}
 
-	func setMedicineSkillLevel(_ newValue: SkillLevel) {
+	func setMedicineSkillLevel(_ newValue: SkillProgress.SkillLevel) {
 		stats.skill.setMedicine(newValue)
 	}
 
-	func setCookingSkillLevel(_ newValue: SkillLevel) {
+	func setCookingSkillLevel(_ newValue: SkillProgress.SkillLevel) {
 		stats.skill.setCooking(newValue)
 	}
 }
