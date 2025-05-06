@@ -33,7 +33,7 @@ actor Game {
 	var bottomLeftCorner: String { config.useNerdFont ? "└" : "=" }
 	var bottomRightCorner: String { config.useNerdFont ? "┘" : "=" }
 	private(set) var hasStartedCropQueue: Bool = false
-	private(set) var hasStartedNPCMovingQueue: Bool = false
+	private(set) var hasStartedNPCMovingQueue: Bool = false //! TODO: Remove
 	private(set) var hasStartedNPCQueue: Bool = false
 
 	//     private(set) var map = MapGen.generateFullMap()

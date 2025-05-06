@@ -262,6 +262,12 @@ enum MapType: Codable, Equatable, Hashable {
 			}
 		}
 	}
+
+	var grid: [[any Tile]] {
+		get async {
+			await map.grid
+		}
+	}
 }
 
 struct Player: Codable {

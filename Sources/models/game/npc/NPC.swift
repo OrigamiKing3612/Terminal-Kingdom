@@ -7,13 +7,21 @@ struct NPC: Codable, Hashable, Equatable {
 	let name: String
 	let isStartingVillageNPC: Bool
 	var hasTalkedToBefore: Bool
-	var job: NPCJob?
+	var job: NPCJob? {
+		didSet {
+			if let job {
+				task = .idle(for: job)
+			}
+		}
+	}
+
 	var skill: Skill
 	let age: Int
 	let gender: Gender
 	let villageID: UUID?
 	private(set) var positionToWalkTo: TilePosition?
 	private(set) var attributes: [NPCAttribute] = []
+	private(set) var task: NPCTasks
 	private var _hunger: Double = 100
 	private var _happiness: Double = 100
 	private var hunger: Hunger { Hunger.hunger(for: _hunger) }
@@ -39,6 +47,7 @@ struct NPC: Codable, Hashable, Equatable {
 		self.age = age
 		self.position = position
 		self.skill = skill
+		self.task = .idle(for: job)
 	}
 
 	mutating func tick() async {
@@ -48,14 +57,19 @@ struct NPC: Codable, Hashable, Equatable {
 		guard !isStartingVillageNPC else { return }
 		// guard let kingdom = await Game.shared.getKingdom(id: villageID) else { return }
 		_hunger -= 0.01
-
 		if _hunger <= 0 {
 			// if let positionToWalkTo {
 			// await Game.shared.removeNPC()
 			// }
+			await MessageBox.message("\(name) has died of hunger", speaker: self)
 			await Game.shared.kingdom.remove(npcID: id, villageID: villageID)
 			await Game.shared.npcs.remove(npc: id)
+			return
 		}
+		if hunger != .hungry {
+			//
+		}
+		await NPCWork.work(npc: &self)
 	}
 
 	mutating func setHunger(_ newHunger: Double) {
@@ -72,6 +86,10 @@ struct NPC: Codable, Hashable, Equatable {
 
 	mutating func removePosition() {
 		positionToWalkTo = nil
+	}
+
+	mutating func setPositionToWalkTo(_ position: TilePosition) {
+		positionToWalkTo = position
 	}
 
 	mutating func addAttribute(_ attribute: NPCAttribute) {
@@ -121,7 +139,7 @@ struct NPC: Codable, Hashable, Equatable {
 		guard case let .npc(tile: tile) = mapTile.type else {
 			return
 		}
-		if await tile.npc?.hasTalkedToBefore == false {
+		if await tile.npc.hasTalkedToBefore == false {
 			await Game.shared.npcs.setTalkedTo(npcID: tile.npcID)
 			// let newMapTile = MapTile(type: .npc(tile: tile), isWalkable: mapTile.isWalkable, event: mapTile.event, biome: mapTile.biome)
 			// await MapBox.updateTile(newTile: newMapTile)
@@ -222,6 +240,7 @@ struct NPC: Codable, Hashable, Equatable {
 		case position
 		case startingVillageNPC
 		case skill
+		case task
 	}
 
 	init(from decoder: any Decoder) throws {
@@ -246,6 +265,7 @@ struct NPC: Codable, Hashable, Equatable {
 			self.villageID = nil
 		}
 		self.skill = try container.decode(Skill.self, forKey: NPC.CodingKeys.skill)
+		self.task = try container.decode(NPCTasks.self, forKey: NPC.CodingKeys.task)
 	}
 
 	func encode(to encoder: any Encoder) throws {
@@ -266,6 +286,7 @@ struct NPC: Codable, Hashable, Equatable {
 		try container.encode(_happiness, forKey: NPC.CodingKeys.happiness)
 		try container.encodeIfPresent(villageID, forKey: NPC.CodingKeys.villageID)
 		try container.encode(skill, forKey: NPC.CodingKeys.skill)
+		try container.encode(job, forKey: NPC.CodingKeys.task)
 	}
 }
 
