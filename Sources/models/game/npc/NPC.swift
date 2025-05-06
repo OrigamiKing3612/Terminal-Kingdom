@@ -56,6 +56,49 @@ struct NPC: Codable, Hashable, Equatable {
 			await Game.shared.kingdom.remove(npcID: id, villageID: villageID)
 			await Game.shared.npcs.remove(npc: id)
 		}
+		if let job {
+			let xp = 0.1
+			switch job {
+				case .blacksmith:
+					skill.blacksmithing.addExperience(xp)
+				case .builder:
+					skill.building.addExperience(xp)
+				case .carpenter:
+					skill.carpentry.addExperience(xp)
+				case .chef:
+					skill.cooking.addExperience(xp)
+				case .doctor:
+					skill.medicine.addExperience(xp)
+				case .farmer:
+					skill.farming.addExperience(xp)
+				case .hunter:
+					skill.hunting.addExperience(xp)
+				case .inventor:
+					skill.inventing.addExperience(xp)
+				case .king:
+					Logger.error("King should not be working", code: .kingWorking)
+				case .lead_blacksmith:
+					skill.blacksmithing.addExperience(xp)
+				case .lead_builder:
+					skill.building.addExperience(xp)
+				case .lead_carpenter:
+					skill.carpentry.addExperience(xp)
+				case .lead_farmer:
+					skill.farming.addExperience(xp)
+				case .lead_miner:
+					skill.mining.addExperience(xp)
+				case .miner:
+					skill.mining.addExperience(xp)
+				case .potter:
+					// skill.pottery.addExperience(xp)
+					//! TODO fix this
+					Logger.error("Pottery skill not implemented yet", code: .potteryNotImplemented)
+				case let .salesman(type):
+					skill.sales.addExperience(xp)
+				case .stable_master:
+					skill.caretaking.addExperience(xp)
+			}
+		}
 	}
 
 	mutating func setHunger(_ newHunger: Double) {
